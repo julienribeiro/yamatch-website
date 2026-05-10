@@ -1,0 +1,11 @@
+{
+  "name": "yamatch-website",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Yamatch marketing one-pager — vanilla HTML/CSS/JS, no build step.",
+  "scripts": {
+    "dev": "npx --yes live-server@1.2.2 --port=8000 --no-browser --ignore=fonts/OFL.txt",
+    "start": "npx --yes live-server@1.2.2 --port=8000 --ignore=fonts/OFL.txt",
+    "preview": "npx --yes live-server@1.2.2 --port=8000"
+  }
+}

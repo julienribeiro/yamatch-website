@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#D7FF00">
+    <meta name="description" content="Yamatch — Le terrain t'attend. Trouve, réserve et joue ton prochain tournoi de foot, basket ou padel près de chez toi.">
+
+    <meta property="og:title" content="Yamatch — Le terrain t'attend">
+    <meta property="og:description" content="Réservation de tournois sportifs amateurs. Joueurs et organisateurs réunis sur une seule app.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+
+    <title>Yamatch — Le terrain t'attend</title>
+
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Roboto:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+    <script src="carousel.js" defer></script>
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+<a class="skip-link" href="#top">Aller au contenu</a>
+
+<main id="top">
+    <section class="hero">
+        <button type="button" class="wordmark wordmark-link" aria-label="Retour en haut">
+            <svg viewBox="0 0 1067.73 206.13" aria-hidden="true" focusable="false">
+                <path d="M277.28,3.42h28.94l22.78,99.93h1.42L353.19,3.42h79.15v199.29h-49.25V71.17h-3.42l-26.76,131.54h-46.4l-26.76-131.54h-3.42l-19.3,131.54h-9.97S277.28,3.42,277.28,3.42Z"/>
+                <path d="M480.72,3.42h84.84l42.7,199.29h-64.91l-2.85-20.5h-34.73l-2.85,20.5h-64.91L480.72,3.42ZM539.37,139.5l-14.23-74.02h-3.98l-14.24,74.02h32.46Z"/>
+                <path d="M638.43,52.95h-49.54V3.42h155.45v49.54h-49.54v149.76h-56.37V52.95Z"/>
+                <path d="M746.32,116.16v-26.19c0-60.64,6.83-89.97,77.73-89.97s77.72,27.33,77.72,75.73v12.81h-56.94v-21.35c0-11.67-4.56-18.79-20.78-18.79s-20.78,7.12-20.78,18.79v71.74c0,11.67,4.56,18.79,20.78,18.79s20.78-7.12,20.78-18.79v-22.49h56.94v13.95c0,48.4-6.83,75.73-77.72,75.73s-77.73-29.33-77.73-89.97Z"/>
+                <path d="M1011.35,125.27h-40.43v77.44h-56.37V3.42h56.37v79.15h40.43V3.42h56.37v199.29h-56.37v-77.44Z"/>
+                <path d="M201.99,3.41h84.84l-29.83,199.27h-64.91l4.61-20.5h-34.73l-10.31,20.5h-64.91L201.99,3.41ZM211.1,139.48l12.71-74.02h-3.99l-41.17,74.02h32.45Z"/>
+                <path d="M31.91,115.55L4.49,3.96h62.06l12.66,57.5h3.42L137.15,3.96h62.06l-108.66,111.59-31.91,87.68H0l31.91-87.68Z"/>
+            </svg>
+        </button>
+        <div class="hero-card">
+        <div class="hero-card-inner">
+        <h1 class="hero-title"><span class="hero-title-slant">Ton prochain tournoi t'attend</span></h1>
+        <p class="hero-subtitle">Compose ton équipe,<br class="br-mobile-only"> il y a match</p>
+        <div class="hero-buttons">
+            <!-- TODO(yamatch): replace with real App Store URL -->
+            <a class="btn-glass js-pending-cta" data-cta="app-store" href="#" aria-label="Télécharger sur l'App Store">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M17.05 12.04c-.03-3.24 2.65-4.79 2.77-4.87-1.51-2.21-3.86-2.51-4.69-2.55-2-.21-3.9 1.18-4.91 1.18-1.03 0-2.59-1.16-4.27-1.12-2.18.03-4.21 1.27-5.34 3.22-2.29 3.97-.59 9.83 1.65 13.05 1.09 1.58 2.39 3.34 4.07 3.28 1.64-.07 2.25-1.06 4.23-1.06 1.96 0 2.53 1.06 4.25 1.02 1.76-.03 2.87-1.6 3.95-3.18 1.24-1.83 1.76-3.6 1.79-3.69-.04-.02-3.45-1.32-3.5-5.28zM13.78 3.4c.91-1.1 1.52-2.62 1.35-4.13-1.31.05-2.89.87-3.83 1.96-.84.97-1.58 2.51-1.38 4 1.46.11 2.95-.74 3.86-1.83z"/>
+                </svg>
+                <span class="glass-stack">
+                    <span class="glass-eyebrow">Télécharger sur</span>
+                    <span class="glass-label">App Store</span>
+                </span>
+            </a>
+            <!-- TODO(yamatch): replace with real Google Play URL -->
+            <a class="btn-glass js-pending-cta" data-cta="play-store" href="#" aria-label="Disponible sur Google Play">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202c1.302.661 1.302 2.823 0 2.594zM1.337.924a2.43 2.43 0 0 0-.337 1.286v19.474c0 .484.124.928.337 1.286l11.591-11.491L1.337.924zm12.844 10.452l2.79-2.766L3.486.36C3.106.118 2.658.058 2.218.122l11.963 11.254zm0 1.248L2.218 23.878a2.43 2.43 0 0 0 1.268-.238l13.485-7.667-2.79-2.349z"/>
+                </svg>
+                <span class="glass-stack">
+                    <span class="glass-eyebrow">Disponible sur</span>
+                    <span class="glass-label">Google Play</span>
+                </span>
+            </a>
+        </div>
+        </div><!-- /.hero-card-inner -->
+        </div><!-- /.hero-card -->
+    </section>
+
+    <!-- === Carrousel d'écrans — pattern hero-carousel (Spendesk-inspired).
+         5 slides en rang horizontal ; la slide ".active" (index 2) est translatée vers le
+         haut via --scroll: -33% — son tiers supérieur dépasse au-dessus du rang, juste sous
+         la lime card du hero. Au scroll, --scroll est animé de -33% → 0 (script.js,
+         scroll-progress block) pour faire descendre la slide active dans le rang.
+         Le défilement horizontal et le snap sont gérés en CSS natif via scroll-snap-type;
+         l'alignement initial sur la slide active est posé en JS (centerOnActive) via scrollLeft. === -->
+    <section class="screens-rail" aria-label="Aperçu de l'app Yamatch">
+        <div class="hero-carousel-embla">
+            <div class="hero-carousel-embla--container">
+                <article class="screen-card screen-card--lime hero-carousel-embla--slide">
+                    <div class="screen-card__phone">
+                        <picture>
+                            <source srcset="assets/screen_1.webp" type="image/webp">
+                            <img class="phone-image" src="assets/screen_1.png" alt="Aperçu de l'app Yamatch — accueil de découverte des tournois"
+                                 width="1206" height="2450"
+                                 loading="lazy" decoding="async" draggable="false">
+                        </picture>
+                    </div>
+                    <p class="screen-card__caption">
+                        <span class="screen-card__caption-primary">Tous tes tournois,</span>
+                        <span class="screen-card__caption-secondary">une seule app</span>
+                    </p>
+                </article>
+
+                <!-- Slide active — Spendesk's `.active` modifier. translateY(var(--scroll))
+                     la fait flotter dans la zone hero au repos, puis la JS-anime vers 0 au
+                     scroll. Image = screen_2 (filtres lieu/niveau/format), porte d'entrée du parcours. -->
+                <article class="screen-card screen-card--white screen-card--arrival hero-carousel-embla--slide active">
+                    <div class="screen-card__phone">
+                        <picture>
+                            <source srcset="assets/screen_2.webp" type="image/webp">
+                            <img class="phone-image" src="assets/screen_2.png" alt="Yamatch — filtres lieu, niveau et format de tournoi"
+                                 width="1206" height="2450"
+                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
+                        </picture>
+                    </div>
+                    <p class="screen-card__caption">
+                        <span class="screen-card__caption-primary">Lieu, niveau, format…</span>
+                        <span class="screen-card__caption-secondary">— tout y est</span>
+                    </p>
+                </article>
+
+                <article class="screen-card screen-card--lime hero-carousel-embla--slide">
+                    <div class="screen-card__phone">
+                        <picture>
+                            <source srcset="assets/screen_3.webp" type="image/webp">
+                            <img class="phone-image" src="assets/screen_3.png" alt="Yamatch — paiement sécurisé d'un tournoi"
+                                 width="1206" height="2450"
+                                 loading="lazy" decoding="async" draggable="false">
+                        </picture>
+                    </div>
+                    <p class="screen-card__caption">
+                        <span class="screen-card__caption-primary">Paiement sécurisé,</span>
+                        <span class="screen-card__caption-secondary">victoire non garantie</span>
+                    </p>
+                </article>
+
+                <article class="screen-card screen-card--white hero-carousel-embla--slide">
+                    <div class="screen-card__phone">
+                        <picture>
+                            <source srcset="assets/screen_4.webp" type="image/webp">
+                            <img class="phone-image" src="assets/screen_4.png" alt="Yamatch — matchs, scores et classement en direct"
+                                 width="1206" height="2450"
+                                 loading="lazy" decoding="async" draggable="false">
+                        </picture>
+                    </div>
+                    <p class="screen-card__caption">
+                        <span class="screen-card__caption-primary">Matchs, scores, classement</span>
+                        <span class="screen-card__caption-secondary">— en live</span>
+                    </p>
+                </article>
+
+                <article class="screen-card screen-card--lime hero-carousel-embla--slide">
+                    <div class="screen-card__phone">
+                        <picture>
+                            <source srcset="assets/screen_5.webp" type="image/webp">
+                            <img class="phone-image" src="assets/screen_5.png" alt="Yamatch — progression de la poule à la finale"
+                                 width="1206" height="2450"
+                                 loading="lazy" decoding="async" draggable="false">
+                        </picture>
+                    </div>
+                    <p class="screen-card__caption">
+                        <span class="screen-card__caption-primary">De la poule à la finale,</span>
+                        <span class="screen-card__caption-secondary">suis ta progression</span>
+                    </p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq" aria-labelledby="faqTitle">
+        <div class="faq-inner">
+            <p class="faq-eyebrow">FAQ</p>
+            <h2 class="faq-title" id="faqTitle">Questions fréquentes</h2>
+            <ul class="faq-list">
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-1">
+                        <span class="faq-question">C'est quoi Yamatch ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="faqAnswer-1" role="region" aria-labelledby="faqTitle">
+                        <div class="faq-answer-inner">
+                            <p>Yamatch est l'app pour trouver, réserver et jouer des tournois amateurs de foot, basket et padel près de chez toi.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-2">
+                        <span class="faq-question">Quels sports puis-je pratiquer ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="faqAnswer-2" role="region" aria-labelledby="faqTitle">
+                        <div class="faq-answer-inner">
+                            <p>Foot (à 5, à 7, à 11), basket (3v3, 5v5) et padel en doublette. D'autres sports rejoindront la liste au fil des saisons.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-3">
+                        <span class="faq-question">Comment je m'inscris à un tournoi ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="faqAnswer-3" role="region" aria-labelledby="faqTitle">
+                        <div class="faq-answer-inner">
+                            <p>Tu choisis ton tournoi dans l'app, tu composes ton équipe (en invitant tes potes ou en cherchant des coéquipiers), puis tu valides l'inscription en quelques clics.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-4">
+                        <span class="faq-question">Faut-il une équipe complète pour s'inscrire ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="faqAnswer-4" role="region" aria-labelledby="faqTitle">
+                        <div class="faq-answer-inner">
+                            <p>Non. Tu peux t'inscrire seul, à deux ou en groupe. L'app t'aide ensuite à compléter ton équipe avant le tournoi.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-5">
+                        <span class="faq-question">Combien ça coûte ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="faqAnswer-5" role="region" aria-labelledby="faqTitle">
+                        <div class="faq-answer-inner">
+                            <p>L'app est gratuite à télécharger. Les frais d'inscription par tournoi varient selon l'organisateur, généralement entre 15 et 25 € par équipe.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-6">
+                        <span class="faq-question">Comment puis-je organiser mon propre tournoi ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="faqAnswer-6" role="region" aria-labelledby="faqTitle">
+                        <div class="faq-answer-inner">
+                            <p>Crée un compte organisateur depuis l'app, soumets ton dossier, et notre équipe te valide sous 48 heures.</p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+</main>
+
+<footer class="footer" id="siteFooter">
+    <div class="footer-inner">
+        <ul class="footer-list" aria-label="Liens utiles">
+            <!-- TODO(yamatch): replace with hosted CGU URL once published -->
+            <li><a href="#" class="js-pending-cta" data-cta="cgu">CGU</a></li>
+            <!-- TODO(yamatch): replace with hosted cancellation/refund policy URL once published -->
+            <li><a href="#" class="js-pending-cta" data-cta="refund-policy">Politique d'annulation et de remboursement</a></li>
+            <!-- TODO(yamatch): replace with hosted privacy policy URL once published -->
+            <li><a href="#" class="js-pending-cta" data-cta="privacy">Politique de confidentialité</a></li>
+            <li><a href="mailto:support@yamatch.app">Contact</a></li>
+            <!-- TODO(yamatch): replace with hosted account-deletion URL once published -->
+            <li><a href="#" class="js-pending-cta" data-cta="account-deletion">Suppression de compte</a></li>
+        </ul>
+        <div class="footer-bottom">
+            <p>&copy; <span id="copyrightYear">2026</span> Yamatch Corp. Tous droits réservés.</p>
+        </div>
+    </div>
+</footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+</body>
+</html>

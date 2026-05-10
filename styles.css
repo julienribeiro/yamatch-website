@@ -1,0 +1,1320 @@
+/* ==========================================================================
+   YAMATCH MARKETING SITE — STYLES
+   ==========================================================================
+
+   TABLE OF CONTENTS
+   -----------------
+    1. Webfont (@font-face — Frick 0.3)
+    2. Design Tokens (:root)
+    3. Reset & base elements (box, html/body, img, a, ul, h1/h4, p)
+    4. Skip link
+    5. Focus visibility (generic :focus-visible)
+    6. Wordmark (sticky pill, scroll states, entrance keyframe)
+    7. Hero section
+       7.1 .hero outer canvas
+       7.2 .hero-card (lime block) + cardEntrance
+       7.3 .hero-card-inner
+       7.4 .hero-card-waves SVG + wavesEntrance
+       7.5 .hero-title / .hero-title-slant / .hero-subtitle + titleEntrance
+       7.6 .hero-buttons + .btn-glass (variants, hover, shine, fallback)
+       7.7 .glass-stack / .glass-eyebrow / .glass-label
+    8. Phone image (shared across carousel slides)
+    9. Screens rail / carousel
+       9.1 .screens-rail wrapper
+       9.2 .hero-carousel-embla root (tokens + cursor)
+       9.3 .hero-carousel-embla--container (flex row + snap transition)
+       9.4 .hero-carousel-embla--slide
+       9.5 Active slide phone lift + arrival entrance
+       9.6 .screen-card variants (lime / white / arrival)
+       9.7 .screen-card__phone / __caption / __caption-primary / __caption-secondary
+   10. FAQ accordion
+   11. Footer
+   12. Toast
+   13. Mobile media queries (consolidated — overrides hero + carousel)
+   14. Reduced motion
+   ==========================================================================
+*/
+
+
+/* ==========================================================================
+   1. WEBFONT — Frick 0.3 by Dennis Grauel (OFL — see fonts/OFL.txt)
+   ========================================================================== */
+@font-face {
+    font-family: 'Frick 0.3';
+    src: url('fonts/Frick0.3-Regular.woff2') format('woff2'),
+         url('fonts/Frick0.3-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+/* ==========================================================================
+   2. DESIGN TOKENS (:root)
+   ========================================================================== */
+:root {
+    --color-accent: #D7FF00;
+    --color-dark-bg: #1A1A1A;
+    --color-dark-surface: #000000;
+    --color-light-bg: #FFFFFF;
+    --color-light-gray: #F3F4F6;
+    --color-medium-gray: #99A1AF;
+    --color-text-primary: #101828;
+    --color-text-white: #FFFFFF;
+    /* Pure black, distinct from --color-text-primary (#101828). Used where the
+       user explicitly chose pure black: wordmark, hero title/subtitle on lime,
+       faq accordion chevron icon. Memory: "Subtitle copy is `color: #000` (pure
+       black, NOT the muted rgba — the user explicitly chose pure black)." */
+    --color-text-black: #000000;
+    --color-divider: #E0E0E0;
+    --color-error: #EF4444;
+    --color-success: #4CAF50;
+    /* Hover background for the dark glass buttons (.btn-glass:hover). Slight
+       blue-tinted lift over --color-text-primary (#101828) to read as a state
+       change without breaking the dark palette. */
+    --color-button-glass-hover: #1F2A3D;
+
+    --font-heading: 'Roboto', system-ui, -apple-system, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+
+    --radius-card: 24px;
+    --radius-input: 16px;
+    --radius-pill: 100px;
+
+    --shadow-light: 0 10px 15px rgba(0, 0, 0, 0.10), 0 4px 6px rgba(0, 0, 0, 0.10);
+    --shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+    --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+    --container-max: 1200px;
+
+    --page-pad: clamp(24px, 4.5vw, 60px);
+
+    /* Vertical gap between the active phone's top edge and the .hero-buttons'
+       bottom edge at scroll = 0. Read by script.js (computeBaseLift) which
+       writes the resulting --scroll value (in px) on .hero-carousel-embla.
+       clamp(24px, 4vh, 56px): 24px floor on tiny viewports, 56px ceiling on 4K. */
+    --desired-button-gap: clamp(24px, 4vh, 56px);
+}
+
+
+/* ==========================================================================
+   3. RESET & BASE ELEMENTS
+   ========================================================================== */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+/* Horizontal viewport clipping lives here (on the outermost full-viewport-width boxes)
+   so carousel slides 0 and 4 can extend into the page-pad gutter on the left/right of
+   .screens-rail and still be clipped at the viewport edges (no horizontal page scroll).
+   `overflow-x: clip` is mandatory (not `hidden`): per CSS spec, `clip` allows asymmetric
+   per-axis overflow values without promoting overflow-y to auto, so the active phone
+   image's translateY(var(--scroll)) lift remains visible. */
+html, body {
+    overflow-x: clip;
+}
+
+body {
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--color-text-primary);
+    background-color: var(--color-light-bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+img, svg {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--transition), opacity var(--transition);
+}
+
+ul {
+    list-style: none;
+}
+
+h1, h4 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--color-text-primary);
+}
+
+p {
+    line-height: 1.65;
+}
+
+/* Responsive utilities — small helpers reused across components.
+   .br-mobile-only: hide a <br> on desktop, show it on mobile. Used inline
+   in the markup to force a line break only on the narrow viewport (e.g.
+   .hero-subtitle "Compose ton équipe,<br class="br-mobile-only"> il y a match").
+   The mobile-side `display: inline` override lives in section 13 next to
+   the rest of the @media (max-width: 767px) rules. */
+.br-mobile-only {
+    display: none;
+}
+
+
+/* ==========================================================================
+   4. SKIP LINK
+   ========================================================================== */
+.skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 8px;
+    z-index: 1000;
+    background-color: var(--color-text-primary);
+    color: var(--color-text-white);
+    padding: 10px 16px;
+    border-radius: var(--radius-pill);
+    font-size: 14px;
+    font-weight: 500;
+}
+.skip-link:focus {
+    left: 16px;
+}
+
+
+/* ==========================================================================
+   5. FOCUS VISIBILITY (generic — feature overrides live with their feature)
+   ========================================================================== */
+:focus-visible {
+    outline: 2px solid var(--color-text-primary);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+
+/* ==========================================================================
+   6. WORDMARK
+   --------------------------------------------------------------------------
+   Sticky pill, perfectly centered in the white strip between the viewport top
+   and the lime card. `top` is half the hero's top-padding (= mid-point of the
+   strip), and `translate: -50% -50%` (CSS individual property) centers the
+   element on that point regardless of its own size. The entrance animation
+   uses `transform: translateY()` separately, which composes with `translate`
+   cleanly.
+   ========================================================================== */
+.wordmark {
+    /* `fixed` instead of `absolute` so the logo stays at the top of the viewport for the entire scroll,
+       not just the hero section. Top/left now resolve against the viewport, not against `.hero`. */
+    position: fixed;
+    top: calc(var(--page-pad) / 2);
+    left: 50%;
+    translate: -50% -50%;
+    z-index: 50;
+    display: inline-flex;
+    align-items: center;
+    color: var(--color-text-black);
+    /* Default state — no background, no padding (the .is-condensed scrolled state adds the pill). */
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    animation: wordmarkEntrance 320ms cubic-bezier(0.2, 0.8, 0.2, 1) 80ms backwards;
+    /* Transition the scroll-driven properties only — `transform` is left alone so the entrance
+       keyframe (which animates `transform: translateY(...)`) still plays without conflict. */
+    transition:
+        translate 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        scale 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        opacity 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        background-color 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        backdrop-filter 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        -webkit-backdrop-filter 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        padding 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        border-color 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Scrolled state — frosted translucent pill + condense. Single class gates both effects. */
+.wordmark.is-condensed {
+    scale: 0.92;
+    padding: 8px 20px;
+    background: rgba(255, 255, 255, 0.72);
+    border-color: rgba(16, 24, 40, 0.06);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+}
+
+/* Hidden state — fade out with a small upward nudge. Avoids the half-clipped intermediate
+   frame that a pure slide produced (translate passing through -100% during the transition). */
+.wordmark.is-hidden {
+    opacity: 0;
+    translate: -50% calc(-50% - 8px);
+    pointer-events: none;
+}
+
+/* Backdrop-filter fallback — bump opacity so the pill stays legible without the blur. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .wordmark.is-condensed {
+        background: rgba(255, 255, 255, 0.92);
+    }
+}
+
+.wordmark svg {
+    /* Mobile (<768px) — reduced from 17px to 14px (~-17.6%) on user request:
+       the mark felt slightly oversized on small viewports relative to the
+       hero card. Stays >= 14px so the wordmark glyphs remain legible at any
+       viewport (320–767px). The desktop override below restores 20px. */
+    height: 14px;
+    width: auto;
+    fill: currentColor;
+}
+
+@media (min-width: 768px) {
+    .wordmark svg { height: 20px; }
+}
+
+@keyframes wordmarkEntrance {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* ==========================================================================
+   7. HERO SECTION
+   ========================================================================== */
+
+/* --- 7.1 .hero outer canvas ------------------------------------------------
+   Outer hero is a clean white canvas — the wordmark sits on this white area at the top,
+   and the lime/wave background lives INSIDE the card below. The hero is content-sized:
+   the lime card fills the viewport, the iPhone peeks below the buttons, and the next
+   section (.screens-rail) starts naturally underneath. */
+.hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0;
+    /* Equal margin between the viewport edge and the lime card, on every side (top/right/bottom/left).
+       Horizontal value (`--page-pad`) is the shared gutter applied to every top-level section, so all
+       sections align to the same left/right edge. Vertical padding mirrors it so the hero keeps its
+       symmetric breathing room around the card. */
+    padding-block: var(--page-pad);
+    padding-inline: var(--page-pad);
+    background-color: var(--color-light-bg);
+}
+
+/* --- 7.2 .hero-card (lime block) + cardEntrance ----------------------------
+   Solid lime block with animated wave lines etched on top.
+   Sits in the upper portion of the hero only (content-sized, doesn't grow to fill) so the
+   iPhone mockup that follows can extend BELOW the card's bottom edge into the white area. */
+.hero-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    flex: 0 0 auto;
+    min-height: calc(100vh - 2 * var(--page-pad));
+    background-color: var(--color-accent);
+    border-radius: clamp(24px, 3vw, 40px);
+    overflow: hidden;
+    /* Entrance animates opacity + blur only — NO scale. The shared `titleEntrance`
+       keyframe (used by .hero-title / .hero-subtitle) ramps from `transform: scale(1.04)`
+       to scale(1); on a small centered title that's invisible, but on the full-width
+       lime card it shifts the visible left edge by `card_width * 0.02` ≈ 27 px at
+       vp 1470 — making `.hero-card.left` (via getBoundingClientRect) measure
+       `var(--page-pad) - 27` = 33 px instead of 60 px during the 660 ms entrance
+       (120 ms delay + 540 ms duration). That breaks the by-construction alignment
+       with `.screens-rail`'s content edge (which sits at `var(--page-pad)`). Using a
+       scale-free entrance preserves the perfect left-edge alignment with the
+       carousel sentinel from t=0 onward. */
+    animation: cardEntrance 540ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms backwards;
+}
+
+@keyframes cardEntrance {
+    from {
+        opacity: 0;
+        filter: blur(6px);
+    }
+    to {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+/* --- 7.3 .hero-card-inner --------------------------------------------------
+   Inner flex container for the hero card content (title, subtitle, buttons).
+   `position: relative; z-index: 1` puts the title/subtitle/buttons above the
+   absolutely-positioned .hero-card-waves SVG (z-index 0) that lives in the card. */
+.hero-card-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Vertical rhythm between hero title / subtitle / buttons. Bumped from
+       clamp(14px, 1.8vw, 22px) (~+45% across the range) to give the lime card
+       more editorial breathing room without breaking the épuré aesthetic.
+       Stagger order is title → subtitle → buttons (.hero-buttons), and this
+       single `gap` controls all three inter-element spaces uniformly. */
+    gap: clamp(20px, 2.5vw, 32px);
+    padding: clamp(48px, 6vw, 88px) clamp(20px, 3.2vw, 48px);
+    width: 100%;
+}
+
+/* --- 7.4 .hero-card-waves SVG + wavesEntrance ------------------------------
+   Animated wave lines — vertical SVG paths whose points drift via 2D pseudo-noise.
+   Replaces the prior static diagonal-net etched on top of the lime. JS injects the
+   <svg class="hero-card-waves"> element and drives the per-frame path data; this rule
+   only positions/scales it. The SVG fills the card and clips to its rounded corners
+   via inherited overflow:hidden on .hero-card. z-index 0 keeps it behind the inner
+   content (.hero-card-inner is bumped to z-index 1). */
+.hero-card-waves {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    border-radius: inherit;
+    /* Same fade-in feel the prior net had, so the entrance choreography reads identically. */
+    animation: wavesEntrance 240ms ease-out backwards;
+}
+
+@keyframes wavesEntrance {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* --- 7.5 .hero-title / .hero-title-slant / .hero-subtitle + titleEntrance --- */
+.hero-title {
+    font-family: 'Frick 0.3', var(--font-heading);
+    font-weight: 400;
+    /* Lower clamp min so small mobile viewports don't have an oversized title that breaks the 2-line wrap.
+       At 320 px viewport the title sits at 1.75rem = 28 px, scales linearly via 6.5vw, caps at 5.5rem on
+       desktop. Keeps "TOURNOI T'ATTEND" fitting on one line even in the narrowest card. */
+    font-size: clamp(1.75rem, 6.5vw, 5.5rem);
+    line-height: 0.95;
+    letter-spacing: 0;
+    color: var(--color-text-black);
+    text-align: center;
+    /* max-width chosen so "TOURNOI T'ATTEND" (16 chars) fits on one line but
+       "TON PROCHAIN TOURNOI" (20 chars) doesn't — forces the wrap right after PROCHAIN. */
+    max-width: 18ch;
+    text-transform: uppercase;
+    animation: titleEntrance 480ms cubic-bezier(0.2, 0.8, 0.2, 1) 200ms backwards;
+}
+
+/* Browser oblique synthesis on Frick 0.3 is unreliable (Chrome/Safari often refuse and fall through
+   to the next family or render upright). Apply a deterministic visible slant via skewX on an inner
+   span so the entrance animation's `transform: scale()` on .hero-title stays untouched. */
+.hero-title-slant {
+    display: inline-block;
+    transform: skewX(-12deg);
+}
+
+.hero-subtitle {
+    font-family: var(--font-body);
+    font-size: clamp(0.95rem, 1.4vw, 1.0625rem);
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--color-text-black);
+    text-align: center;
+    max-width: 52ch;
+    margin: 0 auto;
+    animation: titleEntrance 480ms cubic-bezier(0.2, 0.8, 0.2, 1) 280ms backwards;
+}
+
+@keyframes titleEntrance {
+    from {
+        opacity: 0;
+        transform: scale(1.04);
+        filter: blur(6px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+    }
+}
+
+/* --- 7.6 .hero-buttons + .btn-glass (variants, hover, shine, fallback) ----- */
+/* Buttons are ALWAYS side-by-side, even on mobile. The buttons themselves shrink responsively
+   so they fit a 320-wide viewport without stacking vertically. */
+.hero-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(8px, 1.4vw, 16px);
+}
+
+/* === Liquid glass buttons (lime variant on white) === */
+.btn-glass {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Responsive sizing — buttons shrink on mobile so two fit side-by-side in a 320 px viewport. */
+    gap: clamp(6px, 1vw, 10px);
+    padding: clamp(6px, 0.8vw, 10px) clamp(10px, 1.6vw, 18px);
+    min-height: clamp(36px, 4.5vw, 44px);
+    border-radius: var(--radius-pill);
+    background: var(--color-text-primary);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.10),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.30),
+        0 6px 18px rgba(16, 24, 40, 0.18);
+    color: var(--color-text-white);
+    font-family: var(--font-body);
+    font-weight: 600;
+    line-height: 1.1;
+    cursor: pointer;
+    transition: transform var(--transition), background-color var(--transition), box-shadow var(--transition);
+    animation: buttonEntrance 380ms cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+.hero-buttons .btn-glass:nth-child(1) { animation-delay: 380ms; }
+.hero-buttons .btn-glass:nth-child(2) { animation-delay: 460ms; }
+
+@keyframes buttonEntrance {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Light sweep on hover — a thin diagonal stripe slides across the glass once. */
+.btn-glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(115deg, transparent 30%, rgba(255, 255, 255, 0.22) 50%, transparent 70%);
+    transform: translateX(-100%);
+    pointer-events: none;
+    z-index: 0;
+}
+.btn-glass:hover::before {
+    animation: btnShine 700ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+@keyframes btnShine {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+}
+
+/* Children render above the sweep layer. */
+.btn-glass > * {
+    position: relative;
+    z-index: 1;
+}
+
+.btn-glass:hover {
+    background: var(--color-button-glass-hover);
+    transform: translateY(-1px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+        0 10px 24px rgba(16, 24, 40, 0.24);
+}
+
+.btn-glass:focus-visible {
+    outline: 2px solid var(--color-text-primary);
+    outline-offset: 3px;
+}
+
+.btn-glass svg {
+    width: clamp(14px, 1.6vw, 18px);
+    height: clamp(14px, 1.6vw, 18px);
+    flex: none;
+    transition: transform 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.btn-glass:hover svg {
+    transform: rotate(12deg);
+}
+
+/* --- 7.7 .glass-stack / .glass-eyebrow / .glass-label ---------------------- */
+.glass-stack {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+}
+
+.glass-eyebrow {
+    font-size: clamp(8px, 0.95vw, 10px);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    opacity: 0.7;
+    line-height: 1;
+}
+
+.glass-label {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(0.75rem, 1.3vw, 0.9375rem);
+    line-height: 1.1;
+}
+
+/* Fallback for browsers without backdrop-filter — bump opacity so the label stays legible. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .btn-glass {
+        background: rgba(215, 255, 0, 0.92);
+    }
+    .btn-glass:hover {
+        background: rgba(215, 255, 0, 1);
+    }
+}
+
+
+/* ==========================================================================
+   8. PHONE IMAGE (shared across carousel slides)
+   --------------------------------------------------------------------------
+   Single rule, used inside every carousel slide.
+   The iPhone chrome (dark body, rounded corners, dynamic island, shadow) is baked into
+   each PNG/WebP source — no CSS frame needed. Width clamp keeps the phone visually
+   consistent across slides; height: auto lets the intrinsic ratio drive the rendered
+   height so the baked frame chrome isn't cropped at the edges.
+
+   `max-width: none` overrides the global `img { max-width: 100% }` reset (section 3).
+   With the current geometry (`--nbr-slide: 3`, `--slide-spacing: clamp(16px, 2vw, 28px)`),
+   the phone fits inside its slide on wide viewports — at 1440 px viewport the slide is
+   ~421 px and the phone clamps to ~395 px (398 px ceiling), leaving ~13 px breathing room
+   each side. At narrower desktop viewports the slide shrinks below the phone's clamp min:
+   at 768 px viewport the slide is ~222 px while the phone holds at its 274 px clamp min,
+   so the phone overflows its slide by ~26 px each side. `max-width: none` keeps that
+   intentional overflow rendering. The overflow is safe: `.screen-card` and
+   `.hero-carousel-embla--container` have no overflow constraint, and horizontal viewport
+   clipping is handled by `body { overflow-x: clip }`.
+   ========================================================================== */
+.phone-image {
+    width: clamp(274px, 27.4vw, 398px);
+    max-width: none;
+    height: auto;
+    display: block;
+    -webkit-user-drag: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Mobile — shrink phone so it fits the smaller card width. */
+@media (max-width: 640px) {
+    .phone-image {
+        width: clamp(209px, 69.6vw, 302px);
+    }
+}
+
+
+/* ==========================================================================
+   9. SCREENS RAIL / CAROUSEL (JS-driven horizontal carousel — no native scroll)
+   --------------------------------------------------------------------------
+   The .screens-rail section is a thin semantic wrapper; the actual carousel lives in
+   .hero-carousel-embla inside. The active slide's phone image is translated UP via
+   translateY(var(--scroll)) so its top portion peeks above the carousel row at rest,
+   just below the lime card. The lift value is computed live in JS (script.js,
+   page-scroll-progress block) so the phone's top edge always sits at a constant
+   --desired-button-gap (clamp(24px, 4vh, 56px), declared in :root) below the
+   .hero-buttons bottom edge at scroll = 0, regardless of viewport. As the user
+   scrolls into the section, JS animates --scroll
+   from that lift value → 0 so the image descends into the row.
+   Horizontal motion is a pure threshold-fire state machine in script.js — wheel + touch
+   gestures are silently accumulated; once the threshold is crossed, the container is
+   snapped via translate3d to center the new active slide (CSS animates the snap). At the
+   deck edges (activeIndex = 1 swipe left, activeIndex = 3 swipe right) the gesture plays
+   a rubber-band: the container glides 70 px toward the unreachable sentinel in 280 ms,
+   then springs back to the centered position in another 280 ms (560 ms total). The default
+   440 ms snap transition declared below stays intact — script.js temporarily overrides
+   the inline transition to 280 ms during the bounce, then restores the default at the
+   end. No live-follow during the gesture itself.
+   ========================================================================== */
+
+/* --- 9.1 .screens-rail wrapper -------------------------------------------- */
+.screens-rail {
+    position: relative;
+    /* z-index: 2 lifts the entire carousel section above the lime card (.hero-card has
+       z-index: 1), so the active slide's translateY(var(--scroll)) lift renders IN FRONT
+       of the lime card at scroll=0. Without this, the carousel section's auto z-index
+       would be drawn behind the lime card. */
+    z-index: 2;
+    padding-block: clamp(20px, 3vw, 48px) clamp(40px, 7vw, 96px);
+    /* Standard page gutter — every section under <main> shares the same padding-inline:
+       var(--page-pad) so side margins line up between .hero, .screens-rail, and .faq.
+       Off-screen slides 0 and 4 are allowed to extend INTO this gutter (and beyond, up
+       to the viewport edges) — clipping lives on `body` (overflow-x: clip), not here. */
+    padding-inline: var(--page-pad);
+    background: transparent;
+    /* overflow stays visible on both axes: the active slide is translateY(var(--scroll))-ed
+       upward into the hero zone, and side slides 0/4 extend horizontally past the page-pad
+       gutter into the viewport edges. Horizontal clipping at the viewport boundary is
+       handled by `body { overflow-x: clip }`. */
+    overflow: visible;
+}
+
+/* --- 9.2 .hero-carousel-embla root (tokens + cursor) ----------------------
+   Carousel root. --nbr-slide controls visible slides, --slide-spacing is the inter-slide
+   gap, --slide-size is computed from those. --scroll is the active phone image's vertical
+   translation; default = lifted offset above the row (just below the lime card buttons),
+   animated to 0 by the scroll-progress block in script.js. No overflow constraint here —
+   slides can extend into the page-pad gutter on left/right of .screens-rail. Horizontal
+   clipping lives on `body` (overflow-x: clip) so slides clip at the viewport edges. */
+.hero-carousel-embla {
+    /* --slide-size derives from --nbr-slide (visible slides at once) and --slide-spacing
+       (inter-slide gap). The active slide rides --scroll vertically so it lifts above the
+       row of cards into the hero zone at rest, then descends back into the row as the user
+       scrolls (page-scroll-progress block in script.js animates --scroll → 0).
+
+       Geometry calibrated so that at rest (active = slide 1 centered) the left sentinel
+       (slide 0) aligns its LEFT edge exactly to the viewport's `--page-pad` gutter, and
+       symmetrically the right sentinel (slide 4) aligns its RIGHT edge to `--page-pad`
+       from the right viewport edge. With `--nbr-slide: 3` and `--slide-spacing` scaling
+       proportionally to `--page-pad` (both clamped on `vw`), the algebra collapses to an
+       identity (1.5 × slide_size + slide_spacing = container_width / 2) so the sentinels
+       sit flush with the page-pad gutter at every viewport, not just one breakpoint. */
+    --nbr-slide: 3;
+    --slide-spacing: clamp(16px, 2vw, 28px);
+    --slide-size: calc((100% - (var(--nbr-slide) - 1) * var(--slide-spacing)) / var(--nbr-slide));
+    /* --scroll initial value is a no-op (0 px). The JS page-scroll-progress block
+       overwrites it on the first rAF after load with the live-computed lift that
+       keeps the active phone's top edge 40 px below the .hero-buttons bottom. The
+       prefers-reduced-motion override at the bottom of the file pins this to 0
+       (no lift) for users who opt out of motion. */
+    --scroll: 0px;
+    --active-scale: 1.14;
+    cursor: grab;
+}
+
+/* --- 9.3 .hero-carousel-embla--container (flex row + snap transition) ----
+   Static flex row pinned to the container's left edge. `justify-content: flex-start`
+   makes the sentinel_0 ↔ page-pad alignment EXPLICIT geometry rather than the implicit
+   algebraic identity that `center` produced (where 5 slides + 4 gaps overflow the
+   container symmetrically and happen to land sentinel_0 on the page-pad gutter). With
+   flex-start, slide 0's left edge sits exactly at the container's left edge — which is
+   the viewport's `--page-pad` thanks to `.screens-rail { padding-inline: var(--page-pad) }`.
+   The JS `setActiveIndex` then writes a translate3d so slide `activeIndex` is centered
+   in the viewport (offset = 0 when activeIndex = 1, since slide 1's natural center is
+   page_pad + container_width/2 = visible viewport center). Horizontal motion is JS-driven
+   (translate3d on the container) via the gesture state machine in script.js — wheel + touch
+   are intercepted, no native scroll. The snap is animated by the 440ms ease-in-out-cubic
+   transition (cubic-bezier(0.65, 0, 0.35, 1)) below. */
+.hero-carousel-embla--container {
+    display: flex;
+    gap: var(--slide-spacing);
+    justify-content: flex-start;
+    transition: transform 440ms cubic-bezier(0.65, 0, 0.35, 1);
+    will-change: transform;
+}
+
+/* --- 9.4 .hero-carousel-embla--slide -------------------------------------- */
+.hero-carousel-embla--slide {
+    flex: 0 0 var(--slide-size);
+}
+
+/* --- 9.5 Active slide phone lift + arrival entrance ----------------------- */
+/* Active slide's phone image rides --scroll vertically — at rest --scroll lifts the image
+   above the row into the hero zone (just below the lime card's CTA buttons); as the user
+   scrolls the page, --scroll animates toward 0 so the image descends into the row. The
+   short 80ms linear transition smooths per-frame rAF writes from the page-scroll-progress
+   block without dragging behind the user's scroll. */
+.screen-card.active .phone-image {
+    transform: translateY(var(--scroll)) scale(var(--active-scale, 1));
+    transform-origin: center top;
+    will-change: transform;
+    transition: transform 80ms linear;
+}
+
+/* Entrance choreography for the initially-active phone — opacity + blur only (NO
+   transform) so this animation does not collide with the runtime
+   `transform: translateY(var(--scroll))` lift on `.screen-card.active .phone-image`
+   above. Bound to `.screen-card--arrival` (a STATIC HTML modifier on the initial
+   active slide — see index.html L101), NOT to `.screen-card.active`, because
+   `.active` migrates between slides as the user navigates the carousel via JS, which
+   would re-trigger the entrance keyframe on every snap. `--arrival` is set once in
+   the markup and never moves, so the animation plays exactly once at page load.
+   Reuses the same `cardEntrance` keyframe as `.hero-card` (rationale at section 7.2)
+   so the phone fades in with the same visual family as the lime card and hero text.
+   Delay 360ms — slots AFTER the buttons (hero-buttons :nth-child(2) fires at 460ms
+   with a 380ms duration) so the visual reading order is title (200ms) → subtitle
+   (280ms) → buttons (380/460ms) → active phone (360ms), letting the phone settle
+   while the buttons finish. The shared reduced-motion blanket rule neutralises the
+   duration to 0.01ms. */
+.screen-card--arrival .phone-image {
+    animation: cardEntrance 540ms cubic-bezier(0.2, 0.8, 0.2, 1) 360ms backwards;
+}
+
+/* --- 9.6 .screen-card variants (lime / white / arrival) ------------------- */
+.screen-card {
+    /* flex sizing comes from .hero-carousel-embla--slide; .screen-card just paints. */
+    /* Override the default flex-item `min-width: auto` (= min-content) so the slide honours
+       its `flex: 0 0 var(--slide-size)` even when the inner phone image is wider than the
+       slide's content area. Without this, on wide viewports (e.g. vp 1470 → slide_size ≈ 431,
+       phone 398 + 2×24 padding = 446 min-content) the slide stretches to ~446 px, breaking
+       the geometry identity (slide 1 natural center = window/2) that lets sentinel_0 sit
+       flush at `--page-pad` while slide 1 centers in the viewport with a JS transform of 0.
+       The phone is still allowed to overflow the content area (max-width: none on .phone-image
+       — see section 8) but stays inside the slide's outer box at desktop sizes. */
+    min-width: 0;
+    min-height: clamp(400px, 52vh, 580px);
+    border-radius: clamp(24px, 3vw, 40px);
+    padding: clamp(20px, 2.2vw, 32px) clamp(16px, 2vw, 24px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(14px, 1.6vw, 20px);
+}
+
+.screen-card--lime {
+    background-color: var(--color-accent);
+    color: var(--color-text-primary);
+}
+
+.screen-card--white {
+    background-color: var(--color-light-bg);
+    color: var(--color-text-primary);
+    /* Subtle inner border so the white card has a defined edge against the white section. */
+    box-shadow: inset 0 0 0 1px rgba(16, 24, 40, 0.06);
+}
+
+/* --- 9.7 .screen-card__phone / __caption / variants ----------------------- */
+.screen-card__phone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.screen-card__caption {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: clamp(0.95rem, 1.4vw, 1.125rem);
+    line-height: 1.4;
+    color: var(--color-text-primary);
+    text-align: center;
+    max-width: 24ch;
+}
+
+.screen-card__caption-primary {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 700;
+}
+
+.screen-card__caption-secondary {
+    display: block;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-style: italic;
+}
+
+
+/* ==========================================================================
+   10. FAQ ACCORDION
+   ========================================================================== */
+.faq {
+    background-color: var(--color-light-gray);
+    padding-block: clamp(24px, 4vw, 52px) clamp(80px, 12vw, 140px);
+    padding-inline: var(--page-pad);
+}
+
+.faq-eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-medium-gray);
+    margin-bottom: 16px;
+}
+
+.faq-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-text-primary);
+    margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid rgba(16, 24, 40, 0.10);
+}
+
+.faq-item {
+    border-bottom: 1px solid rgba(16, 24, 40, 0.10);
+}
+
+.faq-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding-block: clamp(20px, 2.5vw, 28px);
+    padding-inline: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-family: var(--font-body);
+    font-size: clamp(1rem, 1.6vw, 1.125rem);
+    font-weight: 600;
+    color: var(--color-text-primary);
+    transition: color var(--transition);
+}
+
+.faq-toggle:hover {
+    color: rgba(16, 24, 40, 0.7);
+}
+
+.faq-toggle:focus-visible {
+    outline: 2px solid var(--color-text-primary);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.faq-question {
+    flex: 1;
+    line-height: 1.4;
+}
+
+.faq-icon {
+    flex: none;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    color: var(--color-text-black);
+    rotate: 0deg;
+    transition: rotate 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.faq-icon svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+.faq-item.is-open .faq-icon {
+    rotate: 180deg;
+}
+
+.faq-answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.faq-item.is-open .faq-answer {
+    grid-template-rows: 1fr;
+}
+
+.faq-answer-inner {
+    overflow: hidden;
+}
+
+.faq-answer-inner p {
+    font-family: var(--font-body);
+    font-size: clamp(0.9375rem, 1.4vw, 1rem);
+    line-height: 1.6;
+    color: rgba(16, 24, 40, 0.78);
+    max-width: 72ch;
+    padding-bottom: 0;
+    transition: padding-bottom 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.faq-item.is-open .faq-answer-inner p {
+    padding-bottom: clamp(20px, 2.5vw, 28px);
+}
+
+
+/* ==========================================================================
+   11. FOOTER
+   --------------------------------------------------------------------------
+   Horizontal gutter mirrors the hero / screens-rail / faq sections (padding-inline:
+   var(--page-pad)) so the footer's left/right edges line up with the lime hero card's
+   edges across every viewport. Vertical padding is unchanged.
+   Background matches the preceding .faq section (var(--color-light-gray)) so the page
+   ends on a continuous quiet light surface — no abrupt dark cut, in line with the
+   épuré / editorial aesthetic. Text is dark (var(--color-text-primary)) for legibility
+   on the light background.
+   ========================================================================== */
+.footer {
+    background-color: var(--color-light-gray);
+    color: var(--color-text-primary);
+    padding-block: clamp(64px, 10vw, 96px) 28px;
+    padding-inline: var(--page-pad);
+}
+
+/* Inner wrapper is now a pure flow container — no extra horizontal padding, no
+   max-width cap. The outer .footer's padding-inline already provides the same gutter
+   as the lime card, and dropping the cap lets the footer grid span the full inner
+   width instead of being centered inside a 1200px column. */
+.footer-inner {
+    width: 100%;
+}
+
+/* Inline horizontal list of legal/contact links — editorial footer pattern (Vercel /
+   Linear / Stripe). Generous gap so the row breathes; flex-wrap lets the 5 items reflow
+   onto a second line on narrow viewports without manual breakpoints. No separators —
+   whitespace alone delineates items, per the épuré aesthetic.
+   `justify-content: center` horizontally centers the row of links across every
+   viewport, mirroring the centered .footer-bottom copyright line below. */
+.footer-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: clamp(20px, 3vw, 32px);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-list a {
+    color: var(--color-text-primary);
+    font-size: 14px;
+}
+
+.footer-list a:hover {
+    opacity: 0.7;
+}
+
+/* Sits below the inline links — quiet copyright line. Top margin (rather than border-top)
+   keeps the visual weight minimal; small type + centered alignment + dark text on the
+   light-gray surface keep it discreet without disappearing. */
+.footer-bottom {
+    margin-top: clamp(28px, 4vw, 40px);
+    color: var(--color-text-primary);
+    font-size: 13px;
+    text-align: center;
+}
+
+
+/* ==========================================================================
+   12. TOAST
+   ========================================================================== */
+.toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translate(-50%, -120%);
+    background-color: var(--color-dark-bg);
+    color: var(--color-text-white);
+    padding: 14px 24px;
+    border-radius: var(--radius-pill);
+    box-shadow: var(--shadow-dark);
+    font-size: 15px;
+    font-weight: 500;
+    z-index: 1000;
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), opacity 300ms;
+    opacity: 0;
+    pointer-events: none;
+    max-width: calc(100vw - 32px);
+    text-align: center;
+}
+.toast.visible {
+    transform: translate(-50%, 0);
+    opacity: 1;
+}
+
+
+/* ==========================================================================
+   13. MOBILE MEDIA QUERIES (consolidated — overrides hero + carousel)
+   --------------------------------------------------------------------------
+   Single consolidated @media (max-width: 767px) block. Mobile carousel shows
+   ~1.08 slides per viewport. The active-phone lift uses the same JS-driven
+   --scroll mechanism as desktop (script.js page-scroll-progress block computes
+   the live lift so the phone top sits 40 px below .hero-buttons bottom at rest,
+   then animates back to 0 as the user scrolls). Token overrides at the top
+   redefine --page-pad and the mobile-only CTA / hero-card-height vars. Placed
+   AFTER all desktop rules so media-query specificity wins by source order for
+   same-specificity selectors.
+   ========================================================================== */
+@media (max-width: 767px) {
+    /* Reveal the inline mobile-only line breaks (see section 3 utility). */
+    .br-mobile-only {
+        display: inline;
+    }
+
+    :root {
+        --page-pad: clamp(16px, 5vw, 24px);
+        /* Mobile floating-tile margin — equal on all four sides of the lime
+           hero card. Extracted to a token because two distinct selectors now
+           consume it: `.hero-card` (4× — width / margin-top / margin-bottom /
+           min-height) AND `.wordmark` (1× — `top: calc(... / 2)` to vertically
+           centre the wordmark in the white strip between viewport top and the
+           card's top edge). With cross-selector consumers, repeating the
+           literal would risk drift; the token keeps them locked. */
+        --mobile-hero-card-margin: clamp(40px, 10vw, 80px);
+    }
+
+    /* Mobile hero is now a floating tile: the lime card carries equal margins on
+       all four sides, restoring the desktop "equal margins on all four sides"
+       invariant (memory feedback_website_hero_pattern.md) at mobile scale. The
+       previous full-bleed-bottom layout (margin-bottom: 0, flat bottom corners)
+       has been retired in favour of true symmetric breathing room. Carousel
+       remains intentionally pushed below the fold. */
+    .hero {
+        padding: 0;
+    }
+
+    .hero-card {
+        /* Floating-tile layout — equal margins on all four sides, drastically
+           larger than the previous side-only inset (clamp(24px, 6vw, 40px)).
+           Sources its margin from the mobile token --mobile-hero-card-margin
+           (declared in the mobile :root override above). Reused by .wordmark
+           below to keep the wordmark vertically centred in the white strip
+           between viewport top and the card top — a single source of truth
+           prevents the two selectors from drifting apart on future tweaks.
+           - width:        viewport minus 2× horizontal margin (centred via auto)
+           - margin-inline:auto centres the card horizontally
+           - margin-top / margin-bottom: equal vertical margin (was: --page-pad / 0)
+           - min-height:   100svh minus 2× vertical margin so the card fits in the
+                           initial viewport without forcing scroll
+           - border-radius:full (was: top-rounded / bottom-flat) — bottom corners
+                           are now visible against white, so they must be rounded
+                           to match the top. */
+        width: calc(100% - 2 * var(--mobile-hero-card-margin));
+        margin-inline: auto;
+        margin-top: var(--mobile-hero-card-margin);
+        margin-bottom: var(--mobile-hero-card-margin);
+        /* svh (small viewport height) is preferred over vh because it excludes
+           the dynamic mobile URL bar, so the card height stays stable while the
+           URL bar collapses/expands during scroll — no "wobble". Browser
+           support: Safari 15.4+, Chrome 108+, Firefox 101+. */
+        min-height: calc(100svh - 2 * var(--mobile-hero-card-margin));
+        border-radius: clamp(24px, 7vw, 32px);
+    }
+
+    /* Vertically centre the wordmark in the white strip between the viewport
+       top and the lime card's top edge. The strip height equals the card's
+       top margin (--mobile-hero-card-margin); the wordmark's centre sits at
+       half of that. `translate: -50% -50%` (already declared in the desktop
+       rule, section 6) keeps the element's centre locked to this `top` value
+       regardless of its own height — so equal gap above and below the
+       wordmark by construction. Default desktop value (`var(--page-pad) / 2`)
+       is too small here because mobile overrides --page-pad to a much
+       smaller clamp than the card's all-sides margin. */
+    .wordmark {
+        top: calc(var(--mobile-hero-card-margin) / 2);
+    }
+
+    .hero-card-inner {
+        padding:
+            clamp(58px, 12vw, 82px)
+            clamp(16px, 5vw, 28px)
+            clamp(112px, 22vw, 160px);
+        /* Mobile vertical rhythm — bumped ~45% from clamp(12px, 3vw, 18px)
+           to mirror the desktop bump. The lime card on mobile is a floating
+           tile with min-height ~88svh, so the extra spacing fits inside the
+           card; if the intrinsic content height exceeds the min-height the
+           card naturally grows (no clipping). */
+        gap: clamp(18px, 4.5vw, 26px);
+    }
+
+    .hero-title {
+        /* Reduced ~20% from clamp(2rem, 9.2vw, 3.35rem) on user request — title felt
+           oversized on small mobile viewports. New range: 25.6px floor (vp ≤ ~213) →
+           ~28px @ vp375 → 42.4px ceiling (vp ≥ ~566). Still comfortably fits the
+           14ch max-width 2-line wrap inside the lime card. */
+        font-size: clamp(1.6rem, 7.5vw, 2.65rem);
+        max-width: 14ch;
+        line-height: 0.95;
+    }
+
+    .hero-subtitle {
+        /* Reduced ~15% from clamp(1rem, 3.8vw, 1.2rem) on user request — better
+           hierarchy under the smaller title. New range: 13.6px floor (vp ≤ ~415) →
+           14.4px @ vp450 → 16.8px ceiling (vp ≥ ~525). Stays >= 13.6px so the line
+           remains readable on the smallest 320px viewport. */
+        font-size: clamp(0.85rem, 3.2vw, 1.05rem);
+        line-height: 1.35;
+    }
+
+    .hero-buttons {
+        gap: clamp(8px, 3vw, 12px);
+    }
+
+    .btn-glass {
+        padding: 7px 12px;
+        min-height: 38px;
+    }
+
+    /* Mobile: hide the eyebrow entirely. The store buttons in a 320–414 px
+       viewport have only ~55–80 px of label width available (after icon, gap,
+       and button padding); two-line "Télécharger sur / App Store" stacks read
+       cluttered at that size. Single-line label-only is cleaner and matches
+       the épuré aesthetic. The `aria-label` on .btn-glass already conveys the
+       full "Télécharger sur l'App Store" / "Disponible sur Google Play" copy
+       to screen readers, so no semantic loss. */
+    .glass-eyebrow {
+        display: none;
+    }
+
+    /* Mobile: shrink the label and force single-line so "Google Play" never
+       wraps inside its button. Desktop default `clamp(0.75rem, 1.3vw, 0.9375rem)`
+       resolves to its 12 px floor on every mobile viewport (vw term collapses);
+       at vp 320 that 12 px label "Google Play" is ~70 px wide while the inner
+       label slot is only ~55 px → wrap. New range: 10 px floor (vp ≤ ~385) →
+       11.2 px @ vp 430 → 12 px ceiling (vp ≥ ~462). Combined with `nowrap`,
+       the label stays on one line at every viewport in the 320–767 range; if
+       the geometry tightens further the button itself widens (flex children
+       size to content) before the text could ever wrap. */
+    .glass-label {
+        font-size: clamp(10px, 2.6vw, 12px);
+        white-space: nowrap;
+    }
+
+    .screens-rail {
+        z-index: 2;
+        margin-top: 0;
+        padding-block: 0 clamp(48px, 10vw, 80px);
+        /* Mobile only: align the carousel's content area to the lime hero card's
+           horizontal footprint by sourcing inline padding from --mobile-hero-card-margin
+           (the same token .hero-card uses for its side margins above). Result: the active
+           slide width = lime card width = viewport - 2 * --mobile-hero-card-margin.
+           Side slides (peers of the active) extend INTO this padding gutter and beyond,
+           and are clipped at the viewport edges by `body { overflow-x: clip }`. The
+           padding-inline gutter is intentionally larger than the desktop --page-pad so
+           the visual peek of neighbour slides fits inside the gutter. */
+        padding-inline: var(--mobile-hero-card-margin);
+        background: var(--color-light-bg);
+        overflow: visible;
+    }
+
+    .hero-carousel-embla {
+        /* Single full-width slide on mobile (1.0, not 1.08): with --slide-size derived
+           as `(100% - (n-1) * spacing) / n`, n = 1 collapses to slide_size = 100% of
+           the container's content width = lime card width (since .screens-rail's
+           padding-inline = --mobile-hero-card-margin matches the hero card's margins).
+           The neighbour slide peeks naturally in the padding-inline gutter via the JS
+           transform — no fractional `1.08` needed to surface the peek. */
+        --nbr-slide: 1;
+        --slide-spacing: clamp(14px, 4vw, 20px);
+        --active-scale: 1.06;
+        /* --scroll is written live by JS (script.js, page-scroll-progress block);
+           default 0 px declared in the desktop rule remains the no-lift fallback
+           if JS never runs. */
+    }
+
+    .screen-card {
+        min-height: clamp(430px, 66svh, 560px);
+        padding: clamp(16px, 4vw, 22px);
+        border-radius: clamp(24px, 7vw, 32px);
+        justify-content: flex-start;
+        gap: clamp(12px, 4vw, 18px);
+    }
+
+    .phone-image {
+        width: clamp(218px, 64vw, 292px);
+    }
+
+    .screen-card.active .phone-image {
+        transform: translateY(var(--scroll)) scale(var(--active-scale, 1));
+        transform-origin: center top;
+    }
+
+    /* Mobile only: align the FAQ content area to the lime hero card's horizontal
+       footprint by sourcing inline padding from --mobile-hero-card-margin (the same
+       token .hero-card and .screens-rail use above). Result: the FAQ content edges
+       sit on the same vertical column as the lime card and the active carousel
+       slide — a coherent left/right grid all the way down. The desktop --page-pad
+       (16-24px on mobile) was visibly narrower than the lime card / carousel
+       gutter, breaking that column. Padding-block also sources from the same token
+       so all four FAQ paddings are identical (top/right/bottom/left), mirroring the
+       lime hero card's equal-on-all-sides margin invariant. Footer is intentionally
+       NOT touched here. */
+    .faq {
+        padding-inline: var(--mobile-hero-card-margin);
+        padding-block: var(--mobile-hero-card-margin);
+    }
+
+    /* Mobile FAQ heading — shrink so it stays strictly smaller than the mobile
+       .hero-title (`clamp(1.6rem, 7.5vw, 2.65rem)` = 25.6–42.4px). Without this
+       override, the desktop rule `clamp(2rem, 4.5vw, 3rem)` collapses to its
+       32px floor on every mobile viewport (4.5vw < 32px until vp ≈ 711), which
+       at vp 320–425 exceeds the live mobile hero-title (25.6–32px) — a clear
+       hierarchy inversion (the FAQ section heading visually outranks the page H1).
+       New range targets ~75% of the mobile hero-title at every viewport:
+       20px floor (vp ≤ ~364, ~78% of hero-title 25.6) → 5.5vw mid → 32px ceiling
+       (vp ≥ ~582, ~75% of hero-title 42.4 ceiling). Stays strictly < hero-title
+       at every viewport in the 320–767 range. Desktop rule (`.faq-title` base
+       at clamp(2rem, 4.5vw, 3rem) max 48px vs hero-title max 88px ≈ 55%) is
+       already comfortably under hero-title and is intentionally untouched. */
+    .faq-title {
+        font-size: clamp(1.25rem, 5.5vw, 2rem);
+    }
+
+    /* Mobile footer CTAs — shrink ~15-20% on user request. Desktop default
+       `.footer-list a { font-size: 14px }` felt slightly oversized on small
+       viewports relative to the surrounding whitespace and the editorial
+       footer aesthetic. New range: 11px floor (vp ≤ ~366) → 11.25px @ vp375
+       → 12px ceiling (vp ≥ 400). Stays >= 11px so the links remain readable
+       at the smallest 320 px viewport. The gap is also tightened slightly
+       (was clamp(20px, 3vw, 32px) — collapsed to its 20 px floor on every
+       mobile viewport) so the row of 5 links feels visually condensed to
+       match the smaller type. Copyright line (.footer-bottom) gets its own
+       smaller clamp below so it sits strictly under the CTA size at every
+       mobile viewport (visual hierarchy: legal CTAs > copyright). */
+    .footer-list {
+        gap: clamp(14px, 3vw, 20px);
+    }
+
+    .footer-list a {
+        font-size: clamp(11px, 3vw, 12px);
+    }
+
+    /* Mobile copyright line — must read strictly SMALLER than the .footer-list
+       CTAs above (which sit at clamp(11px, 3vw, 12px) = 11–12px on mobile).
+       Without this override the desktop rule `.footer-bottom { font-size: 13px }`
+       leaves the copyright LARGER than the CTAs on every mobile viewport — a
+       hierarchy inversion (a quiet legal line outranking the live link list).
+       Range: 10px floor (vp ≤ ~400) → 2.5vw mid → 11px ceiling (vp ≥ ~440).
+       Per-viewport check vs CTAs:
+         vp 320 — copyright 10px (floor)        vs CTAs 11px (floor)     ✓ smaller
+         vp 375 — copyright 10px (floor)        vs CTAs 11.25px (3vw)    ✓ smaller
+         vp 440 — copyright 11px (ceiling)      vs CTAs 12px (ceiling)   ✓ smaller
+         vp 600 — copyright 11px (ceiling)      vs CTAs 12px (ceiling)   ✓ smaller
+       Stays >= 10px so the line remains legible on the smallest viewport. */
+    .footer-bottom {
+        font-size: clamp(10px, 2.5vw, 11px);
+    }
+}
+
+
+/* ==========================================================================
+   14. REDUCED MOTION
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    .hero-card-waves { animation: none; opacity: 1; }
+    /* Active slide's phone image sits flat in the row — no lift. The JS
+       page-scroll-progress block early-returns under prefers-reduced-motion,
+       so it never overwrites these values. */
+    .hero-carousel-embla {
+        --scroll: 0;
+        --active-scale: 1;
+    }
+}
