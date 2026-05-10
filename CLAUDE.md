@@ -62,21 +62,25 @@ Before any action, always state:
 
 ```
 .
-├── index.html              ← markup (html-expert)
-├── styles.css              ← styling (css-expert)
-├── script.js               ← page-scroll, wordmark, FAQ, waves (js-expert)
-├── carousel.js             ← carousel state machine (js-expert)
-├── favicon.png
-├── wordmark.svg
-├── package.json            ← npm scripts (live-server for local dev)
+├── website/                          ← all source files served by live-server
+│   ├── index.html                    ← markup (html-expert)
+│   ├── styles.css                    ← styling (css-expert)
+│   ├── script.js                     ← page-scroll, wordmark, FAQ, waves (js-expert)
+│   ├── carousel.js                   ← carousel state machine (js-expert)
+│   ├── favicon.png
+│   ├── wordmark.svg
+│   ├── assets/                       ← screen_1.png/.webp ... screen_5.png/.webp
+│   └── fonts/                        ← Frick0.3 (woff/woff2) + OFL.txt
+├── package.json                      ← npm scripts (live-server points at website/)
 ├── README.md
-├── assets/                 ← screen_1.png/.webp ... screen_5.png/.webp
-├── fonts/                  ← Frick0.3 (woff/woff2) + OFL.txt
+├── CLAUDE.md                         ← orchestrator rulebook (this file)
 ├── docs/
-│   └── WEBSITE_ARCHITECTURE.md   ← single source of truth for layout/state
+│   └── WEBSITE_ARCHITECTURE.md       ← single source of truth for layout/state
 └── .claude/
-    └── agents/             ← 6 specialist agents
+    └── agents/                       ← 6 specialist agents
 ```
+
+All specialist agents reference paths under `website/` (e.g. `website/index.html`).
 
 ---
 

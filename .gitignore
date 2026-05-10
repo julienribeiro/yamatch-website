@@ -10,3 +10,6 @@
 # Local dev artifacts
 node_modules/
 *.log
+
+# Claude Code local settings (per-machine, not versioned)
+.claude/settings.local.json

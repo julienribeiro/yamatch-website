@@ -77,6 +77,17 @@
                 return Number.isFinite(parsed) ? parsed : 40;
             };
 
+            // Cache viewport height. iOS Safari shrinks/grows window.innerHeight as the
+            // URL bar collapses/expands DURING vertical scroll, which would otherwise
+            // make our (startY = vh) → (endY = vh * 0.4) interpolation jitter mid-scroll
+            // and cause the active phone image to "teleport" frame-to-frame. We refresh
+            // the cached value only on resize / orientationchange / load — events that
+            // signal a deliberate layout-affecting change — never on scroll.
+            let cachedVh = window.innerHeight || document.documentElement.clientHeight;
+            const refreshCachedVh = () => {
+                cachedVh = window.innerHeight || document.documentElement.clientHeight;
+            };
+
             let rafId = null;
 
             // Reads the active phone's CURRENT translateY (m42) from the live computed
@@ -119,7 +130,7 @@
 
                 const isMobile = mobileQuery.matches;
                 const rect = carousel.getBoundingClientRect();
-                const vh = window.innerHeight || document.documentElement.clientHeight;
+                const vh = cachedVh;
 
                 const startY = vh;
                 const endY = isMobile ? vh * 0.55 : vh * 0.4;
@@ -139,14 +150,22 @@
             const onScroll = () => {
                 if (!rafId) rafId = requestAnimationFrame(updateScroll);
             };
+            // Layout-affecting events: refresh the cached viewport height first, then
+            // schedule the rAF tick. Keeps cachedVh in sync with the real viewport
+            // (orientation flips, window resize, late font load shifting layout) while
+            // avoiding any per-scroll re-read that would re-introduce the iOS URL-bar jitter.
+            const onLayoutChange = () => {
+                refreshCachedVh();
+                if (!rafId) rafId = requestAnimationFrame(updateScroll);
+            };
 
             window.addEventListener('scroll', onScroll, { passive: true });
-            window.addEventListener('resize', onScroll, { passive: true });
-            window.addEventListener('orientationchange', onScroll, { passive: true });
+            window.addEventListener('resize', onLayoutChange, { passive: true });
+            window.addEventListener('orientationchange', onLayoutChange, { passive: true });
             // Re-measure once webfonts settle — the buttons can shift vertically by a few
             // pixels between the system fallback and Inter loading, which would otherwise
             // bake in a stale lift until the next user-driven scroll/resize event.
-            window.addEventListener('load', onScroll, { passive: true });
+            window.addEventListener('load', onLayoutChange, { passive: true });
 
             requestAnimationFrame(updateScroll);
         }

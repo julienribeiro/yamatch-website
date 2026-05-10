@@ -327,7 +327,20 @@ p {
     z-index: 1;
     width: 100%;
     flex: 0 0 auto;
-    min-height: calc(100vh - 2 * var(--page-pad));
+    /* iOS Safari: the URL bar collapses/expands during scroll, which makes
+       100vh oscillate (window.innerHeight changes mid-scroll). That reflows
+       .hero-card → reflows the hero stack → reflows .screens-rail below →
+       the JS-driven `computeBaseLift` (script.js, page-scroll-progress block)
+       recomputes against a moving target → the active phone image visibly
+       "jumps" / appears-disappears during vertical scroll on iPhone.
+       svh (small viewport height) is the LARGEST stable height the viewport
+       can take with all UI chrome (URL bar, toolbar) expanded — it does NOT
+       fluctuate during scroll. Double declaration: the first 100vh line is
+       the fallback for Safari < 15.4 / Firefox < 101 / Chrome < 108 (cascade
+       drops the second line on those engines and keeps the first); modern
+       engines apply the second line and ignore the first. */
+    min-height: calc(100vh - 2 * var(--page-pad));   /* fallback older Safari */
+    min-height: calc(100svh - 2 * var(--page-pad));  /* iOS 15.4+ : stable face URL bar */
     background-color: var(--color-accent);
     border-radius: clamp(24px, 3vw, 40px);
     overflow: hidden;
