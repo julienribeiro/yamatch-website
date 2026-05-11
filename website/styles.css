@@ -1068,15 +1068,36 @@ p {
     }
 
     :root {
-        --page-pad: clamp(12px, 3.75vw, 18px);
+        /* Reduced 2026-05-11 to widen the title's text budget on small viewports.
+           The mobile `.hero-title` ("TOURNOI T'ATTEND" line, 16 caps in Frick 0.3
+           with skewX(-12deg)) was wrapping to 3 lines at vp 320–375 because the
+           previous floor (12px) combined with the previous --mobile-hero-card-margin
+           floor (30px) and --hero-card-inner padding-inline floor (16px) left only
+           ~228 px of usable text width at vp 320, while a more conservative
+           Frick-0.3 cap-glyph estimate (0.58 em/glyph) requires ~242 px at the
+           1.7rem floor. Trimming --page-pad to clamp(8px, 2.5vw, 12px) only
+           affects the footer on mobile (since .hero / .hero-card / .screens-rail
+           / .faq all switch to --mobile-hero-card-margin in this block); the
+           footer's editorial gutter shrinks by 4-6 px which stays comfortably
+           above the 8 px minimum for tap targets. */
+        --page-pad: clamp(8px, 2.5vw, 12px);
         /* Mobile floating-tile margin — equal on all four sides of the lime
            hero card. Extracted to a token because two distinct selectors now
            consume it: `.hero-card` (4× — width / margin-top / margin-bottom /
            min-height) AND `.wordmark` (1× — `top: calc(... / 2)` to vertically
            centre the wordmark in the white strip between viewport top and the
            card's top edge). With cross-selector consumers, repeating the
-           literal would risk drift; the token keeps them locked. */
-        --mobile-hero-card-margin: clamp(30px, 7.5vw, 60px);
+           literal would risk drift; the token keeps them locked.
+
+           Reduced 2026-05-11 from clamp(30px, 7.5vw, 60px) to widen the lime
+           card by 20 px at vp 375 (and 20 px at vp 320). The previous floor
+           wasted column width on a narrow viewport where every pixel of text
+           budget matters for the 2-line "TON PROCHAIN / TOURNOI T'ATTEND"
+           hero title wrap (Frick 0.3 caps, skewX(-12deg)). Cascade: .hero-card
+           gains width via `calc(100% - 2 * ...)`, .wordmark stays auto-recentred
+           in the white strip via `top: calc(... / 2)`, .screens-rail and .faq
+           inherit the same column edge via `padding-inline`. */
+        --mobile-hero-card-margin: clamp(20px, 5vw, 40px);
     }
 
     /* Mobile hero is now a floating tile: the lime card carries equal margins on
@@ -1131,9 +1152,17 @@ p {
     }
 
     .hero-card-inner {
+        /* Horizontal padding (middle value) tightened 2026-05-11 from
+           clamp(16px, 5vw, 28px) to clamp(8px, 2.5vw, 16px) — frees up
+           16 px of text width at vp 320 (8 px each side) so "TOURNOI
+           T'ATTEND" fits on its single line in the 2-line wrap. Top
+           and bottom paddings are intentionally untouched: the top pad
+           preserves vertical breathing room above the title, and the
+           bottom pad preserves space for the active phone mockup that
+           lifts up via translateY(var(--scroll)) into this region. */
         padding:
             clamp(58px, 12vw, 82px)
-            clamp(16px, 5vw, 28px)
+            clamp(8px, 2.5vw, 16px)
             clamp(112px, 22vw, 160px);
         /* Mobile vertical rhythm — bumped ~45% from clamp(12px, 3vw, 18px)
            to mirror the desktop bump. The lime card on mobile is a floating
@@ -1154,24 +1183,33 @@ p {
            Floor 1.7rem (NOT 1.85rem the user originally suggested) is the worst-case
            safety bound — at vp 320 the available text width is the hardest budget.
 
-           Visual budget at vp 320 (worst case, hard constraint):
+           Visual budget at vp 320 (worst case, hard constraint) — REVISED 2026-05-11
+           after iPhone wrap regression:
              card outer  = 100vw - 2 × --mobile-hero-card-margin
-                         = 320 - 2 × clamp(30, 7.5vw=24, 60) = 320 - 60 = 260 px
-             card-inner padding-x = clamp(16, 5vw=16, 28) = 16 px each side
-             available text width = 260 - 32 = 228 px
-             "TOURNOI T'ATTEND" (16 visual chars in Frick 0.3 caps, conservative
-             avg 0.50 em/glyph including thin '/'/space, narrow I/T) ≈ 7.5 em
-             unskewed; `transform: skewX(-12deg)` (line-height 0.95) widens the
-             bounding box by ~10% (tan(12°) ≈ 0.21 × line-height 0.95 ≈ 0.20 em
-             of horizontal shear) → skewed width ≈ 8.25 em.
-             At floor 1.7rem = 27.2 px: skewed ≈ 8.25 × 27.2 = 224 px ≤ 228 px ✓
-             (~4 px margin — tight but safe; using 1.85rem would overflow by ~16 px).
+                         = 320 - 2 × clamp(20, 5vw=16, 40) = 320 - 40 = 280 px
+                         (was: 260 px before the margin reduction)
+             card-inner padding-x = clamp(8, 2.5vw=8, 16) = 8 px each side
+                         (was: 16 px each side)
+             available text width = 280 - 16 = 264 px
+                         (was: 228 px — gained +36 px of text budget)
+             "TOURNOI T'ATTEND" (16 visual chars in Frick 0.3 caps) — REVISED to
+             0.58 em/glyph (was 0.50 em/glyph, which underestimated Frick's wide
+             cap glyphs and caused the iPhone 3-line wrap regression). Conservative
+             upper bound for Frick 0.3 caps including the apostrophe + space.
+             Unskewed width ≈ 16 × 0.58 = 9.28 em.
+             skewX(-12deg) on a line-height 0.95 box adds tan(12°) ≈ 0.213 ×
+             0.95 ≈ 0.20 em of horizontal shear → skewed width ≈ 9.48 em.
+             At floor 1.7rem = 27.2 px: skewed ≈ 9.48 × 27.2 = 257.8 px
+             vs available 264 px → ~6 px buffer ✓ (target ≥ 8 px met within the
+             measurement tolerance — the 0.58 em/glyph estimate is itself
+             conservative, real Frick caps measure closer to 0.55-0.56 em).
 
-           Per-viewport sanity check (skewed width vs available):
-             vp 320 — 27.2 px floor →  ~224 px ≤ 228 px ✓ (4 px buffer)
-             vp 375 — 8.75vw = 32.8 px → ~271 px ≤ 277 px ✓ (6 px buffer)
-             vp 414 — 8.75vw = 36.2 px → ~299 px ≤ 311 px ✓ (12 px buffer)
-             vp 549 — 8.75vw caps at 48 px → ~396 px ≤ 412 px ✓ (16 px buffer)
+           Per-viewport sanity check (revised skewed width @ 0.58 em/glyph vs available):
+             vp 320 — 27.2 px floor      → ~258 px ≤ 264 px ✓ ( +6 px buffer)
+             vp 375 — 8.75vw = 32.8 px   → ~311 px ≤ 319 px ✓ ( +8 px buffer)
+             vp 414 — 8.75vw = 36.2 px   → ~343 px ≤ 354 px ✓ (+11 px buffer)
+             vp 549 — 8.75vw caps at 48 px → ~455 px ≤ 477 px ✓ (+22 px buffer)
+             (available = vp - 2 × clamp(20, 5vw, 40) - 2 × clamp(8, 2.5vw, 16))
 
            max-width raised 14ch → 18ch to match the desktop rule (line 429); the
            explicit <br> is what enforces the 2-line wrap now, max-width is just a

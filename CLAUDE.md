@@ -120,7 +120,7 @@ Every push to `main` triggers a re-deploy (typically 1-3 minutes).
 
 - **French throughout** the user-facing copy
 - **Design tokens only** in `:root` — no raw hex outside `:root`
-- **Mobile-first invariants** : `--mobile-hero-card-margin: clamp(40px, 10vw, 80px)` is the single mobile column token (consumed by `.hero-card`, `.screens-rail`, `.faq`, `.wordmark`)
+- **Mobile-first invariants** : `--mobile-hero-card-margin: clamp(20px, 5vw, 40px)` is the single mobile column token (consumed by `.hero-card`, `.screens-rail`, `.faq`, `.wordmark`)
 - **Equal margins all sides** on `.hero-card` is a locked-in pattern (memory `feedback_website_hero_pattern.md`)
 - **Carousel state machine**: gesture-lock model, idempotent transform composition (`getCurrentTranslateX` + `getBoundingClientRect`), touch live-follow, rubber-band at boundaries
 - **`--scroll` lift mechanism**: JS-driven via `computeBaseLift` (always 40px gap from buttons via `--desired-button-gap` token)
