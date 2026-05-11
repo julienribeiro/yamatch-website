@@ -350,7 +350,19 @@ p {
    versions also do not aggressively scroll-anchor, so no UX regression).
    Support: Chrome 56+, Edge 79+, Firefox 66+, Safari 16.4+. */
 .hero,
-.screens-rail {
+.hero-card,
+.screens-rail,
+.hero-carousel-embla {
+    /* Extended to 4 selectors (was 2) to cover the full scrollable zone affected
+       by the `--hero-flow-collapse` margin-bottom animation. On iOS Safari,
+       scroll-anchoring can latch onto a visible descendant of any of these
+       containers and silently counter-scroll the viewport when the layout
+       shifts mid-scroll — fighting the JS-driven `--scroll` lift and producing
+       the perceptible wobble reported on iPhone 16. Disabling the anchor on
+       both the source containers (.hero, .hero-card) AND the visually moving
+       targets (.screens-rail, .hero-carousel-embla) tells the engine "do not
+       compensate". The property is a hint; unsupported in Safari ≤ 16.3 — no
+       harm there because those versions also do not aggressively scroll-anchor. */
     overflow-anchor: none;
 }
 
@@ -835,9 +847,20 @@ p {
    to the carousel container's snap transition (`.hero-carousel-embla--container`,
    section 9.3) which animates the horizontal slide change — that one MUST stay. */
 .screen-card.active .phone-image {
-    transform: translateY(var(--scroll)) scale(var(--active-scale, 1));
+    /* translate3d (instead of translateY) forces Safari iOS to promote this image
+       onto its own GPU compositor layer, so the per-frame `--scroll` write
+       (driven from a `passive: true` scroll listener) is composited on the GPU
+       thread without re-rasterising the slide above. translateY alone is not
+       enough on iOS Safari — it stays on the main thread and the JS-driven
+       lift desynchronises from the compositor-scrolled page during touch scroll
+       (visible jank on iPhone 16). will-change: transform pre-allocates the
+       layer; backface-visibility: hidden is the classic companion hint that
+       keeps the layer permanently 3D-ready, preventing re-rasterisation churn
+       when --scroll crosses the integer-pixel boundary on each rAF tick. */
+    transform: translate3d(0, var(--scroll), 0) scale(var(--active-scale, 1));
     transform-origin: center top;
     will-change: transform;
+    backface-visibility: hidden;
     transition: none;
 }
 
@@ -1439,8 +1462,18 @@ p {
     }
 
     .screen-card.active .phone-image {
-        transform: translateY(var(--scroll)) scale(var(--active-scale, 1));
+        /* Mobile mirror of the desktop rule's compositor hints — see L837 for
+           full rationale. translate3d + will-change + backface-visibility keep
+           the active phone on a dedicated GPU layer during the iOS touch-scroll
+           that drives `--scroll` per rAF tick. The desktop rule already sets
+           will-change and backface-visibility (cascaded into this media query),
+           so we only need to override `transform` here, but we re-declare the
+           hints inline for explicitness and to make the mobile rule
+           self-contained. */
+        transform: translate3d(0, var(--scroll), 0) scale(var(--active-scale, 1));
         transform-origin: center top;
+        will-change: transform;
+        backface-visibility: hidden;
     }
 
     /* Mobile only: align the FAQ content area to the lime hero card's horizontal

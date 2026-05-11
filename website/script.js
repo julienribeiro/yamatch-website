@@ -75,6 +75,11 @@
         const hero = document.querySelector('.hero');
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const mobileQuery = window.matchMedia('(max-width: 767px)');
+        // Declared for cohesion with the waves block below (which gates its rAF loop on
+        // coarse pointer). The page-scroll writer does NOT branch on this — its iOS
+        // jank fix is to drop ALL layout reads from the per-frame path on every device,
+        // not just touch ones, so the savings apply uniformly.
+        const coarsePointerQuery = window.matchMedia('(pointer: coarse)');
 
         if (carousel && heroCard && hero && !reduceMotion) {
             // Desired vertical gap (in px) between the active phone's top edge and the
@@ -107,7 +112,7 @@
             // Reference top of the carousel in PAGE coordinates (scroll-independent),
             // captured "as if `--hero-flow-collapse` were 0" so it survives unchanged
             // across rAF ticks. The page-scroll writer derives a per-frame
-            // `virtualCarouselTop` from `staticCarouselTop - window.scrollY` instead
+            // `virtualCarouselTop` from `staticCarouselTop - latestScrollY` instead
             // of calling `carousel.getBoundingClientRect().top`. This breaks the
             // layout-feedback loop that would otherwise form: writing
             // `--hero-flow-collapse` shifts `.screens-rail` (in-flow sibling), which
@@ -115,19 +120,37 @@
             // `progress`, which would change the next written collapse — jitter.
             //
             // `currentFlowCollapse` mirrors the most recently written collapse value.
-            // It is added back into the rect-based reading in `measureStaticCarouselTop`
-            // so the snapshot we keep is the carousel's UNCOLLAPSED page position. At
-            // first measure (load), `currentFlowCollapse === 0`, so the addition is a
-            // no-op. On a resize that happens mid-scroll, `currentFlowCollapse` may be
-            // > 0 — adding it cancels the active collapse and recovers the same stable
-            // reference. Re-measured only on layout-affecting events
+            // It is added back into the rect-based reading inside
+            // `measureScrollAnimationGeometry` so the snapshot we keep is the
+            // carousel's UNCOLLAPSED page position. At first measure (load),
+            // `currentFlowCollapse === 0`, so the addition is a no-op. On a resize
+            // that happens mid-scroll, `currentFlowCollapse` may be > 0 — adding it
+            // cancels the active collapse and recovers the same stable reference.
+            // Re-measured only on layout-affecting events
             // (load / resize / orientationchange), never per scroll.
             let staticCarouselTop = 0;
             let currentFlowCollapse = 0;
-            const measureStaticCarouselTop = () => {
-                staticCarouselTop =
-                    window.scrollY + carousel.getBoundingClientRect().top + currentFlowCollapse;
-            };
+            // Caches updated only by `measureScrollAnimationGeometry` (load / resize /
+            // orientationchange — never per scroll). The per-frame `updateScroll` reads
+            // these instead of calling `computeBaseLift` / `getBoundingClientRect` /
+            // `getComputedStyle`, eliminating the layout-read pass that desynchronised
+            // the lift from the iOS compositor's touch-driven scroll.
+            //  - `cachedBaseLift`     mirrors `computeBaseLift()` (NEGATIVE px — phone
+            //                         translateY needed to put its top edge
+            //                         `--desired-button-gap` below the buttons).
+            //  - `cachedLiftMagnitude` is `Math.max(0, -cachedBaseLift)` — POSITIVE px,
+            //                         consumed by `cardShrink = liftMagnitude * 0.8 * progress`.
+            //  - `latestScrollY`      mirrors `window.scrollY`. The scroll listener writes
+            //                         it once per event (single property read, no layout
+            //                         work), and the rAF callback consumes it.
+            // All three may go slightly stale between resize events (e.g. user changes the
+            // active carousel slide while the height of the new phone differs); since all
+            // five phones share the same intrinsic dimensions this drift is invisible. If
+            // it ever becomes visible we can call `measureScrollAnimationGeometry()` from
+            // the carousel's `setActiveIndex`.
+            let cachedBaseLift = 0;
+            let cachedLiftMagnitude = 0;
+            let latestScrollY = window.scrollY || window.pageYOffset || 0;
 
             let rafId = null;
 
@@ -182,6 +205,33 @@
                 return buttonsRect.bottom + readDesiredButtonGap() - phoneNaturalTop;
             };
 
+            // Centralises every layout read used by the per-frame writer. Called only on
+            // load / resize / orientationchange (NEVER from `onScroll` or `updateScroll`),
+            // so the per-scroll path stays pure: `scrollY → progress → setProperty`. iOS
+            // jank cause: in the previous version `updateScroll` called `computeBaseLift()`
+            // (which itself reads two `getBoundingClientRect` + one `getComputedStyle`),
+            // forcing a synchronous layout pass per rAF tick. iOS Safari drives the
+            // compositor scroll on a separate thread; the JS layout pass desynchronised
+            // the `--scroll` write from the on-screen scroll position, producing the
+            // "lift lags behind the finger" jank reported on iPhone 16. With the reads
+            // hoisted out, `updateScroll` does pure arithmetic + 4 setProperty calls.
+            const measureScrollAnimationGeometry = () => {
+                latestScrollY = window.scrollY || window.pageYOffset || 0;
+
+                cachedBaseLift = computeBaseLift();
+                cachedLiftMagnitude = Math.max(0, -cachedBaseLift);
+
+                staticCarouselTop =
+                    latestScrollY + carousel.getBoundingClientRect().top + currentFlowCollapse;
+            };
+
+            // PURE per-frame writer. NO layout reads (no `getBoundingClientRect`, no
+            // `getComputedStyle`, no `computeBaseLift`). Reads cached values populated by
+            // `measureScrollAnimationGeometry` plus `latestScrollY` (refreshed by the
+            // scroll listener), runs arithmetic, writes 4 CSS variables. This is what
+            // keeps the lift in lockstep with the iOS compositor's touch-driven scroll —
+            // the function is short enough that the browser can comfortably finish it
+            // inside one composite-aligned rAF slot, even on mid-range hardware.
             const updateScroll = () => {
                 rafId = null;
 
@@ -191,89 +241,69 @@
                 const startY = vh;
                 const endY = isMobile ? vh * 0.55 : vh * 0.4;
 
-                // Derive the carousel's viewport-relative top from the stable
-                // `staticCarouselTop` snapshot rather than calling
-                // `carousel.getBoundingClientRect().top`. The snapshot is the
-                // page-coordinate top WITHOUT any active flow collapse, captured
-                // only on layout-affecting events (load / resize / orientationchange).
-                // `staticCarouselTop - window.scrollY` reconstructs where the
-                // carousel WOULD sit in the viewport if no collapse were applied —
-                // i.e. the same reference point we used before introducing
-                // `--hero-flow-collapse`. This is what breaks the feedback loop:
-                // writing the collapse no longer feeds back into `progress`,
-                // because `progress` no longer reads the live carousel rect.
-                const virtualCarouselTop = staticCarouselTop - window.scrollY;
+                // `staticCarouselTop` = carousel's page-coordinate top WITHOUT any active
+                // flow collapse, snapshotted only on layout-affecting events. Subtracting
+                // `latestScrollY` reconstructs the on-screen top — same reference point
+                // as `carousel.getBoundingClientRect().top` would give, but without the
+                // live read (which would also re-incorporate the flow-collapse, creating
+                // a feedback loop).
+                const virtualCarouselTop = staticCarouselTop - latestScrollY;
 
                 let progress = (startY - virtualCarouselTop) / (startY - endY);
                 if (progress < 0) progress = 0;
                 else if (progress > 1) progress = 1;
 
                 const inv = 1 - progress;
-                const baseLift = computeBaseLift();
                 const activeScale = 1 + inv * (isMobile ? 0.06 : 0.14);
 
-                carousel.style.setProperty('--scroll', `${baseLift * inv}px`);
-                carousel.style.setProperty('--active-scale', activeScale.toFixed(4));
-                // Card-shrink: a POSITIVE px magnitude consumed by the lime
-                // hero card. Historically this was wired to `min-height` via
-                // `calc(... - var(--card-shrink, 0px))`, but that created a
-                // layout-feedback loop (writing min-height → reflows
-                // .screens-rail (sibling in flow) → carousel.getBoundingClientRect
-                // shifts → progress changes → next tick writes a different
-                // shrink → jitter). The css-expert has migrated the consumer
-                // to a VISUAL-ONLY clip-path on `.hero-card::before`, which
-                // requires a positive value. We compute the magnitude of the
-                // lift (always ≥ 0) because `baseLift` is intrinsically
-                // NEGATIVE (the phone sits below the buttons in flow, so it
-                // must be translated UP via a negative translateY — see
-                // computeBaseLift). `Math.max(0, -baseLift)` flips the sign
-                // and is defensive against the degenerate case where
-                // baseLift > 0 (e.g. phone already above its natural rest
-                // above the buttons — would otherwise produce a negative
-                // shrink). 0.8 factor caps the shrink slightly below the
-                // lift travel so the card never visually collapses past the
-                // buttons. progress = 0 → cardShrink = 0 (card at rest);
-                // progress = 1 → cardShrink = liftMagnitude × 0.8 (carousel
-                // fully entered, phone flat in row, card maximally clipped
-                // to follow the descending phone). Reduced-motion users
-                // skip this writer entirely (outer guard) → CSS fallback
-                // value (var missing → 0px) keeps the card unchanged.
-                const liftMagnitude = Math.max(0, -baseLift);
-                const cardShrink = liftMagnitude * 0.8 * progress;
+                // `cachedLiftMagnitude` is `Math.max(0, -cachedBaseLift)` (positive px,
+                // see comment on the cache declaration). `cardShrink` is consumed by the
+                // VISUAL-ONLY `clip-path` on `.hero-card::before` and `.hero-card-waves`,
+                // and mirrored 1:1 by `--hero-flow-collapse` so the carousel rises in
+                // lockstep with the lime fill. 0.8 factor: shrink stays slightly below
+                // lift travel so the card never visually collapses past the buttons.
+                const cardShrink = cachedLiftMagnitude * 0.8 * progress;
                 const flowCollapse = cardShrink;
 
+                carousel.style.setProperty('--scroll', `${cachedBaseLift * inv}px`);
+                carousel.style.setProperty('--active-scale', activeScale.toFixed(4));
                 heroCard.style.setProperty('--card-shrink', `${cardShrink}px`);
-
-                // Update `currentFlowCollapse` BEFORE writing the CSS variable so
-                // the next `computeBaseLift` call (next rAF tick) sees the value
-                // that matches what the browser is rendering. Targeted writes:
-                // `--card-shrink` → `.hero-card`, `--hero-flow-collapse` → `.hero`
-                // (negative margin-bottom consumer). Keeping these on their direct
-                // consumers (rather than `documentElement`) mirrors the existing
-                // `--scroll` / `--active-scale` writes on `.hero-carousel-embla`.
-                currentFlowCollapse = flowCollapse;
                 hero.style.setProperty('--hero-flow-collapse', `${flowCollapse}px`);
+
+                // Mirror the most recently written collapse so the NEXT
+                // `measureScrollAnimationGeometry` (on a future resize) can back-cancel
+                // it when re-snapshotting `staticCarouselTop`.
+                currentFlowCollapse = flowCollapse;
             };
 
+            // Per-scroll path: ONLY refresh `latestScrollY` (a single property read on
+            // `window`, no layout work) and schedule the rAF coalescer. `{ passive: true }`
+            // is preserved on the listener so the browser can keep the scroll on the
+            // compositor thread on iOS Safari — `preventDefault` is never called.
             const onScroll = () => {
-                if (!rafId) rafId = requestAnimationFrame(updateScroll);
+                latestScrollY = window.scrollY || window.pageYOffset || 0;
+
+                if (!rafId) {
+                    rafId = requestAnimationFrame(updateScroll);
+                }
             };
-            // Layout-affecting events: re-snapshot the carousel's stable page-coordinate
-            // top first (so subsequent `progress` reads use a fresh reference matching
-            // the new layout), then refresh the cached viewport height, then schedule
-            // the rAF tick. `measureStaticCarouselTop` is called BEFORE `refreshCachedVh`
-            // because the snapshot uses `currentFlowCollapse` to back-cancel any active
-            // collapse — the order of these two helpers doesn't matter functionally
-            // (they read disjoint state), but conceptually we re-anchor geometry first,
-            // then re-cache the viewport metric, then run the writer.
-            // Keeps everything in sync with the real viewport (orientation flips, window
-            // resize, late font load shifting layout) while avoiding any per-scroll
-            // re-read that would re-introduce the iOS URL-bar jitter or the
-            // collapse-feedback loop.
+            // Layout-affecting events: refresh the cached viewport height, re-measure
+            // the geometry (carousel top + base lift + lift magnitude — all reads
+            // concentrated here), then schedule the rAF tick. `refreshCachedVh` runs
+            // first so `measureScrollAnimationGeometry` sees a fresh `cachedVh` if it
+            // ever depended on it (it doesn't today, but the ordering is the safe one
+            // for any future addition). Keeps everything in sync with the real viewport
+            // (orientation flips, window resize, late font load shifting layout) while
+            // keeping the per-scroll path read-free.
             const onLayoutChange = () => {
-                measureStaticCarouselTop();
                 refreshCachedVh();
-                if (!rafId) rafId = requestAnimationFrame(updateScroll);
+                latestScrollY = window.scrollY || window.pageYOffset || 0;
+
+                measureScrollAnimationGeometry();
+
+                if (!rafId) {
+                    rafId = requestAnimationFrame(updateScroll);
+                }
             };
 
             window.addEventListener('scroll', onScroll, { passive: true });
@@ -284,10 +314,11 @@
             // bake in a stale lift until the next user-driven scroll/resize event.
             window.addEventListener('load', onLayoutChange, { passive: true });
 
-            // Initial snapshot of the carousel's stable top — `currentFlowCollapse`
-            // is 0 here (no collapse has been written yet), so the snapshot is the
-            // raw page-coordinate top with no compensation needed.
-            measureStaticCarouselTop();
+            // Initial geometry snapshot — `currentFlowCollapse` is 0 here (no collapse
+            // has been written yet), so the carousel rect read is the raw page-coordinate
+            // top with no compensation needed. `cachedBaseLift` and `cachedLiftMagnitude`
+            // are populated for the very first `updateScroll` tick scheduled below.
+            measureScrollAnimationGeometry();
             requestAnimationFrame(updateScroll);
         }
     }
@@ -307,9 +338,23 @@
     // the hero unsticks into the FAQ ~270vh down and the user spends most of their session
     // outside the card after that point. Mouse listeners stay live (cheap) but their state
     // simply isn't read while the loop is paused.
+    //
+    // Coarse-pointer (touch) devices: the rAF loop, the `touchmove` listener (whose
+    // per-event `card.getBoundingClientRect()` was a confirmed iOS jank cause during
+    // vertical scroll), and the IntersectionObserver are ALL skipped. The waves render
+    // exactly once, then become a static decorative pattern — the cursor reactivity
+    // wouldn't apply on touch anyway (no hover), so the trade is pure UX-positive on
+    // mobile: no jank, identical visual appearance at rest.
     {
         const card = document.querySelector('.hero-card');
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+        // Animation runs only when (a) the user hasn't asked for reduced motion AND
+        // (b) the device has a fine pointer (mouse / trackpad). On touch devices the
+        // animation collapses to a single one-shot render of the wavy frame — the
+        // visuals stay editorial, but no per-frame work runs and no listeners are
+        // attached, eliminating the iOS Safari jank surface.
+        const shouldAnimateWaves = !reduceMotion && !coarsePointer;
 
         if (card) {
             const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -540,7 +585,13 @@
             }
 
             // Resize: rebuild the grid against the new card dimensions. Throttled with rAF
-            // so a drag-resize doesn't trigger N rebuilds per second. Active in both motion modes.
+            // so a drag-resize doesn't trigger N rebuilds per second. Active in all modes.
+            //  - Reduced-motion: redraw with `useDisplacement: false` (straight lines).
+            //  - Coarse-pointer (no animation loop): redraw the frozen wavy frame
+            //    (`renderFrame(0)`) so the new grid actually shows pixels — without
+            //    this, `rebuildLines` would create empty `<path>` nodes after resize.
+            //  - Animated: the rAF tick will paint the new grid on its next iteration,
+            //    so no explicit redraw is needed here.
             let resizePending = false;
             window.addEventListener('resize', () => {
                 if (resizePending) return;
@@ -551,16 +602,27 @@
                         for (let i = 0; i < paths.length; i++) {
                             paths[i].setAttribute('d', buildPathD(lines[i], false));
                         }
+                    } else if (!shouldAnimateWaves) {
+                        // Coarse-pointer (touch) — no animation loop is running, so we
+                        // need to repaint the static wavy frame ourselves after the
+                        // grid is rebuilt against the new card dimensions.
+                        renderFrame(0);
                     }
                     resizePending = false;
                 });
             }, { passive: true });
 
-            if (!reduceMotion) {
+            if (shouldAnimateWaves) {
                 // Mouse + touch tracking — convert page/viewport coordinates into card-local
                 // coordinates each event. The card sits in normal flow, so getBoundingClientRect
                 // is the safe one-shot conversion as the user scrolls. Cost is negligible at
                 // mousemove rate. Listeners on `window` so tracking continues over child elements.
+                //
+                // Note: `shouldAnimateWaves` is gated on `!coarsePointer`, so this entire block
+                // (including the `touchmove` listener whose per-event `getBoundingClientRect`
+                // was the iOS jank source) is skipped on touch-primary devices. The `touchmove`
+                // listener below is therefore reachable only on hybrid devices that report a
+                // fine pointer AND fire touch events (e.g. Surface Pro with stylus + touch).
                 const updateMouseFromEvent = (clientX, clientY) => {
                     const rect = card.getBoundingClientRect();
                     mouse.x = clientX - rect.left;
