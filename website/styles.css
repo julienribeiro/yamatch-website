@@ -41,7 +41,12 @@
    14. QR widget (floating glass-morphism panel, desktop/tablet only)
    15. Download page (website/download/index.html — utility "coming soon")
    16. Mobile media queries (consolidated — overrides hero + carousel + quest)
-   17. Reduced motion
+   17. Reduced motion (NB: this label is the historical TOC slot — actual
+       Reduced motion section is now §19; §17 in the body is the consolidated
+       Mobile media queries block, §18 the Cursor trail. Pre-existing TOC
+       drift kept here for reference; canonical numbering is in the body.)
+   18. Cursor trail (volleyball emoji + canvas comet — desktop only)
+   19. Reduced motion
    ==========================================================================
 */
 
@@ -3546,7 +3551,135 @@ p {
 
 
 /* ==========================================================================
-   18. REDUCED MOTION
+   18. CURSOR TRAIL (volleyball emoji + canvas comet — desktop only)
+   --------------------------------------------------------------------------
+   Custom cursor decoration: a rigid volleyball emoji (.cursor-emoji) follows
+   the system pointer in real time, with a tapered lime "comet" trail painted
+   behind it on a full-viewport <canvas class="cursor-trail">. Both DOM nodes
+   live at the end of <body> (see index.html ~line 384–385) and are driven
+   by script.js (mousemove handler + rAF canvas-draw loop + element position
+   write).
+
+   Hard product constraints we enforce in CSS:
+     1. The system cursor MUST stay visible (we never set `cursor: none`
+        anywhere in the codebase — see grep audit on `cursor:` declarations,
+        all five existing usages set `pointer` or `grab`, none set `none`).
+        The emoji is a decorative *companion* to the OS cursor, not a
+        replacement for it.
+     2. Neither node may intercept clicks: `pointer-events: none` on both.
+        The canvas covers the entire viewport (100vw × 100vh) so without
+        this guard every click on the page would land on the canvas.
+     3. The emoji must NOT have a `transition` on `transform` / `translate`.
+        The user explicitly rejected any easing on the cursor follow — JS
+        writes the new `translate3d(x, y, 0)` on every `mousemove` and the
+        emoji must paint at the new position on the next frame with zero
+        interpolation. The only transitioned property is `opacity` (120ms),
+        used for show/hide on `mouseenter`/`mouseleave` of the document.
+     4. Hidden on devices with no cursor concept (`pointer: coarse`) and
+        on small viewports (`max-width: 767px`) — same breakpoint family
+        used for the QR widget and other desktop-only UI.
+     5. Hidden under `prefers-reduced-motion: reduce` — the comet trail is
+        a non-essential animation; users who opted out of motion get a
+        clean, undecorated pointer.
+
+   Stacking: trail at z-index 9998, emoji at 9999. The pair sits ABOVE
+   permanent UI (`.qr-widget` z=100, `.wordmark` z=50, `.screens-rail` z=2,
+   `.hero-card` z=1) and ABOVE ephemeral overlays (`.toast`, `.skip-link`
+   both at z=1000). Justification: the cursor decoration must follow the
+   pointer no matter what is currently on screen — including when a toast is
+   visible or the skip-link is focused. Because both nodes are
+   `pointer-events: none`, sitting above interactive overlays is purely
+   visual: clicks still reach the underlying skip-link/toast normally. The
+   trail is faint (lime fade rendered by the canvas) and the emoji is small
+   (20 px), so they never visually obscure the overlays in any meaningful
+   way. Emoji at 9999 (one above the trail) so the volleyball always paints
+   in front of its own comet tail.
+   ========================================================================== */
+.cursor-trail {
+    /* Full-viewport canvas pinned to the viewport edges. JS sets
+       `canvas.width = innerWidth * dpr` and `canvas.height = innerHeight * dpr`
+       (DPR scaling for sharp lines on retina), then resets the CSS box back
+       to 100vw × 100vh via these declarations so the bitmap upscales
+       exactly to the viewport. */
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    /* Never intercept clicks — the canvas covers the full viewport. */
+    pointer-events: none;
+    /* Below the emoji (9999), above all permanent UI and overlays. See
+       header comment for stacking rationale. */
+    z-index: 9998;
+}
+
+.cursor-emoji {
+    /* Rigidly anchored to the viewport top-left; JS writes the live
+       position via `translate3d(x + offsetX, y + offsetY, 0)` on every
+       `mousemove`. The initial off-screen translate prevents a flash at
+       (0, 0) before the first pointer event arrives. */
+    position: fixed;
+    top: 0;
+    left: 0;
+    /* Initial off-screen position so the emoji doesn't paint at (0, 0)
+       on first paint. JS overrides this on the first `mousemove`. NOTE:
+       we use `translate` (the individual property) NOT `transform: translate(...)`
+       so JS can write either property without conflicting with this initial
+       value — modern JS uses the shortcut `style.transform = ...` per the
+       spec, so we use `transform` here as the initial too. Critically, we
+       do NOT add `transform` to the transition list below — the emoji must
+       follow the cursor with zero lag. */
+    transform: translate3d(-100px, -100px, 0);
+    /* Decorative — never intercept clicks. */
+    pointer-events: none;
+    /* Above the canvas trail (9998). See header for stacking justification. */
+    z-index: 9999;
+    /* Discrete sizing — clamp inside a tight 18–22 px range. The emoji is a
+       companion to the OS cursor, not a feature in itself; it must read as
+       playful but never compete with content typography. line-height: 1
+       collapses the line box so the emoji glyph's bounding box matches the
+       font-size exactly, keeping the JS offset math (centering the emoji
+       on the cursor tip) trivial. */
+    font-size: clamp(18px, 1.4vw, 22px);
+    line-height: 1;
+    /* Prevent text-selection caret from appearing if the user happens to
+       click-drag through the emoji's box (defensive — pointer-events: none
+       already prevents this in modern browsers, but the CSS is cheap). */
+    user-select: none;
+    -webkit-user-select: none;
+    /* GPU compositor hint — the emoji is repositioned every mousemove
+       (~120 Hz on modern trackpads). will-change: transform promotes it to
+       its own compositor layer so the position writes never trigger a
+       paint, only a composite. Same pattern used on .phone-image
+       (line ~931) and .wordmark (line ~259, with `opacity` instead of
+       `transform`). */
+    will-change: transform;
+    /* ONLY opacity is transitioned — used by JS to fade the emoji in/out
+       on document `mouseenter` / `mouseleave` (window blur, cursor leaves
+       to a system menu, etc.). 120 ms ease keeps the fade snappy. NEVER
+       add `transform`/`translate` to this list — it would create the lag
+       the user explicitly rejected. */
+    transition: opacity 120ms ease;
+    opacity: 1;
+}
+
+/* Hide on coarse-pointer devices (touch/stylus) and small viewports.
+   Same breakpoint pair used at line 346 (.wordmark mobile pill safety
+   net): `(max-width: 767px), (pointer: coarse)`. Both conditions hide
+   the cursor decoration: there is no "cursor" on touch devices, and the
+   small-viewport check covers non-touch laptops with narrow windows
+   that we want to treat as mobile. `display: none` removes both nodes
+   from the layout tree entirely — JS still attaches mousemove listeners
+   harmlessly (the writes are no-ops on display:none nodes). */
+@media (max-width: 767px), (pointer: coarse) {
+    .cursor-trail,
+    .cursor-emoji {
+        display: none;
+    }
+}
+
+
+/* ==========================================================================
+   19. REDUCED MOTION
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -3585,5 +3718,18 @@ p {
     .quest-completion-pill {
         opacity: 1;
         scale: 1;
+    }
+
+    /* Cursor trail (§18) — fully hidden under reduced-motion. The comet
+       fade and the constantly-moving emoji are non-essential decorations;
+       users who opted out of motion get a clean OS cursor with no
+       companion. `display: none` also lets the JS mousemove handler
+       short-circuit cheaply (writes to a display:none element are
+       no-ops), though the JS side is also expected to early-return on
+       `matchMedia('(prefers-reduced-motion: reduce)').matches` — same
+       pattern as the page-scroll-progress block. */
+    .cursor-trail,
+    .cursor-emoji {
+        display: none;
     }
 }

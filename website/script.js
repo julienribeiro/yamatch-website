@@ -1479,3 +1479,149 @@
     }
 
 })();
+
+/* ==========================================================================
+   CURSOR TRAIL — volleyball emoji rigid-follow + canvas comet
+   --------------------------------------------------------------------------
+   Self-contained IIFE (kept outside the main script.js IIFE above so it can
+   early-return cheaply on touch / mobile / reduced-motion without affecting
+   any other block). Pairs with index.html ~line 384–385:
+     <canvas class="cursor-trail" aria-hidden="true"></canvas>
+     <span class="cursor-emoji" aria-hidden="true">🏐</span>
+   and styles.css §18 (.cursor-trail, .cursor-emoji — full-viewport canvas
+   pinned via position:fixed/inset:0; emoji pinned at top:0/left:0 with an
+   initial off-screen translate3d(-100px, -100px, 0)).
+
+   Behavior:
+     1. Emoji rigid-follow: every `mousemove`, write `transform: translate3d(
+        x + EMOJI_OFFSET_X, y + EMOJI_OFFSET_Y, 0)` directly. NO lerp, NO
+        easing — CSS guarantees no `transform` transition on .cursor-emoji
+        (only `opacity` is transitioned, 120ms ease, used for show/hide
+        on document mouseenter/mouseleave).
+     2. Comet trail: rAF loop clears the full canvas each frame, then
+        strokes a polyline through the recent mouse-position buffer (points
+        younger than MAX_AGE_MS = 220ms). Per-segment lineWidth and alpha
+        decay linearly from head (fresh, thick, opaque-ish) to tail (old,
+        thin, transparent). lineCap/lineJoin = 'round' for soft segment
+        junctions.
+
+   Performance notes:
+     - rAF loop runs continuously, but when the cursor stops moving the
+       buffer drains within MAX_AGE_MS (220 ms) and the per-frame work
+       collapses to a single ctx.clearRect + a length-check short-circuit.
+     - mousemove listener registered { passive: true } — no preventDefault,
+       no scroll-blocking risk.
+     - DPR scaling: canvas backing store is innerWidth*dpr × innerHeight*dpr
+       and ctx.setTransform(dpr, 0, 0, dpr, 0, 0) is reset (not multiplied)
+       on every resize so consecutive resizes don't stack scale factors.
+
+   Defensive early-return: matches the CSS hide rules in styles.css §18
+   (max-width: 767px, pointer: coarse, prefers-reduced-motion: reduce) so
+   we don't attach listeners or schedule rAF on devices where the
+   decoration is hidden anyway. Same guard family used elsewhere in this
+   codebase (script.js line 379–380 for the wave animation block).
+   ========================================================================== */
+(function () {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+    const narrowViewport = window.matchMedia('(max-width: 767px)').matches;
+    if (reduceMotion || coarsePointer || narrowViewport) return;
+
+    const canvas = document.querySelector('.cursor-trail');
+    const emoji = document.querySelector('.cursor-emoji');
+    if (!canvas || !emoji) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // === Tunable constants ===
+    const MAX_AGE_MS = 220;        // points older than this drop off the tail
+    const STROKE_HEAD = 8;         // px line width at the freshest segment
+    const TRAIL_ALPHA_HEAD = 0.85; // alpha at the head of the trail
+    const TRAIL_R = 215;           // lime stroke RGB — matches --color-accent #D7FF00
+    const TRAIL_G = 255;
+    const TRAIL_B = 0;
+    const EMOJI_OFFSET_X = 14;     // px right of cursor hot-spot (under the arrow)
+    const EMOJI_OFFSET_Y = 22;     // px below cursor hot-spot
+
+    // === Canvas DPR-aware sizing ===
+    let dpr = window.devicePixelRatio || 1;
+    const resize = () => {
+        dpr = window.devicePixelRatio || 1;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        canvas.style.width = w + 'px';
+        canvas.style.height = h + 'px';
+        // setTransform RESETS the matrix (vs scale() which multiplies). Critical:
+        // a second resize without this would stack dpr × dpr scales on the
+        // existing transform, blowing up coordinates exponentially.
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    // === Mouse position buffer ===
+    // Each entry: { x, y, t } — viewport-relative coords + performance.now() ts.
+    // Bounded implicitly by the MAX_AGE_MS drain in the rAF render loop.
+    const points = [];
+
+    window.addEventListener('mousemove', (e) => {
+        const x = e.clientX;
+        const y = e.clientY;
+        points.push({ x: x, y: y, t: performance.now() });
+        // Rigid emoji follow — direct write, zero interpolation. CSS .cursor-emoji
+        // does NOT transition `transform` (only `opacity`), so this lands on
+        // the next compositor frame with no easing.
+        emoji.style.transform = 'translate3d(' + (x + EMOJI_OFFSET_X) + 'px, ' + (y + EMOJI_OFFSET_Y) + 'px, 0)';
+    }, { passive: true });
+
+    // Hide emoji + flush trail when the cursor leaves the document (window
+    // blur, system menu, switch tab via keyboard, etc.). Re-show on
+    // mouseenter — the next mousemove will re-seed the trail naturally.
+    document.addEventListener('mouseleave', () => {
+        emoji.style.opacity = '0';
+        points.length = 0;
+    });
+    document.addEventListener('mouseenter', () => {
+        emoji.style.opacity = '1';
+    });
+
+    // === rAF render loop ===
+    function render() {
+        const now = performance.now();
+        // Drop stale points (FIFO drain). Single while-shift is O(n) worst-case
+        // but n is small (a fast trackpad caps at ~26 events in 220ms at 120Hz).
+        while (points.length > 0 && now - points[0].t > MAX_AGE_MS) {
+            points.shift();
+        }
+        // Full clear each frame — guarantees no ghosting from prior strokes,
+        // and at idle (empty buffer) this is the only per-frame cost.
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+        if (points.length >= 2) {
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            for (let i = 1; i < points.length; i++) {
+                const p0 = points[i - 1];
+                const p1 = points[i];
+                // freshness = 1 at the head (just-arrived), 0 at the tail
+                // (about to be dropped). Linear ramp on both width and alpha
+                // gives the classic comet-tail taper.
+                const age = (now - p1.t) / MAX_AGE_MS;
+                const freshness = age < 0 ? 1 : (age > 1 ? 0 : 1 - age);
+                ctx.lineWidth = STROKE_HEAD * freshness;
+                ctx.strokeStyle = 'rgba(' + TRAIL_R + ', ' + TRAIL_G + ', ' + TRAIL_B + ', ' + (freshness * TRAIL_ALPHA_HEAD) + ')';
+                ctx.beginPath();
+                ctx.moveTo(p0.x, p0.y);
+                ctx.lineTo(p1.x, p1.y);
+                ctx.stroke();
+            }
+        }
+
+        requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+})();
+

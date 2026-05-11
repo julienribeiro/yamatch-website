@@ -378,5 +378,11 @@
 
 <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
+<!-- Cursor trail : volleyball emoji rigidly following the mouse + canvas-rendered
+     lime comet behind. Desktop only (CSS hide on coarse pointer / reduced-motion).
+     System cursor stays visible. JS in script.js handles mousemove + rAF rendering. -->
+<canvas class="cursor-trail" aria-hidden="true"></canvas>
+<span class="cursor-emoji" aria-hidden="true">🏐</span>
+
 </body>
 </html>
