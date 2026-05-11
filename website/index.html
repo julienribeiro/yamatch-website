@@ -4,13 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#D7FF00">
-    <meta name="description" content="Yamatch — Le terrain t'attend. Trouve, réserve et joue ton prochain tournoi de foot, basket ou padel près de chez toi.">
+    <meta name="description" content="Trouve, réserve et joue ton prochain tournoi de foot, basket ou padel près de chez toi avec Yamatch — l'app dédiée aux sportifs amateurs.">
 
     <meta property="og:title" content="Yamatch | Ton prochain tournoi t'attend">
     <meta property="og:description" content="Réservation de tournois sportifs amateurs. Joueurs et organisateurs réunis sur une seule app.">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="fr_FR">
     <meta property="og:url" content="https://appyamatch.fr/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Yamatch | Ton prochain tournoi t'attend">
+    <meta name="twitter:description" content="Trouve, réserve et joue ton prochain tournoi de foot, basket ou padel près de chez toi.">
+    <!-- twitter:image à ajouter quand l'image og:image 1200×630 sera créée par le user -->
 
     <link rel="canonical" href="https://appyamatch.fr/">
 
@@ -37,6 +42,115 @@
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
     <script src="carousel.js" defer></script>
     <script src="script.js" defer></script>
+
+    <!-- JSON-LD : Organization (knowledge panel + sitelinks) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Yamatch",
+        "url": "https://appyamatch.fr/",
+        "logo": "https://appyamatch.fr/android-chrome-512x512.png",
+        "description": "Yamatch — application mobile de réservation de tournois sportifs amateurs (foot, basket, padel) en France.",
+        "email": "contact@appyamatch.fr",
+        "foundingDate": "2026",
+        "sameAs": []
+    }
+    </script>
+
+    <!-- JSON-LD : WebSite (sitelinks searchbox potentielle) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Yamatch",
+        "url": "https://appyamatch.fr/",
+        "inLanguage": "fr-FR",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Yamatch"
+        }
+    }
+    </script>
+
+    <!-- JSON-LD : FAQPage (rich snippets dans Google Search — gros gain CTR) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "C'est quoi Yamatch ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Yamatch est l'app pour trouver, réserver et jouer des tournois amateurs de foot, basket et padel près de chez toi."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Quels sports puis-je pratiquer ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Foot (à 5, à 7, à 11), basket (3v3, 5v5) et padel en doublette. D'autres sports rejoindront la liste au fil des saisons."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Comment je m'inscris à un tournoi ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Tu choisis ton tournoi dans l'app, tu composes ton équipe (en invitant tes potes ou en cherchant des coéquipiers), puis tu valides l'inscription en quelques clics."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Faut-il une équipe complète pour s'inscrire ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Non. Tu peux t'inscrire seul, à deux ou en groupe. L'app t'aide ensuite à compléter ton équipe avant le tournoi."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Combien ça coûte ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "L'app est gratuite à télécharger. Les frais d'inscription par tournoi varient selon l'organisateur, généralement entre 15 et 25 € par équipe."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Comment puis-je organiser mon propre tournoi ?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Crée un compte organisateur depuis l'app, soumets ton dossier, et notre équipe te valide sous 48 heures."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <!-- JSON-LD : MobileApplication (deep link + app store, signale appli mobile) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "MobileApplication",
+        "name": "Yamatch",
+        "operatingSystem": "iOS, Android",
+        "applicationCategory": "SportsApplication",
+        "description": "Yamatch — Réservation de tournois amateurs de foot, basket et padel.",
+        "publisher": {
+            "@type": "Organization",
+            "name": "Yamatch"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "EUR"
+        }
+    }
+    </script>
 </head>
 <body>
 
