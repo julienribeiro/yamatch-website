@@ -716,9 +716,15 @@
     //     JS writes the CSS custom property --progress (0..1) on it. CSS
     //     consumes the value via a ::after pseudo with transform: scaleY().
     //   - Each .quest-step has a data-unlock threshold (0..1). Once progress
-    //     crosses the threshold, the card receives `.is-unlocked` AND the
-    //     matching .quest-progress-step (matched by data-step) receives
-    //     `.is-active` (CSS turns its node lime).
+    //     crosses the threshold, the card receives `.is-unlocked` (early
+    //     unlock for sense-of-progression).
+    //   - Each .quest-progress-step node receives `.is-active` on a
+    //     SEPARATE threshold derived from its physical position inside
+    //     the bar: for N equidistant nodes, node i (0-indexed) activates
+    //     at progress >= (i + 0.5) / N — the exact moment the lime fill
+    //     bar (transform: scaleY(--progress)) reaches the node's centre.
+    //     Decoupled from the card unlock so the bar fill and node light-up
+    //     stay perfectly in visual sync (CSS turns the active node lime).
     //   - When all 3 steps are unlocked, .quest-completion-pill is revealed
     //     (removeAttribute('hidden') + .is-visible after a double rAF so the
     //     CSS transition can play).
@@ -860,8 +866,12 @@
             //   1. Vertical progress-bar fill (--progress 0..1 on .quest-progress-bar).
             //   2. Per-step unlock on .quest-step cards (class toggle).
             //   3. Per-step .is-active toggle on .quest-progress-step nodes
-            //      (matched to cards by data-step, gated on the same
-            //      data-unlock thresholds).
+            //      (gated on a SEPARATE per-node threshold derived from
+            //      the node's physical position inside the bar:
+            //      (i + 0.5) / N — the moment the lime fill physically
+            //      reaches the node's centre. Decoupled from the cards'
+            //      data-unlock so the bar fill and node light-up stay in
+            //      perfect visual sync).
             //   4. Completion pill reveal/hide.
             const applyProgress = (progress) => {
                 // 1. Vertical progress-bar fill. CSS consumes --progress on
@@ -871,17 +881,14 @@
                     progressBar.style.setProperty('--progress', progress.toString());
                 }
 
-                // 2. Cards. Single pass across questSteps; collect each card's
-                // unlock state so we can mirror it onto the matching numbered
-                // progress-step node and tally for the completion pill.
+                // 2. Cards. Keep the early-unlock thresholds (data-unlock:
+                // 0.12 / 0.42 / 0.72 in HTML) so each card lights up well
+                // before the lime fill physically arrives at its row — gives
+                // the user a sense of forward momentum as they scroll into
+                // the section.
                 let unlockedCount = 0;
-                // step-number → unlocked? — keyed by data-step for the
-                // progress-step mirror loop below. Avoids a second
-                // questSteps.forEach pass.
-                const unlockedByStep = new Map();
                 questSteps.forEach((step) => {
                     const threshold = parseFloat(step.dataset.unlock);
-                    const stepKey = step.dataset.step;
                     const isUnlocked = Number.isFinite(threshold) && progress >= threshold;
                     if (isUnlocked) {
                         step.classList.add('is-unlocked');
@@ -889,16 +896,30 @@
                     } else {
                         step.classList.remove('is-unlocked');
                     }
-                    if (stepKey) unlockedByStep.set(stepKey, isUnlocked);
                 });
 
-                // 3. Numbered progress-step nodes mirror the cards' unlock
-                // state via .is-active (CSS turns the node's bg/border lime).
-                // Matched by data-step so HTML re-ordering can't desync them.
-                progressSteps.forEach((node) => {
-                    const stepKey = node.dataset.step;
-                    const isActive = stepKey ? unlockedByStep.get(stepKey) === true : false;
-                    node.classList.toggle('is-active', isActive);
+                // 3. Numbered progress-step nodes activate exactly when the
+                // lime fill bar physically reaches each node's centre — NOT
+                // on the same threshold as the cards. The bar fill is driven
+                // by `transform: scaleY(var(--progress))` on
+                // `.quest-progress-bar::after` (CSS §10.5), which scales from
+                // top down to bottom up linearly with `progress`. Inside the
+                // bar, the N nodes are equidistant (CSS:
+                // justify-content: space-between on `.quest-progress-bar`),
+                // so node `i` (0-indexed, top → bottom) is centred at
+                // `(i + 0.5) / N` of the bar's height. We use that fraction
+                // as the activation threshold: the node lights up at the
+                // very moment the lime fill catches up to it, eliminating
+                // the visual desync where node 2 was previously turning
+                // lime at progress 0.42 (card unlock) while the bar fill
+                // didn't reach node 2's centre until progress ≈ 0.5.
+                // Matched in DOM order — HTML lists nodes 1/2/3 top-to-bottom
+                // (see index.html lines 214/219/224), which is the same
+                // visual order the bar fill traverses.
+                const nodeCount = progressSteps.length;
+                progressSteps.forEach((node, i) => {
+                    const nodeThreshold = (i + 0.5) / nodeCount;
+                    node.classList.toggle('is-active', progress >= nodeThreshold);
                 });
 
                 // 4. Completion pill — visible only when all steps are unlocked.
@@ -1007,10 +1028,12 @@
             // represents the scroll, not the persona, so a mid-scroll persona
             // swap must leave the bar exactly where it is. The subsequent
             // applyProgress(lastProgress) re-toggles .is-active on the
-            // progress-steps from scratch anyway, so even this comment-level
-            // distinction is just defensive: the visible result would be
-            // identical either way, but skipping the explicit reset avoids
-            // a one-frame flash of empty bar.
+            // progress-steps from scratch anyway (using the (i + 0.5) / N
+            // physical-position thresholds, independent of the cards'
+            // data-unlock), so even this comment-level distinction is
+            // just defensive: the visible result would be identical either
+            // way, but skipping the explicit reset avoids a one-frame flash
+            // of empty bar.
             const resetStepVisualState = () => {
                 questSteps.forEach((step) => {
                     step.classList.remove('is-unlocked');

@@ -1576,15 +1576,36 @@ p {
 .quest-step {
     /* Cards stack vertically in column 2, one per grid row. Dimmed by
        default (locked); `.is-unlocked` (added by JS) restores opacity +
-       nudges a subtle scale. */
+       nudges a subtle scale.
+
+       LAYOUT FIX 2026-05-11: previously this rule combined
+       `align-self: center` + `min-height: 0`. That pair allowed each
+       card's BOX to shrink below its intrinsic content height while the
+       content (icon + title + body) kept rendering at full size with the
+       default `overflow: visible`. The result: content bled out of the
+       box into the neighbouring `1fr` grid track and the 3-layer card
+       shadow was drawn at the box edge — visibly cutting through the
+       next card's text. Symptom reported: "card 2 overlaps card 1,
+       card 3 overlaps card 2" on every viewport.
+
+       Fix: `align-self: stretch` (replaces `center`) — the card now
+       FILLS its `1fr` cell exactly, so the box is always ≥ content
+       height as long as the cell is. The icon + title + body stay
+       top-aligned inside the card via the inner flex layout
+       (`align-items: flex-start`); empty space (if any) sits below
+       them inside the card, painted by the card's gradient fill.
+
+       `min-height: 0` removed — was only needed when the card
+       could be SMALLER than content; now obsolete. The grid's
+       `1fr 1fr 1fr` distribution still divides the sticky panel's
+       available height equally, so on viewports where 3 × min-content
+       would have exceeded 100svh the sticky's `overflow: hidden`
+       (§10.1) is the safety net of last resort — combined with the
+       `padding-bottom` buffer on `.how-quest` (§10.1), the FAQ stays
+       protected even in that worst-case clipping. */
     grid-column: 2;
     justify-self: stretch;
-    align-self: center;
-    /* `min-height: 0` mirrors the rationale on `.quest-steps` above —
-       prevents the grid item's intrinsic min-content height from forcing
-       the row to expand beyond its 1fr share, which would push the third
-       card past the sticky panel's 100svh box on short viewports. */
-    min-height: 0;
+    align-self: stretch;
     position: relative;
     z-index: 1;
     display: flex;
@@ -1614,13 +1635,14 @@ p {
        the column on wide viewports. */
     max-width: 56ch;
     width: 100%;
-    /* Intentionally NO `overflow: hidden` on the card. The lime accent
-       strip below uses its own border-top-left-radius / border-bottom-left-radius
-       matching the card's radius, so it rounds in lockstep at the top-left and
-       bottom-left corners without the card needing to clip. This is critical
-       for short viewports (iPhone SE-class, 568pt) where the body text might
-       briefly need to render past the card's intrinsic 1fr row share before
-       the row expands — clipping it would silently hide content. */
+    /* Intentionally NO `overflow: hidden` on the card. With
+       `align-self: stretch` the box always covers its content, so
+       clipping is never required for the card's own children. Keeping
+       the default `overflow: visible` also leaves the door open for
+       future hover lifts or focus rings that would otherwise be cut
+       at the card edge. The sticky panel's `overflow: hidden` (§10.1)
+       remains the safety net of last resort against rare short-viewport
+       overflows. */
 
     opacity: 0.42;
     /* Subtle scale baseline — the unlocked state ramps to 1 (a 2 % swell
@@ -1635,35 +1657,20 @@ p {
         box-shadow 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* PREMIUM UPGRADE 2026-05-11: lime accent strip on the LEFT edge of each
-   card, transitioning from invisible (locked) to a 3px lime bar (unlocked).
-   Uses `::before` instead of `border-left` because animating border-width
-   triggers layout reflows; transforming/animating opacity on a positioned
-   pseudo is GPU-only. The strip is full-height of the card. The strip's
-   own top-left + bottom-left border-radius match the card's `--radius-card`
-   so the strip rounds in lockstep without needing `overflow: hidden` on
-   the parent (preserves body-text visibility on tiny viewports). */
-.quest-step::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 3px;
-    background: var(--color-accent);
-    border-top-left-radius: var(--radius-card);
-    border-bottom-left-radius: var(--radius-card);
-    opacity: 0;
-    transition: opacity 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
-    pointer-events: none;
-}
-
 /* Step row assignment — explicit so the cards stack top-to-bottom in
    data-step order regardless of source order. Column placement (col 2) is
    declared once on the base .quest-step rule above. */
 .quest-step[data-step="1"] { grid-row: 1; }
 .quest-step[data-step="2"] { grid-row: 2; }
 .quest-step[data-step="3"] { grid-row: 3; }
+
+/* Lime accent strip on the LEFT edge of each card REMOVED 2026-05-11
+   (user request): the previous `.quest-step::before` (3px lime bar fading
+   in via opacity 0 → 1 on `.is-unlocked`) read as too loud against the
+   épuré aesthetic. The unlock signal now comes solely from the existing
+   trio: opacity 0.42 → 1, scale 0.98 → 1, and the shadow upgrade in
+   `.quest-step.is-unlocked` below — plus the corresponding numbered node
+   on the `.quest-progress-bar` lighting up lime. */
 
 .quest-step.is-unlocked {
     opacity: 1;
@@ -1677,10 +1684,6 @@ p {
         inset 0 1px 0 rgba(255, 255, 255, 0.9),
         0 1px 2px rgba(16, 24, 40, 0.05),
         0 8px 24px rgba(16, 24, 40, 0.06);
-}
-
-.quest-step.is-unlocked::before {
-    opacity: 1;
 }
 
 .quest-step-icon {
