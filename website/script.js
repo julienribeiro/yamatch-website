@@ -1223,4 +1223,172 @@
         });
     }
 
+    // === QR widget — inline-SVG QR Code generator ===
+    // Renders a stylised SVG QR code into #qrWidgetCode at load. Encodes the
+    // /download/ landing URL which redirects iOS/Android via UA detection to
+    // the App Store / Play Store. Visual pattern mirrors the React reference
+    // component the design was ported from:
+    //   - Background rounded rect (rx 12) fills the SVG viewBox.
+    //   - 3 finder patterns at top-left / top-right / bottom-left, each made of
+    //     three nested rounded rects (rx 12 → 8 → 3, dark-light-dark).
+    //   - Data modules (everything outside the 7×7 finder squares) rendered as
+    //     centred circles with radius = moduleSize / 3 (denser than the standard
+    //     square modules to keep the editorial dot-grid texture).
+    //
+    // CDN dependency: window.QRCode is loaded via a <script defer> tag placed
+    // BEFORE script.js in index.html. `defer` preserves source order, so by
+    // the time this IIFE runs, the lib has been parsed and executed. We still
+    // guard with a `typeof` check — if the CDN is blocked (AdBlock / corporate
+    // proxy / network failure), we hide the whole widget rather than render an
+    // empty SVG. Same defensive hide on encoding throw.
+    //
+    // Sizing: the host `.qr-widget-code` div has explicit clamp() width/height
+    // in CSS, and `.qr-widget-code svg { width: 100%; height: 100% }` makes
+    // the inline SVG fill that box edge-to-edge — so we don't need to set
+    // width/height attributes on the SVG element itself, only the viewBox.
+    //
+    // Performance: runs exactly once at DOMContentLoaded. No scroll/resize
+    // re-render — the QR is static, and the host box scales via CSS.
+    {
+        const QR_VALUE = 'https://julienribeiro.github.io/yamatch-website/download/';
+        const QR_SIZE = 268;            // intrinsic viewBox edge length (px)
+        const QR_ERROR_LEVEL = 'M';     // 15% error correction — balanced for editorial use
+        const QR_FG = '#101828';        // dark module color (mirrors --color-text-primary)
+        const QR_BG = '#FFFFFF';        // background color (mirrors --color-light-bg)
+
+        // The three 7×7 finder squares sit at (0,0), (0, size-7), (size-7, 0).
+        // Any module inside one of those squares is rendered as the stylised
+        // nested rect group, NOT as an individual circle — keeps the squares
+        // visually clean.
+        const isInFinderPattern = (row, col, size) => (
+            (row < 7 && col < 7) ||
+            (row < 7 && col >= size - 7) ||
+            (row >= size - 7 && col < 7)
+        );
+
+        const renderQRCode = () => {
+            const container = document.getElementById('qrWidgetCode');
+            if (!container) return;
+
+            // CDN guard — if window.QRCode is missing (CDN blocked, network
+            // failure, AdBlock pattern hit), hide the whole .qr-widget aside
+            // rather than render an empty/broken SVG. Same on encoding throw.
+            if (typeof window.QRCode === 'undefined' || typeof window.QRCode.create !== 'function') {
+                const widget = container.closest('.qr-widget');
+                if (widget) widget.style.display = 'none';
+                return;
+            }
+
+            let qrData;
+            try {
+                qrData = window.QRCode.create(QR_VALUE, { errorCorrectionLevel: QR_ERROR_LEVEL });
+            } catch (_) {
+                const widget = container.closest('.qr-widget');
+                if (widget) widget.style.display = 'none';
+                return;
+            }
+
+            const moduleCount = qrData.modules.size;
+            const moduleSize = QR_SIZE / moduleCount;
+            const circleRadius = moduleSize * (1 / 3);
+            const finderSize = 7 * moduleSize;
+            const innerPadding = moduleSize;
+            const innerWhiteSize = 5 * moduleSize;
+            const innerBlackSize = 3 * moduleSize;
+
+            const SVG_NS = 'http://www.w3.org/2000/svg';
+            const svg = document.createElementNS(SVG_NS, 'svg');
+            svg.setAttribute('viewBox', `0 0 ${QR_SIZE} ${QR_SIZE}`);
+            svg.setAttribute('xmlns', SVG_NS);
+            // No width/height attributes — CSS rule `.qr-widget-code svg
+            // { width: 100%; height: 100% }` (styles.css §QR) drives sizing.
+
+            // Background rounded rect — fills the entire viewBox.
+            const bg = document.createElementNS(SVG_NS, 'rect');
+            bg.setAttribute('width', String(QR_SIZE));
+            bg.setAttribute('height', String(QR_SIZE));
+            bg.setAttribute('fill', QR_BG);
+            bg.setAttribute('rx', '12');
+            bg.setAttribute('ry', '12');
+            svg.appendChild(bg);
+
+            // Three finder patterns: outer dark (rx 12), middle light (rx 8),
+            // inner dark (rx 3). Positions in module-grid coords: (0,0),
+            // (0, size-7), (size-7, 0) — top-left, top-right, bottom-left.
+            const finderPositions = [
+                [0, 0],
+                [0, moduleCount - 7],
+                [moduleCount - 7, 0],
+            ];
+            finderPositions.forEach(([r, c]) => {
+                const x = c * moduleSize;
+                const y = r * moduleSize;
+
+                const outer = document.createElementNS(SVG_NS, 'rect');
+                outer.setAttribute('x', String(x));
+                outer.setAttribute('y', String(y));
+                outer.setAttribute('width', String(finderSize));
+                outer.setAttribute('height', String(finderSize));
+                outer.setAttribute('fill', QR_FG);
+                outer.setAttribute('rx', '12');
+                outer.setAttribute('ry', '12');
+                svg.appendChild(outer);
+
+                const middle = document.createElementNS(SVG_NS, 'rect');
+                middle.setAttribute('x', String(x + innerPadding));
+                middle.setAttribute('y', String(y + innerPadding));
+                middle.setAttribute('width', String(innerWhiteSize));
+                middle.setAttribute('height', String(innerWhiteSize));
+                middle.setAttribute('fill', QR_BG);
+                middle.setAttribute('rx', '8');
+                middle.setAttribute('ry', '8');
+                svg.appendChild(middle);
+
+                const inner = document.createElementNS(SVG_NS, 'rect');
+                inner.setAttribute('x', String(x + innerPadding * 2));
+                inner.setAttribute('y', String(y + innerPadding * 2));
+                inner.setAttribute('width', String(innerBlackSize));
+                inner.setAttribute('height', String(innerBlackSize));
+                inner.setAttribute('fill', QR_FG);
+                inner.setAttribute('rx', '3');
+                inner.setAttribute('ry', '3');
+                svg.appendChild(inner);
+            });
+
+            // Data modules → circles. We iterate the full grid and skip any
+            // module that falls inside one of the three finder squares
+            // (otherwise we'd double-paint dots over the nested rect group).
+            for (let row = 0; row < moduleCount; row++) {
+                for (let col = 0; col < moduleCount; col++) {
+                    if (qrData.modules.get(row, col) && !isInFinderPattern(row, col, moduleCount)) {
+                        const circle = document.createElementNS(SVG_NS, 'circle');
+                        circle.setAttribute('cx', String((col + 0.5) * moduleSize));
+                        circle.setAttribute('cy', String((row + 0.5) * moduleSize));
+                        circle.setAttribute('r', String(circleRadius));
+                        circle.setAttribute('fill', QR_FG);
+                        svg.appendChild(circle);
+                    }
+                }
+            }
+
+            // Idempotent mount — clear any prior contents (e.g. live-reload
+            // re-running the IIFE in dev) before appending the fresh SVG.
+            container.innerHTML = '';
+            container.appendChild(svg);
+        };
+
+        // The qrcode CDN script + this script.js are both `defer`, so by the
+        // time this IIFE evaluates, the lib's <script> has finished parsing
+        // (defer scripts run after HTML parse, in source order, before
+        // DOMContentLoaded fires). The readyState fork is belt-and-braces:
+        // if the document is still 'loading' (rare edge case if a future
+        // refactor moves this code out of a defer'd file), we wait for
+        // DOMContentLoaded; otherwise we render immediately.
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderQRCode);
+        } else {
+            renderQRCode();
+        }
+    }
+
 })();
