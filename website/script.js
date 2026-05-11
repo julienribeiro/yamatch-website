@@ -1541,9 +1541,9 @@
     const MAX_AGE_MS = 500;        // points older than this drop off the tail
     const STROKE_HEAD = 8;         // px line width at the freshest segment
     const TRAIL_ALPHA_HEAD = 0.85; // alpha at the head of the trail
-    const TRAIL_R = 215;           // lime stroke RGB — matches --color-accent #D7FF00
-    const TRAIL_G = 255;
-    const TRAIL_B = 0;
+    const TRAIL_R = 16;            // Yamatch black stroke RGB — matches --color-text-primary #101828
+    const TRAIL_G = 24;
+    const TRAIL_B = 40;
 
     // === Canvas DPR-aware sizing ===
     let dpr = window.devicePixelRatio || 1;
