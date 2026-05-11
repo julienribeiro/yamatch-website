@@ -1099,7 +1099,37 @@ p {
        The mobile override (section 14) uses a smaller value (260svh,
        previously 220svh) for the same lingering rationale at mobile scale. */
     position: relative;
+    /* z-index: 0 anchors a stacking context on the section so the inner
+       sticky's stacking context (z-index: 0 below) is contained AT this
+       level — it cannot leak above the next section (.faq) which gets
+       its own positioned stacking context (`position: relative; z-index: 1`,
+       see §11). This is the defensive pillar that prevents the documented
+       overlap regression: even if the sticky panel's content overflows
+       its 100svh box for any reason, the FAQ paints on top of it. */
+    z-index: 0;
     min-height: 320svh;
+    /* Block-end buffer between the sticky panel's bottom and the FAQ.
+       --------------------------------------------------------------------
+       Root-cause fix for the documented "card 3 overlaps FAQ title" bug.
+       Mechanism: `.how-quest-sticky` is `position: sticky; top: 0;
+       height: 100svh`. Sticky releases when the section's bottom edge
+       hits the viewport bottom — i.e. when scrollY ≈ staticQuestTop +
+       (320svh - 100svh) = +220svh. At that exact moment the panel sits
+       FLUSH against the section's bottom edge, which is FLUSH against
+       the FAQ's top edge. Any pixel of content that overflowed the
+       sticky panel's 100svh box (intrinsic content > 100svh on short
+       viewports, or a card 3 that just animated to is-unlocked with the
+       2 % scale lift) renders OVER the FAQ.
+       This `padding-bottom` reserves a real visible gray buffer at the
+       end of the section. The sticky still pins for the same scroll
+       budget (320svh - 100svh = 220svh), but its visible release happens
+       above the FAQ instead of butting against it. Combined with the
+       `overflow: hidden` on `.how-quest-sticky` below (which clips any
+       intrinsic content overflow), the FAQ has guaranteed clear air.
+       Scaled with the desktop `.faq { padding-block: clamp(24px, 4vw, 52px) }`
+       so the gray-to-white transition reads as a deliberate breath, not
+       a hard cut. Mobile override in §14. */
+    padding-bottom: clamp(48px, 8vw, 120px);
     /* Light-gray quiet surface — sits between the WHITE carousel above
        and the WHITE FAQ below to create a visual rhythm
        white → gray → white → white (2026-05-11). The persona pill-bar's
@@ -1108,8 +1138,19 @@ p {
        chip on this gray surface — added contrast was the goal. The step
        cards (`.quest-step { background: var(--color-light-bg) }`, see §10.6)
        also stay white for the same reason; their existing border-color
-       provides enough definition against the gray. */
+       provides enough definition against the gray.
+       PREMIUM UPGRADE 2026-05-11: very subtle radial gradient overlay
+       layered ON TOP of the base gray — a near-imperceptible warm-light
+       wash centered behind the cards, giving depth without breaking the
+       épuré aesthetic (memory feedback_website_aesthetic.md). The two
+       radials are sub-3 % alpha so they read as ambient lighting rather
+       than a coloured panel. Both `background-image` layers paint above
+       `background-color` per CSS spec, so the lime/dark ambient is
+       always atop the base gray. */
     background-color: var(--color-light-gray);
+    background-image:
+        radial-gradient(ellipse 80% 50% at 50% 30%, rgba(215, 255, 0, 0.05), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 50% 90%, rgba(16, 24, 40, 0.025), transparent 70%);
     padding-inline: var(--page-pad);
     /* Section-level horizontal clipping so any peek elements never trigger
        a horizontal page scroll. `clip` (not hidden) keeps overflow-y visible
@@ -1126,6 +1167,28 @@ p {
     position: sticky;
     top: 0;
     height: 100svh;
+    /* Defensive containment — clips any intrinsic content overflow to the
+       100svh box. ROOT-CAUSE FIX for the FAQ overlap.
+       Why this matters: `.how-quest-sticky` contains `.how-quest-header`
+       (content-sized, `flex: none`) + `.quest-steps` (`flex: 1 1 auto`,
+       `display: grid` with 3 cards in `1fr 1fr 1fr`). On short viewports
+       (iPhone SE-class, 568pt) or when card content density is high, the
+       intrinsic height of `header + 3 cards` can exceed the panel's
+       `height: 100svh`. The default `overflow: visible` lets the third
+       card's bottom render BELOW the panel box, which then visually
+       overlaps the FAQ title (the FAQ enters from the viewport bottom
+       at the exact moment the sticky un-pins).
+       `overflow: hidden` clips anything that would have overflowed.
+       The completion pill (.quest-completion-pill, §10.7) is positioned
+       absolutely INSIDE `.quest-steps` with `bottom: clamp(8px, 2vh, 24px)`,
+       so it sits well within the sticky's box — `overflow: hidden`
+       does NOT clip it. The persona tabs' sliding ::before indicator
+       is positioned within `.quest-persona-tabs` (also inside the sticky)
+       and stays within its parent's bounds — also unaffected.
+       Side benefit: hides the ~6 % vertical scrollbar gutter Safari can
+       briefly render when the panel is one pixel from overflowing during
+       URL-bar resize. */
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     /* Vertical padding inside the pinned panel — keeps the title clear of
@@ -1139,7 +1202,9 @@ p {
     /* Sticky elements create their own stacking context. Setting an
        explicit z-index also lets us layer the completion pill (z-index: 2,
        below) above the cards (z-index: 1) above the progress-bar fill
-       (z-index: 0) without leaking out of this panel's stack. */
+       (z-index: 0) without leaking out of this panel's stack. The parent
+       `.how-quest` now has z-index: 0 too, so this whole stacking context
+       is isolated below the FAQ's z-index: 1 (see §11). */
     z-index: 0;
 }
 
@@ -1216,7 +1281,11 @@ p {
     /* Outer "pad" — translucent white over the section's white bg, lifted by
        a subtle premium shadow. Backdrop-filter is purely defensive against
        any future translucent backgrounds behind the bar; on the current
-       white parent it's a no-op visually but costs nothing on idle. */
+       white parent it's a no-op visually but costs nothing on idle.
+       PREMIUM UPGRADE 2026-05-11: shadow stack restructured into a 3-layer
+       stack — inset top highlight (premium "glassy edge"), tight mid-distance
+       shadow (depth), wider ambient shadow (groundedness). The overall feel
+       is closer to Apple's segmented control treatment without being heavy. */
     padding: 4px;
     background-color: var(--color-light-bg);
     backdrop-filter: blur(20px) saturate(180%);
@@ -1224,8 +1293,9 @@ p {
     border: 1px solid rgba(16, 24, 40, 0.06);
     border-radius: var(--radius-pill);
     box-shadow:
-        0 6px 24px rgba(16, 24, 40, 0.06),
-        0 1px 3px rgba(16, 24, 40, 0.04);
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        0 1px 3px rgba(16, 24, 40, 0.04),
+        0 8px 28px rgba(16, 24, 40, 0.08);
 }
 
 /* Sliding lime indicator. Geometry is driven by JS via two custom
@@ -1243,8 +1313,17 @@ p {
     height: calc(100% - 8px);
     width: var(--indicator-w, 0px);
     transform: translateX(var(--indicator-x, 0px));
-    background-color: var(--color-accent);
+    /* PREMIUM UPGRADE 2026-05-11: subtle vertical gradient on the lime
+       indicator (lighter at top, brand-lime at bottom) + tight inset
+       highlight + soft drop-shadow halo. The halo uses the lime token
+       at low alpha so the active state reads as an "energised" pill
+       rather than a flat colour fill. */
+    background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
     border-radius: var(--radius-pill);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 -1px 0 rgba(16, 24, 40, 0.06),
+        0 2px 8px rgba(215, 255, 0, 0.28);
     transition:
         transform 320ms cubic-bezier(0.65, 0, 0.35, 1),
         width 320ms cubic-bezier(0.65, 0, 0.35, 1);
@@ -1328,6 +1407,16 @@ p {
     /* Takes the rest of the sticky panel height (header is `flex: none`). */
     position: relative;
     flex: 1 1 auto;
+    /* Critical companion to the sticky panel's `overflow: hidden` (§10.1):
+       a flex child's default `min-height: auto` (= min-content) prevents
+       the child from shrinking below its intrinsic content size. With 3
+       grid cards in `1fr 1fr 1fr`, the intrinsic min-content height can
+       exceed the panel's available space on short viewports, which used
+       to force the third card to overflow downward and visually overlap
+       the FAQ. `min-height: 0` allows the grid to actually shrink to fit
+       the available flex space; cards then compress their `1fr 1fr 1fr`
+       fractions proportionally and stay inside the panel's bounds. */
+    min-height: 0;
     width: 100%;
     max-width: var(--container-max);
     margin-inline: auto;
@@ -1408,8 +1497,11 @@ p {
 
 .quest-progress-bar::after {
     /* Lime fill — scales vertically from 0 (empty) to 1 (full) as JS
-       writes --progress on .quest-progress-bar. Sits above the base track. */
-    background-color: var(--color-accent);
+       writes --progress on .quest-progress-bar. Sits above the base track.
+       PREMIUM UPGRADE 2026-05-11: vertical gradient (lighter top → brand
+       lime bottom) gives the fill a subtle "depth" cue as it grows past
+       each node. Pure visual, no perf cost (background-image only). */
+    background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
     transform: scaleY(var(--progress, 0));
     transition: transform 240ms cubic-bezier(0.65, 0, 0.35, 1);
     z-index: 1;
@@ -1436,19 +1528,37 @@ p {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    /* PREMIUM UPGRADE 2026-05-11: subtle inner highlight (inset top white)
+       + soft drop shadow gives the inactive node a refined "chip" feel
+       against the gray section background. The active state below adds
+       a lime halo + gradient fill. */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.6),
+        0 1px 3px rgba(16, 24, 40, 0.06);
     /* Animate fill / border / text colour at the same speed as the lime
        line fill so the node "lights up" in lockstep with the line catching
-       up to it. */
+       up to it. Box-shadow added so the active halo grows in sync. */
     transition:
+        background 240ms cubic-bezier(0.65, 0, 0.35, 1),
         background-color 240ms cubic-bezier(0.65, 0, 0.35, 1),
         border-color 240ms cubic-bezier(0.65, 0, 0.35, 1),
-        color 240ms cubic-bezier(0.65, 0, 0.35, 1);
+        color 240ms cubic-bezier(0.65, 0, 0.35, 1),
+        box-shadow 240ms cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 .quest-progress-step.is-active .quest-progress-node {
-    background-color: var(--color-accent);
+    /* PREMIUM UPGRADE 2026-05-11: gradient lime fill (matches the progress
+       bar fill above for visual consistency) + lime halo to register the
+       "this node just lit up" moment. Inset highlight kept for the embossed
+       chip feel; the inset darker line at the bottom adds depth. */
+    background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
     border-color: var(--color-accent);
     color: var(--color-text-primary);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -1px 0 rgba(16, 24, 40, 0.08),
+        0 0 0 4px rgba(215, 255, 0, 0.18),
+        0 4px 12px rgba(215, 255, 0, 0.32);
 }
 
 .quest-progress-number {
@@ -1470,6 +1580,11 @@ p {
     grid-column: 2;
     justify-self: stretch;
     align-self: center;
+    /* `min-height: 0` mirrors the rationale on `.quest-steps` above —
+       prevents the grid item's intrinsic min-content height from forcing
+       the row to expand beyond its 1fr share, which would push the third
+       card past the sticky panel's 100svh box on short viewports. */
+    min-height: 0;
     position: relative;
     z-index: 1;
     display: flex;
@@ -1477,14 +1592,35 @@ p {
     align-items: flex-start;
     gap: clamp(8px, 1vh, 14px);
 
-    background: var(--color-light-bg);
-    border: 1px solid rgba(153, 161, 175, 0.22);
+    /* PREMIUM UPGRADE 2026-05-11: layered surface treatment.
+       - `background: linear-gradient` from a slight off-white to pure white
+         (top→bottom) gives the card a subtle "lit from above" sheen
+         without breaking the white-card aesthetic.
+       - `border` slightly more refined (2 % gray, sharper at lower alpha).
+       - `box-shadow` is a 3-layer stack: a tight 1px inner highlight at
+         the top edge (inset white) for the premium "glassy edge" feel;
+         a soft mid-distance shadow for visual lift; a wider ambient
+         shadow grounded to the surface. All extremely soft so the card
+         reads as elevated without being heavy. */
+    background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.985) 100%);
+    border: 1px solid rgba(16, 24, 40, 0.06);
     border-radius: var(--radius-card);
     padding: clamp(20px, 2vw, 32px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        0 1px 2px rgba(16, 24, 40, 0.04),
+        0 4px 12px rgba(16, 24, 40, 0.04);
     /* Cap card width so long body text doesn't stretch all the way across
        the column on wide viewports. */
     max-width: 56ch;
     width: 100%;
+    /* Intentionally NO `overflow: hidden` on the card. The lime accent
+       strip below uses its own border-top-left-radius / border-bottom-left-radius
+       matching the card's radius, so it rounds in lockstep at the top-left and
+       bottom-left corners without the card needing to clip. This is critical
+       for short viewports (iPhone SE-class, 568pt) where the body text might
+       briefly need to render past the card's intrinsic 1fr row share before
+       the row expands — clipping it would silently hide content. */
 
     opacity: 0.42;
     /* Subtle scale baseline — the unlocked state ramps to 1 (a 2 % swell
@@ -1495,7 +1631,31 @@ p {
     transition:
         opacity 360ms cubic-bezier(0.2, 0.8, 0.2, 1),
         scale 360ms cubic-bezier(0.2, 0.8, 0.2, 1),
-        border-color 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+        border-color 360ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        box-shadow 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* PREMIUM UPGRADE 2026-05-11: lime accent strip on the LEFT edge of each
+   card, transitioning from invisible (locked) to a 3px lime bar (unlocked).
+   Uses `::before` instead of `border-left` because animating border-width
+   triggers layout reflows; transforming/animating opacity on a positioned
+   pseudo is GPU-only. The strip is full-height of the card. The strip's
+   own top-left + bottom-left border-radius match the card's `--radius-card`
+   so the strip rounds in lockstep without needing `overflow: hidden` on
+   the parent (preserves body-text visibility on tiny viewports). */
+.quest-step::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--color-accent);
+    border-top-left-radius: var(--radius-card);
+    border-bottom-left-radius: var(--radius-card);
+    opacity: 0;
+    transition: opacity 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
 }
 
 /* Step row assignment — explicit so the cards stack top-to-bottom in
@@ -1509,20 +1669,43 @@ p {
     opacity: 1;
     scale: 1;
     border-color: rgba(16, 24, 40, 0.10);
+    /* PREMIUM UPGRADE 2026-05-11: the unlocked state gets a slightly more
+       pronounced lift — the inner highlight stays, the mid shadow tightens
+       and warms up imperceptibly toward lime, and the ambient shadow
+       widens just a touch. Composes the "this card is now alive" feel. */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.9),
+        0 1px 2px rgba(16, 24, 40, 0.05),
+        0 8px 24px rgba(16, 24, 40, 0.06);
+}
+
+.quest-step.is-unlocked::before {
+    opacity: 1;
 }
 
 .quest-step-icon {
     /* Icon slot — js-expert injects an inline SVG. The slot is a fixed
-       lime square pad so a missing/empty SVG still occupies the layout
-       (no jump when the icon mounts asynchronously). */
+       lime pad so a missing/empty SVG still occupies the layout
+       (no jump when the icon mounts asynchronously).
+       PREMIUM UPGRADE 2026-05-11:
+       - linear-gradient lime fill (lighter at top, brand-lime at bottom)
+         gives the icon container a subtle three-dimensional feel.
+       - inset highlight (top) + soft shadow (bottom) sells the "embossed
+         chip" treatment without being theatrical.
+       - border-radius slightly bumped (14 → 16) so the icon container
+         feels coherent with the card's larger radius. */
     width: clamp(40px, 4vw, 56px);
     height: clamp(40px, 4vw, 56px);
-    border-radius: 14px;
-    background: var(--color-accent);
+    border-radius: 16px;
+    background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
     color: var(--color-text-primary);
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(16, 24, 40, 0.05),
+        0 2px 6px rgba(215, 255, 0, 0.2);
 }
 
 .quest-step-icon svg {
@@ -1583,13 +1766,23 @@ p {
     gap: 8px;
     padding: 12px 24px;
     border-radius: var(--radius-pill);
-    background: var(--color-accent);
+    /* PREMIUM UPGRADE 2026-05-11: matches the persona indicator + progress
+       fill family — vertical gradient (lighter top → brand lime bottom) so
+       the completion pill reads as a coherent member of the lime accent
+       family rather than a flat colour spike. Drop-shadow halo widens with
+       the existing alpha to feel like a celebratory glow without crossing
+       into "loud" territory. */
+    background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
     color: var(--color-text-primary);
     font-family: var(--font-body);
     font-weight: 700;
     font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
     line-height: 1;
-    box-shadow: 0 8px 24px rgba(215, 255, 0, 0.28);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(16, 24, 40, 0.08),
+        0 4px 12px rgba(215, 255, 0, 0.24),
+        0 12px 32px rgba(215, 255, 0, 0.18);
 
     /* Initial state on reveal — JS removes [hidden] (display switches from
        none to inline-flex), then adds .is-visible on the next frame for the
@@ -1621,11 +1814,25 @@ p {
    11. FAQ ACCORDION
    ========================================================================== */
 .faq {
-    /* Inverted 2026-05-11 from light-gray to white. The preceding
+    /* `position: relative` + `z-index: 1` form the defensive pillar that
+       guarantees the FAQ ALWAYS paints above any rendering of the preceding
+       `.how-quest` section. Previously there was a documented overlap bug:
+       on certain viewports the third quest card or the sticky panel's
+       overflowing content could render visually atop the FAQ title.
+       The structural fix is in §10 (`.how-quest-sticky { overflow: hidden }`
+       + `.how-quest { padding-bottom }`) — this z-index is the SAFETY NET
+       that ensures even an unforeseen overflow regression cannot ever
+       paint over the FAQ. `.how-quest` now also has `z-index: 0`, so the
+       stacking context relationship is explicit and ordered:
+         .how-quest  (z-index: 0, position: relative)
+         .faq        (z-index: 1, position: relative) ← always on top
+       Inverted 2026-05-11 from light-gray to white. The preceding
        `.how-quest` section now owns the light-gray slot; the contrast
        between gray (how-quest) and white (faq) creates the section
        boundary visually — no border or separator needed at the
        how-quest → faq seam (the bg flip is the demarcation). */
+    position: relative;
+    z-index: 1;
     background-color: var(--color-light-bg);
     padding-block: clamp(24px, 4vw, 52px) clamp(80px, 12vw, 140px);
     padding-inline: var(--page-pad);
@@ -2195,13 +2402,25 @@ p {
            FAQ left/right edges (same token used by .screens-rail and .faq above). */
         padding-inline: var(--mobile-hero-card-margin);
         min-height: 260svh;
+        /* Mobile mirror of the desktop block-end buffer (§10.1). Smaller
+           clamp than desktop because the FAQ's mobile padding-block is
+           also smaller (`var(--mobile-hero-card-margin)`); we just need
+           a real visible gray strip between the sticky's last visible
+           content and the FAQ's "FAQ" eyebrow. The desktop padding-bottom
+           cascades into mobile by default, but we override here to use
+           a smaller mobile-appropriate clamp. */
+        padding-bottom: clamp(40px, 10vw, 80px);
     }
 
     .how-quest-sticky {
         /* Tighter vertical padding so all 3 cards + header + completion pill
            fit in 100svh on smaller phones. Bottom padding preserved (sourced
            from the desktop clamp's range) so the last card has breathing
-           room before the section un-pins into the FAQ. */
+           room before the section un-pins into the FAQ.
+           NOTE: `overflow: hidden` is inherited from the desktop rule and is
+           especially important on mobile — short-viewport phones (iPhone SE,
+           568pt) are where the 100svh constraint is tightest and the sticky
+           is most likely to need clipping to fit. */
         padding-block: clamp(24px, 5vh, 48px) clamp(32px, 7vh, 72px);
     }
 
