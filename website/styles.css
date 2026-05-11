@@ -337,17 +337,28 @@ p {
     .wordmark {
         /* Always-on pill-sized box. Same horizontal/vertical values as the
            desktop `.is-condensed` padding (8px 20px, line 266) so the pill
-           geometry is identical between desktop scroll and mobile scroll. */
+           geometry is identical between desktop scroll and mobile scroll.
+           Padding stays FROZEN (never in the transition list) — animating
+           padding on a `position: fixed` element triggers reflow and is the
+           confirmed root cause of iOS Safari subpixel jitter on touch
+           scroll. */
         padding: 8px 20px;
-        /* Transition surface narrowed to PURELY VISUAL properties — no
-           translate, no scale, no padding. iOS Safari's subpixel jitter on
-           `position: fixed` only happens when LAYOUT-AFFECTING properties
-           animate. Animating only background-color / backdrop-filter /
-           border-color / opacity is safe (compositor-only). The desktop rule
-           above (line 252) cascades into mobile EXCEPT for this transition
-           list, which fully replaces it — so no `translate`, `scale` or
-           `padding` keyword is reachable for the engine to interpolate. */
+        /* Transition surface — purely visual properties + scale. Padding is
+           DELIBERATELY OMITTED (frozen at 8px 20px above) so no reflow can
+           fire on the fixed wordmark layer. `scale` was re-added 2026-05-11
+           on user request to restore the desktop "subtle condense" feel
+           (scale: 0.92 cascading from .wordmark.is-condensed line 265).
+           Calculated bet on iOS jitter: the previous combined animation
+           (padding + scale) caused jitter because padding changed the box
+           dimensions → reflow + re-rasterisation of the fixed compositor
+           layer. With padding frozen, scale alone runs as a transform on the
+           ALREADY-PROMOTED layer (translateZ(0) + backface-visibility:hidden
+           on .wordmark). The compositor interpolates without re-laying out.
+           If a future iPhone test surfaces residual jitter, plan B is to
+           switch from individual `scale` to a transform shorthand
+           `translateZ(0) scale(...)` — but try the simple solution first. */
         transition:
+            scale 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
             opacity 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
             background-color 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
             backdrop-filter 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
@@ -355,16 +366,10 @@ p {
             border-color 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    .wordmark.is-condensed {
-        /* Counter the desktop `scale: 0.92` (line 265). Padding is inherited
-           from the base `.wordmark` mobile rule above (8px 20px) — same
-           literal as the desktop `.is-condensed` value, so the cascade
-           resolves to the same number either way and no layout shift can
-           occur when the class toggles. The visible animation we KEEP on
-           mobile (background, backdrop-filter, border-color) cascades down
-           from the desktop `.wordmark.is-condensed` rule unchanged. */
-        scale: 1;
-    }
+    /* The previous `.wordmark.is-condensed { scale: 1 }` mobile override was
+       REMOVED 2026-05-11 — desktop `scale: 0.92` (line 265) now cascades to
+       mobile/touch unchanged, restoring the subtle condense effect. See the
+       transition-list comment above for the iOS-jitter rationale. */
 }
 
 
@@ -1305,10 +1310,17 @@ p {
                                     centred in the white strip whose height
                                     equals this token)
 
-           Range clamp(30px, 7.5vw, 60px) restores the pre-tightening
-           breathing room around the wordmark and below the card without
-           reverting the inline-axis text-budget gain. */
-        --mobile-hero-card-margin-block: clamp(30px, 7.5vw, 60px);
+           Range bumped 2026-05-11 from clamp(30px, 7.5vw, 60px) to
+           clamp(40px, 10vw, 80px) (+33 % at every viewport) on user request:
+           the white strip above the wordmark felt cramped at vp 320–375 even
+           after the inline/block split, and the bottom margin under the lime
+           card needed more air before the carousel block. The wordmark's
+           `top: calc(... / 2)` re-centres automatically inside the wider
+           strip; .hero-card top/bottom margins and min-height are recomputed
+           symmetrically. The carousel pull-up via `--hero-flow-collapse`
+           closes the lower gap during scroll, so the user-perceived effect
+           is concentrated at the rest state (page top). */
+        --mobile-hero-card-margin-block: clamp(40px, 10vw, 80px);
     }
 
     /* Mobile hero is now a floating tile: the lime card carries equal margins on
