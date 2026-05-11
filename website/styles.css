@@ -339,8 +339,20 @@ p {
        the fallback for Safari < 15.4 / Firefox < 101 / Chrome < 108 (cascade
        drops the second line on those engines and keeps the first); modern
        engines apply the second line and ignore the first. */
-    min-height: calc(100vh - 2 * var(--page-pad));   /* fallback older Safari */
-    min-height: calc(100svh - 2 * var(--page-pad));  /* iOS 15.4+ : stable face URL bar */
+    /* `--card-shrink` is a px value written by JS (script.js, page-scroll-progress
+       block) on this element's inline style. Magnitude = baseLift × 0.8 × progress,
+       i.e. 0 at scroll = 0 (card at full height), ramping linearly to baseLift × 0.8
+       once the carousel has fully entered the viewport. The card's bottom edge thus
+       rises in sync with the active phone descending into the row, eliminating the
+       dead space that would otherwise open between the buttons and the phone top.
+       Fallback `0px` keeps the card at its untouched height when the variable is
+       absent (initial paint before the first rAF tick, reduced-motion users where
+       the writer early-returns, or any failure to load script.js). The shrink is
+       naturally bounded by the card's intrinsic content height: once min-height
+       drops below `content + padding`, the content takes over and further shrink
+       has no visible effect (accepted natural ceiling, no extra clamp needed). */
+    min-height: calc(100vh - 2 * var(--page-pad) - var(--card-shrink, 0px));   /* fallback older Safari */
+    min-height: calc(100svh - 2 * var(--page-pad) - var(--card-shrink, 0px));  /* iOS 15.4+ : stable face URL bar */
     background-color: var(--color-accent);
     border-radius: clamp(24px, 3vw, 40px);
     overflow: hidden;
@@ -1156,7 +1168,12 @@ p {
            the dynamic mobile URL bar, so the card height stays stable while the
            URL bar collapses/expands during scroll — no "wobble". Browser
            support: Safari 15.4+, Chrome 108+, Firefox 101+. */
-        min-height: calc(100svh - 2 * var(--mobile-hero-card-margin-block));
+        /* `--card-shrink` (px, written by JS — see desktop rule above for full
+           contract) reduces the card's min-height in sync with the active phone's
+           descent into the carousel row, removing the dead space below the buttons.
+           Fallback `0px` preserves the original svh-based height when the writer
+           is inactive (initial paint, reduced-motion, JS failure). */
+        min-height: calc(100svh - 2 * var(--mobile-hero-card-margin-block) - var(--card-shrink, 0px));
         border-radius: clamp(24px, 7vw, 32px);
     }
 

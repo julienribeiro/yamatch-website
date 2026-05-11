@@ -57,10 +57,17 @@
     // 0 and the phone descends into its row position.
     {
         const carousel = document.querySelector('.hero-carousel-embla');
+        // The lime hero card is the consumer of `--card-shrink` (a px value
+        // that shrinks the card's `min-height` so its bottom edge rises in
+        // sync with the active phone descending into the row). Querying it
+        // here in the page-scroll setup keeps the writer scoped: each custom
+        // property is written directly to its consumer element, never to
+        // documentElement (mirrors the existing `--scroll` write on `.hero-carousel-embla`).
+        const heroCard = document.querySelector('.hero-card');
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const mobileQuery = window.matchMedia('(max-width: 767px)');
 
-        if (carousel && !reduceMotion) {
+        if (carousel && heroCard && !reduceMotion) {
             // Desired vertical gap (in px) between the active phone's top edge and the
             // hero buttons' bottom edge at scroll = 0. Sourced from the CSS custom
             // property --desired-button-gap (declared in styles.css :root) so the value
@@ -145,6 +152,22 @@
 
                 carousel.style.setProperty('--scroll', `${baseLift * inv}px`);
                 carousel.style.setProperty('--active-scale', activeScale.toFixed(4));
+                // Card-shrink: lime hero card's `min-height` is reduced by this
+                // many px on its consumer rules (see styles.css `.hero-card`
+                // min-height calc). Magnitude = baseLift × 0.8 × progress, i.e.
+                // 0 at scroll = 0 (card at full height, phone fully lifted),
+                // ramping linearly to baseLift × 0.8 at progress = 1 (carousel
+                // fully entered, phone flat in row). Tied to the SAME `progress`
+                // window as `--scroll` so the card's bottom edge rises in sync
+                // with the phone descending — eliminating the dead space that
+                // would otherwise open between the buttons and the phone top.
+                // The 0.8 factor caps the shrink slightly below the lift travel
+                // so the card never collapses past the buttons. At progress = 0
+                // (above the carousel zone) the value is 0 → CSS `calc(... - 0px)`
+                // is a no-op, preserving the initial card height. Reduced-motion
+                // users skip this writer entirely (outer guard) → CSS fallback
+                // value (var missing → 0px) keeps the card unchanged.
+                heroCard.style.setProperty('--card-shrink', `${baseLift * 0.8 * progress}px`);
             };
 
             const onScroll = () => {
