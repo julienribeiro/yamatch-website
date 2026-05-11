@@ -312,35 +312,58 @@ p {
 
 /* Mobile + touch safety net for the .is-condensed pill animation.
    --------------------------------------------------------------------------
-   The JS layer (script.js, "Wordmark click-to-top" block) already gates the
-   `.is-condensed` toggle behind `(pointer: fine) AND (min-width: 768px)`, so the
-   class is normally never added on touch / mobile. This block is a CSS-side
-   safety net: even if a future code path re-adds `.is-condensed` on a touch
-   viewport, the animated properties are explicitly neutralised here, so no
-   visible change can occur on iOS Safari (where `position: fixed` + multi-
-   property transitions on the wordmark were the confirmed source of subpixel
-   jitter and frosted-pill flicker during touch-driven compositor scroll).
-   Co-located with the wordmark rules in section 6 (rather than the consolidated
-   mobile block in section 13) to keep the safety net adjacent to the rule it
-   defends — the contract is "this MQ overrides the wordmark scroll-state
-   animation surface entirely on mobile/touch".
-   - `scale: 1` matches the individual property used by `.is-condensed` (line
-     247) — overrides any 0.92 the class would otherwise apply.
-   - `padding`, `background`, `border-color`, `backdrop-filter` are all reset to
-     their `.wordmark` base-state values, regardless of `.is-condensed`.
-   - `transition` is narrowed to `opacity` ONLY: even if a property listed
-     above is somehow re-introduced, no transition will animate it on this
-     surface — only the entrance/hidden opacity fade is preserved. */
+   The JS layer (script.js, "Wordmark click-to-top" block) toggles
+   `.is-condensed` unconditionally on every viewport. On iOS Safari the
+   confirmed source of subpixel jitter / frosted-pill flicker during
+   touch-driven compositor scroll was the animation of LAYOUT-AFFECTING
+   properties on a `position: fixed` element — specifically `scale` (changes
+   the box's effective size) and `padding` (changes the box's intrinsic
+   dimensions). Those two are FROZEN here.
+   Purely VISUAL properties (background-color, backdrop-filter, border-color,
+   opacity) do NOT trigger layout passes and DO NOT cause iOS jitter, so they
+   are still allowed to animate — that's the frosted-pill effect we WANT to
+   keep on mobile.
+   Trick: padding `8px 20px` is set ALWAYS-ON below (matches the desktop
+   `.is-condensed` padding verbatim, line 266). At rest the wordmark already
+   has its "pill-sized" box, but background/border/backdrop-filter remain at
+   their base values (transparent / none) inherited from `.wordmark` — so no
+   visible pill is rendered. When `.is-condensed` adds bg + blur + border-color
+   the pill APPEARS visually around a wordmark whose BOX HAS NOT CHANGED SIZE
+   → no subpixel shift, no jitter.
+   Co-located with the wordmark rules in section 6 (rather than the
+   consolidated mobile block in section 13) to keep the safety net adjacent
+   to the rule it defends. */
 @media (max-width: 767px), (pointer: coarse) {
-    .wordmark,
+    .wordmark {
+        /* Always-on pill-sized box. Same horizontal/vertical values as the
+           desktop `.is-condensed` padding (8px 20px, line 266) so the pill
+           geometry is identical between desktop scroll and mobile scroll. */
+        padding: 8px 20px;
+        /* Transition surface narrowed to PURELY VISUAL properties — no
+           translate, no scale, no padding. iOS Safari's subpixel jitter on
+           `position: fixed` only happens when LAYOUT-AFFECTING properties
+           animate. Animating only background-color / backdrop-filter /
+           border-color / opacity is safe (compositor-only). The desktop rule
+           above (line 252) cascades into mobile EXCEPT for this transition
+           list, which fully replaces it — so no `translate`, `scale` or
+           `padding` keyword is reachable for the engine to interpolate. */
+        transition:
+            opacity 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            background-color 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            backdrop-filter 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            -webkit-backdrop-filter 300ms cubic-bezier(0.2, 0.8, 0.2, 1),
+            border-color 300ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
     .wordmark.is-condensed {
+        /* Counter the desktop `scale: 0.92` (line 265). Padding is inherited
+           from the base `.wordmark` mobile rule above (8px 20px) — same
+           literal as the desktop `.is-condensed` value, so the cascade
+           resolves to the same number either way and no layout shift can
+           occur when the class toggles. The visible animation we KEEP on
+           mobile (background, backdrop-filter, border-color) cascades down
+           from the desktop `.wordmark.is-condensed` rule unchanged. */
         scale: 1;
-        padding: 0;
-        background: transparent;
-        border-color: transparent;
-        -webkit-backdrop-filter: none;
-        backdrop-filter: none;
-        transition: opacity 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 }
 
