@@ -1503,14 +1503,14 @@
         on document mouseenter/mouseleave).
      2. Comet trail: rAF loop clears the full canvas each frame, then
         strokes a polyline through the recent mouse-position buffer (points
-        younger than MAX_AGE_MS = 220ms). Per-segment lineWidth and alpha
+        younger than MAX_AGE_MS = 500ms). Per-segment lineWidth and alpha
         decay linearly from head (fresh, thick, opaque-ish) to tail (old,
         thin, transparent). lineCap/lineJoin = 'round' for soft segment
         junctions.
 
    Performance notes:
      - rAF loop runs continuously, but when the cursor stops moving the
-       buffer drains within MAX_AGE_MS (220 ms) and the per-frame work
+       buffer drains within MAX_AGE_MS (500 ms) and the per-frame work
        collapses to a single ctx.clearRect + a length-check short-circuit.
      - mousemove listener registered { passive: true } — no preventDefault,
        no scroll-blocking risk.
@@ -1538,7 +1538,7 @@
     if (!ctx) return;
 
     // === Tunable constants ===
-    const MAX_AGE_MS = 220;        // points older than this drop off the tail
+    const MAX_AGE_MS = 500;        // points older than this drop off the tail
     const STROKE_HEAD = 8;         // px line width at the freshest segment
     const TRAIL_ALPHA_HEAD = 0.85; // alpha at the head of the trail
     const TRAIL_R = 215;           // lime stroke RGB — matches --color-accent #D7FF00
@@ -1596,7 +1596,7 @@
     function render() {
         const now = performance.now();
         // Drop stale points (FIFO drain). Single while-shift is O(n) worst-case
-        // but n is small (a fast trackpad caps at ~26 events in 220ms at 120Hz).
+        // but n is small (a fast trackpad caps at ~60 events in 500ms at 120Hz).
         while (points.length > 0 && now - points[0].t > MAX_AGE_MS) {
             points.shift();
         }
