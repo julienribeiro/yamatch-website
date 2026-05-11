@@ -120,8 +120,8 @@ Every push to `main` triggers a re-deploy (typically 1-3 minutes).
 
 - **French throughout** the user-facing copy
 - **Design tokens only** in `:root` — no raw hex outside `:root`
-- **Mobile-first invariants** : `--mobile-hero-card-margin: clamp(20px, 5vw, 40px)` is the single mobile column token (consumed by `.hero-card`, `.screens-rail`, `.faq`, `.wordmark`)
-- **Equal margins all sides** on `.hero-card` is a locked-in pattern (memory `feedback_website_hero_pattern.md`)
+- **Mobile-first invariants** : two complementary tokens govern mobile spacing — `--mobile-hero-card-margin: clamp(20px, 5vw, 40px)` (inline axis: `width` formula on `.hero-card`, `padding-inline` on `.screens-rail` and `.faq`) and `--mobile-hero-card-margin-block: clamp(30px, 7.5vw, 60px)` (block axis: `margin-top`, `margin-bottom`, `min-height` on `.hero-card`, and `top` on `.wordmark`). Do NOT collapse them back into a single token.
+- **Equal block margins + tighter inline margins** on `.hero-card` is the current locked-in pattern (memory `feedback_website_hero_pattern.md`): top = bottom = `--mobile-hero-card-margin-block`, left = right = `--mobile-hero-card-margin`. The two axes are intentionally decoupled.
 - **Carousel state machine**: gesture-lock model, idempotent transform composition (`getCurrentTranslateX` + `getBoundingClientRect`), touch live-follow, rubber-band at boundaries
 - **`--scroll` lift mechanism**: JS-driven via `computeBaseLift` (always 40px gap from buttons via `--desired-button-gap` token)
 - **`prefers-reduced-motion`** respected via blanket CSS rule + JS early-return

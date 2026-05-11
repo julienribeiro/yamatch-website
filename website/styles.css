@@ -1081,23 +1081,43 @@ p {
            footer's editorial gutter shrinks by 4-6 px which stays comfortably
            above the 8 px minimum for tap targets. */
         --page-pad: clamp(8px, 2.5vw, 12px);
-        /* Mobile floating-tile margin — equal on all four sides of the lime
-           hero card. Extracted to a token because two distinct selectors now
-           consume it: `.hero-card` (4× — width / margin-top / margin-bottom /
-           min-height) AND `.wordmark` (1× — `top: calc(... / 2)` to vertically
-           centre the wordmark in the white strip between viewport top and the
-           card's top edge). With cross-selector consumers, repeating the
-           literal would risk drift; the token keeps them locked.
+        /* Mobile floating-tile margin — INLINE AXIS ONLY (left / right of the
+           lime hero card). Decoupled 2026-05-11 from the block axis (top /
+           bottom) so the horizontal column can be tightened (gain text budget
+           for the hero title wrap) WITHOUT also collapsing the white strip
+           above the card where the wordmark lives. The block axis lives in
+           --mobile-hero-card-margin-block below.
+
+           Inline-axis consumers (this token):
+             .hero-card           → width: calc(100% - 2 * ...)
+             .screens-rail        → padding-inline: var(...)
+             .faq                 → padding-inline: var(...)
 
            Reduced 2026-05-11 from clamp(30px, 7.5vw, 60px) to widen the lime
            card by 20 px at vp 375 (and 20 px at vp 320). The previous floor
            wasted column width on a narrow viewport where every pixel of text
            budget matters for the 2-line "TON PROCHAIN / TOURNOI T'ATTEND"
-           hero title wrap (Frick 0.3 caps, skewX(-12deg)). Cascade: .hero-card
-           gains width via `calc(100% - 2 * ...)`, .wordmark stays auto-recentred
-           in the white strip via `top: calc(... / 2)`, .screens-rail and .faq
-           inherit the same column edge via `padding-inline`. */
+           hero title wrap (Frick 0.3 caps, skewX(-12deg)). */
         --mobile-hero-card-margin: clamp(20px, 5vw, 40px);
+
+        /* Mobile floating-tile margin — BLOCK AXIS ONLY (top / bottom of the
+           lime hero card + vertical position of the wordmark in the white
+           strip above the card). Split out 2026-05-11 from the inline-axis
+           token above so the white strip that hosts the wordmark keeps a
+           comfortable height (≥ 30 px floor) even when the inline margin is
+           tightened to a smaller floor (20 px) for text-budget reasons.
+
+           Block-axis consumers (this token):
+             .hero-card           → margin-top, margin-bottom
+             .hero-card           → min-height: calc(100svh - 2 * ...)
+             .wordmark            → top: calc(... / 2)  (wordmark vertically
+                                    centred in the white strip whose height
+                                    equals this token)
+
+           Range clamp(30px, 7.5vw, 60px) restores the pre-tightening
+           breathing room around the wordmark and below the card without
+           reverting the inline-axis text-budget gain. */
+        --mobile-hero-card-margin-block: clamp(30px, 7.5vw, 60px);
     }
 
     /* Mobile hero is now a floating tile: the lime card carries equal margins on
@@ -1111,44 +1131,49 @@ p {
     }
 
     .hero-card {
-        /* Floating-tile layout — equal margins on all four sides, drastically
-           larger than the previous side-only inset (clamp(24px, 6vw, 40px)).
-           Sources its margin from the mobile token --mobile-hero-card-margin
-           (declared in the mobile :root override above). Reused by .wordmark
-           below to keep the wordmark vertically centred in the white strip
-           between viewport top and the card top — a single source of truth
-           prevents the two selectors from drifting apart on future tweaks.
-           - width:        viewport minus 2× horizontal margin (centred via auto)
-           - margin-inline:auto centres the card horizontally
-           - margin-top / margin-bottom: equal vertical margin (was: --page-pad / 0)
-           - min-height:   100svh minus 2× vertical margin so the card fits in the
-                           initial viewport without forcing scroll
-           - border-radius:full (was: top-rounded / bottom-flat) — bottom corners
-                           are now visible against white, so they must be rounded
-                           to match the top. */
+        /* Floating-tile layout — margins on all four sides, sourced from TWO
+           tokens to allow inline (left/right) and block (top/bottom) axes to
+           be tuned independently:
+             --mobile-hero-card-margin       → inline axis (width formula)
+             --mobile-hero-card-margin-block → block axis (top/bottom + min-height)
+           Decoupling rationale: the inline floor (20 px) is set tight to maximise
+           text width for the 2-line hero title wrap; the block floor (30 px)
+           preserves the white strip above the card where .wordmark lives, so
+           the wordmark keeps a comfortable optical gap above and below.
+           - width:         viewport minus 2× inline margin (centred via auto)
+           - margin-inline: auto centres the card horizontally
+           - margin-top / margin-bottom: equal block margin (sourced from block token)
+           - min-height:    100svh minus 2× block margin so the card fits in the
+                            initial viewport without forcing scroll
+           - border-radius: full (was: top-rounded / bottom-flat) — bottom corners
+                            are now visible against white, so they must be rounded
+                            to match the top. */
         width: calc(100% - 2 * var(--mobile-hero-card-margin));
         margin-inline: auto;
-        margin-top: var(--mobile-hero-card-margin);
-        margin-bottom: var(--mobile-hero-card-margin);
+        margin-top: var(--mobile-hero-card-margin-block);
+        margin-bottom: var(--mobile-hero-card-margin-block);
         /* svh (small viewport height) is preferred over vh because it excludes
            the dynamic mobile URL bar, so the card height stays stable while the
            URL bar collapses/expands during scroll — no "wobble". Browser
            support: Safari 15.4+, Chrome 108+, Firefox 101+. */
-        min-height: calc(100svh - 2 * var(--mobile-hero-card-margin));
+        min-height: calc(100svh - 2 * var(--mobile-hero-card-margin-block));
         border-radius: clamp(24px, 7vw, 32px);
     }
 
     /* Vertically centre the wordmark in the white strip between the viewport
        top and the lime card's top edge. The strip height equals the card's
-       top margin (--mobile-hero-card-margin); the wordmark's centre sits at
-       half of that. `translate: -50% -50%` (already declared in the desktop
-       rule, section 6) keeps the element's centre locked to this `top` value
-       regardless of its own height — so equal gap above and below the
-       wordmark by construction. Default desktop value (`var(--page-pad) / 2`)
-       is too small here because mobile overrides --page-pad to a much
-       smaller clamp than the card's all-sides margin. */
+       TOP margin, which is the block-axis token (--mobile-hero-card-margin-block);
+       the wordmark's centre sits at half of that. `translate: -50% -50%`
+       (already declared in the desktop rule, section 6) keeps the element's
+       centre locked to this `top` value regardless of its own height — so
+       equal gap above and below the wordmark by construction. Sourcing the
+       block token (NOT the inline one) is critical: the strip the wordmark
+       lives in is vertical, so the wordmark's vertical position must track
+       the vertical margin. Default desktop value (`var(--page-pad) / 2`) is
+       too small here because mobile overrides --page-pad to a much smaller
+       clamp than the card's block margin. */
     .wordmark {
-        top: calc(var(--mobile-hero-card-margin) / 2);
+        top: calc(var(--mobile-hero-card-margin-block) / 2);
     }
 
     .hero-card-inner {

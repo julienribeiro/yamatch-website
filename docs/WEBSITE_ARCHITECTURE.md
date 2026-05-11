@@ -295,12 +295,14 @@ html, body { overflow-x: clip; }
 
 ### `@media (max-width: 767px)`
 - `.hero { padding: 0 }` — removes all padding from the hero section; horizontal spacing is handled by `.hero-card` itself.
-- `--mobile-hero-card-margin: clamp(20px, 5vw, 40px)` — token defined once on `.hero-card` (mobile override block); consumed by `width`, `margin-inline`, `margin-top`, `margin-bottom`, and `min-height` so the four-sides equal-margin invariant has a single source of truth. Removes the previous four inline repetitions of the same `clamp`.
-- `.hero-card { width: calc(100% - 2 * var(--mobile-hero-card-margin)); margin-inline: auto; margin-top: var(--mobile-hero-card-margin); margin-bottom: var(--mobile-hero-card-margin); min-height: calc(100svh - 2 * var(--mobile-hero-card-margin)); border-radius: clamp(24px, 7vw, 32px) }` — **floating tile**: equal margins on all four sides, centred horizontally and vertically. `min-height` ≈ 86–88 % of the viewport. Full all-corners border-radius (no flat bottom). This matches the "equal margins all sides" invariant from desktop — the pattern is now respected on mobile too.
-- `.wordmark { top: calc(var(--mobile-hero-card-margin) / 2) }` — positions the wordmark exactly halfway between the viewport top and the lime card top, producing equal optical gaps above and below the wordmark.
+- Two tokens govern mobile spacing (inline and block axes are **intentionally decoupled**):
+  - `--mobile-hero-card-margin: clamp(20px, 5vw, 40px)` — **inline axis only**: consumed by `width` formula (`calc(100% - 2 * var(--mobile-hero-card-margin))`), `margin-inline: auto` on `.hero-card`, and `padding-inline` on `.screens-rail` and `.faq`. Aligns all three elements to the same left/right edge.
+  - `--mobile-hero-card-margin-block: clamp(30px, 7.5vw, 60px)` — **block axis only**: consumed by `margin-top`, `margin-bottom`, and `min-height` (`calc(100svh - 2 * var(--mobile-hero-card-margin-block))`) on `.hero-card`, and `top` on `.wordmark`. Larger than the inline token to restore breathing room above the wordmark without widening horizontal margins.
+- `.hero-card { width: calc(100% - 2 * var(--mobile-hero-card-margin)); margin-inline: auto; margin-top: var(--mobile-hero-card-margin-block); margin-bottom: var(--mobile-hero-card-margin-block); min-height: calc(100svh - 2 * var(--mobile-hero-card-margin-block)); border-radius: clamp(24px, 7vw, 32px) }` — **floating tile**: equal block margins (top = bottom), tighter inline margins (left = right), centred horizontally via `margin-inline: auto`. `min-height` ≈ 85–87 % of the viewport. Full all-corners border-radius (no flat bottom).
+- `.wordmark { top: calc(var(--mobile-hero-card-margin-block) / 2) }` — positions the wordmark exactly halfway between the viewport top and the lime card top, using the block-axis token so it tracks the card's top margin automatically.
 - `.hero-carousel-embla { --nbr-slide: 1; --slide-spacing: clamp(16px, 4vw, 28px); --scroll: 0 }` — exactly one slide visible per viewport (slide width = container width = viewport − 2×`--mobile-hero-card-margin` = lime card width). No lift. Carousel is intentionally pushed below the fold (visible on scroll).
 - `.screens-rail { padding-inline: var(--mobile-hero-card-margin); padding-block: clamp(40px, 7vw, 96px); background: var(--color-light-bg) }` — `padding-inline` aligns the rail's left/right edges with the lime card edges; neighbouring slides peek into the padding area, providing swipe affordance.
-- `.faq { padding-inline: var(--mobile-hero-card-margin); padding-block: var(--mobile-hero-card-margin) }` — overrides `--page-pad` on mobile so the FAQ left/right edges align with the lime card and carousel, not the wider desktop gutter; `padding-block` applies the same token to top/bottom, matching the "equal margins all sides" invariant of the lime card. Footer keeps `--page-pad`.
+- `.faq { padding-inline: var(--mobile-hero-card-margin); padding-block: var(--mobile-hero-card-margin) }` — overrides `--page-pad` on mobile so the FAQ left/right edges align with the lime card and carousel, not the wider desktop gutter; `padding-block` reuses the inline token (the FAQ block padding is independent of the hero card block-axis split). Footer keeps `--page-pad`.
 - JS: page-scroll-progress checks `mobileQuery.matches` and skips.
 
 ---
@@ -309,6 +311,9 @@ html, body { overflow-x: clip; }
 
 ### `--mobile-hero-card-margin` token + wordmark vertical centering (2026-05-10)
 The four repeated inline `clamp(20px, 5vw, 40px)` literals in `.hero-card`'s mobile override block were factored into a single CSS custom property `--mobile-hero-card-margin`. A new `.wordmark` mobile rule `top: calc(var(--mobile-hero-card-margin) / 2)` places the wordmark at the visual midpoint between viewport top and lime card top, achieving equal optical spacing. One source of truth for the margin value; the wordmark tracks it automatically when the margin changes.
+
+### Inline/block margin split — `--mobile-hero-card-margin-block` introduced (2026-05-11)
+`--mobile-hero-card-margin: clamp(20px, 5vw, 40px)` is now **inline-axis only** (left/right: `width` formula on `.hero-card`, `padding-inline` on `.screens-rail` and `.faq`). A new token `--mobile-hero-card-margin-block: clamp(30px, 7.5vw, 60px)` takes over the **block axis**: `margin-top`, `margin-bottom`, and `min-height` on `.hero-card`, plus `top` on `.wordmark`. Motivation: restore vertical breathing room above the wordmark (the block margin had been compressed when both axes shared a single token) without widening the horizontal margins, which control carousel alignment. The two tokens are kept intentionally separate — do not collapse back into one.
 
 ### Mobile carousel = lime card width (2026-05-10)
 `.screens-rail` `padding-inline` on mobile is now `var(--mobile-hero-card-margin)` (previously `var(--page-pad)`), and `--nbr-slide` is `1` (previously `1.08`/`1.1`). Each slide is exactly as wide as the lime hero card (viewport − 2×`--mobile-hero-card-margin`). Neighbouring slides peek into the padding area, providing natural swipe affordance without fractional-slide hacks.
@@ -381,9 +386,16 @@ Paired changes: `min-width: 0` added to `.screen-card` (prevents flex `min-width
 
 ### Mobile hero — floating tile equal margins (2026-05-10)
 
-`.hero-card` on mobile (`max-width: 767px`) is a **floating tile**: all four margins equal `clamp(20px, 5vw, 40px)`, card centred horizontally via `margin-inline: auto`, `min-height: calc(100svh - 2 * clamp(20px, 5vw, 40px))` (≈ 89–90 % of viewport), full all-corners border-radius (`clamp(24px, 7vw, 32px)`). `.hero { padding: 0 }` — spacing comes from the card's own margin formula, not the wrapper. Carousel (`.screens-rail`) is intentionally below the fold.
+`.hero-card` on mobile (`max-width: 767px`) is a **floating tile**: card centred horizontally via `margin-inline: auto`, full all-corners border-radius (`clamp(24px, 7vw, 32px)`). `.hero { padding: 0 }` — spacing comes from the card's own margin formula, not the wrapper. Carousel (`.screens-rail`) is intentionally below the fold.
 
-_Iteration history: full-bleed (`width: 100%`, reverted quickly) → side-margins only (`clamp(24px, 6vw, 40px)` inline, top = `--page-pad`, bottom flat) → **floating tile equal margins all sides** (current, 2026-05-10). The "equal margins all sides" pattern from the memory `feedback_website_hero_pattern.md` is now fully respected on mobile. This is the end of the margin-iteration cycle._
+**Current margin formula (inline/block split, 2026-05-11):**
+- Inline (left/right): `--mobile-hero-card-margin: clamp(20px, 5vw, 40px)` — controls `width: calc(100% - 2 * var(--mobile-hero-card-margin))` and aligns `.screens-rail`/`.faq` `padding-inline`.
+- Block (top/bottom): `--mobile-hero-card-margin-block: clamp(30px, 7.5vw, 60px)` — controls `margin-top`, `margin-bottom`, `min-height: calc(100svh - 2 * var(--mobile-hero-card-margin-block))` (≈ 85–87 % of viewport), and `.wordmark top`.
+- Equal block margins (top = bottom) preserve the optical balance invariant; inline margins are intentionally tighter to keep carousel slide edges aligned with the lime card.
+
+_Addendum (2026-05-11): the "equal margins all sides" pattern from `feedback_website_hero_pattern.md` has evolved into **equal block margins (top = bottom) + tighter inline margins (left = right)**. The invariant that matters is symmetry within each axis — not that all four values are identical. The two axes are governed by separate tokens and must stay decoupled._
+
+_Iteration history: full-bleed (`width: 100%`, reverted quickly) → side-margins only (`clamp(24px, 6vw, 40px)` inline, top = `--page-pad`, bottom flat) → floating tile, single token all sides (2026-05-10) → **floating tile, inline/block split** (current, 2026-05-11)._
 
 ---
 
