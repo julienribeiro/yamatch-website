@@ -152,22 +152,33 @@
 
                 carousel.style.setProperty('--scroll', `${baseLift * inv}px`);
                 carousel.style.setProperty('--active-scale', activeScale.toFixed(4));
-                // Card-shrink: lime hero card's `min-height` is reduced by this
-                // many px on its consumer rules (see styles.css `.hero-card`
-                // min-height calc). Magnitude = baseLift × 0.8 × progress, i.e.
-                // 0 at scroll = 0 (card at full height, phone fully lifted),
-                // ramping linearly to baseLift × 0.8 at progress = 1 (carousel
-                // fully entered, phone flat in row). Tied to the SAME `progress`
-                // window as `--scroll` so the card's bottom edge rises in sync
-                // with the phone descending — eliminating the dead space that
-                // would otherwise open between the buttons and the phone top.
-                // The 0.8 factor caps the shrink slightly below the lift travel
-                // so the card never collapses past the buttons. At progress = 0
-                // (above the carousel zone) the value is 0 → CSS `calc(... - 0px)`
-                // is a no-op, preserving the initial card height. Reduced-motion
-                // users skip this writer entirely (outer guard) → CSS fallback
+                // Card-shrink: a POSITIVE px magnitude consumed by the lime
+                // hero card. Historically this was wired to `min-height` via
+                // `calc(... - var(--card-shrink, 0px))`, but that created a
+                // layout-feedback loop (writing min-height → reflows
+                // .screens-rail (sibling in flow) → carousel.getBoundingClientRect
+                // shifts → progress changes → next tick writes a different
+                // shrink → jitter). The css-expert has migrated the consumer
+                // to a VISUAL-ONLY clip-path on `.hero-card::before`, which
+                // requires a positive value. We compute the magnitude of the
+                // lift (always ≥ 0) because `baseLift` is intrinsically
+                // NEGATIVE (the phone sits below the buttons in flow, so it
+                // must be translated UP via a negative translateY — see
+                // computeBaseLift). `Math.max(0, -baseLift)` flips the sign
+                // and is defensive against the degenerate case where
+                // baseLift > 0 (e.g. phone already above its natural rest
+                // above the buttons — would otherwise produce a negative
+                // shrink). 0.8 factor caps the shrink slightly below the
+                // lift travel so the card never visually collapses past the
+                // buttons. progress = 0 → cardShrink = 0 (card at rest);
+                // progress = 1 → cardShrink = liftMagnitude × 0.8 (carousel
+                // fully entered, phone flat in row, card maximally clipped
+                // to follow the descending phone). Reduced-motion users
+                // skip this writer entirely (outer guard) → CSS fallback
                 // value (var missing → 0px) keeps the card unchanged.
-                heroCard.style.setProperty('--card-shrink', `${baseLift * 0.8 * progress}px`);
+                const liftMagnitude = Math.max(0, -baseLift);
+                const cardShrink = liftMagnitude * 0.8 * progress;
+                heroCard.style.setProperty('--card-shrink', `${cardShrink}px`);
             };
 
             const onScroll = () => {

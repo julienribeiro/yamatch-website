@@ -339,21 +339,23 @@ p {
        the fallback for Safari < 15.4 / Firefox < 101 / Chrome < 108 (cascade
        drops the second line on those engines and keeps the first); modern
        engines apply the second line and ignore the first. */
-    /* `--card-shrink` is a px value written by JS (script.js, page-scroll-progress
-       block) on this element's inline style. Magnitude = baseLift × 0.8 × progress,
-       i.e. 0 at scroll = 0 (card at full height), ramping linearly to baseLift × 0.8
-       once the carousel has fully entered the viewport. The card's bottom edge thus
-       rises in sync with the active phone descending into the row, eliminating the
-       dead space that would otherwise open between the buttons and the phone top.
-       Fallback `0px` keeps the card at its untouched height when the variable is
-       absent (initial paint before the first rAF tick, reduced-motion users where
-       the writer early-returns, or any failure to load script.js). The shrink is
-       naturally bounded by the card's intrinsic content height: once min-height
-       drops below `content + padding`, the content takes over and further shrink
-       has no visible effect (accepted natural ceiling, no extra clamp needed). */
-    min-height: calc(100vh - 2 * var(--page-pad) - var(--card-shrink, 0px));   /* fallback older Safari */
-    min-height: calc(100svh - 2 * var(--page-pad) - var(--card-shrink, 0px));  /* iOS 15.4+ : stable face URL bar */
-    background-color: var(--color-accent);
+    /* `--card-shrink` (px, written by JS — script.js, page-scroll-progress block)
+       is a POSITIVE magnitude that visually shrinks the lime fill from the BOTTOM
+       in sync with the active phone descending into the carousel row. It is
+       deliberately VISUAL-ONLY: the layout box (this rule's `min-height`) stays
+       fixed, so neither this element nor its sibling `.screens-rail` reflows when
+       the value updates. Why this matters: a previous iteration consumed
+       `--card-shrink` inside `min-height: calc(... - var(--card-shrink, 0px))`,
+       which mutated layout on every rAF tick → reflowed `.screens-rail` (sibling
+       in flow) → moved `carousel.getBoundingClientRect().top` → the JS scroll
+       writer recomputed `progress` against a moving target → feedback loop →
+       jittery scroll. The shrink is now applied as a pure `clip-path` on
+       `.hero-card::before` (the lime fill, see rule below) and on
+       `.hero-card-waves` (so the waves clip in sync). The element's `background`
+       is therefore `transparent` here — the lime colour lives on the pseudo-element. */
+    min-height: calc(100vh - 2 * var(--page-pad));   /* fallback older Safari */
+    min-height: calc(100svh - 2 * var(--page-pad));  /* iOS 15.4+ : stable face URL bar */
+    background: transparent;
     border-radius: clamp(24px, 3vw, 40px);
     overflow: hidden;
     /* Entrance animates opacity + blur only — NO scale. The shared `titleEntrance`
@@ -378,6 +380,38 @@ p {
         opacity: 1;
         filter: blur(0);
     }
+}
+
+/* Lime fill of the hero card. Promoted from the `.hero-card` background
+   to a pseudo-element so we can clip the fill from the bottom (via
+   `clip-path: inset(... round ...)`) without altering the parent's layout
+   box. Why: the JS `--card-shrink` writer ticks every rAF; touching the
+   parent's layout (e.g. `min-height: calc(... - var(--card-shrink))`)
+   reflowed the in-flow sibling `.screens-rail`, which moved the carousel's
+   bounding rect, which fed back into the scroll writer → jitter. With the
+   shrink expressed as `clip-path` on this absolutely-positioned ::before,
+   the layout is untouched and only the painted pixels of the lime change.
+   z-index: 0 keeps it BEHIND the wave SVG (z-index: 0 too but later in
+   the painting order — see note below) and the inner content
+   (`.hero-card-inner` z-index: 1, declared in section 7.3).
+   Note on the round value: CSS `inset()` does NOT accept the `inherit`
+   keyword for the corner radius — it must be a length / percentage /
+   <basic-shape-radius>. We therefore repeat the same `clamp(...)` literal
+   used by `.hero-card { border-radius }` (and override it inside the mobile
+   media query, where `.hero-card` uses a different clamp). At
+   `--card-shrink: 0px` the clip resolves to `inset(0 0 0 0 round R)`,
+   which is visually identical to a plain rounded rectangle covering the
+   whole element — so the page renders identically when JS is absent,
+   reduced-motion is on, or the very first frame before the rAF runs. */
+.hero-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-accent);
+    border-radius: inherit;
+    z-index: 0;
+    pointer-events: none;
+    clip-path: inset(0 0 var(--card-shrink, 0px) 0 round clamp(24px, 3vw, 40px));
 }
 
 /* --- 7.3 .hero-card-inner --------------------------------------------------
@@ -417,6 +451,13 @@ p {
     border-radius: inherit;
     /* Same fade-in feel the prior net had, so the entrance choreography reads identically. */
     animation: wavesEntrance 240ms ease-out backwards;
+    /* Same visual shrink as `.hero-card::before` (the lime fill) — the waves
+       must clip in lockstep with the lime bottom edge, otherwise the wave
+       paths would visibly extend past the lime and float on the white
+       background. `inset()` does not accept `inherit` for the corner radius,
+       so we repeat the literal clamp from `.hero-card { border-radius }`
+       (mobile override redefines it inside the @media block below). */
+    clip-path: inset(0 0 var(--card-shrink, 0px) 0 round clamp(24px, 3vw, 40px));
 }
 
 @keyframes wavesEntrance {
@@ -750,14 +791,18 @@ p {
 /* --- 9.5 Active slide phone lift + arrival entrance ----------------------- */
 /* Active slide's phone image rides --scroll vertically — at rest --scroll lifts the image
    above the row into the hero zone (just below the lime card's CTA buttons); as the user
-   scrolls the page, --scroll animates toward 0 so the image descends into the row. The
-   short 80ms linear transition smooths per-frame rAF writes from the page-scroll-progress
-   block without dragging behind the user's scroll. */
+   scrolls the page, --scroll animates toward 0 so the image descends into the row.
+   No CSS transition on `transform`: the lift is 100% scroll-driven (the JS writes
+   `--scroll` directly on every rAF tick, so the value is already perfectly synced
+   to the user's scroll position). A transition here would only ADD visible lag
+   between the user's scroll input and the phone's response. NOTE: this is unrelated
+   to the carousel container's snap transition (`.hero-carousel-embla--container`,
+   section 9.3) which animates the horizontal slide change — that one MUST stay. */
 .screen-card.active .phone-image {
     transform: translateY(var(--scroll)) scale(var(--active-scale, 1));
     transform-origin: center top;
     will-change: transform;
-    transition: transform 80ms linear;
+    transition: none;
 }
 
 /* Entrance choreography for the initially-active phone — opacity + blur only (NO
@@ -1168,13 +1213,22 @@ p {
            the dynamic mobile URL bar, so the card height stays stable while the
            URL bar collapses/expands during scroll — no "wobble". Browser
            support: Safari 15.4+, Chrome 108+, Firefox 101+. */
-        /* `--card-shrink` (px, written by JS — see desktop rule above for full
-           contract) reduces the card's min-height in sync with the active phone's
-           descent into the carousel row, removing the dead space below the buttons.
-           Fallback `0px` preserves the original svh-based height when the writer
-           is inactive (initial paint, reduced-motion, JS failure). */
-        min-height: calc(100svh - 2 * var(--mobile-hero-card-margin-block) - var(--card-shrink, 0px));
+        /* `--card-shrink` does NOT affect this min-height — see the desktop
+           rule's comment for the full rationale. Layout box stays fixed; the
+           visual shrink is applied via clip-path on `.hero-card::before` and
+           `.hero-card-waves` (overridden just below to use the mobile
+           border-radius literal). */
+        min-height: calc(100svh - 2 * var(--mobile-hero-card-margin-block));
         border-radius: clamp(24px, 7vw, 32px);
+    }
+
+    /* Mobile override for the lime fill and the wave SVG: same `inset()`
+       shrink contract as desktop, but the corner radius literal must match
+       the mobile `.hero-card { border-radius }` value above (`inset()`'s
+       round value cannot use `inherit`). */
+    .hero-card::before,
+    .hero-card-waves {
+        clip-path: inset(0 0 var(--card-shrink, 0px) 0 round clamp(24px, 7vw, 32px));
     }
 
     /* Vertically centre the wordmark in the white strip between the viewport
