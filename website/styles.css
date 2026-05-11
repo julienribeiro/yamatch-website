@@ -229,6 +229,24 @@ p {
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     animation: wordmarkEntrance 320ms cubic-bezier(0.2, 0.8, 0.2, 1) 80ms backwards;
+    /* iOS Safari rendering stabilisers for the fixed-positioned wordmark.
+       `transform: translateZ(0)` forces the browser to promote the element onto its
+       own compositor layer so its raster is not invalidated every time the
+       touch-driven scroll re-paints the page underneath. `backface-visibility:
+       hidden` keeps that layer from being re-rasterised when the entrance
+       `transform: translateY(...)` keyframe finishes (Safari otherwise discards the
+       layer the moment the transform reaches `translate(0)`).
+       NOTE: `transform: translateZ(0)` is the legacy SHORTHAND — it does NOT
+       collide with the `translate: -50% -50%` individual property declared above.
+       Both compose cleanly (translate runs first, transform second).
+       NOTE: `will-change: opacity` is intentional — NOT `will-change: transform`.
+       Declaring `will-change: transform` would invite the browser to pre-allocate
+       for transform animation and, on iOS Safari, can amplify subpixel jitter
+       on every touch frame. We only need the layer-promotion side effect for
+       stable rendering, not a transform-animation hint. */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    will-change: opacity;
     /* Transition the scroll-driven properties only — `transform` is left alone so the entrance
        keyframe (which animates `transform: translateY(...)`) still plays without conflict. */
     transition:
@@ -289,6 +307,40 @@ p {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Mobile + touch safety net for the .is-condensed pill animation.
+   --------------------------------------------------------------------------
+   The JS layer (script.js, "Wordmark click-to-top" block) already gates the
+   `.is-condensed` toggle behind `(pointer: fine) AND (min-width: 768px)`, so the
+   class is normally never added on touch / mobile. This block is a CSS-side
+   safety net: even if a future code path re-adds `.is-condensed` on a touch
+   viewport, the animated properties are explicitly neutralised here, so no
+   visible change can occur on iOS Safari (where `position: fixed` + multi-
+   property transitions on the wordmark were the confirmed source of subpixel
+   jitter and frosted-pill flicker during touch-driven compositor scroll).
+   Co-located with the wordmark rules in section 6 (rather than the consolidated
+   mobile block in section 13) to keep the safety net adjacent to the rule it
+   defends — the contract is "this MQ overrides the wordmark scroll-state
+   animation surface entirely on mobile/touch".
+   - `scale: 1` matches the individual property used by `.is-condensed` (line
+     247) — overrides any 0.92 the class would otherwise apply.
+   - `padding`, `background`, `border-color`, `backdrop-filter` are all reset to
+     their `.wordmark` base-state values, regardless of `.is-condensed`.
+   - `transition` is narrowed to `opacity` ONLY: even if a property listed
+     above is somehow re-introduced, no transition will animate it on this
+     surface — only the entrance/hidden opacity fade is preserved. */
+@media (max-width: 767px), (pointer: coarse) {
+    .wordmark,
+    .wordmark.is-condensed {
+        scale: 1;
+        padding: 0;
+        background: transparent;
+        border-color: transparent;
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
+        transition: opacity 220ms cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 }
 

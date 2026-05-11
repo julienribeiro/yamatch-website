@@ -35,11 +35,36 @@
                 window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
             });
 
-            // Condensed-pill toggle runs unconditionally — reduced-motion users still need
-            // the frosted-pill affordance. The reduced-motion media query in styles.css
-            // neutralizes the pill's transition, so they get the visual state without animation.
+            // Condensed-pill toggle is gated to fine-pointer, non-mobile viewports.
+            // On iOS Safari (touch + position: fixed) the multi-property pill transition
+            // (scale, padding, background, backdrop-filter, border-color — see
+            // .wordmark.is-condensed in styles.css) interacts badly with touch-driven
+            // compositor scroll: subpixel jitter on the wordmark + flicker of the
+            // frosted pill background. The CSS layer carries a safety net that
+            // neutralizes the animated properties on (max-width: 767px), (pointer: coarse),
+            // but we also kill the toggle source-side here so the class never lands on
+            // touch / mobile in the first place.
+            //
+            // Names are intentionally scoped to this block (touchWordmarkQuery /
+            // mobileWordmarkQuery) to avoid collision with `mobileQuery` and
+            // `coarsePointerQuery` declared in the page-scroll IIFE below.
+            const touchWordmarkQuery = window.matchMedia('(pointer: coarse)');
+            const mobileWordmarkQuery = window.matchMedia('(max-width: 767px)');
+            const shouldCondenseWordmark = () =>
+                !touchWordmarkQuery.matches && !mobileWordmarkQuery.matches;
+
             let rafId = null;
             const updateCondensed = () => {
+                const canCondense = shouldCondenseWordmark();
+
+                if (!canCondense) {
+                    // Strip any pre-existing `.is-condensed` if the user transitioned
+                    // from desktop into a mobile/touch breakpoint while scrolled.
+                    wordmark.classList.remove('is-condensed');
+                    rafId = null;
+                    return;
+                }
+
                 wordmark.classList.toggle('is-condensed', window.scrollY > 30);
                 rafId = null;
             };
@@ -47,6 +72,31 @@
                 if (!rafId) rafId = requestAnimationFrame(updateCondensed);
             };
             window.addEventListener('scroll', onScroll, { passive: true });
+
+            // Re-evaluate when the viewport / pointer mode changes (resize, rotation,
+            // devtools mobile-emulation toggle). If the new mode disallows condensing,
+            // strip the class immediately; either way schedule one rAF tick so the
+            // current scroll state lands correctly under the new mode.
+            const handleWordmarkModeChange = () => {
+                if (!shouldCondenseWordmark()) {
+                    wordmark.classList.remove('is-condensed');
+                }
+
+                if (!rafId) {
+                    rafId = requestAnimationFrame(updateCondensed);
+                }
+            };
+
+            // Safari ≤13.3 exposes addListener / removeListener instead of the
+            // EventTarget addEventListener API on MediaQueryList. Feature-detect
+            // and fall back to keep older iOS versions working.
+            if (touchWordmarkQuery.addEventListener) {
+                touchWordmarkQuery.addEventListener('change', handleWordmarkModeChange);
+                mobileWordmarkQuery.addEventListener('change', handleWordmarkModeChange);
+            } else {
+                touchWordmarkQuery.addListener(handleWordmarkModeChange);
+                mobileWordmarkQuery.addListener(handleWordmarkModeChange);
+            }
         }
     }
 
