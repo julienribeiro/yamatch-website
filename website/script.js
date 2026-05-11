@@ -1268,7 +1268,7 @@
     // Performance: runs exactly once at DOMContentLoaded. No scroll/resize
     // re-render — the QR is static, and the host box scales via CSS.
     {
-        const QR_VALUE = 'https://julienribeiro.github.io/yamatch-website/download/';
+        const QR_VALUE = 'https://appyamatch.fr/download/';
         const QR_SIZE = 268;            // intrinsic viewBox edge length (px)
         // 'Q' = 25% error correction. Bumped from 'M' (15%) because we knock out
         // a centred rectangle to embed the Yamatch wordmark — at 'M' the masked

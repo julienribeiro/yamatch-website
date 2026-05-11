@@ -109,8 +109,10 @@ Edit any file; live-server auto-reloads the page on save.
 
 ## Publishing
 
-The site is published via **GitHub Pages** at:
-**https://julienribeiro.github.io/yamatch-website/**
+The site is published via **GitHub Pages** with the custom domain :
+**https://appyamatch.fr/**
+
+(Le fichier `website/CNAME` configure le custom domain ; le DNS doit pointer vers les IPs GitHub Pages `185.199.108-111.153`. L'URL `https://julienribeiro.github.io/yamatch-website/` reste accessible pour debug — GitHub redirige automatiquement vers le custom domain.)
 
 Every push to `main` triggers a re-deploy (typically 1-3 minutes).
 
