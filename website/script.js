@@ -78,7 +78,27 @@
         // not just touch ones, so the savings apply uniformly.
         const coarsePointerQuery = window.matchMedia('(pointer: coarse)');
 
+        // Reduced-motion path: the page-scroll writer below early-returns on the
+        // `!reduceMotion` guard, so `--scroll` stays at its CSS default (0px) and
+        // the active phone is flat in the row from the start. There is no lift
+        // to "fully retract" → the carousel is horizontally navigable by
+        // construction. Set the dataset flag once at setup so carousel.js's gate
+        // (`isHorizontalReady`) doesn't permanently block these users.
+        if (reduceMotion && carousel) {
+            carousel.dataset.horizontalReady = 'true';
+        }
+
         if (carousel && heroCard && hero && !reduceMotion) {
+            // Default state for the carousel horizontal-navigation gate (read by
+            // carousel.js via `viewport.dataset.horizontalReady`): start LOCKED so
+            // wheel/touch on the carousel can't navigate horizontally while the
+            // active phone is still lifted above the rail. The first
+            // `updateScroll` tick (scheduled at the bottom of this block) will
+            // flip it to 'true' if the user already loaded mid-scroll past the
+            // threshold; otherwise it stays 'false' until the user scrolls down
+            // and `progress` reaches >= 0.995.
+            carousel.dataset.horizontalReady = 'false';
+
             // Desired vertical gap (in px) between the active phone's top edge and the
             // hero buttons' bottom edge at scroll = 0. Sourced from the CSS custom
             // property --desired-button-gap (declared in styles.css :root) so the value
@@ -249,6 +269,18 @@
                 let progress = (startY - virtualCarouselTop) / (startY - endY);
                 if (progress < 0) progress = 0;
                 else if (progress > 1) progress = 1;
+
+                // Carousel horizontal-navigation gate — handshake with carousel.js.
+                // The carousel may only intercept horizontal wheel/touch gestures
+                // once the active phone has fully retracted from its lifted-over-
+                // the-hero-buttons position (progress ~= 1, lift ~= 0). 0.995 leaves
+                // a sub-pixel safety band so float-arithmetic noise on the last
+                // pre-snap tick (e.g. 0.99998…) doesn't oscillate the dataset
+                // attribute between true/false. Writing to a dataset slot is a pure
+                // string property assignment — no layout invalidation, sub-µs cost,
+                // safe in this hot rAF path. carousel.js reads it via
+                // `viewport.dataset.horizontalReady === 'true'`.
+                carousel.dataset.horizontalReady = progress >= 0.995 ? 'true' : 'false';
 
                 const inv = 1 - progress;
                 const activeScale = 1 + inv * (isMobile ? 0.06 : 0.14);

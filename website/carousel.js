@@ -16,6 +16,23 @@
 
         if (viewport && container && slides.length > 0) {
             const mobileCarouselQuery = window.matchMedia('(max-width: 767px)');
+            // Defensive declaration: script.js's page-scroll block sets
+            // `viewport.dataset.horizontalReady = 'true'` for reduced-motion users
+            // at setup, but if the page-scroll block is somehow skipped (e.g. one
+            // of the `.hero-card` / `.hero` queries fails) reduced-motion users
+            // would otherwise stay locked out of the carousel forever. Reading
+            // the media query here too guarantees they can always navigate.
+            const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+            // Gate the horizontal-navigation handlers (wheel + touchstart) on the
+            // active phone being fully retracted into its row position. script.js
+            // owns the truth: it writes 'true' inside its rAF page-scroll writer
+            // when `progress >= 0.995`, and 'false' otherwise. Default at setup
+            // is 'false' (locked) so the carousel can't intercept gestures while
+            // the phone is still lifted above the hero-card buttons. Reduced
+            // motion bypass is OR'd in defensively (see comment above).
+            const isHorizontalReady = () =>
+                viewport.dataset.horizontalReady === 'true' || reduceMotionQuery.matches;
 
             const WHEEL_THRESHOLD = 45;
             const GESTURE_LOCK_MIN_MS = 0;
@@ -162,6 +179,22 @@
                 if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) return;
                 if (e.deltaX === 0) return;
 
+                if (!isHorizontalReady()) {
+                    // Page-scroll-progress hasn't yet retracted the active phone
+                    // into the row (`progress < 0.995`) — the carousel must NOT
+                    // intercept horizontal trackpad gestures: the user might be
+                    // doing a diagonal scroll whose horizontal component is
+                    // incidental, and capturing it now would block the vertical
+                    // page scroll that's about to bring the carousel into its
+                    // ready state. Reset `wheelAccum` so any pre-ready
+                    // micro-jiggle doesn't carry over and snap the moment the
+                    // gate opens. We also do NOT call `preventDefault()`, NOT
+                    // stamp `lastWheelAt`, NOT mutate `gestureLocked` — leave
+                    // the browser to handle the wheel event natively.
+                    wheelAccum = 0;
+                    return;
+                }
+
                 lastWheelAt = performance.now();
                 e.preventDefault();
 
@@ -200,6 +233,18 @@
             viewport.addEventListener('touchstart', (e) => {
                 if (e.touches.length === 0) return;
                 if (gestureLocked) return;
+                if (!isHorizontalReady()) {
+                    // Same handshake as the wheel handler: refuse to start a
+                    // touch gesture while the active phone is still lifted above
+                    // the hero buttons. By NOT setting `touching = true`, both
+                    // `touchmove` and `touchend` early-return on their existing
+                    // `if (!touching) return;` guards (lines below), so no
+                    // live-follow transform is written and no snap fires. The
+                    // browser handles the touch as a normal vertical scroll
+                    // gesture — exactly the desired behaviour while the lift is
+                    // still in play.
+                    return;
+                }
 
                 touchStartX = e.touches[0].clientX;
                 touchCurrentDx = 0;
