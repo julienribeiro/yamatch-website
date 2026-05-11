@@ -1068,7 +1068,7 @@ p {
     }
 
     :root {
-        --page-pad: clamp(16px, 5vw, 24px);
+        --page-pad: clamp(12px, 3.75vw, 18px);
         /* Mobile floating-tile margin — equal on all four sides of the lime
            hero card. Extracted to a token because two distinct selectors now
            consume it: `.hero-card` (4× — width / margin-top / margin-bottom /
@@ -1076,7 +1076,7 @@ p {
            centre the wordmark in the white strip between viewport top and the
            card's top edge). With cross-selector consumers, repeating the
            literal would risk drift; the token keeps them locked. */
-        --mobile-hero-card-margin: clamp(40px, 10vw, 80px);
+        --mobile-hero-card-margin: clamp(30px, 7.5vw, 60px);
     }
 
     /* Mobile hero is now a floating tile: the lime card carries equal margins on
@@ -1144,12 +1144,40 @@ p {
     }
 
     .hero-title {
-        /* Reduced ~20% from clamp(2rem, 9.2vw, 3.35rem) on user request — title felt
-           oversized on small mobile viewports. New range: 25.6px floor (vp ≤ ~213) →
-           ~28px @ vp375 → 42.4px ceiling (vp ≥ ~566). Still comfortably fits the
-           14ch max-width 2-line wrap inside the lime card. */
-        font-size: clamp(1.6rem, 7.5vw, 2.65rem);
-        max-width: 14ch;
+        /* Two-line wrap is now forced explicitly by `<br class="br-mobile-only">`
+           inserted between "Ton prochain" and " tournoi t'attend" inside the
+           `.hero-title-slant` span (see index.html L46). Line 1 = "TON PROCHAIN"
+           (12 chars), line 2 = "TOURNOI T'ATTEND" (16 chars).
+           Bumped ~+17% on user request ("un peu plus gros"); previous clamp was
+           clamp(1.6rem, 7.5vw, 2.65rem) → 25.6/28.1/42.4 px @ vp 320/375/cap.
+           New clamp: clamp(1.7rem, 8.75vw, 3rem) → 27.2/32.8/48 px @ vp 320/375/cap.
+           Floor 1.7rem (NOT 1.85rem the user originally suggested) is the worst-case
+           safety bound — at vp 320 the available text width is the hardest budget.
+
+           Visual budget at vp 320 (worst case, hard constraint):
+             card outer  = 100vw - 2 × --mobile-hero-card-margin
+                         = 320 - 2 × clamp(30, 7.5vw=24, 60) = 320 - 60 = 260 px
+             card-inner padding-x = clamp(16, 5vw=16, 28) = 16 px each side
+             available text width = 260 - 32 = 228 px
+             "TOURNOI T'ATTEND" (16 visual chars in Frick 0.3 caps, conservative
+             avg 0.50 em/glyph including thin '/'/space, narrow I/T) ≈ 7.5 em
+             unskewed; `transform: skewX(-12deg)` (line-height 0.95) widens the
+             bounding box by ~10% (tan(12°) ≈ 0.21 × line-height 0.95 ≈ 0.20 em
+             of horizontal shear) → skewed width ≈ 8.25 em.
+             At floor 1.7rem = 27.2 px: skewed ≈ 8.25 × 27.2 = 224 px ≤ 228 px ✓
+             (~4 px margin — tight but safe; using 1.85rem would overflow by ~16 px).
+
+           Per-viewport sanity check (skewed width vs available):
+             vp 320 — 27.2 px floor →  ~224 px ≤ 228 px ✓ (4 px buffer)
+             vp 375 — 8.75vw = 32.8 px → ~271 px ≤ 277 px ✓ (6 px buffer)
+             vp 414 — 8.75vw = 36.2 px → ~299 px ≤ 311 px ✓ (12 px buffer)
+             vp 549 — 8.75vw caps at 48 px → ~396 px ≤ 412 px ✓ (16 px buffer)
+
+           max-width raised 14ch → 18ch to match the desktop rule (line 429); the
+           explicit <br> is what enforces the 2-line wrap now, max-width is just a
+           safety cap for over-wide viewports inside the mobile range. */
+        font-size: clamp(1.7rem, 8.75vw, 3rem);
+        max-width: 18ch;
         line-height: 0.95;
     }
 
@@ -1261,17 +1289,22 @@ p {
     }
 
     /* Mobile FAQ heading — shrink so it stays strictly smaller than the mobile
-       .hero-title (`clamp(1.6rem, 7.5vw, 2.65rem)` = 25.6–42.4px). Without this
-       override, the desktop rule `clamp(2rem, 4.5vw, 3rem)` collapses to its
-       32px floor on every mobile viewport (4.5vw < 32px until vp ≈ 711), which
-       at vp 320–425 exceeds the live mobile hero-title (25.6–32px) — a clear
-       hierarchy inversion (the FAQ section heading visually outranks the page H1).
-       New range targets ~75% of the mobile hero-title at every viewport:
-       20px floor (vp ≤ ~364, ~78% of hero-title 25.6) → 5.5vw mid → 32px ceiling
-       (vp ≥ ~582, ~75% of hero-title 42.4 ceiling). Stays strictly < hero-title
-       at every viewport in the 320–767 range. Desktop rule (`.faq-title` base
-       at clamp(2rem, 4.5vw, 3rem) max 48px vs hero-title max 88px ≈ 55%) is
-       already comfortably under hero-title and is intentionally untouched. */
+       .hero-title (now `clamp(1.7rem, 8.75vw, 3rem)` = 27.2–48px after the
+       2026-05-11 +17 % bump). Without this override, the desktop rule
+       `clamp(2rem, 4.5vw, 3rem)` collapses to its 32px floor on every mobile
+       viewport (4.5vw < 32px until vp ≈ 711), which at vp 320–365 exceeds the
+       live mobile hero-title floor (27.2px) — a clear hierarchy inversion (the
+       FAQ section heading visually outranks the page H1).
+       Current range targets ~63–73% of the mobile hero-title at every viewport:
+         vp 320 — FAQ 20px (floor)        vs hero 27.2px (floor)  ≈ 73% ✓
+         vp 375 — FAQ 20.6px (5.5vw)      vs hero 32.8px (8.75vw) ≈ 63% ✓
+         vp 549 — FAQ 30px (5.5vw)        vs hero 48px (cap)      ≈ 63% ✓
+         vp 582 — FAQ 32px (cap)          vs hero 48px (cap)      ≈ 67% ✓
+       Stays strictly < hero-title at every viewport in the 320–767 range, so
+       the +17% bump on hero-title preserves the hierarchy without touching the
+       FAQ clamp. Desktop rule (`.faq-title` base at clamp(2rem, 4.5vw, 3rem)
+       max 48px vs hero-title max 88px ≈ 55%) is already comfortably under
+       hero-title and is intentionally untouched. */
     .faq-title {
         font-size: clamp(1.25rem, 5.5vw, 2rem);
     }
