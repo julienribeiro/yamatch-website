@@ -888,6 +888,16 @@ p {
     --scroll: 0px;
     --active-scale: 1.14;
     cursor: grab;
+    /* Browser-side hint: vertical pan (page scroll) is committed natively without
+       waiting for JS. Horizontal gestures are NOT consumed by the browser, so
+       carousel.js can still capture touchstart/touchmove/touchend for its custom
+       horizontal swipe state machine. Complementary to the JS intent-lock
+       (vertical/horizontal) in carousel.js: the browser commits vertical scroll
+       the instant it detects a vertical-dominant move, eliminating the micro
+       horizontal jitter that would otherwise occur while JS is still measuring
+       the gesture. Spec: pan-y allows native vertical pan and disables native
+       horizontal pan + pinch-zoom on this element. */
+    touch-action: pan-y;
 }
 
 /* --- 9.3 .hero-carousel-embla--container (flex row + snap transition) ----

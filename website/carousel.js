@@ -40,6 +40,20 @@
             const SILENCE_RESET_MS = 30;
             const RUBBER_BAND_DISTANCE = 70;
             const RUBBER_BAND_DURATION_MS = 280;
+            // Touch gesture-intent lock — see touchmove handler for the full state-machine.
+            // TOUCH_INTENT_THRESHOLD: minimum px of finger travel (on either axis) before
+            // the handler decides whether the gesture is `vertical` (page scroll) or
+            // `horizontal` (carousel swipe). 10 px is large enough to outwait the natural
+            // tremor when a finger lands on glass yet small enough that the user perceives
+            // no lag before the carousel starts following.
+            // TOUCH_HORIZONTAL_RATIO: dominance ratio that confirms an intent. With 1.35,
+            // the dominant axis must be ≥ 35 % larger than the cross axis to win — diagonal
+            // gestures inside that wedge stay ambiguous and the handler waits for more
+            // motion. Empirically tuned to absorb the small horizontal drift of a vertical
+            // page-scroll thumb-swipe (the bug we're fixing) without making clean
+            // horizontal swipes feel sluggish.
+            const TOUCH_INTENT_THRESHOLD = 10;
+            const TOUCH_HORIZONTAL_RATIO = 1.35;
 
             let activeIndex = slides.findIndex((s) => s.classList.contains('active'));
             if (activeIndex < 0) activeIndex = 0;
@@ -106,9 +120,16 @@
             };
 
             let touchStartX = 0;
+            let touchStartY = 0;
             let touchCurrentDx = 0;
             let touchBaseOffset = 0;
             let touching = false;
+            // touchIntent: null until the first significant move is observed, then locked
+            // to 'vertical' (let native page scroll handle the gesture, no transform writes,
+            // no snap on touchend) or 'horizontal' (live-follow + snap, current behaviour).
+            // Resetting to null in touchstart / touchend / touchcancel guarantees every new
+            // gesture re-evaluates intent from scratch.
+            let touchIntent = null;
             let wheelIdleTimer = null;
 
             const getCurrentTranslateX = () => {
@@ -247,31 +268,98 @@
                 }
 
                 touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
                 touchCurrentDx = 0;
+                // Intent is undecided at touchstart — the touchmove handler will set it
+                // to 'vertical' or 'horizontal' once the finger has travelled enough
+                // (TOUCH_INTENT_THRESHOLD on either axis) and one axis dominates the
+                // other by TOUCH_HORIZONTAL_RATIO. Until then, no transform write fires.
+                touchIntent = null;
                 // Snapshot the resting transform so touchmove can write a live
                 // translate that follows the finger in real time. Captured pre-move
                 // so it reflects the centered position of the current activeIndex,
                 // not any in-flight interpolation.
                 touchBaseOffset = computeOffsetForIndex(activeIndex);
                 touching = true;
+                // NB: no container.style.transform / .transition write here — the
+                // handler must stay neutral until intent is determined, otherwise a
+                // diagonal-but-mostly-vertical scroll would still get interpreted as a
+                // (zero-px) horizontal swipe and cancel the running CSS transition.
             }, { passive: true });
 
             viewport.addEventListener('touchmove', (e) => {
                 if (!touching || e.touches.length !== 1) return;
-                touchCurrentDx = e.touches[0].clientX - touchStartX;
-                // Live-follow: bypass the CSS snap transition and pin the container
-                // directly under the finger. Touch-only — wheel keeps no live-follow
-                // (trackpad inertia would extend the drag beyond the user's intent).
+
+                const currentX = e.touches[0].clientX;
+                const currentY = e.touches[0].clientY;
+                const dx = currentX - touchStartX;
+                const dy = currentY - touchStartY;
+                const absDx = Math.abs(dx);
+                const absDy = Math.abs(dy);
+
+                // Intent-detection phase. Until one axis travels far enough AND clearly
+                // dominates the other, the handler is silent: no transform write, no
+                // preventDefault (listener is { passive: true } anyway), so the browser
+                // is free to perform native vertical scroll. This is the fix for the
+                // mobile bug where a near-vertical scroll with a small horizontal
+                // component caused a parasite horizontal nudge of the carousel.
+                if (touchIntent === null) {
+                    // Not enough total movement yet to decide — wait.
+                    if (absDx < TOUCH_INTENT_THRESHOLD && absDy < TOUCH_INTENT_THRESHOLD) {
+                        return;
+                    }
+
+                    // Vertical clearly dominates → release the gesture to native scroll.
+                    if (absDy > absDx * TOUCH_HORIZONTAL_RATIO) {
+                        touchIntent = 'vertical';
+                        touchCurrentDx = 0;
+                        return;
+                    }
+
+                    // Horizontal clearly dominates → fall through to live-follow below.
+                    if (absDx > absDy * TOUCH_HORIZONTAL_RATIO) {
+                        touchIntent = 'horizontal';
+                    } else {
+                        // Ambiguous diagonal (dx ≈ dy) — keep waiting for the gesture
+                        // to clarify rather than guess. The finger will quickly resolve
+                        // toward one axis as the user commits to a direction.
+                        return;
+                    }
+                }
+
+                // Vertical lock is sticky for the rest of the gesture: never write a
+                // transform once we've decided the user is scrolling the page.
+                if (touchIntent === 'vertical') {
+                    return;
+                }
+
+                // touchIntent === 'horizontal' — live-follow as before. Bypass the CSS
+                // snap transition and pin the container directly under the finger.
+                // Touch-only — wheel keeps no live-follow (trackpad inertia would
+                // extend the drag beyond the user's intent).
+                touchCurrentDx = dx;
                 container.style.transition = 'none';
-                container.style.transform = `translate3d(${touchBaseOffset + touchCurrentDx}px, 0, 0)`;
+                container.style.transform = `translate3d(${touchBaseOffset + dx}px, 0, 0)`;
             }, { passive: true });
 
             viewport.addEventListener('touchend', () => {
                 if (!touching) return;
-                touching = false;
 
-                // Restore the default 440ms ease-in-out-cubic transition declared in
-                // styles.css so the snap (or snap-back for sub-threshold) animates.
+                // Vertical or undecided gesture — the carousel never wrote a transform,
+                // never disabled the CSS transition, never moved. Just clear the state
+                // and let the native vertical scroll continue uninterrupted. NO snap,
+                // NO rubberBand, NO setActiveIndex (which would emit a transform write
+                // and could nudge the carousel by a sub-pixel rounding amount).
+                if (touchIntent !== 'horizontal') {
+                    touching = false;
+                    touchIntent = null;
+                    touchCurrentDx = 0;
+                    return;
+                }
+
+                // Horizontal intent — restore the default 440ms ease-in-out-cubic
+                // transition declared in styles.css so the snap (or snap-back for
+                // sub-threshold) animates.
                 container.style.transition = '';
 
                 if (Math.abs(touchCurrentDx) >= 50) {
@@ -291,13 +379,27 @@
                     // The restored CSS transition animates the snap-back smoothly.
                     setActiveIndex(activeIndex);
                 }
+
+                touching = false;
+                touchIntent = null;
+                touchCurrentDx = 0;
             }, { passive: true });
 
             viewport.addEventListener('touchcancel', () => {
                 if (!touching) return;
+
+                // Only the horizontal-intent branch ever wrote a transform / disabled
+                // the transition, so it's the only branch that needs a snap-back. For
+                // vertical or undecided cancels we just clear state — the carousel's
+                // visual position is already untouched.
+                if (touchIntent === 'horizontal') {
+                    container.style.transition = '';
+                    setActiveIndex(activeIndex);
+                }
+
                 touching = false;
-                container.style.transition = '';
-                setActiveIndex(activeIndex);
+                touchIntent = null;
+                touchCurrentDx = 0;
             }, { passive: true });
 
             requestAnimationFrame(() => requestAnimationFrame(() => setActiveIndex(activeIndex)));
