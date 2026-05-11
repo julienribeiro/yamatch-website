@@ -1160,35 +1160,39 @@ p {
 }
 
 .how-quest-sticky {
-    /* Pinned panel: fills exactly one viewport while the parent .how-quest
+    /* Pinned panel: fills AT LEAST one viewport while the parent .how-quest
        (320svh tall) scrolls past. `top: 0` parks it flush with the viewport
        top; the header sits inside the panel's top padding, so visually the
-       title floats below the wordmark band. */
+       title floats below the wordmark band.
+       SIZING REWORK 2026-05-11: switched from a fixed `height: 100svh` to
+       `min-height: 100svh` so the panel can grow with its content. With the
+       new desktop zigzag layout (3 cards alternating sides + the completion
+       pill flowing under node 3), the intrinsic content height legitimately
+       exceeds 100svh on shorter desktop viewports and on tall mobile copy.
+       Locking the box at 100svh + clipping was the root cause of the "card
+       3 truncated" bug. Now: the sticky pins flush with the viewport top
+       for the duration the section's bottom edge is below the viewport
+       bottom (CSS sticky semantics — the sticky simply releases sooner if
+       its own height grows past the section's scroll budget); the user
+       still sees the full content because nothing is clipped vertically. */
     position: sticky;
     top: 0;
-    height: 100svh;
-    /* Defensive containment — clips any intrinsic content overflow to the
-       100svh box. ROOT-CAUSE FIX for the FAQ overlap.
-       Why this matters: `.how-quest-sticky` contains `.how-quest-header`
-       (content-sized, `flex: none`) + `.quest-steps` (`flex: 1 1 auto`,
-       `display: grid` with 3 cards in `1fr 1fr 1fr`). On short viewports
-       (iPhone SE-class, 568pt) or when card content density is high, the
-       intrinsic height of `header + 3 cards` can exceed the panel's
-       `height: 100svh`. The default `overflow: visible` lets the third
-       card's bottom render BELOW the panel box, which then visually
-       overlaps the FAQ title (the FAQ enters from the viewport bottom
-       at the exact moment the sticky un-pins).
-       `overflow: hidden` clips anything that would have overflowed.
-       The completion pill (.quest-completion-pill, §10.7) is positioned
-       absolutely INSIDE `.quest-steps` with `bottom: clamp(8px, 2vh, 24px)`,
-       so it sits well within the sticky's box — `overflow: hidden`
-       does NOT clip it. The persona tabs' sliding ::before indicator
-       is positioned within `.quest-persona-tabs` (also inside the sticky)
-       and stays within its parent's bounds — also unaffected.
-       Side benefit: hides the ~6 % vertical scrollbar gutter Safari can
-       briefly render when the panel is one pixel from overflowing during
-       URL-bar resize. */
-    overflow: hidden;
+    min-height: 100svh;
+    /* CLIPPING REWORK 2026-05-11: replaced `overflow: hidden` (which clips
+       BOTH axes and was truncating card 3) with `overflow-x: clip` (spec
+       quirk: `clip` does NOT auto-promote the OTHER axis to `auto`, so
+       `overflow-y` truly stays `visible`). Horizontal bleed from any
+       descendant is still contained at the section edges (defence in depth
+       on top of `.how-quest { overflow-x: clip }` §10.1). Vertical content
+       is allowed to grow with the sticky's `min-height: 100svh` box, so
+       the third card and the completion pill can never be truncated.
+       The historical FAQ-overlap concern is now defended exclusively by
+       structure: `.faq { position: relative; z-index: 1 }` (§11) always
+       paints on top, and `.how-quest { padding-bottom: clamp(48px, 8vw, 120px) }`
+       reserves a real visible gray buffer between the sticky's last
+       content and the FAQ's eyebrow. */
+    overflow-x: clip;
+    overflow-y: visible;
     display: flex;
     flex-direction: column;
     /* Vertical padding inside the pinned panel — keeps the title clear of
@@ -1395,41 +1399,40 @@ p {
    handlers are no-ops when the elements are absent. */
 
 /* --- 10.5 .quest-steps stage + .quest-progress-bar ----------------------- */
-/* The stage is a 2-column grid:
-     col 1 = vertical numbered progress bar (3 nodes connected by a line
-             that fills lime as JS writes --progress 0..1)
-     col 2 = single-column stack of the 3 quest cards
+/* The stage is a 3-column grid on desktop (zigzag layout, 2026-05-11):
+     col 1 = LEFT card slot  (cards 1 & 3 land here)
+     col 2 = vertical numbered progress bar (3 nodes connected by a line
+             that fills lime as JS writes --progress 0..1) — CENTERED
+     col 3 = RIGHT card slot (card 2 lands here)
+     row 4 = completion pill, in-flow under node 3 of the bar
    The progress bar sits in normal grid flow (NOT absolute) so it always
-   spans the same vertical height as the cards stack. The lime fill itself
-   is a pseudo-element overlay on top of a base gray line, transform-scaled
-   vertically by --progress for cheap GPU-only animation. */
+   spans the vertical height of the 3 card rows (rows 1-3). The lime fill
+   itself is a pseudo-element overlay on top of a base gray line,
+   transform-scaled vertically by --progress for cheap GPU-only animation.
+   The completion pill is placed in row 4, column 2 (under the bar), so
+   its presence is read as the natural finish line of the 1-2-3 cadence.
+   The MOBILE layout (§14) keeps the prior 2-column structure (rail + stack)
+   for small viewports — see `.quest-steps` mobile override. */
 .quest-steps {
-    /* Takes the rest of the sticky panel height (header is `flex: none`). */
+    /* Sized by content (NOT `flex: 1 1 auto`) so the sticky panel can grow
+       to fit it cleanly with `min-height: 100svh` (§10.1). */
     position: relative;
-    flex: 1 1 auto;
-    /* Critical companion to the sticky panel's `overflow: hidden` (§10.1):
-       a flex child's default `min-height: auto` (= min-content) prevents
-       the child from shrinking below its intrinsic content size. With 3
-       grid cards in `1fr 1fr 1fr`, the intrinsic min-content height can
-       exceed the panel's available space on short viewports, which used
-       to force the third card to overflow downward and visually overlap
-       the FAQ. `min-height: 0` allows the grid to actually shrink to fit
-       the available flex space; cards then compress their `1fr 1fr 1fr`
-       fractions proportionally and stay inside the panel's bounds. */
-    min-height: 0;
     width: 100%;
     max-width: var(--container-max);
     margin-inline: auto;
     margin-top: clamp(20px, 3vh, 40px);
     display: grid;
-    /* Col 1: ~64px progress rail (clamped). Col 2: cards stack, takes the
-       rest of the row width. */
-    grid-template-columns: clamp(56px, 6vw, 80px) 1fr;
-    grid-template-rows: 1fr 1fr 1fr;
-    /* Row gap is the visible gap BETWEEN cards; column gap separates the
-       progress rail from the cards stack. */
-    gap: clamp(16px, 2vh, 32px) clamp(20px, 3vw, 48px);
-    align-items: stretch;
+    /* DESKTOP zigzag — 3 columns. Side columns `1fr` carry the cards;
+       middle column `clamp(64px, 7vw, 96px)` carries the progress bar.
+       4 rows: 3 card rows (auto-sized to content) + 1 completion-pill row.
+       Using `auto` (not `1fr`) so cards are sized by their intrinsic content
+       and the grid never forces compression. */
+    grid-template-columns: 1fr clamp(64px, 7vw, 96px) 1fr;
+    grid-template-rows: auto auto auto auto;
+    /* Row gap separates rows of cards; column gap separates side cards
+       from the central progress bar. */
+    gap: clamp(24px, 4vh, 56px) clamp(24px, 4vw, 64px);
+    align-items: center;
 }
 
 /* Vertical numbered progress bar — purely visual (aria-hidden in the
@@ -1442,9 +1445,16 @@ p {
    --progress is written by JS on each scroll tick (0 = empty, 1 = full).
    Default 0 keeps the bar gray-only before JS runs (graceful fallback). */
 .quest-progress-bar {
-    /* Span all 3 grid rows in column 1. */
-    grid-column: 1;
+    /* Desktop zigzag (2026-05-11): the bar lives in CENTER column 2,
+       spanning rows 1-3 (the 3 card rows). Card 1 sits in col 1 row 1
+       (left of bar), card 2 in col 3 row 2 (right of bar), card 3 in col 1
+       row 3 (left of bar again). Mobile (§14) overrides this back to
+       col 1 spanning the rail-then-stack 2-column layout. */
+    grid-column: 2;
     grid-row: 1 / 4;
+    /* Stretch vertically across all 3 card rows so the line connects the
+       top of card 1 to the bottom of card 3 visually. */
+    align-self: stretch;
     position: relative;
     margin: 0;
     padding: 0;
@@ -1602,7 +1612,12 @@ p {
        would have exceeded 100svh the sticky's `overflow: hidden`
        (§10.1) is the safety net of last resort — combined with the
        `padding-bottom` buffer on `.how-quest` (§10.1), the FAQ stays
-       protected even in that worst-case clipping. */
+       protected even in that worst-case clipping.
+       DESKTOP ZIGZAG 2026-05-11: per-step `grid-column` overrides below
+       place card 1 + 3 in left col, card 2 in right col. The base
+       `grid-column: 2` here is a sensible mobile fallback (the mobile
+       2-col layout uses col 2 for all stacked cards) — do not remove
+       even if it looks redundant alongside the per-step rules. */
     grid-column: 2;
     justify-self: stretch;
     align-self: stretch;
@@ -1657,12 +1672,32 @@ p {
         box-shadow 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Step row assignment — explicit so the cards stack top-to-bottom in
-   data-step order regardless of source order. Column placement (col 2) is
-   declared once on the base .quest-step rule above. */
-.quest-step[data-step="1"] { grid-row: 1; }
-.quest-step[data-step="2"] { grid-row: 2; }
-.quest-step[data-step="3"] { grid-row: 3; }
+/* Step row + column assignment for the DESKTOP zigzag (2026-05-11):
+     card 1 → col 1 row 1 (left of bar)
+     card 2 → col 3 row 2 (right of bar)
+     card 3 → col 1 row 3 (left of bar again)
+   The cards are oriented "toward the bar" via `align-items` on the inner
+   flex (cards 1 + 3 right-align their content; card 2 stays left-aligned).
+   Mobile (§14) re-routes all three back to col 2 with sequential rows for
+   the rail-then-stack 2-column layout. */
+.quest-step[data-step="1"] {
+    grid-column: 1;
+    grid-row: 1;
+    align-items: flex-end;
+    text-align: right;
+}
+.quest-step[data-step="2"] {
+    grid-column: 3;
+    grid-row: 2;
+    align-items: flex-start;
+    text-align: left;
+}
+.quest-step[data-step="3"] {
+    grid-column: 1;
+    grid-row: 3;
+    align-items: flex-end;
+    text-align: right;
+}
 
 /* Lime accent strip on the LEFT edge of each card REMOVED 2026-05-11
    (user request): the previous `.quest-step::before` (3px lime bar fading
@@ -1752,16 +1787,22 @@ p {
    attribute applies `display: none` natively (browser UA), so transitions
    do NOT need to fight a display property — when the attribute is removed
    the element starts at opacity:0 + scale:0.96, then .is-visible animates
-   it in. Positioned absolutely at the bottom of .quest-steps so the cards'
-   grid layout is undisturbed. */
+   it in.
+   PLACEMENT REWORK 2026-05-11: previously `position: absolute` at the
+   bottom of `.quest-steps`. Now placed IN-FLOW within the grid as row 4,
+   directly under node 3 of the progress bar (col 2 desktop, full-width on
+   mobile via §14). This communicates the pill as the natural finish line
+   of the 1-2-3 cadence — visually tied to node 3 with a deliberate gap
+   (`margin-top: clamp(24px, 5vh, 56px)`) so it reads as "after" the
+   sequence rather than the next step. JS contract preserved: `[hidden]`
+   still gates initial visibility; `.is-visible` still animates opacity +
+   scale. */
 .quest-completion-pill {
-    position: absolute;
-    left: 50%;
-    bottom: clamp(8px, 2vh, 24px);
-    /* `translate` (individual property) — composes cleanly with any future
-       transform shortcut without conflict (per the css guidance in
-       docs/WEBSITE_ARCHITECTURE.md). */
-    translate: -50% 0;
+    grid-column: 2;
+    grid-row: 4;
+    justify-self: center;
+    align-self: start;
+    margin-top: clamp(24px, 5vh, 56px);
     z-index: 2;
 
     display: inline-flex;
@@ -2451,17 +2492,51 @@ p {
     }
 
     .quest-steps {
-        /* Same 2-column structure as desktop (progress rail + cards stack)
-           but tightened: narrower rail, tighter gap, less margin-top. */
+        /* MOBILE: keep the historic 2-column layout (rail in col 1,
+           cards stacked in col 2). The desktop zigzag (3-col with bar
+           in the center) is intentionally desktop-only — on a narrow
+           viewport it would force cards into ~1/3 of the width and
+           hurt readability. Row 4 reserved for the in-flow completion
+           pill (placement override below). */
         grid-template-columns: clamp(40px, 10vw, 56px) 1fr;
-        grid-template-rows: 1fr 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
         gap: clamp(12px, 2vh, 20px) clamp(12px, 3vw, 20px);
         margin-top: clamp(12px, 2vh, 24px);
     }
 
+    /* MOBILE: re-route the progress bar back to col 1, spanning the 3 card
+       rows (rows 1-3) — undoes the desktop col-2 placement. Also defines
+       the smaller mobile node-circle size token. */
     .quest-progress-bar {
+        grid-column: 1;
+        grid-row: 1 / 4;
         /* Smaller node circle on mobile to keep the rail visually slim. */
         --quest-node-size: clamp(28px, 8vw, 36px);
+    }
+
+    /* MOBILE: undo the desktop zigzag per-step placement; stack all 3 cards
+       in col 2, sequential rows 1-3. Reset the desktop right-align overrides
+       so card text reads left-aligned in the narrow column. */
+    .quest-step[data-step="1"],
+    .quest-step[data-step="2"],
+    .quest-step[data-step="3"] {
+        grid-column: 2;
+        align-items: flex-start;
+        text-align: left;
+    }
+    .quest-step[data-step="1"] { grid-row: 1; }
+    .quest-step[data-step="2"] { grid-row: 2; }
+    .quest-step[data-step="3"] { grid-row: 3; }
+
+    /* MOBILE: completion pill spans both columns (rail + cards) on row 4
+       so it reads as a centered finish line below the entire 1-2-3 stack.
+       Smaller margin-top than desktop because mobile vertical rhythm is
+       tighter overall. */
+    .quest-completion-pill {
+        grid-column: 1 / -1;
+        grid-row: 4;
+        justify-self: center;
+        margin-top: clamp(20px, 4vh, 40px);
     }
 
     .quest-progress-number {

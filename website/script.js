@@ -760,7 +760,7 @@
             // stroke-width="1.75", round caps + joins).
             const PERSONA_CONTENT = {
                 participant: {
-                    completion: "Quête complétée. Ton équipe est prête. À toi de jouer.",
+                    completion: "Let's go !",
                     steps: [
                         {
                             title: "Trouve ton tournoi",
@@ -783,7 +783,7 @@
                     ]
                 },
                 organisateur: {
-                    completion: "Tournoi prêt à être lancé. Yamatch s'occupe du reste.",
+                    completion: "Let's go !",
                     steps: [
                         {
                             title: "Créez votre tournoi",
