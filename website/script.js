@@ -64,10 +64,19 @@
         // property is written directly to its consumer element, never to
         // documentElement (mirrors the existing `--scroll` write on `.hero-carousel-embla`).
         const heroCard = document.querySelector('.hero-card');
+        // The outer `.hero` section is the consumer of `--hero-flow-collapse`
+        // (a POSITIVE px magnitude written live by the page-scroll writer so
+        // its CSS rule `margin-bottom: calc(-1 * var(--hero-flow-collapse, 0px))`
+        // collapses the hero's flow box by exactly the same number of pixels
+        // the lime fill has visually shrunk via `clip-path` on `.hero-card::before`.
+        // Without this, the carousel (in-flow sibling of `.hero`) keeps its
+        // natural top and a whitespace gap opens between the shrunk fill and
+        // the carousel. See styles.css `.hero` rule for the consumer side.
+        const hero = document.querySelector('.hero');
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const mobileQuery = window.matchMedia('(max-width: 767px)');
 
-        if (carousel && heroCard && !reduceMotion) {
+        if (carousel && heroCard && hero && !reduceMotion) {
             // Desired vertical gap (in px) between the active phone's top edge and the
             // hero buttons' bottom edge at scroll = 0. Sourced from the CSS custom
             // property --desired-button-gap (declared in styles.css :root) so the value
@@ -95,6 +104,31 @@
                 cachedVh = window.innerHeight || document.documentElement.clientHeight;
             };
 
+            // Reference top of the carousel in PAGE coordinates (scroll-independent),
+            // captured "as if `--hero-flow-collapse` were 0" so it survives unchanged
+            // across rAF ticks. The page-scroll writer derives a per-frame
+            // `virtualCarouselTop` from `staticCarouselTop - window.scrollY` instead
+            // of calling `carousel.getBoundingClientRect().top`. This breaks the
+            // layout-feedback loop that would otherwise form: writing
+            // `--hero-flow-collapse` shifts `.screens-rail` (in-flow sibling), which
+            // would change `carousel.getBoundingClientRect().top`, which would change
+            // `progress`, which would change the next written collapse — jitter.
+            //
+            // `currentFlowCollapse` mirrors the most recently written collapse value.
+            // It is added back into the rect-based reading in `measureStaticCarouselTop`
+            // so the snapshot we keep is the carousel's UNCOLLAPSED page position. At
+            // first measure (load), `currentFlowCollapse === 0`, so the addition is a
+            // no-op. On a resize that happens mid-scroll, `currentFlowCollapse` may be
+            // > 0 — adding it cancels the active collapse and recovers the same stable
+            // reference. Re-measured only on layout-affecting events
+            // (load / resize / orientationchange), never per scroll.
+            let staticCarouselTop = 0;
+            let currentFlowCollapse = 0;
+            const measureStaticCarouselTop = () => {
+                staticCarouselTop =
+                    window.scrollY + carousel.getBoundingClientRect().top + currentFlowCollapse;
+            };
+
             let rafId = null;
 
             // Reads the active phone's CURRENT translateY (m42) from the live computed
@@ -119,6 +153,22 @@
             // Lift (in px) needed so the phone's top sits exactly --desired-button-gap
             // below the hero-buttons bottom. Returns 0 if either node is missing.
             // Negative values lift the phone UP (translateY domain).
+            //
+            // Why we add `currentFlowCollapse` to `phoneNaturalTop`: the active
+            // `--hero-flow-collapse` shrinks the hero's flow box by N px via
+            // `margin-bottom: calc(-1 * var(--hero-flow-collapse))`, which pulls
+            // every in-flow descendant of the document below `.hero` (including
+            // `.screen-card.active .phone-image`) UP by exactly N px in the
+            // viewport. If we measured the phone naïvely, its `phoneRect.top`
+            // would already include that lift and `baseLift` would shrink as
+            // the collapse grew → the lift `--scroll` would drift downward as
+            // the user scrolls (visible drift of the phone away from
+            // `--desired-button-gap`). Adding `currentFlowCollapse` cancels
+            // the collapse-induced shift and restores the ORIGINAL natural top
+            // — the same value we would have measured at scroll = 0. Result:
+            // `baseLift` stays stable across the scroll, `--scroll = baseLift`
+            // at `inv = 1` is identical regardless of the collapse, and the
+            // collapse animates independently without disturbing the lift.
             const computeBaseLift = () => {
                 const buttons = document.querySelector('.hero-buttons');
                 const phone = document.querySelector('.screen-card.active .phone-image');
@@ -127,7 +177,7 @@
                 const buttonsRect = buttons.getBoundingClientRect();
                 const phoneRect = phone.getBoundingClientRect();
                 const currentTranslateY = readPhoneTranslateY(phone);
-                const phoneNaturalTop = phoneRect.top - currentTranslateY;
+                const phoneNaturalTop = phoneRect.top - currentTranslateY + currentFlowCollapse;
 
                 return buttonsRect.bottom + readDesiredButtonGap() - phoneNaturalTop;
             };
@@ -136,13 +186,25 @@
                 rafId = null;
 
                 const isMobile = mobileQuery.matches;
-                const rect = carousel.getBoundingClientRect();
                 const vh = cachedVh;
 
                 const startY = vh;
                 const endY = isMobile ? vh * 0.55 : vh * 0.4;
 
-                let progress = (startY - rect.top) / (startY - endY);
+                // Derive the carousel's viewport-relative top from the stable
+                // `staticCarouselTop` snapshot rather than calling
+                // `carousel.getBoundingClientRect().top`. The snapshot is the
+                // page-coordinate top WITHOUT any active flow collapse, captured
+                // only on layout-affecting events (load / resize / orientationchange).
+                // `staticCarouselTop - window.scrollY` reconstructs where the
+                // carousel WOULD sit in the viewport if no collapse were applied —
+                // i.e. the same reference point we used before introducing
+                // `--hero-flow-collapse`. This is what breaks the feedback loop:
+                // writing the collapse no longer feeds back into `progress`,
+                // because `progress` no longer reads the live carousel rect.
+                const virtualCarouselTop = staticCarouselTop - window.scrollY;
+
+                let progress = (startY - virtualCarouselTop) / (startY - endY);
                 if (progress < 0) progress = 0;
                 else if (progress > 1) progress = 1;
 
@@ -178,17 +240,38 @@
                 // value (var missing → 0px) keeps the card unchanged.
                 const liftMagnitude = Math.max(0, -baseLift);
                 const cardShrink = liftMagnitude * 0.8 * progress;
+                const flowCollapse = cardShrink;
+
                 heroCard.style.setProperty('--card-shrink', `${cardShrink}px`);
+
+                // Update `currentFlowCollapse` BEFORE writing the CSS variable so
+                // the next `computeBaseLift` call (next rAF tick) sees the value
+                // that matches what the browser is rendering. Targeted writes:
+                // `--card-shrink` → `.hero-card`, `--hero-flow-collapse` → `.hero`
+                // (negative margin-bottom consumer). Keeping these on their direct
+                // consumers (rather than `documentElement`) mirrors the existing
+                // `--scroll` / `--active-scale` writes on `.hero-carousel-embla`.
+                currentFlowCollapse = flowCollapse;
+                hero.style.setProperty('--hero-flow-collapse', `${flowCollapse}px`);
             };
 
             const onScroll = () => {
                 if (!rafId) rafId = requestAnimationFrame(updateScroll);
             };
-            // Layout-affecting events: refresh the cached viewport height first, then
-            // schedule the rAF tick. Keeps cachedVh in sync with the real viewport
-            // (orientation flips, window resize, late font load shifting layout) while
-            // avoiding any per-scroll re-read that would re-introduce the iOS URL-bar jitter.
+            // Layout-affecting events: re-snapshot the carousel's stable page-coordinate
+            // top first (so subsequent `progress` reads use a fresh reference matching
+            // the new layout), then refresh the cached viewport height, then schedule
+            // the rAF tick. `measureStaticCarouselTop` is called BEFORE `refreshCachedVh`
+            // because the snapshot uses `currentFlowCollapse` to back-cancel any active
+            // collapse — the order of these two helpers doesn't matter functionally
+            // (they read disjoint state), but conceptually we re-anchor geometry first,
+            // then re-cache the viewport metric, then run the writer.
+            // Keeps everything in sync with the real viewport (orientation flips, window
+            // resize, late font load shifting layout) while avoiding any per-scroll
+            // re-read that would re-introduce the iOS URL-bar jitter or the
+            // collapse-feedback loop.
             const onLayoutChange = () => {
+                measureStaticCarouselTop();
                 refreshCachedVh();
                 if (!rafId) rafId = requestAnimationFrame(updateScroll);
             };
@@ -201,6 +284,10 @@
             // bake in a stale lift until the next user-driven scroll/resize event.
             window.addEventListener('load', onLayoutChange, { passive: true });
 
+            // Initial snapshot of the carousel's stable top — `currentFlowCollapse`
+            // is 0 here (no collapse has been written yet), so the snapshot is the
+            // raw page-coordinate top with no compensation needed.
+            measureStaticCarouselTop();
             requestAnimationFrame(updateScroll);
         }
     }

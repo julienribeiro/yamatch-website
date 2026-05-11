@@ -316,6 +316,42 @@ p {
     padding-block: var(--page-pad);
     padding-inline: var(--page-pad);
     background-color: var(--color-light-bg);
+    /* Flow-axis compensation for the `--card-shrink` visual collapse.
+       `--hero-flow-collapse` (px, written live by JS — script.js, page-scroll-progress
+       block) is a POSITIVE magnitude that matches the current `--card-shrink` value
+       1:1. The lime card's visual fill shrinks from the bottom via clip-path on
+       `.hero-card::before` (see section 7.2), but the card's LAYOUT box stays at
+       `min-height: 100svh - 2 * --page-pad` for jitter-free measurement. That leaves
+       a stable visual gap between the shrinking lime fill and the next in-flow
+       sibling (`.screens-rail`). This negative margin-bottom collapses the hero's
+       flow box by the exact same number of pixels the fill has shrunk, so the
+       carousel rises in lockstep with the fill's bottom edge — no whitespace gap.
+       At `--hero-flow-collapse: 0px` (initial value, reduced-motion path, scroll = 0
+       boundary), `calc(-1 * 0px)` resolves to 0 and the rule is a perfect no-op:
+       layout is byte-identical to the pre-fix state. Applies to BOTH desktop and
+       mobile — the mobile override at section 13 only resets `padding`, never
+       `margin-bottom`, so this declaration cascades unchanged. The JS writer
+       captures `staticCarouselTop` once at load/resize (NOT every tick) so the
+       carousel's natural top is decoupled from the live margin-bottom — without
+       that, the live margin would feed back into `progress`, creating a loop. */
+    margin-bottom: calc(-1 * var(--hero-flow-collapse, 0px));
+}
+
+/* Suppress the browser's automatic scroll-anchoring on the two elements whose
+   relative position changes during the `--hero-flow-collapse` animation.
+   Why: when the negative margin-bottom on `.hero` shortens the cumulative flow
+   height above `.screens-rail`, Chromium / Safari's default scroll-anchor
+   heuristic may pick an element below the fold as the anchor and silently scroll
+   the viewport upward to "preserve" its visible position — fighting the very
+   collapse we're trying to render and producing a perceptible counter-scroll
+   wobble. Disabling the anchor on both the source of the height change (`.hero`)
+   and the element that visually moves (`.screens-rail`) tells the engine "do not
+   compensate". Property is a hint; unsupported in Safari ≤ 16.3 (no harm — those
+   versions also do not aggressively scroll-anchor, so no UX regression).
+   Support: Chrome 56+, Edge 79+, Firefox 66+, Safari 16.4+. */
+.hero,
+.screens-rail {
+    overflow-anchor: none;
 }
 
 /* --- 7.2 .hero-card (lime block) + cardEntrance ----------------------------
