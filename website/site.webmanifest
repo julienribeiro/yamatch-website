@@ -1,0 +1,25 @@
+{
+    "name": "Yamatch",
+    "short_name": "Yamatch",
+    "description": "Yamatch — Le terrain t'attend. Trouve, réserve et joue ton prochain tournoi de foot, basket ou padel près de chez toi.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FFFFFF",
+    "theme_color": "#D7FF00",
+    "lang": "fr",
+    "dir": "ltr",
+    "icons": [
+        {
+            "src": "/android-chrome-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/android-chrome-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ]
+}
