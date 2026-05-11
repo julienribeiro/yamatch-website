@@ -1148,11 +1148,31 @@ p {
        radials are sub-3 % alpha so they read as ambient lighting rather
        than a coloured panel. Both `background-image` layers paint above
        `background-color` per CSS spec, so the lime/dark ambient is
-       always atop the base gray. */
+       always atop the base gray.
+
+       PREMIUM UPGRADE 2026-05-11 (iteration 2): added a third lime halo
+       at the top-center (slightly more present than the existing
+       wash — 7 % alpha, contained to the upper 40 % of the section) so
+       the eye reads "lime accent" the moment the section enters the
+       viewport, without saturating the surface. The two original radials
+       are KEPT and slightly densified (5 → 6 % top wash, 2.5 → 3 %
+       bottom wash) to anchor the visual rhythm — but ALPHAS STAY UNDER
+       0.08 to remain in the épuré / Pure.app-style budget. Order of
+       layers matters: the top-center halo is the FIRST layer so it
+       paints UNDER the original two (CSS spec: first listed layer
+       is on top — but here we want the broader washes to dominate, so
+       we listed it first deliberately for narrow-spot prominence in the
+       header zone). NO `filter: blur()` is used here — the radials
+       already have soft edges via `transparent N%` stops, and adding a
+       filter would create a stacking context that interferes with the
+       sticky panel inside (`.how-quest-sticky`) and the section's
+       `z-index: 0` invariant. NO `::before` pseudo-element is used
+       either, for the same reason. */
     background-color: var(--color-light-gray);
     background-image:
-        radial-gradient(ellipse 80% 50% at 50% 30%, rgba(215, 255, 0, 0.05), transparent 70%),
-        radial-gradient(ellipse 60% 40% at 50% 90%, rgba(16, 24, 40, 0.025), transparent 70%);
+        radial-gradient(circle 480px at 50% 12%, rgba(215, 255, 0, 0.10), transparent 70%),
+        radial-gradient(ellipse 80% 50% at 50% 30%, rgba(215, 255, 0, 0.06), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 50% 90%, rgba(16, 24, 40, 0.03), transparent 70%);
     padding-inline: var(--page-pad);
     /* Section-level horizontal clipping so any peek elements never trigger
        a horizontal page scroll. `clip` (not hidden) keeps overflow-y visible
@@ -1235,28 +1255,60 @@ p {
    is just `16px` — the literal margin-bottom values are identical, the
    composed visual gap is not (the gap delta is intentional, controlled by
    the header's flex `gap` token shared with the persona-tabs spacing
-   below). Color is the same muted gray used by the FAQ eyebrow. */
+   below). Color is the same muted gray used by the FAQ eyebrow.
+
+   PREMIUM UPGRADE 2026-05-11 (iteration 2): tiny lime dot prefix via
+   ::before so the eyebrow reads as a sport-tagged section opener rather
+   than a generic muted label (matches the "parcours premium / plan de
+   match" direction). Inline-flex on the eyebrow itself centers the dot
+   + label as a unit; the dot's vertical-align is handled by the flex
+   `align-items: center` so it tracks the cap-height of the 12 px label
+   precisely. Dot is 6 px lime with a hairline inset to read as a
+   refined "lit pixel" rather than a flat circle. */
 .how-quest-eyebrow {
     font-family: var(--font-body);
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--color-medium-gray);
     text-align: center;
     margin: 0 0 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.how-quest-eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    /* Hairline inset highlight + tight halo. The halo is small enough
+       (4 px spread, 24 % alpha) to read as a refined accent rather than
+       a glow — keeps the épuré contract intact. */
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        0 0 0 2px rgba(215, 255, 0, 0.12);
+    flex: none;
 }
 
 .how-quest-title {
     /* Same family + weight + tracking + size as .faq-title (line ~1499) so
        the two in-page H2 headings read as siblings — explicit re-use of the
        FAQ clamp ensures any future tweak to the FAQ stays in sync visually
-       (the mobile override below also mirrors .faq-title's mobile clamp). */
+       (the mobile override below also mirrors .faq-title's mobile clamp).
+       PREMIUM UPGRADE 2026-05-11 (iteration 2): tightened tracking from
+       -0.02em to -0.025em for a slightly more sport-bold display feel
+       at the title scale. Weight stays 700 (NOT 800) per the
+       feedback_website_aesthetic memory: "weight 600–700 (NOT 900)". */
     font-family: var(--font-heading);
     font-weight: 700;
     font-size: clamp(2rem, 4.5vw, 3rem);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
     color: var(--color-text-primary);
     text-align: center;
     margin: 0;
@@ -1293,15 +1345,28 @@ p {
        shadow (depth), wider ambient shadow (groundedness). The overall feel
        is closer to Apple's segmented control treatment without being heavy. */
     padding: 4px;
-    background-color: var(--color-light-bg);
+    /* Soft translucent surface (NOT pure white) so the bar reads as a
+       discreet floating chip on the gray section rather than a hard
+       white pad. 82 % alpha + the existing backdrop-filter (blur +
+       saturate) reproduces the macOS / iOS segmented control treatment.
+       Backdrop-filter is no-op on a pure white parent but kicks in over
+       the section's lime/dark radial washes — gives a subtle vibrant
+       refraction at the upper halo boundary. */
+    background-color: rgba(255, 255, 255, 0.82);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(16, 24, 40, 0.06);
+    /* Slightly softer hairline border (matches the new card border
+       alpha 0.07) so the bar is unified with the cards below. */
+    border: 1px solid rgba(16, 24, 40, 0.07);
     border-radius: var(--radius-pill);
+    /* PREMIUM UPGRADE 2026-05-11 (iteration 2): tightened the shadow
+       stack and shifted the ambient layer to a slightly cooler tone to
+       match the section's gray surface — less "heavy chip", more
+       "refined floating control". */
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.8),
-        0 1px 3px rgba(16, 24, 40, 0.04),
-        0 8px 28px rgba(16, 24, 40, 0.08);
+        inset 0 1px 0 rgba(255, 255, 255, 0.85),
+        0 1px 2px rgba(16, 24, 40, 0.04),
+        0 6px 20px rgba(16, 24, 40, 0.06);
 }
 
 /* Sliding lime indicator. Geometry is driven by JS via two custom
@@ -1326,10 +1391,15 @@ p {
        rather than a flat colour fill. */
     background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
     border-radius: var(--radius-pill);
+    /* PREMIUM UPGRADE 2026-05-11 (iteration 2): trimmed the lime halo
+       from 8 px @ 28 % alpha to 4 px @ 18 % alpha — keeps the active
+       indicator feeling "lit" without the previous bordering-on-glow
+       intensity (anti-pattern listed in the brief). The inner highlight
+       + bottom inset darkening still give the pill a refined 3D feel. */
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.45),
-        inset 0 -1px 0 rgba(16, 24, 40, 0.06),
-        0 2px 8px rgba(215, 255, 0, 0.28);
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        inset 0 -1px 0 rgba(16, 24, 40, 0.07),
+        0 2px 4px rgba(215, 255, 0, 0.18);
     transition:
         transform 320ms cubic-bezier(0.65, 0, 0.35, 1),
         width 320ms cubic-bezier(0.65, 0, 0.35, 1);
@@ -1535,18 +1605,22 @@ p {
     height: var(--quest-node-size, clamp(36px, 3.5vw, 44px));
     border-radius: 50%;
     background-color: var(--color-light-bg);
-    border: 2px solid rgba(153, 161, 175, 0.45);
+    /* Slightly softer + lighter border so the inactive node fades into
+       the section's gray surface — the user wanted "cards verrouillées
+       moins éteintes (plus subtil)"; same principle applies to the
+       progress nodes. */
+    border: 1.5px solid rgba(153, 161, 175, 0.32);
     color: var(--color-medium-gray);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    /* PREMIUM UPGRADE 2026-05-11: subtle inner highlight (inset top white)
-       + soft drop shadow gives the inactive node a refined "chip" feel
-       against the gray section background. The active state below adds
-       a lime halo + gradient fill. */
+    /* PREMIUM UPGRADE 2026-05-11 (iteration 2): trimmed the shadow stack
+       to just the inset highlight + a hairline outer shadow so the
+       inactive node sits quietly on the gray surface. The active state
+       below is now NOIR (not lime) — see comment below. */
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.6),
-        0 1px 3px rgba(16, 24, 40, 0.06);
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 1px 2px rgba(16, 24, 40, 0.05);
     /* Animate fill / border / text colour at the same speed as the lime
        line fill so the node "lights up" in lockstep with the line catching
        up to it. Box-shadow added so the active halo grows in sync. */
@@ -1559,18 +1633,25 @@ p {
 }
 
 .quest-progress-step.is-active .quest-progress-node {
-    /* PREMIUM UPGRADE 2026-05-11: gradient lime fill (matches the progress
-       bar fill above for visual consistency) + lime halo to register the
-       "this node just lit up" moment. Inset highlight kept for the embossed
-       chip feel; the inset darker line at the bottom adds depth. */
-    background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
-    border-color: var(--color-accent);
-    color: var(--color-text-primary);
+    /* PREMIUM UPGRADE 2026-05-11 (iteration 2): INVERTED from
+       lime-on-lime to NOIR-WITH-LIME-NUMBER. The active node is now a
+       dark anchor (matches `.quest-step-icon`'s new noir treatment below,
+       see §10.6); the number inside flips to lime via `color: var(...)`
+       which the `.quest-progress-number` inherits. Halo trimmed to a
+       single 3 px ambient layer at low alpha (was a two-layer 4 px / 12 px
+       stack at high alpha) — keeps the "this node just lit up" moment
+       without the previous "gaming badge" feel the user called out as
+       anti-pattern. The lime accent on the number + the lime fill on
+       the connecting line above the node together communicate the
+       state change unambiguously without saturating the node itself. */
+    background: var(--color-text-primary);
+    border-color: var(--color-text-primary);
+    color: var(--color-accent);
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.55),
-        inset 0 -1px 0 rgba(16, 24, 40, 0.08),
-        0 0 0 4px rgba(215, 255, 0, 0.18),
-        0 4px 12px rgba(215, 255, 0, 0.32);
+        inset 0 1px 0 rgba(255, 255, 255, 0.10),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.18),
+        0 0 0 3px rgba(215, 255, 0, 0.14),
+        0 4px 10px rgba(16, 24, 40, 0.18);
 }
 
 .quest-progress-number {
@@ -1630,24 +1711,31 @@ p {
     align-items: flex-start;
     gap: clamp(8px, 1vh, 14px);
 
-    /* PREMIUM UPGRADE 2026-05-11: layered surface treatment.
+    /* PREMIUM UPGRADE 2026-05-11 (iteration 2): layered surface treatment
+       refined for a more "premium app card" feel.
        - `background: linear-gradient` from a slight off-white to pure white
          (top→bottom) gives the card a subtle "lit from above" sheen
          without breaking the white-card aesthetic.
-       - `border` slightly more refined (2 % gray, sharper at lower alpha).
+       - `border` slightly bumped (7 % gray) so the card reads as more
+         distinctly framed against the section's light-gray surface and
+         the new ambient lime halo on the section background.
        - `box-shadow` is a 3-layer stack: a tight 1px inner highlight at
          the top edge (inset white) for the premium "glassy edge" feel;
          a soft mid-distance shadow for visual lift; a wider ambient
-         shadow grounded to the surface. All extremely soft so the card
-         reads as elevated without being heavy. */
+         shadow grounded to the surface. The ambient was bumped from
+         0.04 → 0.05 alpha and the spread widened from 12 → 18 px so the
+         cards FLOAT a touch more distinctly. All still extremely soft —
+         well within the épuré contract.
+       - Padding bumped on the floor side (20 → 22 px) so the icon +
+         title + body have a touch more breathing room inside the card. */
     background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.985) 100%);
-    border: 1px solid rgba(16, 24, 40, 0.06);
+    border: 1px solid rgba(16, 24, 40, 0.07);
     border-radius: var(--radius-card);
-    padding: clamp(20px, 2vw, 32px);
+    padding: clamp(22px, 2.2vw, 36px);
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.8),
+        inset 0 1px 0 rgba(255, 255, 255, 0.85),
         0 1px 2px rgba(16, 24, 40, 0.04),
-        0 4px 12px rgba(16, 24, 40, 0.04);
+        0 6px 18px rgba(16, 24, 40, 0.05);
     /* Cap card width so long body text doesn't stretch all the way across
        the column on wide viewports. */
     max-width: 56ch;
@@ -1661,7 +1749,14 @@ p {
        remains the safety net of last resort against rare short-viewport
        overflows. */
 
-    opacity: 0.42;
+    /* Locked-state opacity bumped 0.42 → 0.6 (user request 2026-05-11
+       iteration 2: "cards verrouillées moins éteintes — plus subtil").
+       The card content stays readable through the lock; the unlock
+       transition is now a refined +scale +opacity lift rather than a
+       binary "dim → on" flip. The lime progress fill catching up to
+       each node + the `.is-unlocked` ramp below still communicate
+       progression unambiguously. */
+    opacity: 0.6;
     /* Subtle scale baseline — the unlocked state ramps to 1 (a 2 % swell
        that registers as "this card just lit up" without being theatrical).
        Use individual `scale` so it does not collide with any future
@@ -1701,51 +1796,161 @@ p {
     text-align: right;
 }
 
+/* Per-step accent strip + Étape badge corner placement.
+   Cards 1 + 3 (col 1, oriented right toward the central bar): the lime
+   accent sits on the card's RIGHT inner edge (default already set on
+   `.quest-step::before`) and the Étape badge sits in the TOP-LEFT
+   corner (default already set on `.quest-step::after`). No explicit
+   override needed — listed below as commented anchors so the intent is
+   visible without grepping the default. Card 2 (col 3, oriented left
+   toward the bar) must MIRROR these defaults: accent on the LEFT edge,
+   badge in the TOP-RIGHT corner. */
+.quest-step[data-step="2"]::before {
+    right: auto;
+    left: 0;
+}
+.quest-step[data-step="2"]::after {
+    left: auto;
+    right: clamp(14px, 1.6vw, 22px);
+}
+
 /* Lime accent strip on the LEFT edge of each card REMOVED 2026-05-11
    (user request): the previous `.quest-step::before` (3px lime bar fading
    in via opacity 0 → 1 on `.is-unlocked`) read as too loud against the
    épuré aesthetic. The unlock signal now comes solely from the existing
    trio: opacity 0.42 → 1, scale 0.98 → 1, and the shadow upgrade in
    `.quest-step.is-unlocked` below — plus the corresponding numbered node
-   on the `.quest-progress-bar` lighting up lime. */
+   on the `.quest-progress-bar` lighting up lime.
+
+   RE-INTRODUCED 2026-05-11 (iteration 2): the user's "premium iteration"
+   brief explicitly allowed "petit accent vertical lime POSSIBLE sur la
+   gauche", contingent on being subtle. Re-added here as a 2 px lime bar
+   anchored to the card's INNER edge (the edge facing the central
+   progress bar — col 1 cards have it on their RIGHT, col 3 card has it
+   on its LEFT) so each card visually "plugs into" the bar. Default
+   opacity 0 (locked) → ramps to 0.85 on `.is-unlocked` via the
+   transition declared on `.quest-step` (opacity + scale + border-color
+   + box-shadow). Per-step orientation is set under the
+   `.quest-step[data-step="…"]` blocks below (left vs right inset
+   override). Height inset by 16 % top + bottom so the accent reads as
+   a focused tab on the card's "spine", not a full-height stripe.
+   `pointer-events: none` keeps it purely decorative. */
+.quest-step::before {
+    content: '';
+    position: absolute;
+    top: 16%;
+    bottom: 16%;
+    width: 2px;
+    border-radius: 2px;
+    background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
+    opacity: 0;
+    transition: opacity 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+    /* Default inner-edge = right (card 1 + 3 sit in col 1, facing the
+       central bar). Card 2 (col 3) overrides this to `left: 0` below. */
+    right: 0;
+    left: auto;
+}
+
+.quest-step.is-unlocked::before {
+    opacity: 0.85;
+}
+
+/* Étape N badge — appears at the OUTER top corner of each card (far
+   from the central progress bar). Uses `attr(data-step)` to read the
+   `data-step="1|2|3"` set in HTML. No HTML change required — the
+   data-attribute is already part of the JS contract (used by
+   carousel-style identification). Z-index 1 keeps it above the card's
+   background gradient but below any future inner content; the card's
+   own `position: relative` (declared above) is the anchor.
+   Per-step CORNER placement is set under the `.quest-step[data-step]`
+   blocks below: cards 1 + 3 (col 1, oriented "right") → badge in
+   top-LEFT; card 2 (col 3, oriented "left") → badge in top-RIGHT.
+   Mobile (§14) overrides all three to top-LEFT since the layout
+   collapses to a left-aligned single-column stack. */
+.quest-step::after {
+    content: 'Étape ' attr(data-step);
+    position: absolute;
+    top: clamp(14px, 1.6vw, 22px);
+    font-family: var(--font-body);
+    font-size: clamp(0.62rem, 0.7vw, 0.7rem);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(16, 24, 40, 0.34);
+    pointer-events: none;
+    /* Default corner = top-left (card 1 + 3 in col 1 — see per-step
+       overrides below for the col-3 card 2 mirror). */
+    left: clamp(14px, 1.6vw, 22px);
+    right: auto;
+    transition: color 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Unlocked badge state — opacity stays at 1 via the card's own opacity
+   transition; this rule just bumps the badge's text contrast a touch
+   when the card is "alive" so the badge reads as part of the unlocked
+   card's identity rather than a faded label. */
+.quest-step.is-unlocked::after {
+    color: rgba(16, 24, 40, 0.48);
+}
 
 .quest-step.is-unlocked {
     opacity: 1;
     scale: 1;
     border-color: rgba(16, 24, 40, 0.10);
-    /* PREMIUM UPGRADE 2026-05-11: the unlocked state gets a slightly more
-       pronounced lift — the inner highlight stays, the mid shadow tightens
-       and warms up imperceptibly toward lime, and the ambient shadow
-       widens just a touch. Composes the "this card is now alive" feel. */
+    /* PREMIUM UPGRADE 2026-05-11 (iteration 2): the unlocked state gets
+       a more distinct lift — the locked state opacity is now 0.6 (was
+       0.42), so the unlock delta needed to land harder elsewhere. The
+       ambient shadow widens from 24 → 32 px and the mid shadow bumps
+       from 0.05 → 0.06 alpha; the inner highlight stays at 0.9 white.
+       Combined with the new `.is-unlocked::before` lime accent strip
+       (separate rule above) and the unlocked badge color bump, the
+       "this card is now alive" delta is unambiguous without
+       theatricality. */
     box-shadow:
         inset 0 1px 0 rgba(255, 255, 255, 0.9),
-        0 1px 2px rgba(16, 24, 40, 0.05),
-        0 8px 24px rgba(16, 24, 40, 0.06);
+        0 1px 2px rgba(16, 24, 40, 0.06),
+        0 10px 32px rgba(16, 24, 40, 0.07);
 }
 
 .quest-step-icon {
-    /* Icon slot — js-expert injects an inline SVG. The slot is a fixed
-       lime pad so a missing/empty SVG still occupies the layout
-       (no jump when the icon mounts asynchronously).
-       PREMIUM UPGRADE 2026-05-11:
-       - linear-gradient lime fill (lighter at top, brand-lime at bottom)
-         gives the icon container a subtle three-dimensional feel.
-       - inset highlight (top) + soft shadow (bottom) sells the "embossed
-         chip" treatment without being theatrical.
-       - border-radius slightly bumped (14 → 16) so the icon container
-         feels coherent with the card's larger radius. */
+    /* Icon slot — js-expert injects an inline SVG via innerHTML. The
+       slot is a fixed pad so a missing/empty SVG still occupies the
+       layout (no jump when the icon mounts asynchronously).
+
+       PREMIUM UPGRADE 2026-05-11 (iteration 2): INVERTED from lime pad
+       with dark icon to NOIR pad with LIME icon — the user's explicit
+       proposal in the brief, matched 1:1. The injected SVGs use
+       `stroke="currentColor"` so flipping the parent's `color` to lime
+       propagates to every path. Rationale: dark anchors + lime accents
+       creates a cohesive DA across the section — the icon containers,
+       the active progress nodes (also inverted to noir, see §10.5
+       above), and the new noir completion pill (§10.7 below) form a
+       consistent visual family. Lime is reserved for the energising
+       accents (progress fill, icon strokes, completion pill text, the
+       eyebrow dot).
+
+       - Background flipped to `var(--color-text-primary)` (#101828).
+       - `color` set to `var(--color-accent)` so the SVG strokes paint lime.
+       - Inset highlight bumped to a quieter alpha (was 50 % white on lime,
+         now 12 % white on dark — same "lit-from-above" effect but
+         calibrated to the new dark fill).
+       - Drop shadow swapped from a lime halo to a tight neutral
+         drop-shadow (16,24,40 @ 22 %) so the chip reads as a refined
+         dark badge, not a glowing lime accent. Border-radius unchanged
+         at 16 px. */
     width: clamp(40px, 4vw, 56px);
     height: clamp(40px, 4vw, 56px);
     border-radius: 16px;
-    background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
-    color: var(--color-text-primary);
+    background: var(--color-text-primary);
+    color: var(--color-accent);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.5),
-        inset 0 -1px 0 rgba(16, 24, 40, 0.05),
-        0 2px 6px rgba(215, 255, 0, 0.2);
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+        0 2px 6px rgba(16, 24, 40, 0.18);
 }
 
 .quest-step-icon svg {
@@ -1809,26 +2014,37 @@ p {
 
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 12px 24px;
+    gap: 10px;
+    padding: 13px 26px 13px 22px;
     border-radius: var(--radius-pill);
-    /* PREMIUM UPGRADE 2026-05-11: matches the persona indicator + progress
-       fill family — vertical gradient (lighter top → brand lime bottom) so
-       the completion pill reads as a coherent member of the lime accent
-       family rather than a flat colour spike. Drop-shadow halo widens with
-       the existing alpha to feel like a celebratory glow without crossing
-       into "loud" territory. */
-    background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
-    color: var(--color-text-primary);
+    /* PREMIUM UPGRADE 2026-05-11 (iteration 2): INVERTED from lime fill +
+       lime halo to NOIR fill + LIME TEXT — the user's brief explicitly
+       requested "moins badge jeu vidéo, plus validation premium, fond
+       noir possible, accent lime subtil". The new treatment:
+       - background: dark (matches the icon containers + active progress
+         nodes, completes the noir-anchors / lime-accents DA family).
+       - color: lime — the text reads as a high-contrast brand stamp on
+         the dark pill.
+       - inset highlight bumped to a quieter 12 % white on dark.
+       - shadow stack reduced to a single neutral mid-distance drop
+         (16,24,40 @ 22 %) + a wider subtle ambient (16,24,40 @ 12 %).
+         No more lime halos — the previous double-lime drop shadow was
+         the chief "badge jeu vidéo" offender. Padding adjusted (left
+         pad 22 px slightly tighter than right 26 px) to host the lime
+         dot prefix introduced via `::before` below; the dot sits in
+         the left padding tighter against the text. */
+    background: var(--color-text-primary);
+    color: var(--color-accent);
     font-family: var(--font-body);
     font-weight: 700;
     font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
+    letter-spacing: 0.02em;
     line-height: 1;
     box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.5),
-        inset 0 -1px 0 rgba(16, 24, 40, 0.08),
-        0 4px 12px rgba(215, 255, 0, 0.24),
-        0 12px 32px rgba(215, 255, 0, 0.18);
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+        0 4px 10px rgba(16, 24, 40, 0.22),
+        0 12px 28px rgba(16, 24, 40, 0.12);
 
     /* Initial state on reveal — JS removes [hidden] (display switches from
        none to inline-flex), then adds .is-visible on the next frame for the
@@ -1843,6 +2059,28 @@ p {
 .quest-completion-pill.is-visible {
     opacity: 1;
     scale: 1;
+}
+
+/* Lime dot prefix inside the noir completion pill — pure-decoration
+   "ready to play" marker that anchors the new dark-on-light DA family.
+   Sized small (6 px) so it reads as a refined LED rather than a button.
+   The dot is inside the pill's flex layout via `display: inline-block`
+   so it sits naturally to the LEFT of the text (the pill's `gap: 10px`
+   spaces it from the text). Note: js-expert's `textContent` write
+   (script.js L999, `completionPill.textContent = content.completion`)
+   does NOT remove this pseudo-element — pseudo-elements are CSS-only,
+   immune to textContent / innerHTML writes that target the host
+   element's DOM children. */
+.quest-completion-pill::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: var(--color-accent);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        0 0 0 2px rgba(215, 255, 0, 0.18);
+    flex: none;
 }
 
 /* Defensive: the base `.quest-completion-pill` rule above sets
@@ -2796,6 +3034,26 @@ p {
     .quest-step[data-step="1"] { grid-row: 1; }
     .quest-step[data-step="2"] { grid-row: 2; }
     .quest-step[data-step="3"] { grid-row: 3; }
+
+    /* MOBILE: with all cards in col 2 left-aligned (rail in col 1 to
+       the LEFT of the cards), the lime accent strip should sit on the
+       card's LEFT inner edge (facing the rail) and the Étape badge in
+       the TOP-RIGHT corner (far from the rail). This OVERRIDES the
+       desktop defaults (right-edge accent + top-left badge for cards
+       1/3, and the per-step mirror for card 2). All three cards get the
+       same orientation on mobile since they all sit in the same column. */
+    .quest-step[data-step="1"]::before,
+    .quest-step[data-step="2"]::before,
+    .quest-step[data-step="3"]::before {
+        right: auto;
+        left: 0;
+    }
+    .quest-step[data-step="1"]::after,
+    .quest-step[data-step="2"]::after,
+    .quest-step[data-step="3"]::after {
+        left: auto;
+        right: clamp(14px, 4vw, 22px);
+    }
 
     /* MOBILE: completion pill spans both columns (rail + cards) on row 4
        so it reads as a centered finish line below the entire 1-2-3 stack.
