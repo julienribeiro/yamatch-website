@@ -21,9 +21,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Roboto:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="styles.css">
-    <!-- qrcode library (CDN) — utilisée par script.js pour générer la matrice du QR Code
-         de la widget flottante en bas-droite. Defer pour ne pas bloquer le rendu initial. -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js" defer></script>
+    <!-- qrcode-generator (Kazuhiko Arase, MIT) via CDN — utilisée par script.js pour
+         générer la matrice du QR Code de la widget flottante en bas-droite. UMD browser
+         build qui expose un global `window.qrcode` (factory function). Defer pour ne pas
+         bloquer le rendu initial. NB: on a remplacé `qrcode@1.5.4` (path `/build/...` 404
+         sur jsdelivr — le package npm n'a pas ce fichier; son entrée browser réelle est
+         `/lib/browser.min.js`) par `qrcode-generator@1.4.4` qui a une URL CDN stable et
+         une API browser-first explicite (qrcode(typeNumber, errorLevel) → addData → make
+         → getModuleCount + isDark). -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
     <script src="carousel.js" defer></script>
     <script src="script.js" defer></script>
 </head>

@@ -1235,12 +1235,30 @@
     //     centred circles with radius = moduleSize / 3 (denser than the standard
     //     square modules to keep the editorial dot-grid texture).
     //
-    // CDN dependency: window.QRCode is loaded via a <script defer> tag placed
-    // BEFORE script.js in index.html. `defer` preserves source order, so by
-    // the time this IIFE runs, the lib has been parsed and executed. We still
-    // guard with a `typeof` check — if the CDN is blocked (AdBlock / corporate
-    // proxy / network failure), we hide the whole widget rather than render an
-    // empty SVG. Same defensive hide on encoding throw.
+    // CDN dependency: window.qrcode (lowercase) is the factory function exposed
+    // by the `qrcode-generator` UMD build (Kazuhiko Arase, MIT) loaded via a
+    // <script defer> tag placed BEFORE script.js in index.html. `defer` preserves
+    // source order, so by the time this IIFE runs, the lib has been parsed and
+    // executed. We still guard with a `typeof` check — if the CDN is blocked
+    // (AdBlock / corporate proxy / network failure), we hide the whole widget
+    // rather than render an empty SVG. Same defensive hide on encoding throw.
+    //
+    // Library API (qrcode-generator):
+    //   const qr = window.qrcode(typeNumber, errorCorrectionLevel);
+    //     - typeNumber 0 = auto-detect smallest QR version that fits the data.
+    //     - errorCorrectionLevel: 'L' | 'M' | 'Q' | 'H' (15% for 'M').
+    //   qr.addData(string);   // append payload
+    //   qr.make();            // compute the matrix (mandatory before reads)
+    //   qr.getModuleCount();  // matrix edge length (≥ 21, depends on typeNumber)
+    //   qr.isDark(row, col);  // boolean → module color at (row, col)
+    //
+    // Previous lib (`qrcode` / node-qrcode) was removed: its jsdelivr build URL
+    // (`/npm/qrcode@1.5.4/build/qrcode.min.js`) returns 404 — the npm package
+    // doesn't ship that file; its actual browser entry is `/lib/browser.min.js`.
+    // Even if we corrected the URL, the browser bundle of node-qrcode does NOT
+    // export the low-level `.create()` method (Node-only API surface) that we
+    // need to read the raw module matrix. `qrcode-generator` exposes the matrix
+    // explicitly and is the canonical browser-first option (~10KB).
     //
     // Sizing: the host `.qr-widget-code` div has explicit clamp() width/height
     // in CSS, and `.qr-widget-code svg { width: 100%; height: 100% }` makes
@@ -1270,25 +1288,28 @@
             const container = document.getElementById('qrWidgetCode');
             if (!container) return;
 
-            // CDN guard — if window.QRCode is missing (CDN blocked, network
+            // CDN guard — if window.qrcode is missing (CDN blocked, network
             // failure, AdBlock pattern hit), hide the whole .qr-widget aside
             // rather than render an empty/broken SVG. Same on encoding throw.
-            if (typeof window.QRCode === 'undefined' || typeof window.QRCode.create !== 'function') {
+            if (typeof window.qrcode !== 'function') {
                 const widget = container.closest('.qr-widget');
                 if (widget) widget.style.display = 'none';
                 return;
             }
 
-            let qrData;
+            let qr;
             try {
-                qrData = window.QRCode.create(QR_VALUE, { errorCorrectionLevel: QR_ERROR_LEVEL });
+                // typeNumber 0 → auto-detect smallest version that fits the URL.
+                qr = window.qrcode(0, QR_ERROR_LEVEL);
+                qr.addData(QR_VALUE);
+                qr.make();
             } catch (_) {
                 const widget = container.closest('.qr-widget');
                 if (widget) widget.style.display = 'none';
                 return;
             }
 
-            const moduleCount = qrData.modules.size;
+            const moduleCount = qr.getModuleCount();
             const moduleSize = QR_SIZE / moduleCount;
             const circleRadius = moduleSize * (1 / 3);
             const finderSize = 7 * moduleSize;
@@ -1360,7 +1381,7 @@
             // (otherwise we'd double-paint dots over the nested rect group).
             for (let row = 0; row < moduleCount; row++) {
                 for (let col = 0; col < moduleCount; col++) {
-                    if (qrData.modules.get(row, col) && !isInFinderPattern(row, col, moduleCount)) {
+                    if (qr.isDark(row, col) && !isInFinderPattern(row, col, moduleCount)) {
                         const circle = document.createElementNS(SVG_NS, 'circle');
                         circle.setAttribute('cx', String((col + 0.5) * moduleSize));
                         circle.setAttribute('cy', String((row + 0.5) * moduleSize));
