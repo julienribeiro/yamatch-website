@@ -1494,8 +1494,11 @@
 
    Behavior:
      1. Emoji rigid-follow: every `mousemove`, write `transform: translate3d(
-        x + EMOJI_OFFSET_X, y + EMOJI_OFFSET_Y, 0)` directly. NO lerp, NO
-        easing — CSS guarantees no `transform` transition on .cursor-emoji
+        x, y, 0) translate(-50%, -50%)` directly. The first translate3d is in
+        absolute px (top-left lands at the cursor); the second translate is
+        in % of the emoji's own size (recenters by half its width/height) —
+        the emoji is thus centered exactly on the cursor hot-spot. NO lerp,
+        NO easing — CSS guarantees no `transform` transition on .cursor-emoji
         (only `opacity` is transitioned, 120ms ease, used for show/hide
         on document mouseenter/mouseleave).
      2. Comet trail: rAF loop clears the full canvas each frame, then
@@ -1541,8 +1544,6 @@
     const TRAIL_R = 215;           // lime stroke RGB — matches --color-accent #D7FF00
     const TRAIL_G = 255;
     const TRAIL_B = 0;
-    const EMOJI_OFFSET_X = 14;     // px right of cursor hot-spot (under the arrow)
-    const EMOJI_OFFSET_Y = 22;     // px below cursor hot-spot
 
     // === Canvas DPR-aware sizing ===
     let dpr = window.devicePixelRatio || 1;
@@ -1574,7 +1575,10 @@
         // Rigid emoji follow — direct write, zero interpolation. CSS .cursor-emoji
         // does NOT transition `transform` (only `opacity`), so this lands on
         // the next compositor frame with no easing.
-        emoji.style.transform = 'translate3d(' + (x + EMOJI_OFFSET_X) + 'px, ' + (y + EMOJI_OFFSET_Y) + 'px, 0)';
+        // Centrer l'emoji sur la position EXACTE du curseur (hot-spot).
+        // translate3d positionne le top-left de l'emoji à (x, y), puis translate(-50%, -50%)
+        // le décale en arrière de la moitié de sa propre taille → emoji centré pile sur (x, y).
+        emoji.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0) translate(-50%, -50%)';
     }, { passive: true });
 
     // Hide emoji + flush trail when the cursor leaves the document (window
