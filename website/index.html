@@ -163,29 +163,31 @@
     </section>
 
     <!-- === Comment ça marche — parcours gamifié 3 étapes ===
-         Section sticky avec courbe SVG animée au scroll, cartes qui se débloquent
-         progressivement, compteurs (étapes + XP), pill de complétion. Une pill-bar
-         de persona en haut (Joueur / Organisateur) switch le contenu des cartes
+         Section sticky single-column avec barre de progrès verticale numérotée 1→2→3,
+         cartes qui se débloquent progressivement, pill de complétion. Une pill-bar
+         de persona en haut (Participant / Organisateur) switch le contenu des cartes
          (textes + icônes) via PERSONA_CONTENT (script.js).
          Contrat avec js-expert : data-step (1-3), data-unlock (seuil scroll progress),
-         data-side (gauche/droite), data-xp (XP cumulés au unlock). Le SVG .quest-curve
-         couvre toute la zone des 3 cartes en background ; viewBox 400×1200 avec
-         preserveAspectRatio="none" pour scaler indépendamment selon le viewport. === -->
-    <section class="how-quest" data-persona="joueur" aria-labelledby="howQuestTitle">
+         data-xp (cumulés au unlock, conservé pour usage futur). La .quest-progress-bar
+         est position: absolute (côté CSS), à gauche des cartes ; JS toggle .is-active
+         sur chaque .quest-progress-step au passage du seuil correspondant et écrit
+         --progress (0..1) sur .quest-progress-bar pour le fill vertical de la ligne. === -->
+    <section class="how-quest" data-persona="participant" aria-labelledby="howQuestTitle">
         <div class="how-quest-sticky">
             <header class="how-quest-header">
+                <p class="how-quest-eyebrow">Le parcours</p>
                 <h2 id="howQuestTitle" class="how-quest-title">Comment ça marche</h2>
 
                 <div class="quest-persona-tabs-wrap">
                     <div class="quest-persona-tabs" role="tablist" aria-label="Choisir un parcours">
                         <button type="button"
                                 class="quest-persona-tab is-active"
-                                id="questTabJoueur"
+                                id="questTabParticipant"
                                 role="tab"
-                                data-persona="joueur"
+                                data-persona="participant"
                                 aria-selected="true"
                                 aria-controls="questStepsPanel"
-                                tabindex="0">Joueur</button>
+                                tabindex="0">Participant</button>
                         <button type="button"
                                 class="quest-persona-tab"
                                 id="questTabOrganisateur"
@@ -196,46 +198,51 @@
                                 tabindex="-1">Organisateur</button>
                     </div>
                 </div>
-
-                <div class="quest-meter">
-                    <div class="quest-step-count" aria-live="polite" aria-atomic="true">0/3</div>
-                    <div class="quest-xp-current" aria-live="polite" aria-atomic="true">+0</div>
-                </div>
             </header>
 
             <div class="quest-steps"
                  id="questStepsPanel"
                  role="tabpanel"
                  aria-live="polite"
-                 aria-labelledby="questTabJoueur">
-                <!-- Courbe SVG animée — couvre toute la zone des 3 cartes en background.
-                     viewBox 400×1200 = ratio vertical pour passer par les 3 cartes empilées.
-                     preserveAspectRatio="none" → scaling indépendant H/L selon viewport.
-                     Pas d'attributs stroke/stroke-width inline : css-expert les gère
-                     pour pouvoir varier mobile/desktop. Path en S qui zigzague entre
-                     x=100 et x=300, points clés à y=80 (étape 1), y=400 (étape 2),
-                     y=720 (étape 3), point final à y=1120. -->
-                <svg class="quest-curve" viewBox="0 0 400 1200" preserveAspectRatio="none" aria-hidden="true">
-                    <path class="quest-curve-active"
-                          d="M 100 80 Q 200 240, 300 400 T 100 720 T 300 1120"
-                          fill="none" />
-                </svg>
+                 aria-labelledby="questTabParticipant">
+                <!-- Barre de progrès verticale numérotée 1→2→3.
+                     position: absolute (côté CSS), à gauche des cartes.
+                     JS toggle .is-active sur chaque .quest-progress-step au passage du seuil
+                     correspondant + écrit --progress (0..1) sur .quest-progress-bar pour le fill
+                     vertical de la ligne reliante. -->
+                <ol class="quest-progress-bar" aria-hidden="true">
+                    <li class="quest-progress-step" data-step="1">
+                        <div class="quest-progress-node">
+                            <span class="quest-progress-number">1</span>
+                        </div>
+                    </li>
+                    <li class="quest-progress-step" data-step="2">
+                        <div class="quest-progress-node">
+                            <span class="quest-progress-number">2</span>
+                        </div>
+                    </li>
+                    <li class="quest-progress-step" data-step="3">
+                        <div class="quest-progress-node">
+                            <span class="quest-progress-number">3</span>
+                        </div>
+                    </li>
+                </ol>
 
-                <article class="quest-step" data-step="1" data-unlock="0.12" data-side="left" data-xp="10">
+                <article class="quest-step" data-step="1" data-unlock="0.12" data-xp="10">
                     <div class="quest-step-icon" aria-hidden="true"></div>
                     <h3 class="quest-step-title"></h3>
                     <p class="quest-step-body"></p>
                     <span class="quest-card-status" aria-live="polite">À débloquer</span>
                 </article>
 
-                <article class="quest-step" data-step="2" data-unlock="0.42" data-side="right" data-xp="25">
+                <article class="quest-step" data-step="2" data-unlock="0.42" data-xp="25">
                     <div class="quest-step-icon" aria-hidden="true"></div>
                     <h3 class="quest-step-title"></h3>
                     <p class="quest-step-body"></p>
                     <span class="quest-card-status" aria-live="polite">À débloquer</span>
                 </article>
 
-                <article class="quest-step" data-step="3" data-unlock="0.72" data-side="left" data-xp="50">
+                <article class="quest-step" data-step="3" data-unlock="0.72" data-xp="50">
                     <div class="quest-step-icon" aria-hidden="true"></div>
                     <h3 class="quest-step-title"></h3>
                     <p class="quest-step-body"></p>

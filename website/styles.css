@@ -29,11 +29,11 @@
        9.7 .screen-card__phone / __caption / __caption-primary / __caption-secondary
    10. How-it-works quest (sticky 3-step gamified section)
        10.1 .how-quest section + sticky panel
-       10.2 .how-quest-header (title + persona pill-bar + meter)
-       10.3 .quest-persona-tabs (segmented pill-bar)
-       10.4 .quest-meter (step count + xp counter)
-       10.5 .quest-steps stage + .quest-curve SVG
-       10.6 .quest-step cards (locked / unlocked, left/right alternation)
+       10.2 .how-quest-header (eyebrow + title + persona pill-bar)
+       10.3 .quest-persona-tabs (glass-morphism segmented pill-bar + sliding indicator)
+       10.4 (removed — quest-meter / quest-step-count / quest-xp-current retired)
+       10.5 .quest-steps stage + .quest-progress-bar (vertical 1-2-3 rail)
+       10.6 .quest-step cards (single-column stack, locked / unlocked)
        10.7 .quest-completion-pill
    11. FAQ accordion
    12. Footer
@@ -1050,58 +1050,66 @@ p {
    10. HOW-IT-WORKS QUEST (sticky 3-step gamified section)
    --------------------------------------------------------------------------
    Sectioned UX block inserted between the carousel (.screens-rail) and the
-   FAQ. Three step-cards stacked vertically with an alternating left/right
-   layout, joined by a single hand-drawn SVG curve in the background. A
-   persona pill-bar at the top swaps the cards' content (Joueur /
-   Organisateur) via JS — html-expert built the markup; js-expert handles
-   the swap, scroll-driven unlocks, and stroke-dashoffset animation on the
-   curve. This block is purely the visual scaffolding.
+   FAQ. Three step-cards stacked vertically in a single column, with a
+   vertical numbered progress bar (1 → 2 → 3) on the left that fills lime
+   as the user scrolls. A persona pill-bar at the top swaps the cards'
+   content (Participant / Organisateur) via JS — html-expert built the
+   markup; js-expert handles the persona swap, scroll-driven unlocks,
+   sliding pill-bar indicator, and progress-bar fill. This block is purely
+   the visual scaffolding.
 
    Layout strategy:
-   - The whole section is TALL (`min-height: 280svh` desktop, see 10.1) so
-     the inner `.how-quest-sticky` can stay pinned for ~2.8 viewport heights
+   - The whole section is TALL (`min-height: 320svh` desktop, see 10.1) so
+     the inner `.how-quest-sticky` can stay pinned for ~3.2 viewport heights
      of scroll — long enough for the user to scroll through all 3 unlock
-     thresholds (data-unlock="0.12"/"0.42"/"0.72" in the markup).
-   - `.how-quest-sticky` is `position: sticky; top: 0; height: 100svh` — it
-     fills exactly one viewport while pinned. Inside it, the header sits at
-     the top and the `.quest-steps` stage takes the remaining height.
-   - Cards are positioned via a 2-column grid; `[data-side="left"]` lives
-     in column 1, `[data-side="right"]` in column 2. The SVG curve is
-     absolutely positioned across both columns.
-   - Locked cards are dimmed (opacity 0.4); `.is-unlocked` (added by JS at
+     thresholds (data-unlock="0.12"/"0.42"/"0.72" in the markup) PLUS a
+     comfortable linger after the third unlock so the completion state
+     doesn't slam straight into the FAQ.
+   - `.how-quest-sticky` is `position: sticky; top: 0; height: 100svh` plus
+     `padding-bottom` to guarantee visual breathing room under the last
+     card before the section un-pins.
+   - Cards are positioned via a 2-column grid: col 1 = vertical progress
+     bar, col 2 = single-column stack of the 3 cards.
+   - Locked cards are dimmed (opacity 0.42); `.is-unlocked` (added by JS at
      the unlock threshold) lifts them to opacity 1 with a gentle scale-in.
 
    Token usage:
    - Background: var(--color-light-bg) (white) — bridges the white carousel
      above and the light-gray FAQ below without an abrupt cut.
-   - Accent: var(--color-accent) (lime) for the curve stroke + completion
-     pill + unlocked card status badge — single accent, no glow.
-   - Pill-bar active state uses var(--color-text-primary) on lime → black
-     pill on white pad — same dark-on-light contrast pattern as .btn-glass.
+   - Accent: var(--color-accent) (lime) for the progress-bar fill + active
+     pill-bar indicator + active progress node + completion pill +
+     unlocked card status badge — single accent, no glow.
+   - Pill-bar active state uses var(--color-text-primary) on lime → dark
+     text on lime indicator (inverted from the previous dark-on-white).
    ========================================================================== */
 
 /* --- 10.1 .how-quest section + sticky panel ------------------------------- */
 .how-quest {
-    /* Tall section — gives the sticky inner panel ~2.8 viewports of scroll
-       budget, enough room for js-expert's three unlock thresholds (0.12,
-       0.42, 0.72) to fire with comfortable spacing between them. svh keeps
-       the value stable through iOS URL-bar collapse/expand (matches the
-       same choice on .hero-card section 7.2). The mobile override (section
-       14) shortens this to fit a single-column layout. */
+    /* Tall section — gives the sticky inner panel ~3.2 viewports of scroll
+       budget. The unlock thresholds (data-unlock="0.12"/"0.42"/"0.72") fire
+       in the first ~72 % of the section's progress; the remaining ~28 %
+       lets the user LINGER on the fully-completed state before the sticky
+       panel un-pins into the FAQ. Bumped 2026-05-11 from 280svh to 320svh
+       (+40svh) because the previous budget caused the third card to
+       visually overlap the FAQ on tall viewports — the sticky released
+       before the user perceived the completion. svh keeps the value stable
+       through iOS URL-bar collapse/expand (matches .hero-card section 7.2).
+       The mobile override (section 14) uses a smaller value (260svh,
+       previously 220svh) for the same lingering rationale at mobile scale. */
     position: relative;
-    min-height: 280svh;
+    min-height: 320svh;
     background-color: var(--color-light-bg);
     padding-inline: var(--page-pad);
-    /* Section-level horizontal clipping so the SVG curve and any peek
-       elements never trigger a horizontal page scroll. `clip` (not hidden)
-       keeps overflow-y visible per CSS spec — important so the sticky
-       panel inside is not clipped vertically. */
+    /* Section-level horizontal clipping so any peek elements never trigger
+       a horizontal page scroll. `clip` (not hidden) keeps overflow-y visible
+       per CSS spec — important so the sticky panel inside is not clipped
+       vertically. */
     overflow-x: clip;
 }
 
 .how-quest-sticky {
     /* Pinned panel: fills exactly one viewport while the parent .how-quest
-       (280svh tall) scrolls past. `top: 0` parks it flush with the viewport
+       (320svh tall) scrolls past. `top: 0` parks it flush with the viewport
        top; the header sits inside the panel's top padding, so visually the
        title floats below the wordmark band. */
     position: sticky;
@@ -1111,16 +1119,20 @@ p {
     flex-direction: column;
     /* Vertical padding inside the pinned panel — keeps the title clear of
        the wordmark/condensed pill at the top, and the completion pill clear
-       of the FAQ section transition at the bottom. */
-    padding-block: clamp(40px, 6vh, 88px) clamp(40px, 6vh, 88px);
+       of the FAQ section transition at the bottom. The bottom padding was
+       BUMPED 2026-05-11 from `clamp(40px, 6vh, 88px)` to `clamp(40px, 8vh, 96px)`
+       so the last card has more visible breathing room before the sticky
+       un-pins into the FAQ — addresses a regression where the third card
+       appeared to overlap the FAQ section. */
+    padding-block: clamp(40px, 6vh, 88px) clamp(40px, 8vh, 96px);
     /* Sticky elements create their own stacking context. Setting an
        explicit z-index also lets us layer the completion pill (z-index: 2,
-       below) above the cards (z-index: 1) above the curve (z-index: 0)
-       without leaking out of this panel's stack. */
+       below) above the cards (z-index: 1) above the progress-bar fill
+       (z-index: 0) without leaking out of this panel's stack. */
     z-index: 0;
 }
 
-/* --- 10.2 .how-quest-header (title + persona pill-bar + meter) ----------- */
+/* --- 10.2 .how-quest-header (eyebrow + title + persona pill-bar) --------- */
 .how-quest-header {
     display: flex;
     flex-direction: column;
@@ -1132,10 +1144,28 @@ p {
     flex: none;
 }
 
+/* Eyebrow above the H2 — typography cloned from .faq-eyebrow (line ~1489)
+   so the two in-page section eyebrows read as identical siblings. The
+   margin-bottom collapses through the parent flex `gap` (header is a
+   flex column with gap), but is kept for parity with .faq-eyebrow in case
+   the parent layout changes. Color is the same muted gray used by the
+   FAQ eyebrow. */
+.how-quest-eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-medium-gray);
+    text-align: center;
+    margin: 0 0 16px;
+}
+
 .how-quest-title {
-    /* Same family + weight + tracking as .faq-title (line 1060) so the two
-       in-page H2 headings read as siblings. Slightly smaller floor on
-       mobile; same desktop ceiling. */
+    /* Same family + weight + tracking + size as .faq-title (line ~1499) so
+       the two in-page H2 headings read as siblings — explicit re-use of the
+       FAQ clamp ensures any future tweak to the FAQ stays in sync visually
+       (the mobile override below also mirrors .faq-title's mobile clamp). */
     font-family: var(--font-heading);
     font-weight: 700;
     font-size: clamp(2rem, 4.5vw, 3rem);
@@ -1147,10 +1177,13 @@ p {
 }
 
 /* --- 10.3 .quest-persona-tabs (segmented pill-bar) ----------------------- */
-/* iOS-app-style segmented control — outer pill pad with two inner pills.
-   Active tab: dark fill + light text. Inactive tab: transparent + medium-
-   gray text. Only color/background animate (200ms shared --transition);
-   no transform, no scale, no glow — keeps the épuré tone. */
+/* Glass-morphism segmented control — translucent white pad with a soft drop
+   shadow, and a SLIDING lime indicator behind the active tab. The indicator
+   is a single ::before pseudo on the bar (NOT one per tab) so transitions
+   are continuous as the active tab swaps. JS writes two custom properties
+   on .quest-persona-tabs (--indicator-w, --indicator-x) on init / tab change
+   / resize; CSS interpolates them at 320ms ease-in-out-cubic. Active tab
+   text inverts to dark on lime (vs the previous light-on-dark). */
 .quest-persona-tabs-wrap {
     display: flex;
     justify-content: center;
@@ -1158,25 +1191,62 @@ p {
 }
 
 .quest-persona-tabs {
+    /* CRITICAL: the ::before indicator is positioned absolutely against this
+       container. Without `position: relative`, the pseudo would escape to
+       the nearest positioned ancestor (the sticky panel). */
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    /* Outer "pad" — light gray bg with a hairline border for definition on
-       white. rgba derives from --color-medium-gray (#99A1AF) at low opacity
-       so the bar reads as a soft inset surface. */
+    /* Outer "pad" — translucent white over the section's white bg, lifted by
+       a subtle premium shadow. Backdrop-filter is purely defensive against
+       any future translucent backgrounds behind the bar; on the current
+       white parent it's a no-op visually but costs nothing on idle. */
     padding: 4px;
-    background: var(--color-light-gray);
-    border: 1px solid rgba(153, 161, 175, 0.18);
+    background-color: var(--color-light-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(16, 24, 40, 0.06);
     border-radius: var(--radius-pill);
-    /* Match the editorial pad used on .toast / .skip-link (radius-pill).
-       Inline-flex keeps the bar content-sized and centered by the wrap. */
+    box-shadow:
+        0 6px 24px rgba(16, 24, 40, 0.06),
+        0 1px 3px rgba(16, 24, 40, 0.04);
+}
+
+/* Sliding lime indicator. Geometry is driven by JS via two custom
+   properties:
+     --indicator-w : width in px of the active tab (read from getBoundingClientRect)
+     --indicator-x : translate-x in px from the bar's content-box left edge
+   Defaults to 0/0 so the indicator is invisible before JS measures (avoids
+   a flash of full-bar lime). The 4px top/inset accounts for the bar's own
+   padding so the indicator sits flush around the active tab. */
+.quest-persona-tabs::before {
+    content: '';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    height: calc(100% - 8px);
+    width: var(--indicator-w, 0px);
+    transform: translateX(var(--indicator-x, 0px));
+    background-color: var(--color-accent);
+    border-radius: var(--radius-pill);
+    transition:
+        transform 320ms cubic-bezier(0.65, 0, 0.35, 1),
+        width 320ms cubic-bezier(0.65, 0, 0.35, 1);
+    z-index: 0;
+    pointer-events: none;
 }
 
 .quest-persona-tab {
+    /* Sit ABOVE the sliding indicator so the text reads on top of the
+       lime fill (z-index 1 > pseudo's z-index 0). */
+    position: relative;
+    z-index: 1;
+
     /* Reset native button chrome. */
     appearance: none;
     -webkit-appearance: none;
-    background: transparent;
+    background-color: transparent;
     border: none;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -1190,11 +1260,11 @@ p {
     padding: 10px 18px;
     border-radius: var(--radius-pill);
 
-    /* Animate only color + background — no transform, no shadow. Avoids
-       any layout / compositor cost on the pill geometry; matches the
-       restrained motion vocabulary of the rest of the site. */
+    /* Animate ONLY color + font-weight on the tab itself — the bg is owned
+       by the sliding ::before indicator now, so no background transition is
+       needed here. Keeping the transition on color preserves the muted →
+       primary fade for hover and the inactive → active text colour swap. */
     transition:
-        background-color 220ms cubic-bezier(0.4, 0, 0.2, 1),
         color 220ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -1208,60 +1278,39 @@ p {
 }
 
 .quest-persona-tab.is-active {
-    background: var(--color-text-primary);
-    color: var(--color-light-bg);
+    /* Inverted from the old design: the active tab is now DARK TEXT on a
+       LIME indicator (was: light text on dark fill). The indicator owns the
+       lime fill via ::before above; this rule only adjusts the typography. */
+    color: var(--color-text-primary);
     font-weight: 600;
 }
 
 .quest-persona-tab:focus-visible {
     /* Accent outline keeps the focus ring on-brand without colliding with
-       the dark active fill or the light bar. Matches focus rings used on
-       .btn-glass (line 728) but uses the lime accent for visual lift in a
-       gamified context. */
+       the lime active fill or the white bar. Matches focus rings used on
+       .btn-glass but with the accent token for visual lift in a gamified
+       context. */
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
 }
 
-/* --- 10.4 .quest-meter (step count + xp counter) ------------------------- */
-.quest-meter {
-    display: flex;
-    align-items: baseline;
-    gap: clamp(12px, 1.5vw, 24px);
-    font-family: var(--font-body);
-}
+/* --- 10.4 (removed) — quest-meter / quest-step-count / quest-xp-current --
+   The meter chip + XP counter were retired with the redesign to a vertical
+   numbered progress bar (see 10.5 below). The corresponding HTML nodes
+   were removed by html-expert; JS still queries them defensively but the
+   handlers are no-ops when the elements are absent. */
 
-.quest-step-count {
-    /* Tabular numerals so the "0/3 → 1/3 → 2/3 → 3/3" swap doesn't shift
-       horizontally as the digit changes — important since js-expert will
-       update the textContent in place. */
-    font-feature-settings: 'tnum' 1, 'lnum' 1;
-    font-variant-numeric: tabular-nums lining-nums;
-    font-weight: 600;
-    font-size: clamp(1rem, 1.4vw, 1.125rem);
-    color: var(--color-text-primary);
-    line-height: 1;
-}
-
-.quest-xp-current {
-    font-feature-settings: 'tnum' 1, 'lnum' 1;
-    font-variant-numeric: tabular-nums lining-nums;
-    font-weight: 700;
-    font-size: clamp(1rem, 1.4vw, 1.125rem);
-    /* Lime XP badge — sits on the meter's white background like a chip.
-       Padding + radius give it a subtle pill shape without competing with
-       the persona bar above. */
-    background: var(--color-accent);
-    color: var(--color-text-primary);
-    padding: 4px 12px;
-    border-radius: var(--radius-pill);
-    line-height: 1;
-}
-
-/* --- 10.5 .quest-steps stage + .quest-curve SVG -------------------------- */
+/* --- 10.5 .quest-steps stage + .quest-progress-bar ----------------------- */
+/* The stage is a 2-column grid:
+     col 1 = vertical numbered progress bar (3 nodes connected by a line
+             that fills lime as JS writes --progress 0..1)
+     col 2 = single-column stack of the 3 quest cards
+   The progress bar sits in normal grid flow (NOT absolute) so it always
+   spans the same vertical height as the cards stack. The lime fill itself
+   is a pseudo-element overlay on top of a base gray line, transform-scaled
+   vertically by --progress for cheap GPU-only animation. */
 .quest-steps {
-    /* Takes the rest of the sticky panel height (header is `flex: none`).
-       2-column grid hosts the alternating left/right cards — `[data-side]`
-       attribute on each .quest-step picks the column. */
+    /* Takes the rest of the sticky panel height (header is `flex: none`). */
     position: relative;
     flex: 1 1 auto;
     width: 100%;
@@ -1269,44 +1318,143 @@ p {
     margin-inline: auto;
     margin-top: clamp(20px, 3vh, 40px);
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* Col 1: ~64px progress rail (clamped). Col 2: cards stack, takes the
+       rest of the row width. */
+    grid-template-columns: clamp(56px, 6vw, 80px) 1fr;
     grid-template-rows: 1fr 1fr 1fr;
-    gap: clamp(16px, 2vh, 32px) clamp(24px, 4vw, 80px);
-    align-items: center;
+    /* Row gap is the visible gap BETWEEN cards; column gap separates the
+       progress rail from the cards stack. */
+    gap: clamp(16px, 2vh, 32px) clamp(20px, 3vw, 48px);
+    align-items: stretch;
 }
 
-.quest-curve {
-    /* Background SVG that joins the 3 cards. Spans the entire grid, behind
-       the cards (z-index 0). preserveAspectRatio="none" in the markup lets
-       the path stretch independently on each axis to follow the column
-       layout at any viewport height. pointer-events: none so the curve
-       never blocks card hovers / focus. */
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+/* Vertical numbered progress bar — purely visual (aria-hidden in the
+   markup). 3 child <li> nodes (one per step) distributed equally along the
+   column via flex space-between. The connecting line is a pair of pseudo-
+   elements anchored to the bar:
+     ::before — base gray line (full height, 2px wide, centered horizontally)
+     ::after  — lime overlay (same geometry) scaled vertically by --progress
+                from origin: top, so it grows downward as scroll advances.
+   --progress is written by JS on each scroll tick (0 = empty, 1 = full).
+   Default 0 keeps the bar gray-only before JS runs (graceful fallback). */
+.quest-progress-bar {
+    /* Span all 3 grid rows in column 1. */
+    grid-column: 1;
+    grid-row: 1 / 4;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Distribute the 3 nodes evenly along the bar's height. The first and
+       last nodes hug the bar's top/bottom edges; the middle node sits at
+       the geometric center. */
+    justify-content: space-between;
+    /* Purely visual — pointer-events disabled so the rail never absorbs
+       hover / focus / click intended for the cards. */
     pointer-events: none;
+}
+
+/* Base gray line — runs the full height of the bar through the centers of
+   the 3 nodes. Inset top/bottom by half a node-radius so the line stops at
+   the edge of the first / last node rather than passing behind them.
+   `--quest-node-size` is a local design token defined on the bar so the
+   inset stays in sync with the node circle size; default 44 px (matches
+   .quest-progress-node clamp midpoint). */
+.quest-progress-bar {
+    --quest-node-size: clamp(36px, 3.5vw, 44px);
+}
+
+.quest-progress-bar::before,
+.quest-progress-bar::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: calc(var(--quest-node-size) / 2);
+    bottom: calc(var(--quest-node-size) / 2);
+    width: 2px;
+    transform-origin: top;
+    /* Translate the 2px-wide line to its own center so left:50% truly
+       centers it. This `translate` (individual property) composes cleanly
+       with the `transform: scaleY(...)` on ::after below — they are
+       distinct properties, no conflict per the docs/ARCHITECTURE notes. */
+    translate: -1px 0;
+    border-radius: 1px;
+    pointer-events: none;
+}
+
+.quest-progress-bar::before {
+    /* Base track — neutral gray, always full height. */
+    background-color: rgba(153, 161, 175, 0.32);
     z-index: 0;
 }
 
-.quest-curve-active {
-    stroke: var(--color-accent);
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    fill: none;
-    /* Default state — fully drawn; the JS layer will read getTotalLength()
-       on init, set stroke-dasharray = length and stroke-dashoffset = length
-       (curve invisible), then animate dashoffset → 0 as the user scrolls
-       through the section. We only declare the visible "drawn" state here
-       so the curve has a sensible static fallback if JS never runs. */
+.quest-progress-bar::after {
+    /* Lime fill — scales vertically from 0 (empty) to 1 (full) as JS
+       writes --progress on .quest-progress-bar. Sits above the base track. */
+    background-color: var(--color-accent);
+    transform: scaleY(var(--progress, 0));
+    transition: transform 240ms cubic-bezier(0.65, 0, 0.35, 1);
+    z-index: 1;
 }
 
-/* --- 10.6 .quest-step cards (locked / unlocked, left/right alternation) -- */
+.quest-progress-step {
+    /* Each step container — keeps the node above the connecting line by
+       owning a higher stacking context. No size: the inner .quest-progress-node
+       defines the visual circle. */
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.quest-progress-node {
+    width: var(--quest-node-size, clamp(36px, 3.5vw, 44px));
+    height: var(--quest-node-size, clamp(36px, 3.5vw, 44px));
+    border-radius: 50%;
+    background-color: var(--color-light-bg);
+    border: 2px solid rgba(153, 161, 175, 0.45);
+    color: var(--color-medium-gray);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* Animate fill / border / text colour at the same speed as the lime
+       line fill so the node "lights up" in lockstep with the line catching
+       up to it. */
+    transition:
+        background-color 240ms cubic-bezier(0.65, 0, 0.35, 1),
+        border-color 240ms cubic-bezier(0.65, 0, 0.35, 1),
+        color 240ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.quest-progress-step.is-active .quest-progress-node {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-text-primary);
+}
+
+.quest-progress-number {
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: clamp(0.875rem, 1.1vw, 1rem);
+    line-height: 1;
+    /* Tabular numerals — keeps the 1/2/3 visually centered in the circle
+       even though they have different glyph widths in proportional fonts. */
+    font-feature-settings: 'tnum' 1, 'lnum' 1;
+    font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* --- 10.6 .quest-step cards (single-column stack in grid col 2) ---------- */
 .quest-step {
-    /* Cards stack: icon, title, body, status badge. Dimmed by default
-       (locked); `.is-unlocked` (added by JS) restores opacity + nudges a
-       very subtle scale. */
+    /* Cards stack vertically in column 2, one per grid row. Dimmed by
+       default (locked); `.is-unlocked` (added by JS) restores opacity +
+       nudges a subtle scale. */
+    grid-column: 2;
+    justify-self: stretch;
+    align-self: center;
     position: relative;
     z-index: 1;
     display: flex;
@@ -1318,10 +1466,13 @@ p {
     border: 1px solid rgba(153, 161, 175, 0.22);
     border-radius: var(--radius-card);
     padding: clamp(20px, 2vw, 32px);
-    max-width: 36ch;
+    /* Cap card width so long body text doesn't stretch all the way across
+       the column on wide viewports. */
+    max-width: 56ch;
+    width: 100%;
 
     opacity: 0.42;
-    /* Subtle scale baseline — the unlocked state ramps to 1 (a 3 % swell
+    /* Subtle scale baseline — the unlocked state ramps to 1 (a 2 % swell
        that registers as "this card just lit up" without being theatrical).
        Use individual `scale` so it does not collide with any future
        `transform` shorthand. */
@@ -1332,24 +1483,9 @@ p {
         border-color 360ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-/* Side placement via data-side attribute — JS does not need to write any
-   class for column placement, the markup attribute drives layout. */
-.quest-step[data-side="left"] {
-    grid-column: 1;
-    justify-self: start;
-}
-.quest-step[data-side="right"] {
-    grid-column: 2;
-    justify-self: end;
-    /* Right-side cards align their content to the right edge so the
-       hand-drawn curve can flow naturally between left-aligned and
-       right-aligned cards. */
-    align-items: flex-end;
-    text-align: right;
-}
-
 /* Step row assignment — explicit so the cards stack top-to-bottom in
-   data-step order regardless of source order. */
+   data-step order regardless of source order. Column placement (col 2) is
+   declared once on the base .quest-step rule above. */
 .quest-step[data-step="1"] { grid-row: 1; }
 .quest-step[data-step="2"] { grid-row: 2; }
 .quest-step[data-step="3"] { grid-row: 3; }
@@ -2034,29 +2170,36 @@ p {
     }
 
     /* === Mobile overrides for the how-quest section ======================
-       The desktop layout uses a 2-column grid with cards alternating left /
-       right and a full-height sticky panel. On mobile (single-column reading
-       order), we collapse to one column so each card stacks naturally; the
-       SVG curve still spans the section height via preserveAspectRatio="none"
-       so it scales independently to the new aspect ratio. The sticky panel
-       still pins for the duration of the section, but the section's
-       min-height is shortened to 220svh — three card heights fit in less
-       scroll budget than the desktop horizontal layout needed. */
+       The desktop layout is a 2-column grid: progress bar (col 1) +
+       single-column cards stack (col 2). On mobile we keep that exact
+       structure but shrink both column widths and the gap to fit the
+       narrower viewport. The sticky panel still pins for the duration of
+       the section; min-height is reduced (260svh vs desktop 320svh) since
+       the cards take less horizontal width and the unlock thresholds
+       (0.12 / 0.42 / 0.72) need correspondingly less scroll budget. */
     .how-quest {
         /* Align the section's horizontal padding with the lime card / carousel /
            FAQ left/right edges (same token used by .screens-rail and .faq above). */
         padding-inline: var(--mobile-hero-card-margin);
-        min-height: 220svh;
+        min-height: 260svh;
     }
 
     .how-quest-sticky {
         /* Tighter vertical padding so all 3 cards + header + completion pill
-           fit in 100svh on smaller phones. */
-        padding-block: clamp(24px, 5vh, 48px);
+           fit in 100svh on smaller phones. Bottom padding preserved (sourced
+           from the desktop clamp's range) so the last card has breathing
+           room before the section un-pins into the FAQ. */
+        padding-block: clamp(24px, 5vh, 48px) clamp(32px, 7vh, 72px);
     }
 
     .how-quest-header {
         gap: clamp(12px, 2vh, 20px);
+    }
+
+    .how-quest-eyebrow {
+        /* Slightly tighter bottom margin on mobile — header `gap` already
+           supplies most of the breathing room. */
+        margin-bottom: 8px;
     }
 
     .how-quest-title {
@@ -2073,25 +2216,28 @@ p {
     }
 
     .quest-steps {
-        /* Single-column stack on mobile — data-side attributes are ignored
-           visually (every card spans the full content width). */
-        grid-template-columns: 1fr;
+        /* Same 2-column structure as desktop (progress rail + cards stack)
+           but tightened: narrower rail, tighter gap, less margin-top. */
+        grid-template-columns: clamp(40px, 10vw, 56px) 1fr;
         grid-template-rows: 1fr 1fr 1fr;
-        gap: clamp(12px, 2vh, 20px);
+        gap: clamp(12px, 2vh, 20px) clamp(12px, 3vw, 20px);
         margin-top: clamp(12px, 2vh, 24px);
     }
 
-    .quest-step,
-    .quest-step[data-side="left"],
-    .quest-step[data-side="right"] {
-        /* Force every card into column 1 + reset right-side alignment to
-           left so the reading flow is consistent on a narrow viewport. */
-        grid-column: 1;
-        justify-self: stretch;
-        align-items: flex-start;
-        text-align: left;
+    .quest-progress-bar {
+        /* Smaller node circle on mobile to keep the rail visually slim. */
+        --quest-node-size: clamp(28px, 8vw, 36px);
+    }
+
+    .quest-progress-number {
+        font-size: clamp(0.75rem, 3.2vw, 0.875rem);
+    }
+
+    .quest-step {
+        /* Allow the card to breathe to the full column width on narrow
+           viewports; remove the desktop max-width cap since the column
+           itself is already constrained by the lime-card alignment. */
         max-width: none;
-        width: 100%;
         padding: clamp(16px, 4vw, 22px);
     }
 
@@ -2194,10 +2340,13 @@ p {
          opacity/scale ramp; pinning the values here makes the first paint
          already-correct in case JS hasn't run yet.
        - Completion pill is shown statically when JS removes [hidden].
-       - Curve is fully drawn (no stroke-dashoffset animation): JS skips
-         the `getTotalLength()` writer under reduced-motion, leaving the
-         path's static stroke visible (which is what the CSS already
-         declares — see .quest-curve-active). */
+       - The persona pill-bar's sliding indicator and the progress-bar's
+         lime fill have explicit transitions (320ms / 240ms ease-in-out-cubic)
+         that the blanket rule above also collapses to ~0ms — so swapping
+         persona / scrolling past unlock thresholds snaps instantly without
+         the smooth slide / grow. No additional rule is needed: those
+         pseudo-element transitions are caught by `*::before, *::after` in
+         the universal selector above. */
     .quest-step {
         opacity: 1;
         scale: 1;
