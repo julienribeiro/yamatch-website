@@ -1074,11 +1074,13 @@ p {
      the unlock threshold) lifts them to opacity 1 with a gentle scale-in.
 
    Token usage:
-   - Background: var(--color-light-bg) (white) — bridges the white carousel
-     above and the light-gray FAQ below without an abrupt cut.
+   - Background: var(--color-light-gray) — quiet light-gray surface that
+     creates a clear rhythm between the WHITE carousel above and the WHITE
+     FAQ below (background palette inverted 2026-05-11 on user request: the
+     FAQ moved to white, this section took over the light-gray slot).
    - Accent: var(--color-accent) (lime) for the progress-bar fill + active
-     pill-bar indicator + active progress node + completion pill +
-     unlocked card status badge — single accent, no glow.
+     pill-bar indicator + active progress node + completion pill — single
+     accent, no glow.
    - Pill-bar active state uses var(--color-text-primary) on lime → dark
      text on lime indicator (inverted from the previous dark-on-white).
    ========================================================================== */
@@ -1098,7 +1100,16 @@ p {
        previously 220svh) for the same lingering rationale at mobile scale. */
     position: relative;
     min-height: 320svh;
-    background-color: var(--color-light-bg);
+    /* Light-gray quiet surface — sits between the WHITE carousel above
+       and the WHITE FAQ below to create a visual rhythm
+       white → gray → white → white (2026-05-11). The persona pill-bar's
+       outer pad (`.quest-persona-tabs { background-color: var(--color-light-bg) }`,
+       see §10.3) intentionally stays white so it reads as a subtle elevated
+       chip on this gray surface — added contrast was the goal. The step
+       cards (`.quest-step { background: var(--color-light-bg) }`, see §10.6)
+       also stay white for the same reason; their existing border-color
+       provides enough definition against the gray. */
+    background-color: var(--color-light-gray);
     padding-inline: var(--page-pad);
     /* Section-level horizontal clipping so any peek elements never trigger
        a horizontal page scroll. `clip` (not hidden) keeps overflow-y visible
@@ -1144,12 +1155,16 @@ p {
     flex: none;
 }
 
-/* Eyebrow above the H2 — typography cloned from .faq-eyebrow (line ~1489)
-   so the two in-page section eyebrows read as identical siblings. The
-   margin-bottom collapses through the parent flex `gap` (header is a
-   flex column with gap), but is kept for parity with .faq-eyebrow in case
-   the parent layout changes. Color is the same muted gray used by the
-   FAQ eyebrow. */
+/* Eyebrow above the H2 — typography AND `margin-bottom` cloned 1:1 from
+   .faq-eyebrow (line ~1625) so the two in-page section eyebrows read as
+   identical siblings at every viewport (user request 2026-05-11: identical
+   spacing eyebrow→title in both sections). Note: this margin-bottom STACKS
+   on top of the parent `.how-quest-header`'s flex `gap`, so the visible
+   eyebrow→title distance in this section is `gap + 16px` while the FAQ's
+   is just `16px` — the literal margin-bottom values are identical, the
+   composed visual gap is not (the gap delta is intentional, controlled by
+   the header's flex `gap` token shared with the persona-tabs spacing
+   below). Color is the same muted gray used by the FAQ eyebrow. */
 .how-quest-eyebrow {
     font-family: var(--font-body);
     font-size: 12px;
@@ -1533,28 +1548,17 @@ p {
     margin: 0;
 }
 
-.quest-card-status {
-    /* Locked default — quiet gray pill. */
-    display: inline-flex;
-    align-items: center;
-    margin-top: 4px;
-    padding: 4px 10px;
-    border-radius: var(--radius-pill);
-    font-family: var(--font-body);
-    font-size: clamp(0.75rem, 1vw, 0.8125rem);
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    color: var(--color-medium-gray);
-    background: var(--color-light-gray);
-    transition:
-        color 220ms cubic-bezier(0.4, 0, 0.2, 1),
-        background-color 220ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.quest-step.is-unlocked .quest-card-status {
-    color: var(--color-text-primary);
-    background: var(--color-accent);
-}
+/* `.quest-card-status` rules REMOVED 2026-05-11 — html-expert removed the
+   <span class="quest-card-status"> nodes from the markup; the unlock state is
+   now communicated solely by the `.is-unlocked` class on `.quest-step` (which
+   ramps opacity 0.42 → 1 + scale 0.98 → 1, see rule above) and by the lime
+   fill of the corresponding `.quest-progress-node`. The transition that
+   animated this badge's color/background is gone with the rule. NOTE:
+   script.js still reads `.quest-card-status` defensively via
+   `step.querySelector('.quest-card-status')` and guards every write with
+   `if (status) ...`, so the now-null lookup is a harmless no-op — no JS
+   refactor needed for the CSS deletion to land safely. If/when js-expert
+   cleans those queries, no CSS work is required here. */
 
 /* --- 10.7 .quest-completion-pill ----------------------------------------- */
 /* Reveals once all three steps are unlocked. Markup ships with the [hidden]
@@ -1617,7 +1621,12 @@ p {
    11. FAQ ACCORDION
    ========================================================================== */
 .faq {
-    background-color: var(--color-light-gray);
+    /* Inverted 2026-05-11 from light-gray to white. The preceding
+       `.how-quest` section now owns the light-gray slot; the contrast
+       between gray (how-quest) and white (faq) creates the section
+       boundary visually — no border or separator needed at the
+       how-quest → faq seam (the bg flip is the demarcation). */
+    background-color: var(--color-light-bg);
     padding-block: clamp(24px, 4vw, 52px) clamp(80px, 12vw, 140px);
     padding-inline: var(--page-pad);
 }
@@ -1746,13 +1755,19 @@ p {
    Horizontal gutter mirrors the hero / screens-rail / faq sections (padding-inline:
    var(--page-pad)) so the footer's left/right edges line up with the lime hero card's
    edges across every viewport. Vertical padding is unchanged.
-   Background matches the preceding .faq section (var(--color-light-gray)) so the page
-   ends on a continuous quiet light surface — no abrupt dark cut, in line with the
-   épuré / editorial aesthetic. Text is dark (var(--color-text-primary)) for legibility
-   on the light background.
+   Background matches the preceding .faq section (var(--color-light-bg) — inverted
+   2026-05-11 from the previous light-gray) so the page ends on a continuous white
+   surface — épuré / editorial aesthetic preserved. Because the FAQ above is ALSO
+   white now, a subtle 1 px top border (`--color-divider` token, #E0E0E0) is added
+   to demarcate the FAQ → footer seam visually; without it the two white surfaces
+   would merge into one indistinct block. Border weight is intentionally minimal
+   (matches the FAQ-list inter-item border tone of `rgba(16, 24, 40, 0.10)`
+   approximately) so it reads as a quiet rule, not a hard cut. Text is dark
+   (var(--color-text-primary)) for legibility on the light background.
    ========================================================================== */
 .footer {
-    background-color: var(--color-light-gray);
+    background-color: var(--color-light-bg);
+    border-top: 1px solid var(--color-divider);
     color: var(--color-text-primary);
     padding-block: clamp(64px, 10vw, 96px) 28px;
     padding-inline: var(--page-pad);
@@ -2196,11 +2211,11 @@ p {
         gap: clamp(12px, 2vh, 20px);
     }
 
-    .how-quest-eyebrow {
-        /* Slightly tighter bottom margin on mobile — header `gap` already
-           supplies most of the breathing room. */
-        margin-bottom: 8px;
-    }
+    /* `.how-quest-eyebrow` keeps its desktop `margin-bottom: 16px` on mobile
+       — matches `.faq-eyebrow` (no mobile override) so the two in-page
+       eyebrows have identical literal margin values at every viewport. The
+       previous `margin-bottom: 8px` mobile override was REMOVED 2026-05-11
+       (user request: identical spacing eyebrow→title in both sections). */
 
     .how-quest-title {
         /* Match the mobile .faq-title clamp (line ~1630) so both H2s read at

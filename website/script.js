@@ -858,7 +858,7 @@
 
             // Apply scroll-progress effects to the DOM. Pure write path.
             //   1. Vertical progress-bar fill (--progress 0..1 on .quest-progress-bar).
-            //   2. Per-step unlock on .quest-step cards (class + status text).
+            //   2. Per-step unlock on .quest-step cards (class toggle).
             //   3. Per-step .is-active toggle on .quest-progress-step nodes
             //      (matched to cards by data-step, gated on the same
             //      data-unlock thresholds).
@@ -881,16 +881,13 @@
                 const unlockedByStep = new Map();
                 questSteps.forEach((step) => {
                     const threshold = parseFloat(step.dataset.unlock);
-                    const status = step.querySelector('.quest-card-status');
                     const stepKey = step.dataset.step;
                     const isUnlocked = Number.isFinite(threshold) && progress >= threshold;
                     if (isUnlocked) {
                         step.classList.add('is-unlocked');
-                        if (status) status.textContent = 'Débloquée';
                         unlockedCount++;
                     } else {
                         step.classList.remove('is-unlocked');
-                        if (status) status.textContent = 'À débloquer';
                     }
                     if (stepKey) unlockedByStep.set(stepKey, isUnlocked);
                 });
@@ -1017,8 +1014,6 @@
             const resetStepVisualState = () => {
                 questSteps.forEach((step) => {
                     step.classList.remove('is-unlocked');
-                    const status = step.querySelector('.quest-card-status');
-                    if (status) status.textContent = 'À débloquer';
                 });
                 hideCompletionPill();
             };
@@ -1145,8 +1140,6 @@
                 // and re-fills the progress bar.
                 questSteps.forEach((step) => {
                     step.classList.add('is-unlocked');
-                    const status = step.querySelector('.quest-card-status');
-                    if (status) status.textContent = 'Débloquée';
                 });
                 progressSteps.forEach((node) => node.classList.add('is-active'));
                 if (progressBar) progressBar.style.setProperty('--progress', '1');
