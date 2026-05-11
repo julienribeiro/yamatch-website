@@ -2590,7 +2590,401 @@ p {
 
 
 /* ==========================================================================
-   16. MOBILE MEDIA QUERIES (consolidated — overrides hero + carousel + quest)
+   16. LEGAL PAGES (CGU, politique annulation/remboursement, politique
+       confidentialité, contact, suppression de compte, mentions légales)
+   --------------------------------------------------------------------------
+   Long-form editorial layout shared by every static "legal" page under
+   website/<slug>/index.html. Each page links ../styles.css and renders a
+   <main class="legal-page"> with a centred 72ch reading column, sober
+   typography, and a footer divider + back link + cross-nav.
+
+   Design contract:
+   - Sober and professional. No lime glow or playful motion — these pages are
+     read carefully, not skimmed. The lime accent appears only on the <mark>
+     placeholder highlight and the back-link focus ring.
+   - Tokens only — no hex / font / radius / duration outside :root.
+   - Long-form reading: 72ch column max, line-height 1.7 body / 1.65 mobile,
+     slightly muted body color (rgba 0.84) for comfort.
+   - <mark class="legal-page-placeholder"> is the "needs-to-be-filled" marker
+     for the legal review pass: lime tint + dashed underline so the editor
+     sees every TODO at a glance.
+
+   Distinct from .download-page (section 15): the download page is a single
+   centred utility hero ("coming soon" + back CTA). Legal pages are full
+   long-form articles. The two patterns are kept separate to avoid coupling
+   their evolution; only the wordmark-reset recipe is duplicated, which is a
+   2-property pattern not worth abstracting.
+
+   The blanket `*, *::before, *::after { transition-duration: 0.01ms !important }`
+   under prefers-reduced-motion already collapses the hover transitions
+   declared below — no extra reduced-motion rules required for this section.
+   ========================================================================== */
+
+/* Page shell — full-viewport column. Same wordmark-reset recipe as
+   .download-page (the .wordmark default is `position: fixed; translate:
+   -50% -50%` from section 6, which is wrong for an in-flow legal layout). */
+.legal-page {
+    min-height: 100vh;          /* fallback */
+    min-height: 100svh;         /* iOS 15.4+ stable URL bar */
+    background-color: var(--color-light-bg);
+    /* Inline padding mirrors .download-page; block padding is intentionally
+       smaller at the top so the wordmark sits closer to the viewport edge. */
+    padding: clamp(40px, 8vh, 96px) clamp(24px, 6vw, 80px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(40px, 6vh, 64px);
+}
+
+/* Wordmark override — identical to .download-page .wordmark (see section 15
+   commentary). Resets the fixed-positioned floating logo back to in-flow
+   so the layout's flex column places it cleanly above the article. */
+.legal-page .wordmark {
+    position: static;
+    top: auto;
+    left: auto;
+    translate: none;
+    transform: none;
+}
+
+/* Article container — 72ch reading column. Wider than the .download-hero
+   56ch utility column because legal text needs more characters per line
+   (citations, article references, URLs) before wrapping awkwardly. */
+.legal-page-article {
+    width: 100%;
+    max-width: 72ch;
+}
+
+/* ---- Header (eyebrow / title / updated date) ---- */
+.legal-page-header {
+    text-align: center;
+    margin-bottom: clamp(40px, 6vh, 72px);
+}
+
+/* Eyebrow — same recipe as .download-eyebrow / .faq-eyebrow (Inter 600,
+   12px, tracking 0.16em, uppercase, medium-gray). */
+.legal-page-eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-medium-gray);
+    margin: 0 0 16px;
+}
+
+/* Title — clamp range matches .download-title / section headings sitewide. */
+.legal-page-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-text-primary);
+    margin: 0 0 24px;
+}
+
+/* Last-updated date — small Inter line, medium-gray, below the title. */
+.legal-page-updated {
+    font-family: var(--font-body);
+    font-size: 0.875rem;
+    color: var(--color-medium-gray);
+    margin: 0;
+}
+
+/* ---- Body — long-form typography ---- */
+.legal-page-body {
+    font-family: var(--font-body);
+    /* Comfortable body size that scales between 15px (small viewports) and
+       16px (desktop). Long legal text reads best at 16px; we stay at the
+       16px end on desktop and only ease down on very narrow mobile. */
+    font-size: clamp(0.9375rem, 1.1vw, 1rem);
+    /* 1.7 line-height is generous for legal reading — heavier than the
+       default body 1.6 / paragraph 1.65, mirroring well-typeset terms-of-
+       service pages. Tightened to 1.65 on mobile (see media block below). */
+    line-height: 1.7;
+    /* Slightly muted from --color-text-primary (#101828) for reading
+       comfort over long sessions. The titles stay at full --color-text-primary
+       to preserve the typographic hierarchy. */
+    color: rgba(16, 24, 40, 0.84);
+}
+
+/* Section wrappers — vertical rhythm between articles / sections. */
+.legal-page-section {
+    margin-bottom: clamp(32px, 5vh, 56px);
+}
+.legal-page-section:last-child {
+    margin-bottom: 0;
+}
+
+/* Section heading (H2) — Roboto 700, mid-clamp to sit comfortably below
+   the page H1 without competing. Negative tracking matches the rest of the
+   heading family. */
+.legal-page-section-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    color: var(--color-text-primary);
+    margin: 0 0 16px;
+}
+
+/* Subsection heading (H3) — Inter 600 (NOT Roboto) to clearly differentiate
+   from the H2 and read as a sub-rank. Top margin restores breathing room
+   when subsections follow a paragraph. */
+.legal-page-subsection-title {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: clamp(1rem, 1.4vw, 1.125rem);
+    line-height: 1.4;
+    color: var(--color-text-primary);
+    margin: 24px 0 12px;
+}
+
+/* Paragraphs inside the body. Override the global `p { line-height: 1.65 }`
+   so the section-wide 1.7 line-height applies uniformly. */
+.legal-page-body p {
+    margin: 0 0 16px;
+    line-height: inherit;
+}
+.legal-page-body p:last-child {
+    margin-bottom: 0;
+}
+
+/* Lists — bullets / numbers explicitly re-enabled, since the global
+   `ul { list-style: none }` (section 3, line 156) strips them by default.
+   Indent via padding-inline-start so RTL would still work correctly. */
+.legal-page-body ul,
+.legal-page-body ol {
+    margin: 0 0 16px;
+    padding-inline-start: 24px;
+}
+.legal-page-body ul {
+    list-style: disc;
+}
+.legal-page-body ol {
+    list-style: decimal;
+}
+.legal-page-body li {
+    margin-bottom: 8px;
+}
+.legal-page-body li:last-child {
+    margin-bottom: 0;
+}
+/* Nested lists — tighter spacing. */
+.legal-page-body li > ul,
+.legal-page-body li > ol {
+    margin: 8px 0 0;
+}
+
+/* Emphasis — pull the weight up and restore full primary color so
+   <strong> defined terms read clearly against the muted body text. */
+.legal-page-body strong {
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+/* Inline code — emails, technical identifiers (e.g. SIRET), API names.
+   Subtle gray pill, monospace stack with system fallback. The 0.9em sizing
+   compensates for monospace fonts reading slightly larger optically than
+   the surrounding Inter glyphs. */
+.legal-page-body code {
+    font-family: 'SF Mono', SFMono-Regular, Menlo, Monaco, Consolas,
+                 'Liberation Mono', 'Courier New', monospace;
+    font-size: 0.9em;
+    background-color: rgba(16, 24, 40, 0.06);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--color-text-primary);
+}
+
+/* Inline links — underlined for clarity on long-form pages (vs. the rest
+   of the site where links rely on context). Underline offset + thin weight
+   keep the rule readable but unobtrusive.
+
+   The global `a { transition: color, opacity }` (section 3, line 152)
+   already covers the hover color animation — no extra transition rule. */
+.legal-page-body a {
+    color: var(--color-text-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+}
+.legal-page-body a:hover {
+    color: rgba(16, 24, 40, 0.62);
+}
+.legal-page-body a:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+/* When a link wraps a <code> chip (e.g. mailto: support@yamatch.app),
+   don't double-underline the chip — the chip already has its own bg. */
+.legal-page-body a > code {
+    text-decoration: inherit;
+}
+
+/* ---- Tables (used in politique-annulation-remboursement) ---- */
+
+/* Tables can overflow a 72ch column on narrow viewports. Wrap them in
+   their own scroll context only if needed — but apply the recipe to the
+   table itself so it stays usable inside any container. */
+.legal-page-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 0.9375rem;
+}
+
+.legal-page-table thead {
+    background-color: var(--color-light-gray);
+}
+
+.legal-page-table th,
+.legal-page-table td {
+    text-align: left;
+    padding: 12px 16px;
+    /* Subtle row divider — 8% black, the same alpha used for other dividers
+       on legal pages (see footer border-top below). */
+    border-bottom: 1px solid rgba(16, 24, 40, 0.08);
+    vertical-align: top;
+}
+
+.legal-page-table th {
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--color-text-primary);
+}
+
+.legal-page-table td {
+    color: rgba(16, 24, 40, 0.84);
+}
+
+.legal-page-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ---- Placeholder marker — <mark class="legal-page-placeholder"> ----
+   Used by the legal review pass to flag "TO BE COMPLETED" spans (SIRET,
+   capital, contact email, médiateur, etc.). Must be impossible to miss:
+   lime tint (45% accent), dashed underline, slightly heavier weight than
+   surrounding text. Lime alpha (45%) is light enough to remain readable
+   inside running paragraphs. */
+.legal-page-placeholder {
+    background-color: rgba(215, 255, 0, 0.45);
+    color: var(--color-text-primary);
+    padding: 1px 6px;
+    border-radius: 4px;
+    border-bottom: 1px dashed rgba(16, 24, 40, 0.4);
+    font-weight: 500;
+}
+
+/* ---- Footer (back link + cross-nav) ---- */
+.legal-page-footer {
+    margin-top: clamp(48px, 8vh, 96px);
+    padding-top: clamp(32px, 4vh, 48px);
+    border-top: 1px solid rgba(16, 24, 40, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(24px, 3vh, 32px);
+}
+
+/* Back link — text-style, NOT a pill (the back link on legal pages is a
+   secondary action, not the page's primary CTA like on .download-page). */
+.legal-page-back {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    text-decoration: none;
+    /* The global `a { transition: color, opacity }` covers the hover. */
+}
+.legal-page-back:hover {
+    opacity: 0.7;
+}
+.legal-page-back:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+/* Cross-nav — "Autres documents" inline list of the other legal pages. */
+.legal-page-nav-title {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-medium-gray);
+    margin: 0 0 12px;
+}
+
+.legal-page-nav-list {
+    /* Re-assert no-bullets (the global rule already strips them, but being
+       explicit here protects against any future change to the global ul). */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(12px, 1.5vw, 20px);
+}
+
+.legal-page-nav-list a {
+    color: var(--color-text-primary);
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    /* Subtle underline that grows to full intensity on hover. */
+    border-bottom: 1px solid rgba(16, 24, 40, 0.12);
+    padding-bottom: 2px;
+    transition: border-color var(--transition);
+}
+.legal-page-nav-list a:hover {
+    border-color: var(--color-text-primary);
+}
+.legal-page-nav-list a:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+/* ---- Mobile tightening (<= 767px) ---- */
+@media (max-width: 767px) {
+    .legal-page {
+        /* Tighter inline gutter on small viewports; block padding scales
+           naturally via the clamp's vh component. */
+        padding: clamp(32px, 6vh, 48px) clamp(20px, 5vw, 32px);
+    }
+
+    /* Slightly tighter leading on mobile — 1.7 reads too airy on small
+       screens, 1.65 is the sweet spot between desktop comfort and mobile
+       density. */
+    .legal-page-body {
+        line-height: 1.65;
+    }
+
+    /* Smaller table cells so the 4-6 column tables in
+       politique-annulation-remboursement stay readable without horizontal
+       scroll on phones. */
+    .legal-page-table {
+        font-size: 0.875rem;
+    }
+    .legal-page-table th,
+    .legal-page-table td {
+        padding: 10px 12px;
+    }
+}
+
+
+/* ==========================================================================
+   17. MOBILE MEDIA QUERIES (consolidated — overrides hero + carousel + quest)
    --------------------------------------------------------------------------
    Single consolidated @media (max-width: 767px) block. Mobile carousel shows
    ~1.08 slides per viewport. The active-phone lift uses the same JS-driven
@@ -3152,7 +3546,7 @@ p {
 
 
 /* ==========================================================================
-   17. REDUCED MOTION
+   18. REDUCED MOTION
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
