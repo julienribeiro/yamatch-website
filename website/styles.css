@@ -1319,8 +1319,21 @@ p {
            strip; .hero-card top/bottom margins and min-height are recomputed
            symmetrically. The carousel pull-up via `--hero-flow-collapse`
            closes the lower gap during scroll, so the user-perceived effect
-           is concentrated at the rest state (page top). */
-        --mobile-hero-card-margin-block: clamp(40px, 10vw, 80px);
+           is concentrated at the rest state (page top).
+
+           Range bumped again 2026-05-11 from clamp(40px, 10vw, 80px) to
+           clamp(56px, 14vw, 112px) (+40 % at every viewport) on user
+           request: even after the previous bump the white strip above the
+           wordmark still read as tight on small phones — the wordmark sat
+           visually closer to the lime card than to the viewport top edge.
+           Effective floor is now 56 px (vp 320 / 375: fluid = 14vw =
+           44.8 / 52.5 px → both clamped to the 56 px floor); ceiling is
+           112 px (reached at vp ≥ 800 px). All three consumer rules
+           (.hero-card margin-top / margin-bottom / min-height and
+           .wordmark top) recompute automatically; min-height shrinks
+           symmetrically by 2 × delta but stays well above the intrinsic
+           content height of the title + subtitle + buttons stack. */
+        --mobile-hero-card-margin-block: clamp(56px, 14vw, 112px);
     }
 
     /* Mobile hero is now a floating tile: the lime card carries equal margins on
