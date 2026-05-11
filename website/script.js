@@ -1270,9 +1270,21 @@
     {
         const QR_VALUE = 'https://julienribeiro.github.io/yamatch-website/download/';
         const QR_SIZE = 268;            // intrinsic viewBox edge length (px)
-        const QR_ERROR_LEVEL = 'M';     // 15% error correction — balanced for editorial use
+        // 'Q' = 25% error correction. Bumped from 'M' (15%) because we knock out
+        // a centred rectangle to embed the Yamatch wordmark — at 'M' the masked
+        // ratio (≈ 6-8% of modules) is already close to recovery headroom, so
+        // 'Q' gives confortable margin for reliable scans across phones.
+        const QR_ERROR_LEVEL = 'Q';
         const QR_FG = '#101828';        // dark module color (mirrors --color-text-primary)
         const QR_BG = '#FFFFFF';        // background color (mirrors --color-light-bg)
+
+        // Embedded wordmark (centred logo) — Yamatch SVG with viewBox
+        // 0 0 1067.73 206.13 (aspect ratio ≈ 5.181:1, wide & short).
+        // The <image href="wordmark.svg"> resolves relative to the host HTML
+        // document (`website/index.html`), so the bare filename is correct.
+        const LOGO_HREF = 'wordmark.svg';
+        const LOGO_ASPECT = 1067.73 / 206.13;
+        const LOGO_WIDTH_RATIO = 0.42;  // 42% of QR width — visible without overwhelming the pattern
 
         // The three 7×7 finder squares sit at (0,0), (0, size-7), (size-7, 0).
         // Any module inside one of those squares is rendered as the stylised
@@ -1391,6 +1403,60 @@
                     }
                 }
             }
+
+            // === Centred wordmark logo (knockout + <image>) ===
+            // Render order matters for SVG z-stacking: source order = paint
+            // order, last appended = topmost. The knockout pad masks the QR
+            // modules that sit behind the logo (rather than relying on the
+            // logo's opaque pixels to cover them — which would still leak
+            // partially through the wordmark's negative space, and would
+            // confuse scanners trying to read partially-covered modules).
+            // The 'Q' error-correction level absorbs the masked area.
+            const logoWidth = QR_SIZE * LOGO_WIDTH_RATIO;
+            const logoHeight = logoWidth / LOGO_ASPECT;
+            const logoX = (QR_SIZE - logoWidth) / 2;
+            const logoY = (QR_SIZE - logoHeight) / 2;
+
+            // White knockout pad — slightly bigger than the logo (1.5×
+            // moduleSize of breathing room each side) with a soft 2×
+            // moduleSize border-radius. Sized in module-grid units so the
+            // pad scales with the QR density (denser QRs auto-shrink the
+            // padding ring proportionally — keeps the visual margin
+            // consistent against the dot grid).
+            const padPaddingX = moduleSize * 1.5;
+            const padPaddingY = moduleSize * 1.5;
+            const padX = logoX - padPaddingX;
+            const padY = logoY - padPaddingY;
+            const padWidth = logoWidth + padPaddingX * 2;
+            const padHeight = logoHeight + padPaddingY * 2;
+            const padRadius = moduleSize * 2;
+
+            const pad = document.createElementNS(SVG_NS, 'rect');
+            pad.setAttribute('x', String(padX));
+            pad.setAttribute('y', String(padY));
+            pad.setAttribute('width', String(padWidth));
+            pad.setAttribute('height', String(padHeight));
+            pad.setAttribute('rx', String(padRadius));
+            pad.setAttribute('ry', String(padRadius));
+            pad.setAttribute('fill', QR_BG);
+            svg.appendChild(pad);
+
+            // Logo <image> — SVG <image href> references the external
+            // wordmark.svg file. preserveAspectRatio 'xMidYMid meet' centres
+            // the logo inside the [logoX..logoX+logoWidth, logoY..logoY+
+            // logoHeight] box without distortion. We also set the legacy
+            // xlink:href via setAttributeNS so the very old Safari (≤ iOS 12)
+            // renderers that don't support the unprefixed `href` on <image>
+            // still resolve the resource.
+            const logo = document.createElementNS(SVG_NS, 'image');
+            logo.setAttribute('href', LOGO_HREF);
+            logo.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', LOGO_HREF);
+            logo.setAttribute('x', String(logoX));
+            logo.setAttribute('y', String(logoY));
+            logo.setAttribute('width', String(logoWidth));
+            logo.setAttribute('height', String(logoHeight));
+            logo.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+            svg.appendChild(logo);
 
             // Idempotent mount — clear any prior contents (e.g. live-reload
             // re-running the IIFE in dev) before appending the fresh SVG.

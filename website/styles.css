@@ -2104,8 +2104,8 @@ p {
    `#qrWidgetCode` by script.js) pointing at `/download/` — the redirect
    page that UA-routes iOS/Android visitors to their respective store.
 
-   Layout: column flex — store-icons row on top (decorative), QR in the
-   middle, caption below. The QR's `<svg>` is injected by JS at runtime; we
+   Layout: column flex — QR on top, caption below. The QR's `<svg>` is
+   injected by JS at runtime (with an embedded wordmark at the center); we
    only style its containing `.qr-widget-code` box and the descendant `<svg>`
    so it fills the box edge-to-edge.
 
@@ -2144,13 +2144,16 @@ p {
         0 2px 6px rgba(16, 24, 40, 0.04);
 
     /* Layout — column stack, content centered. Padding scales with the
-       widget itself; the gap controls the vertical rhythm between
-       stores / QR / caption. */
-    padding: clamp(12px, 1.5vw, 20px);
+       widget itself; the gap controls the vertical rhythm between QR and
+       caption. Both padding and gap were tightened (compared to the
+       earlier 12–20px / 8–14px ranges) to match the smaller QR footprint
+       below — the panel should stay visually proportional, not look like
+       a giant frame around a small QR. */
+    padding: clamp(8px, 1vw, 14px);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(8px, 1.2vh, 14px);
+    gap: clamp(6px, 0.8vh, 10px);
 
     /* The widget is sized by its content (the QR's clamp width determines
        the panel's intrinsic width). No max-width: the JS-injected SVG
@@ -2166,31 +2169,22 @@ p {
     }
 }
 
-/* Store-icons row. `aria-hidden="true"` on the parent in the markup —
-   purely decorative; the panel's `aria-label` already conveys the intent.
-   Icons inherit `currentColor` (set on this container via
-   `--color-text-primary`) so they appear in the brand dark color. */
-.qr-widget-stores {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(12px, 1.5vw, 18px);
-    color: var(--color-text-primary);
-}
+/* QR container — JS injects an `<svg>` inside this div at load (with an
+   embedded wordmark at the center via a knockout square + foreignObject
+   or nested SVG). We size the BOX explicitly (clamp) so the panel width
+   is deterministic before the SVG renders (no layout shift); the
+   descendant `<svg>` rule below makes the QR fill the box edge-to-edge
+   once injected.
 
-.qr-widget-icon {
-    width: clamp(20px, 2.2vw, 26px);
-    height: clamp(20px, 2.2vw, 26px);
-    display: block;
-}
-
-/* QR container — JS injects an `<svg>` inside this div at load. We size
-   the BOX explicitly (clamp) so the panel width is deterministic before
-   the SVG renders (no layout shift); the descendant `<svg>` rule below
-   makes the QR fill the box edge-to-edge once injected. */
+   Sizing range (96–128 px): drastically tightened from the previous
+   160–240 px. The widget is a discreet desktop affordance, not a hero
+   element — a 96-px QR remains scannable from typical laptop distance
+   (~50 cm) with version-3 error-correction L modules (≈ 2.7 px each).
+   Caps at 128 px on 4K screens to keep the panel from drawing the eye
+   away from the page content. */
 .qr-widget-code {
-    width: clamp(160px, 18vw, 240px);
-    height: clamp(160px, 18vw, 240px);
+    width: clamp(96px, 9vw, 128px);
+    height: clamp(96px, 9vw, 128px);
 }
 
 .qr-widget-code svg {
