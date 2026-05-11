@@ -2819,7 +2819,7 @@ p {
     outline-offset: 2px;
     border-radius: 2px;
 }
-/* When a link wraps a <code> chip (e.g. mailto: support@yamatch.app),
+/* When a link wraps a <code> chip (e.g. mailto: contact@appyamatch.fr),
    don't double-underline the chip — the chip already has its own bg. */
 .legal-page-body a > code {
     text-decoration: inherit;
