@@ -1462,11 +1462,19 @@ p {
     }
 
     .hero-subtitle {
-        /* Reduced ~15% from clamp(1rem, 3.8vw, 1.2rem) on user request — better
-           hierarchy under the smaller title. New range: 13.6px floor (vp ≤ ~415) →
-           14.4px @ vp450 → 16.8px ceiling (vp ≥ ~525). Stays >= 13.6px so the line
-           remains readable on the smallest 320px viewport. */
-        font-size: clamp(0.85rem, 3.2vw, 1.05rem);
+        /* Bumped +12% on user request (2026-05-11) from clamp(0.85rem, 3.2vw, 1.05rem).
+           New range: 15.2 px floor (vp ≤ ~422) → 17.3 px @ vp 480 → 18.4 px ceiling
+           (vp ≥ ~512). Hierarchy under the mobile .hero-title clamp(1.7rem, 8.75vw, 3rem)
+           remains preserved: subtitle / title ratio sits at ~56–60 % across the mobile
+           range (15.2/27.2 ≈ 0.56 @ vp 320, 17.3/42 ≈ 0.41 @ vp 480, 18.4/48 ≈ 0.38
+           at the ceiling) — subtitle is always smaller than the title.
+           Two-line wrap forced explicitly by `<br class="br-mobile-only">` between
+           "Compose ton équipe," and " il y a match" (index.html L47). Worst-case fit
+           @ vp 320: available text width = 320 - 2 × clamp(20,5vw,40)=40 - 2 × clamp(8,2.5vw,16)=16 = 264 px.
+           Longest line = "Compose ton équipe," (19 chars incl. trailing comma) at
+           Inter 500 ≈ 0.55 em/glyph average → 19 × 0.55 × 15.2 px ≈ 159 px ≤ 264 px,
+           ~105 px buffer. ✓ */
+        font-size: clamp(0.95rem, 3.6vw, 1.15rem);
         line-height: 1.35;
     }
 
