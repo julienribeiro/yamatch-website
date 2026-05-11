@@ -1757,17 +1757,15 @@ p {
    edges across every viewport. Vertical padding is unchanged.
    Background matches the preceding .faq section (var(--color-light-bg) — inverted
    2026-05-11 from the previous light-gray) so the page ends on a continuous white
-   surface — épuré / editorial aesthetic preserved. Because the FAQ above is ALSO
-   white now, a subtle 1 px top border (`--color-divider` token, #E0E0E0) is added
-   to demarcate the FAQ → footer seam visually; without it the two white surfaces
-   would merge into one indistinct block. Border weight is intentionally minimal
-   (matches the FAQ-list inter-item border tone of `rgba(16, 24, 40, 0.10)`
-   approximately) so it reads as a quiet rule, not a hard cut. Text is dark
-   (var(--color-text-primary)) for legibility on the light background.
+   surface — épuré / editorial aesthetic preserved. No top border / divider on the
+   FAQ → footer seam: the two white surfaces are intentionally allowed to merge
+   into one continuous block (design choice 2026-05-11, reverted from the brief
+   `border-top: 1px solid var(--color-divider)` introduced in commit b3ef309).
+   The footer's vertical padding alone delineates it from the FAQ list above.
+   Text is dark (var(--color-text-primary)) for legibility on the light background.
    ========================================================================== */
 .footer {
     background-color: var(--color-light-bg);
-    border-top: 1px solid var(--color-divider);
     color: var(--color-text-primary);
     padding-block: clamp(64px, 10vw, 96px) 28px;
     padding-inline: var(--page-pad);
