@@ -1978,7 +1978,7 @@ p {
    viewport ≈ 61px gutter, the card's right edge sits well inside the
    viewport at every breakpoint ≥ 768px). `top: 2%` and `rotate: 3deg`
    preserved from the previous placement. */
-.floating-card-parallax[data-card-id="3"] { top: 2%;   right: 4%; left: auto; rotate: 3deg; }   /* team grid — haut-droite */
+.floating-card-parallax[data-card-id="3"] { top: -4%;  right: 4%; left: auto; rotate: 3deg; }   /* team grid — haut-droite (bleed −4% au-dessus du flush) */
 /* Card 4 — moved into `.how-quest` (2026-05-12). Took over the bas-gauche
    slot previously occupied by the deleted Card 5 (streak). We keep the
    slot's `bottom: 8%; left: 6%` geometry (proven to balance Card 3 in the
@@ -1992,7 +1992,30 @@ p {
 
 /* Cards inside `.faq` (host: position: relative + overflow-x: clip via §11) */
 .floating-card-parallax[data-card-id="2"] { top: 8%;   right: 4%;  rotate: 6deg; }   /* scoreboard — haut-droite */
-.floating-card-parallax[data-card-id="6"] { bottom: -40px; right: 5%; rotate: 12deg; } /* badge rotatif — bas-droite, débord vertical */
+/* Card 6 — centred horizontally under the last FAQ question (2026-05-12).
+   Previous: `bottom: -40px; right: 5%` — badge sat in the bottom-right and
+   bled 40px past the host's bottom edge. User request: move it to the
+   horizontal centre of `.faq`, anchored just under the last accordion item
+   but staying within the host's padding-block (no vertical overflow).
+   Implementation note: the base rule (line 1924) sets
+   `translate: 0 var(--parallax-y, 0px)` to drive the JS-authored parallax
+   on the Y axis. To centre on X we override `translate` with TWO values:
+   `-50% var(--parallax-y, 0px)`. The individual `translate` property
+   accepts (x, y); the `-50%` shifts the wrapper left by half its own
+   width so that `left: 50%` places its centre on the host's centreline,
+   while the second value preserves the parallax Y written by JS via
+   `--parallax-y`. The shorthand `transform: translateZ(0)` (compositor
+   hint, also from the base rule) sits on a separate property and does
+   not conflict. `bottom: 4%` parks the badge inside the bottom slice of
+   `.faq`'s `padding-block` (≈ clamp(80px, 12vw, 140px)), visually under
+   the last accordion item. `right: auto` cancels the previous anchor. */
+.floating-card-parallax[data-card-id="6"] {
+    left: 50%;
+    right: auto;
+    bottom: 4%;
+    translate: -50% var(--parallax-y, 0px);
+    rotate: 12deg;
+} /* badge rotatif — centré horizontalement, sous la dernière question FAQ */
 
 /* Inner wrapper — continuous levitation. Each card gets its OWN keyframe
    (1–6) with a unique amplitude AND its own duration. We avoid
@@ -2389,21 +2412,13 @@ p {
 
 
 /* ---- Card 6 : rotating CTA badge --------------------------------------- */
-/* Reinforced glassmorphism — lime disc variant (2026-05-12). Sole
-   lime-translucent card remaining after Card 5's removal — opacity is
-   bumped slightly higher than a typical 0.55 frosted plate (0.65)
-   because the rotating SVG text-on-path needs to read crisply — too
-   transparent and the orbiting "INSCRIS-TOI · GRATUIT" copy becomes
-   hard to follow.
-   Changes vs. the previous solid-lime disc:
-     - background `var(--color-accent)` → `rgba(215, 255, 0, 0.65)`.
-     - blur 20px + saturate 200% — same compromise the (now removed)
-       Card 5 used (less blur than white variants, more saturate to keep
-       the lime vivid).
-     - rim-light tinted lime @ 75% (border 1px) — defines the circular
-       boundary crisply against the white host (`.faq`).
-     - Box-shadow stack augmented with the standard inset 1px white sheen
-       @ 40% — completes the "glass disc" reading.
+/* Solid lime disc (2026-05-12, reverted from glassmorphism). The
+   translucent-lime variant diluted the brand colour against the white
+   `.faq` host — the rotating CTA needs the full saturated `--color-accent`
+   to read as a confident call-to-action, not a frosted ornament. All
+   glass affordances (backdrop-filter, lime rim border, inset white sheen)
+   are dropped; only the outer drop-shadows are kept to preserve the
+   lime glow + soft depth that anchor the disc against the white surface.
    `position: relative` on `.floating-badge` so the two absolute children
    (rotor + arrow) anchor to its bounding box. The mobile width override
    (section 17) shrinks the disc to 100×100. */
@@ -2412,17 +2427,13 @@ p {
     width: 130px;
     height: 130px;
     border-radius: 50%;
-    background: rgba(215, 255, 0, 0.80);
-    border: 1px solid rgba(215, 255, 0, 0.75);
+    background: var(--color-accent);
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow:
         0 12px 32px rgba(215, 255, 0, 0.3),
-        0 4px 12px rgba(16, 24, 40, 0.08),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
-    -webkit-backdrop-filter: blur(28px) saturate(200%);
-    backdrop-filter: blur(28px) saturate(200%);
+        0 4px 12px rgba(16, 24, 40, 0.08);
 }
 /* Rotor — the SVG text-on-path layer. `inset: 0` makes it fill the parent
    disc so the SVG viewBox 0 0 130 130 lines up exactly with the disc
@@ -2484,9 +2495,8 @@ p {
     .floating-card--scoreboard {
         background: rgba(16, 24, 40, 0.96);
     }
-    .floating-badge {
-        background: rgba(215, 255, 0, 0.96);
-    }
+    /* `.floating-badge` is no longer glass (solid `var(--color-accent)`),
+       so it doesn't need a fallback bump here. */
 }
 
 
@@ -4098,7 +4108,18 @@ p {
     .floating-card-parallax[data-card-id="4"] { top: auto; bottom: 8%; left: -8%; right: auto; }
     /* Cards hosted by `.faq` on mobile */
     .floating-card-parallax[data-card-id="2"] { top: 8%;   right: -8%; }
-    .floating-card-parallax[data-card-id="6"] { bottom: -30px; right: 4%; }
+    /* Card 6 on mobile — same centring treatment as desktop (2026-05-12).
+       Badge is 100px (see `.floating-badge` mobile override below), so a
+       slightly smaller `bottom: 3%` keeps it well inside `.faq`'s mobile
+       `padding-block: var(--mobile-hero-card-margin)` while sitting under
+       the last accordion item. `translate: -50% var(--parallax-y, 0px)`
+       preserves the JS-authored parallax Y while centring on X. */
+    .floating-card-parallax[data-card-id="6"] {
+        left: 50%;
+        right: auto;
+        bottom: 3%;
+        translate: -50% var(--parallax-y, 0px);
+    }
 
     /* Smaller CTA disc on mobile. The SVG inside auto-scales via
        `width: 100%; height: 100%` on `.floating-badge__rotor-svg`, so the
