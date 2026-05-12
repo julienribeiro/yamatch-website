@@ -1363,6 +1363,21 @@
      on touch because of a separate per-event `getBoundingClientRect` jank
      surface — irrelevant here since this IIFE never reads layout per scroll).
 
+   Narrow-viewport (mobile, <=767px) gate:
+     ACTIVE — every `.floating-card-parallax` is hidden via `display: none`
+     in styles.css §18 on mobile (the cards are decorative density that
+     doesn't read well in a single-column mobile layout). Writing
+     `--parallax-y` on `display: none` elements is legal but wasteful — N
+     setProperty calls per rAF tick + one IntersectionObserver entry per
+     parent section, all producing no visible effect. So we GATE the entire
+     observer + scroll-listener setup on `mobileQuery.matches`: skip setup
+     on mobile, and watch the MediaQueryList for breakpoint crossings to
+     teardown / re-init symmetrically on resize / orientationchange that
+     crosses the 767px boundary. Pattern mirrors the launch-ticker MQL
+     `change` listener around line ~1748. Reduced-motion guard is still
+     evaluated first and short-circuits before the mobile gate — both
+     conditions stack additively, neither subsumes the other.
+
    Sign convention:
      `parallaxY = -delta * speed`. When scrolling DOWN (delta > 0),
      parallaxY is negative → the cards translate UP. Cards with a higher
@@ -1387,6 +1402,17 @@
     // card, there's nothing to measure or observe — bail out silently.
     const cards = Array.from(document.querySelectorAll('.floating-card-parallax'));
     if (cards.length === 0) return;
+
+    // Guard 3: mobile (<= 767px). Held as a live MediaQueryList so a
+    // window-resize that crosses the breakpoint mid-session toggles the
+    // entire parallax engine on/off (see `setup()` / `teardown()` below).
+    // The cards are `display: none` on mobile per styles.css §18, so any
+    // `--parallax-y` write is silently ignored by the renderer; we skip
+    // the work entirely rather than burn an rAF tick per scroll event +
+    // N setProperty calls + an IntersectionObserver. Same MQL family as
+    // the page-scroll-progress block (line 74) and the launch-ticker
+    // (line 1678).
+    const mobileQuery = window.matchMedia('(max-width: 767px)');
 
     // === Per-card data, snapshotted at setup ===
     // Reading `dataset.parallaxSpeed` once at setup (string→float parse) is
@@ -1530,42 +1556,21 @@
     let visibleParents = 0;
     let listenerAttached = false;
 
-    const io = new IntersectionObserver((entries) => {
-        for (let i = 0; i < entries.length; i++) {
-            const entry = entries[i];
-            if (entry.isIntersecting) {
-                visibleParents++;
-            } else {
-                visibleParents = Math.max(0, visibleParents - 1);
-            }
-        }
-        if (visibleParents > 0 && !listenerAttached) {
-            window.addEventListener('scroll', onScroll, { passive: true });
-            listenerAttached = true;
-            // Synthetic resync — important when the user re-enters a parent
-            // section after a fast scroll: the cached scrollY (from the
-            // last time we were attached) may be stale, and the cards'
-            // current `--parallax-y` may correspond to a position
-            // hundreds of px away. One synthetic onScroll → rAF tick
-            // catches up before the next real scroll event.
-            onScroll();
-        } else if (visibleParents === 0 && listenerAttached) {
-            window.removeEventListener('scroll', onScroll, { passive: true });
-            listenerAttached = false;
-        }
-    }, { rootMargin: '20% 0% 20% 0%' });
-    uniqueParents.forEach((parent) => io.observe(parent));
-
-    // === Layout-change re-measure (debounced 150ms) ===
-    // Same debounce window as the launch-ticker resize handler (line ~1401)
-    // and the page-scroll-progress block's natural ordering. 150ms is the
-    // sweet spot: fast enough to feel responsive at the end of a window-
-    // drag, slow enough to coalesce the burst of resize events Chrome
-    // fires during the drag (which can hit 60+ events/second). On
-    // orientationchange the handler fires once (no debounce needed
-    // for the trailing edge), but reusing the same path keeps the code
-    // simple and any extra trailing rAF tick is harmless.
+    // Closure-scoped handles — assigned by `setup()`, nulled by
+    // `teardown()`. Keeping them in the outer scope (rather than inside
+    // `setup`) lets `teardown` disconnect and remove with the exact same
+    // function references, even after the MQL `change` listener has
+    // ping-ponged the engine on/off multiple times.
+    let io = null;
     let resizeTimer = null;
+    let loadListener = null;
+
+    // Debounced resize / orientationchange handler — 150ms is the sweet
+    // spot: fast enough to feel responsive at the end of a window-drag,
+    // slow enough to coalesce the burst of resize events Chrome fires
+    // during the drag (which can hit 60+ events/second). Defined at the
+    // IIFE scope so `setup()` and `teardown()` share the exact same
+    // function reference for add/removeEventListener symmetry.
     const onLayoutChange = () => {
         if (resizeTimer !== null) clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
@@ -1587,32 +1592,130 @@
         }, 150);
     };
 
-    window.addEventListener('resize', onLayoutChange, { passive: true });
-    window.addEventListener('orientationchange', onLayoutChange, { passive: true });
-    // `load` re-measure: webfonts (Inter via Google Fonts) can shift the
-    // vertical layout 100-500ms after first paint, moving each parent
-    // section by tens of pixels. Without this re-measure, the initial
-    // `sectionTopAtRest` values would be stale for the rest of the
-    // session. Mirrors the page-scroll-progress block's `load` listener.
-    window.addEventListener('load', () => {
+    // === setup() — wire everything that costs CPU per scroll ===
+    // Idempotent: calling twice without an intervening `teardown()` does
+    // nothing (guarded by `io !== null`). Builds the IntersectionObserver,
+    // attaches the resize/orientationchange/load listeners, performs the
+    // initial geometry measure, and schedules the first paint tick.
+    const setup = () => {
+        if (io !== null) return;
+
+        // Reset gate state so a re-entry after a teardown starts clean.
+        visibleParents = 0;
+        listenerAttached = false;
+
+        io = new IntersectionObserver((entries) => {
+            for (let i = 0; i < entries.length; i++) {
+                const entry = entries[i];
+                if (entry.isIntersecting) {
+                    visibleParents++;
+                } else {
+                    visibleParents = Math.max(0, visibleParents - 1);
+                }
+            }
+            if (visibleParents > 0 && !listenerAttached) {
+                window.addEventListener('scroll', onScroll, { passive: true });
+                listenerAttached = true;
+                // Synthetic resync — important when the user re-enters a parent
+                // section after a fast scroll: the cached scrollY (from the
+                // last time we were attached) may be stale, and the cards'
+                // current `--parallax-y` may correspond to a position
+                // hundreds of px away. One synthetic onScroll → rAF tick
+                // catches up before the next real scroll event.
+                onScroll();
+            } else if (visibleParents === 0 && listenerAttached) {
+                window.removeEventListener('scroll', onScroll, { passive: true });
+                listenerAttached = false;
+            }
+        }, { rootMargin: '20% 0% 20% 0%' });
+        uniqueParents.forEach((parent) => io.observe(parent));
+
+        window.addEventListener('resize', onLayoutChange, { passive: true });
+        window.addEventListener('orientationchange', onLayoutChange, { passive: true });
+        // `load` re-measure: webfonts (Inter via Google Fonts) can shift the
+        // vertical layout 100-500ms after first paint, moving each parent
+        // section by tens of pixels. Without this re-measure, the initial
+        // `sectionTopAtRest` values would be stale for the rest of the
+        // session. Mirrors the page-scroll-progress block's `load` listener.
+        // Stored on a closure-scope variable so `teardown` can detach this
+        // exact reference (even though `load` fires at most once per page
+        // lifecycle, a mobile→desktop→mobile→desktop pattern would otherwise
+        // stack listeners).
+        loadListener = () => {
+            measureGeometry();
+            latestScrollY = window.scrollY || window.pageYOffset || 0;
+            if (!rafScheduled) {
+                rafScheduled = true;
+                requestAnimationFrame(tick);
+            }
+        };
+        window.addEventListener('load', loadListener, { passive: true });
+
+        // === Initial sync ===
+        // Run the first geometry measure synchronously (defer-script timing
+        // means the DOM is parsed; layout has been computed at least once by
+        // the time this IIFE evaluates) and schedule the first paint tick.
+        // This handles the case where the user loads the page already scrolled
+        // mid-document (e.g. anchor link, deep-link, reload-with-restored-
+        // scroll-position): the parallax is correct on first paint, not on
+        // first user scroll.
         measureGeometry();
-        latestScrollY = window.scrollY || window.pageYOffset || 0;
         if (!rafScheduled) {
             rafScheduled = true;
             requestAnimationFrame(tick);
         }
-    }, { passive: true });
+    };
 
-    // === Initial sync ===
-    // Run the first geometry measure synchronously (defer-script timing
-    // means the DOM is parsed; layout has been computed at least once by
-    // the time this IIFE evaluates) and schedule the first paint tick.
-    // This handles the case where the user loads the page already scrolled
-    // mid-document (e.g. anchor link, deep-link, reload-with-restored-
-    // scroll-position): the parallax is correct on first paint, not on
-    // first user scroll.
-    measureGeometry();
-    requestAnimationFrame(tick);
+    // === teardown() — symmetric cleanup, no listener leaks ===
+    // Disconnects the IO, removes every listener installed by `setup`, and
+    // pending timer / rAF schedules are left to drain harmlessly (the tick
+    // callback is a no-op for `--parallax-y` writes once the cards are
+    // `display: none` anyway; the `rafScheduled` flag will reset itself on
+    // the next tick). Last-written `--parallax-y` values persist on the
+    // cards' inline style — invisible while `display: none`, and the next
+    // `setup()` (on desktop re-entry) will overwrite them on its first tick.
+    const teardown = () => {
+        if (io === null) return;
+        io.disconnect();
+        io = null;
+        if (listenerAttached) {
+            window.removeEventListener('scroll', onScroll, { passive: true });
+            listenerAttached = false;
+        }
+        window.removeEventListener('resize', onLayoutChange, { passive: true });
+        window.removeEventListener('orientationchange', onLayoutChange, { passive: true });
+        if (loadListener !== null) {
+            window.removeEventListener('load', loadListener, { passive: true });
+            loadListener = null;
+        }
+        if (resizeTimer !== null) {
+            clearTimeout(resizeTimer);
+            resizeTimer = null;
+        }
+    };
+
+    // === Mobile gate — initial state + breakpoint-change listener ===
+    // On mobile load (or anchor-link to mobile viewport) we skip the entire
+    // setup. The MQL `change` listener handles the desktop↔mobile crossing
+    // for window-resize drags and orientation changes that cross 767px.
+    // Pattern mirrors the launch-ticker MQL block (line ~1747).
+    if (!mobileQuery.matches) {
+        setup();
+    }
+
+    const onMobileQueryChange = (event) => {
+        if (event.matches) {
+            teardown();
+        } else {
+            setup();
+        }
+    };
+    if (typeof mobileQuery.addEventListener === 'function') {
+        mobileQuery.addEventListener('change', onMobileQueryChange);
+    } else if (typeof mobileQuery.addListener === 'function') {
+        // Safari < 14 fallback (deprecated API, still ships in older iOS).
+        mobileQuery.addListener(onMobileQueryChange);
+    }
 })();
 
 

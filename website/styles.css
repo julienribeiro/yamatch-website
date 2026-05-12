@@ -1978,7 +1978,7 @@ p {
    viewport ≈ 61px gutter, the card's right edge sits well inside the
    viewport at every breakpoint ≥ 768px). `top: 2%` and `rotate: 3deg`
    preserved from the previous placement. */
-.floating-card-parallax[data-card-id="3"] { top: -4%;  right: 4%; left: auto; rotate: 3deg; }   /* team grid — haut-droite (bleed −4% au-dessus du flush) */
+.floating-card-parallax[data-card-id="3"] { top: -13%; right: 4%; left: auto; rotate: 3deg; }   /* team grid — haut-droite, juste milieu 2026-05-12 (historique : -4% origine → -22% trop haut → -13% (moyenne arithmétique, juste milieu retenu) ; le bleed s'étend ~90–115px au-dessus de .how-quest dans le slab bas de .hero ; .how-quest { overflow-x: clip } NE promeut PAS overflow-y → bleed vertical préservé) */
 /* Card 2 — moved from `.faq` to `.how-quest` (2026-05-12). Previous .faq
    placement was `top: 8%; right: 4%` (haut-droite of FAQ list). New host
    is `.how-quest`; user spec: "à gauche du texte Comment ça marche, juste
@@ -2005,37 +2005,68 @@ p {
    Rotation `+6deg` preserved — the scoreboard's right-tilt identity is
    maintained; now that the card sits on the LEFT, the tilt reads as
    "leaning toward the title" which feels intentional. */
-.floating-card-parallax[data-card-id="2"] { top: 12%;  left: 4%;  right: auto; rotate: -6deg; }  /* scoreboard — gauche, dans le header (au-dessus des quest-steps) */
+.floating-card-parallax[data-card-id="2"] { top: 4%;   left: 4%;  right: auto; rotate: -6deg; }  /* scoreboard — gauche, dans le header (au-dessus des quest-steps). Remontée légère 2026-05-12 (top: 12% → 4%, delta -8pts) : la card flotte désormais plus haut, au niveau de l'eyebrow "Parcours" / haut du H2, élargissant l'écart vertical avec le `.quest-step-numeral` 01 sous-jacent. left/right/rotate inchangés. */
 
 /* Cards inside `.faq` (host: position: relative + overflow-x: clip via §11) */
-/* Card 6 — centred horizontally under the last FAQ question (2026-05-12).
-   Previous: `bottom: -40px; right: 5%` — badge sat in the bottom-right and
-   bled 40px past the host's bottom edge. User request: move it to the
-   horizontal centre of `.faq`, anchored just under the last accordion item
-   but staying within the host's padding-block (no vertical overflow).
-   Implementation note: the base rule (line 1924) sets
-   `translate: 0 var(--parallax-y, 0px)` to drive the JS-authored parallax
-   on the Y axis. To centre on X we override `translate` with TWO values:
-   `-50% var(--parallax-y, 0px)`. The individual `translate` property
-   accepts (x, y); the `-50%` shifts the wrapper left by half its own
-   width so that `left: 50%` places its centre on the host's centreline,
-   while the second value preserves the parallax Y written by JS via
-   `--parallax-y`. The shorthand `transform: translateZ(0)` (compositor
-   hint, also from the base rule) sits on a separate property and does
-   not conflict. `bottom: 4%` parks the badge inside the bottom slice of
-   `.faq`'s `padding-block` (≈ clamp(80px, 12vw, 140px)), visually under
-   the last accordion item. `right: auto` cancels the previous anchor. */
+/* Card 6 — repositioned to the BOTTOM-RIGHT under step 3 of `.how-quest`
+   (2026-05-12, third pass). Previous placements:
+     - `bottom: -40px; right: 5%` (bottom-right, slight bleed under .faq).
+     - `left: 50%; bottom: -10%; translate: -50% …` (centred, hanging in
+       FAQ→footer seam).
+   User request 2026-05-12: place the badge in the bottom-right area, just
+   UNDER the text of step 3 of the `.how-quest` PARCOURS section. The badge
+   stays parented to `.faq` in HTML (no markup change needed) — we lift it
+   visually UP and OUT of `.faq`'s top edge using a negative `top`, into the
+   bottom slice of the `.how-quest` block above. Per CSS spec, `.faq`'s
+   `overflow-x: clip` does NOT promote overflow-y to `auto` (same guarantee
+   that lets cards 1 / 3 bleed vertically across section seams — see lines
+   1939–1941, 4076–4082), so the negative `top` renders correctly above
+   `.faq`'s top edge.
+
+   Geometry rationale:
+     - `top: -8%`: `.faq` is typically ~800–1100 px tall on desktop (6
+       accordion items + title + padding-block clamp(24px,4vw,52px) /
+       clamp(80px,12vw,140px)). At -8% the badge is lifted ~64–88 px above
+       `.faq`'s top edge. Since `.how-quest` sits immediately above `.faq`
+       (no margin between sections), this lands the badge in the LAST
+       editorial slot of `.how-quest`'s bottom padding-block (`clamp(80px,
+       12vw, 140px)`) — i.e. just under the bottom of step 3's body copy.
+     - `right: 8%`: anchors the badge on the right side of the viewport
+       (the host `.faq` is full-bleed; `right: %` resolves against the host's
+       padding-box width = viewport width). 8% of 1440 px ≈ 115 px, of 1024 px
+       ≈ 82 px. With the badge being 100 px wide on desktop, its left edge
+       sits ~180–215 px from the viewport's right edge, which naturally lands
+       under the rightmost `.quest-step` column (step 3 occupies the right
+       third of `.how-quest-inner`'s max-width 1200 px content well). Reads
+       as "decorative companion to step 3" without forcing pixel-perfect
+       column alignment.
+     - `left: auto`, `bottom: auto`: explicit cancels of any inherited /
+       previous anchors. The badge is positioned solely by `top` + `right`.
+     - `translate: 0 var(--parallax-y, 0px)`: restores the base rule pattern
+       (line 1924) — Y parallax preserved, no X centering shift. The
+       previous `translate: -50% var(--parallax-y, 0px)` was required while
+       the badge centred at `left: 50%`; with the new right-anchored
+       placement, the -50% X shift would push the badge half-its-width past
+       the right anchor and is no longer wanted. The individual `translate`
+       property still composes cleanly with `rotate: 12deg` (also
+       individual) and with the base rule's `transform: translateZ(0)`
+       compositor hint (separate shorthand property — no clobbering).
+     - `rotate: 12deg`: preserved from the previous placement — the badge's
+       identity tilt remains.
+
+   `pointer-events: none` on the base rule (line 1913) guarantees the badge
+   cannot intercept clicks on the step 3 body copy beneath it. Comportement
+   mobile : la card est masquée par la blanket `display: none !important`
+   (`styles.css:4142`) avec toutes les autres `.floating-card-parallax` —
+   pas d'override mobile spécifique à la card 6. */
 .floating-card-parallax[data-card-id="6"] {
-    left: 50%;
-    right: auto;
-    bottom: -10%;
-    translate: -50% var(--parallax-y, 0px);
+    top: -8%;
+    right: 8%;
+    left: auto;
+    bottom: auto;
+    translate: 0 var(--parallax-y, 0px);
     rotate: 12deg;
-} /* badge rotatif — centré horizontalement, descendu en léger bleed sous .faq
-     pour ne plus recouvrir la dernière question. `pointer-events: none` sur
-     la règle de base (voir ligne 1797) garantit que le bleed n'intercepte
-     pas de clics sur le footer en-dessous. Card 3 utilise déjà un pattern
-     similaire (top: -4% bleed au-dessus, ligne 1981). */
+}
 
 /* Inner wrapper — continuous levitation. Each card gets its OWN keyframe
    (1–6) with a unique amplitude AND its own duration. We avoid
@@ -2392,12 +2423,31 @@ p {
    are dropped; only the outer drop-shadows are kept to preserve the
    lime glow + soft depth that anchor the disc against the white surface.
    `position: relative` on `.floating-badge` so the two absolute children
-   (rotor + arrow) anchor to its bounding box. The mobile width override
-   (section 17) shrinks the disc to 100×100. */
+   (rotor + arrow) anchor to its bounding box. Mobile: the entire
+   `.floating-card-parallax` element is hidden via §17 blanket rule, so
+   there is no per-element mobile size override anymore.
+
+   Disc sized at 143×143 (2026-05-12, was 130×130 — +10% scale per user
+   request to give the CTA more visual weight on the white FAQ canvas).
+   Internals scale automatically:
+     - `.floating-badge__rotor-svg` is `width:100%; height:100%`, so the
+       SVG viewBox `0 0 130 130` (HTML, index.html line 537) is uniformly
+       scaled UP by the parent ratio 143/130 ≈ 1.10. The textPath drawn
+       on the inline `<path>` (also in user-space units) scales with it,
+       so `.floating-badge__rotor-text { font-size: 11px }` produces a
+       rendered glyph size ~12.1px at the screen — the +10% bump comes
+       for free from the SVG scale. `letter-spacing: 0.18em` is
+       em-relative so it tracks the font-size bump too. No CSS change
+       needed on `.floating-badge__rotor-text` to preserve proportions.
+     - `.floating-badge__arrow > svg` is sized via HTML attributes
+       `width="28" height="28"` (index.html line 547); these are NOT
+       under the SVG viewBox scale (the arrow is a separate inline
+       <svg>, not painted by the rotor SVG). We bump it to 31×31 via
+       the desktop CSS rule below (28 × 1.10 = 30.8 → 31, rounded). */
 .floating-badge {
     position: relative;
-    width: 130px;
-    height: 130px;
+    width: 143px;
+    height: 143px;
     border-radius: 50%;
     background: var(--color-accent);
     display: flex;
@@ -2449,6 +2499,17 @@ p {
     justify-content: center;
     color: var(--color-text-primary);
     pointer-events: none;
+}
+/* Arrow SVG explicit size override (2026-05-12). The inline SVG in
+   index.html (line 547) carries HTML attributes `width="28" height="28"`.
+   With the disc bumped from 130 → 143 px (+10%), the arrow is bumped
+   proportionally to 31×31 (28 × 1.10 ≈ 30.8 → 31) to preserve the
+   centred-arrow-to-disc ratio. CSS `width` / `height` on the SVG element
+   override the HTML attributes (CSS always wins over presentational
+   attributes per HTML spec). */
+.floating-badge__arrow svg {
+    width: 31px;
+    height: 31px;
 }
 
 /* Fallback for browsers without backdrop-filter (Firefox ≤ 102 unflagged,
@@ -4033,138 +4094,53 @@ p {
         font-size: clamp(10px, 2.5vw, 11px);
     }
 
-    /* ---- Floating cards (section 10.5) — mobile overrides ----------------
-       Drop the team-grid card (3) to avoid an overcrowded canvas on
-       narrow viewports — the remaining three cards (notif primary
-       hero-hosted, scoreboard, rotating badge) still carry the full
-       visual story (notification → match running → CTA). Card 3 is
-       aria-hidden anyway, so there is no a11y loss from `display: none`.
+    /* ---- Floating cards (section 10.5) — mobile = fully hidden -----------
+       2026-05-12 (decision lock): on `max-width: 767px`, ALL decorative
+       `.floating-card-parallax` elements (cards 1, 2, 3, 6 — see index.html
+       lines 226 / 400 / 426 / 533) are hidden via a single blanket rule.
+       The previous mobile-specific positions / dimensions (cards 1 & 3
+       repositioning, card 2 already hidden, card 6 centred at the FAQ
+       footer seam, plus the `.floating-card--team` width / internals
+       shrink and the `.floating-badge` 88×88 / rotor 8px / arrow 22×22
+       resize) have been removed — dead code on a hidden element.
 
-       2026-05-12: the `.floating-cards` host section was removed; cards
-       are now hosted directly by `.hero` (card 1), `.how-quest` (cards
-       2, 3) and `.faq` (card 6). Mobile placements recalibrated for
-       each host's geometry. The host sections already carry their own
-       mobile `padding-inline: var(--mobile-hero-card-margin)` (§10.1
-       default + §17 .faq override earlier in this block), so the cards'
-       negative `left` / `right` values bleed past the host's content
-       box, clipped by each host's `overflow-x: clip`. */
-    /* Card 3 — visible on mobile (revised 2026-05-12, second pass).
-       Previously `display: none` because the desktop placement `top: -4%; right: 4%`
-       (line 1981) sat awkwardly inside the narrow mobile `.how-quest`. User
-       feedback: bring back the team-grid card on the RIGHT side, aligned with
-       the "RECHERCHE" tag of step 01 in the mobile stacked `.quest-steps`,
-       with a slight right-edge bleed. The mobile `.quest-steps` stacks the
-       three columns vertically; `top: 38%` lands roughly on step 01's tag row
-       (header ≈ 0–25% of `.how-quest` height, step 01 ≈ 25–50%, with the
-       RECHERCHE tag sitting just under the "01" numeral inside that band).
-       Calibrate visually — viable range ~32–44% depending on viewport height
-       and current copy length. `right: -8%` produces the requested slight
-       bleed off the right edge (clipped by `.how-quest`'s `overflow-x: clip`,
-       same mechanism that contains Card 1's desktop `left: 2%` bleed).
-       `display: block` overrides the previous `display: none`. Desktop
-       `rotate: 3deg` (line 1981) is inherited unchanged. `left: auto` and
-       `bottom: auto` are defensive resets in case any earlier rule leaks
-       through (none currently does, but explicit is safer than implicit
-       when re-enabling a previously-hidden element). */
-    /* Card 3 — drastic descent (2026-05-12, third pass). User wants the
-       team-grid card to float at the level of the "Questions fréquentes"
-       H2 of the next section (`.faq`), not inside the mobile stack of
-       `.quest-steps`. Anchor flipped `top: 38%` → `bottom: -22%`: the card
-       hangs ~22 % past `.how-quest`'s bottom edge, landing in the top
-       padding of `.faq` near the H2 row. Per CSS spec, `.how-quest`'s
-       `overflow-x: clip` does NOT promote overflow-y to `auto`, so the
-       vertical bleed renders correctly into the next section. Right-edge
-       bleed preserved (`right: -8%`). Desktop `rotate: 3deg` inherited.
-       Viable calibration range: ~-18 % to ~-30 % depending on viewport
-       height and current copy length. */
-    .floating-card-parallax[data-card-id="3"] {
-        display: block;
-        top: auto;
-        right: -8%;
-        left: auto;
-        bottom: -22%;
-    }
-    /* Card 3 — mobile width reduction (2026-05-12). Desktop width is
-       `clamp(260px, 20vw, 300px)` (line 2322). On narrow viewports this is
-       too wide and crowds the right edge of `.how-quest`. The 2×2 avatar
-       grid needs at minimum: 2 × 52px (avatar) + 1 × 8px (gap) + 2 × 16px
-       (padding) = 144px, so a `clamp(180px, 50vw, 220px)` floor of 180px
-       leaves ~36px of inner breathing room around the grid — comfortable
-       and still compact. 50vw fluid track scales gently from the floor on
-       phones (<360px viewport) up to the 220px ceiling at 440px viewport
-       and beyond. Net: ~27–33 % narrower than the desktop value. */
-    .floating-card--team {
-        width: clamp(180px, 50vw, 220px);
-    }
-    /* Card 1 hosted by `.hero` on mobile (revised 2026-05-12, fourth pass —
-       drastic descent past the carousel). Previous placements: `bottom: 22%;
-       left: -6%` (over CTAs) → `bottom: -8%; left: 50%` (centred, small
-       bleed past hero's bottom) → `bottom: -22%` (still perceived as
-       overlapping the carousel slides above PARCOURS). User feedback:
-       the card must descend DRAMATICALLY, traversing the carousel zone
-       (`.screens-rail`, which sits below `.hero` on mobile) and landing
-       JUST ABOVE the "PARCOURS" eyebrow of `.how-quest` — i.e. ~one
-       carousel-section worth of vertical distance below `.hero`'s bottom
-       edge. New value: `bottom: -45%` — the card hangs ~45 % past `.hero`'s
-       100svh bottom (≈ 0.45 × 100svh ≈ 340–400px on a typical phone),
-       roughly the height of the `.screens-rail` block on mobile, so it
-       lands at the top of `.how-quest` near the eyebrow. Per CSS spec,
-       `.hero`'s `overflow-x: clip` does NOT promote overflow-y to `auto`
-       — same guarantee that lets Card 6 hang past `.faq`'s bottom (lines
-       1939–1941); the card remains visible across the hero→carousel→how-quest
-       seam. `pointer-events: none` on the base rule (line ~1913) ensures
-       the bleed cannot intercept clicks on the carousel slides or the
-       PARCOURS eyebrow it now floats over. `left: 50%` + `translate:
-       -50% var(--parallax-y, 0px)` keeps the card centred horizontally
-       while preserving the JS-authored parallax Y. Desktop `rotate: -8deg`
-       (line 1966) inherited. Calibration range: ~-40 % (just inside the
-       carousel) to ~-55 % (overlapping PARCOURS); -45 % targets the
-       sweet spot just above PARCOURS. */
-    .floating-card-parallax[data-card-id="1"] {
-        top: auto;
-        bottom: -45%;
-        left: 50%;
-        right: auto;
-        translate: -50% var(--parallax-y, 0px);
-    }
-    /* Card 2 — hidden on mobile (2026-05-12). Card 2 moved from `.faq` to
-       `.how-quest` on desktop; on mobile, adding the scoreboard to the
-       narrow `.how-quest` section would crowd the editorial
-       3-column-stacked-as-1-column layout. Mirrors Card 3's mobile
-       treatment (`display: none` above) for the same density reason. The
-       desktop scoreboard remains visible at ≥ 768px where there's enough
-       horizontal real-estate for the card to breathe in `.how-quest`. */
-    .floating-card-parallax[data-card-id="2"] { display: none; }
-    /* Card 6 on mobile — same centring treatment as desktop (2026-05-12).
-       Badge is 100px (see `.floating-badge` mobile override below). Revised
-       2026-05-12 (second pass): `bottom: -8%` still overlapped the last FAQ
-       question on narrow viewports; pushed to `-15%` so the badge sits more
-       clearly past the `.faq` bottom edge, in the seam between FAQ and footer.
-       Per CSS spec, `.faq`'s `overflow-x: clip` does NOT promote overflow-y
-       to `auto` (see lines 1939–1941), so the negative `bottom` stays visible
-       across the FAQ→footer transition. `pointer-events: none` on the base
-       rule (line 1913) guarantees the bleed cannot intercept clicks on the
-       footer below. `translate: -50% var(--parallax-y, 0px)` preserves the
-       JS-authored parallax-Y while centring on X. If the badge still overlaps
-       the last question, drop further to `-20%`. */
-    .floating-card-parallax[data-card-id="6"] {
-        left: 50%;
-        right: auto;
-        bottom: -15%;
-        translate: -50% var(--parallax-y, 0px);
-    }
+       Why blanket-hide:
+         - The four cards are aria-hidden decorations: removing them on
+           mobile has zero a11y / SEO impact.
+         - Each card was a one-off bespoke override per host (different
+           top/bottom/left/right per id, different dimension shrinks for
+           the team grid + badge); maintenance cost outweighed the visual
+           value on narrow viewports.
+         - The carousel + FAQ already carry the visual story on mobile.
 
-    /* Smaller CTA disc on mobile. The SVG inside auto-scales via
-       `width: 100%; height: 100%` on `.floating-badge__rotor-svg`, so the
-       text-on-path arc adjusts proportionally — but the absolute font-size
-       on the textPath does NOT scale, so we shrink it explicitly here. */
-    .floating-badge {
-        width: 100px;
-        height: 100px;
-    }
-    .floating-badge__rotor-text {
-        font-size: 9px;
-        letter-spacing: 0.16em;
+       Implementation choice — `display: none !important`:
+         - The base rule at line ~1905 uses `position: absolute` + per-card
+           `top/right/left/bottom` + per-id rotate / translate. Les règles
+           per-id `.floating-card-parallax[data-card-id="X"]` (lines ~1966,
+           ~1981, ~2008, ~2062) ont une spécificité [0,1,1] (1 classe + 1
+           sélecteur d'attribut), strictement SUPÉRIEURE à la blanket
+           `.floating-card-parallax` [0,1,0] (1 classe seule) placée dans
+           le bloc @media. Sans `!important`, les per-id battraient la
+           blanket sur la spécificité, quel que soit l'ordre de cascade —
+           les cards resteraient visibles en mobile via leurs propres
+           règles `position/top/right/...` (qui ne portent pas `display`
+           mais laisseraient l'élément en `display: block` hérité du base
+           rule). `!important` sur la blanket hide est donc nécessaire
+           pour forcer le kill-switch — et est réservé à ce genre de
+           "kill switch on a decorative element" use case.
+         - JS still writes `--parallax-y` on each card (`script.js` IIFE
+           at ~line 1388, `Array.from(document.querySelectorAll(
+           '.floating-card-parallax'))`); those writes are harmless on
+           a `display: none` element (no layout / paint cost beyond the
+           property set). Optionally `js-expert` could short-circuit
+           the writes on `mobileQuery.matches` — see `js-expert` flag in
+           the doc-keeper sync.
+
+       `pointer-events: none` from the base rule (line ~1913) is preserved
+       on all breakpoints; redundant under `display: none` but documents
+       the invariant. */
+    .floating-card-parallax {
+        display: none !important;
     }
 }
 
