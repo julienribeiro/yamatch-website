@@ -33,6 +33,7 @@
        10.3 .quest-persona-tabs (glass-morphism segmented pill-bar + sliding indicator)
        10.4 .quest-steps (3-column static grid + vertical separator filets)
        10.5 .quest-step + numeral / tag / title / body
+   10.5 .floating-cards (decorative scattered cards between .how-quest and .faq)
    11. FAQ accordion
    12. Footer
    13. Toast
@@ -1777,6 +1778,506 @@ p {
 
 
 /* ==========================================================================
+   10.5 FLOATING CARDS — decorative "bordel ordonné" between .how-quest and .faq
+   --------------------------------------------------------------------------
+   Five scattered "trompe-l'oeil" UI cards + one circular rotating CTA badge,
+   placed absolutely inside a wide canvas. Each card is rotated, levitates
+   gently in place (independent CSS keyframe per card), and translates
+   vertically via a scroll-linked parallax variable written by script.js (see
+   the contract notes below).
+
+   Section is `aria-hidden="true"` in the markup — purely decorative; screen
+   readers skip from .how-quest straight to .faq.
+
+   --------------------------------------------------------------------------
+   Double-wrapper pattern (.floating-card-parallax > .floating-card-inner)
+   --------------------------------------------------------------------------
+   We need TWO simultaneous, independent transforms per card:
+
+     1. OUTER (.floating-card-parallax) carries
+        - a STATIC rotation (per `data-card-id`) — design tilt
+        - a DYNAMIC vertical translation written by JS on scroll
+          (`--parallax-y` in px, applied via `translate: 0 var(--parallax-y)`)
+
+     2. INNER (.floating-card-inner) carries
+        - a CSS keyframe levitation that animates `transform: translateY(...)`
+          continuously (independent per card via animation-name + duration)
+
+   Both transforms must compose without interfering. Solution:
+     - OUTER uses the INDIVIDUAL CSS properties `translate:` (Y axis) and
+       `rotate:` (z). The browser composes these into the same transform
+       matrix as the shorthand BUT they remain writable independently —
+       JS can update `--parallax-y` on every rAF tick while CSS holds the
+       static `rotate` value. Same pattern as `.wordmark` (styles.css:459)
+       which composes a centring `translate: -50% -50%` with a scroll lift
+       while leaving `transform:` free for the entrance keyframe.
+     - INNER uses the SHORTHAND `transform: translateY(...)` inside a
+       keyframe. Since the inner is a SEPARATE DOM node it has its own
+       transform matrix — no conflict with the outer's individual props.
+
+   If we tried to fold both into one element (e.g. a single rotation +
+   translate composed inside one keyframe), JS would have to author the full
+   transform string on every tick to preserve the rotation — fragile and
+   wasteful. The double wrapper localises responsibilities cleanly.
+
+   --------------------------------------------------------------------------
+   Contract with script.js (parallax IIFE — pending)
+   --------------------------------------------------------------------------
+   - JS reads `data-parallax-speed` (float ~0–1) from each
+     `.floating-card-parallax` outer wrapper.
+   - JS writes `--parallax-y` (in px, with `px` unit) on the outer wrapper
+     on every scroll rAF tick. Typical: `parallax-y = (scrollY - sectionTop)
+     * speed * sign`.
+   - Fallback: `var(--parallax-y, 0px)` in CSS — when JS hasn't run yet, or
+     the user is on a reduced-motion path that early-returns, cards remain
+     at their static position with rotation only.
+
+   --------------------------------------------------------------------------
+   iOS Safari compositor hints
+   --------------------------------------------------------------------------
+   The outer wrapper bears `transform: translateZ(0)` (legacy 3D-context
+   trigger — promotes the element to its own GPU layer; safe to combine
+   with the individual `translate:` / `rotate:` properties because they
+   compose into a separate matrix BEFORE `transform`), `will-change:
+   translate` (hints the compositor that `translate` will animate, so
+   layer raster is kept), and `backface-visibility: hidden` (prevents
+   re-rasterisation when an animation reaches the identity matrix).
+   Without these, rapid `--parallax-y` writes during scroll cause visible
+   jitter on iOS Safari (the same fix used on `.wordmark`, line 488).
+   ========================================================================== */
+
+/* Section canvas. `overflow-x: clip` (NOT `hidden` / `auto`) so the cards
+   that extend past the viewport on left/right are clipped horizontally
+   WITHOUT promoting overflow-y to `auto` — the page must continue to scroll
+   normally and the levitation must not be vertically clipped at the edges.
+   Same spec rationale as `html, body { overflow-x: clip }` (section 3).
+
+   `min-height` declared so the inner positioning canvas has a real height
+   to anchor the `top: X%` / `bottom: Yp` percentages of each card. Without
+   it, the inner collapses to the height of its (absolutely-positioned)
+   children = 0, and the cards stack at the top of the section. clamp lets
+   the canvas grow with the viewport on tall screens while staying compact
+   on short ones (50svh keeps the section roughly half a screen tall on
+   most desktops).
+
+   Background reaffirmed white so the section reads as a continuation of
+   the surrounding white surface (.how-quest above, .faq below). */
+.floating-cards {
+    position: relative;
+    padding-block: clamp(80px, 12vw, 140px);
+    padding-inline: var(--page-pad);
+    overflow-x: clip;
+    min-height: clamp(420px, 50svh, 600px);
+    background: var(--color-light-bg);
+}
+
+/* Positioning canvas. `position: relative` makes it the containing block
+   for the absolutely-positioned card wrappers. `min-height: inherit` is
+   load-bearing: it propagates the parent's min-height down so percentage-
+   based `top` / `bottom` on the absolute cards resolve against a real
+   height — without it, the inner would collapse to 0 (auto height of
+   absolute children) and the % positions would render as 0. */
+.floating-cards-inner {
+    position: relative;
+    max-width: var(--container-max);
+    margin-inline: auto;
+    height: 100%;
+    min-height: inherit;
+}
+
+/* Outer wrapper — static rotation (per card) + scroll-driven Y translation
+   (written by JS). See the top-of-section comment for the full design
+   rationale on the double-wrapper pattern.
+
+   `translate: 0 var(--parallax-y, 0px)` — INDIVIDUAL CSS property; JS
+   writes `--parallax-y` in px, fallback `0px` keeps the card static when
+   JS is absent / on reduced-motion path. Composes cleanly with the
+   per-card `rotate:` (also individual) — both run BEFORE the shorthand
+   `transform: translateZ(0)` (compositor hint) without interference. */
+.floating-card-parallax {
+    position: absolute;
+    translate: 0 var(--parallax-y, 0px);
+    transform: translateZ(0);
+    will-change: translate;
+    backface-visibility: hidden;
+}
+
+/* Per-card placement + rotation. Coordinates are intentionally
+   asymmetric so the composition reads as scattered rather than gridded.
+   `left: -3%` / `right: -2%` push two cards just past the viewport edge,
+   clipped by `.floating-cards { overflow-x: clip }`; the partial reveal
+   reinforces the "bordel ordonné" feel.
+
+   Rotation values are `data-card-id`-keyed so JS doesn't need to mirror
+   them — the design tilt is purely CSS, JS only authors the parallax Y. */
+.floating-card-parallax[data-card-id="1"] { top: 6%;  left: -3%; rotate: -8deg; }
+.floating-card-parallax[data-card-id="2"] { top: 30%; right: 5%; rotate: 6deg; }
+.floating-card-parallax[data-card-id="3"] { top: 45%; left: 35%; rotate: 3deg; }
+.floating-card-parallax[data-card-id="4"] { top: 62%; right: -2%; rotate: -5deg; }
+.floating-card-parallax[data-card-id="5"] { top: 65%; left: 8%; rotate: 10deg; }
+.floating-card-parallax[data-card-id="6"] { bottom: -40px; right: 6%; rotate: 12deg; }
+
+/* Inner wrapper — continuous levitation. Each card gets its OWN keyframe
+   (1–6) with a unique amplitude AND its own duration. We avoid
+   `animation-delay: -Xs` (which is the common phase-offset trick) because
+   negative delays make the cards "snap into" mid-cycle on first paint
+   (Safari is particularly prone to a one-frame flash at the snap point).
+   Distinct durations let the cards drift naturally out of phase over
+   time, with no visible startup artefact — within ~10s the six cards
+   form a fully-decorrelated bobbing pattern. ease-in-out keeps each
+   half-cycle gentle at the extremes (the cards seem to hover and "decide"
+   to come back rather than mechanically bouncing).
+
+   Levitation amplitude per card is tuned to its visual weight: the
+   streak number card (5) bobs the most (-20px) to read as energetic;
+   the badge (6) bobs the least (-10px) to keep the CTA readable. */
+.floating-card-inner {
+    animation: floating-levitate-1 4.5s ease-in-out infinite;
+}
+.floating-card-parallax[data-card-id="1"] .floating-card-inner { animation-name: floating-levitate-1; animation-duration: 4.5s; }
+.floating-card-parallax[data-card-id="2"] .floating-card-inner { animation-name: floating-levitate-2; animation-duration: 5.2s; }
+.floating-card-parallax[data-card-id="3"] .floating-card-inner { animation-name: floating-levitate-3; animation-duration: 6.0s; }
+.floating-card-parallax[data-card-id="4"] .floating-card-inner { animation-name: floating-levitate-4; animation-duration: 4.8s; }
+.floating-card-parallax[data-card-id="5"] .floating-card-inner { animation-name: floating-levitate-5; animation-duration: 5.5s; }
+.floating-card-parallax[data-card-id="6"] .floating-card-inner { animation-name: floating-levitate-6; animation-duration: 5.0s; }
+
+@keyframes floating-levitate-1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+@keyframes floating-levitate-2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
+@keyframes floating-levitate-3 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes floating-levitate-4 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+@keyframes floating-levitate-5 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+@keyframes floating-levitate-6 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+
+/* ---- Card 1 : iOS-style notification ------------------------------------ */
+/* Glassy white card. `backdrop-filter: blur(8px)` is mostly cosmetic over
+   the white section but matters when the card overlaps a coloured strip
+   (none today, but kept future-proof). Box-shadow stack: soft elevated
+   shadow + crisp contact shadow — the standard 2-layer iOS-style stack. */
+.floating-card--notif {
+    width: clamp(280px, 22vw, 340px);
+    padding: 16px 18px;
+    background: var(--color-light-bg);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px rgba(16, 24, 40, 0.08), 0 2px 6px rgba(16, 24, 40, 0.04);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+.floating-card__notif-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+/* Lime square app-icon — 32×32 token-sized; emoji centred via flex. */
+.floating-card__notif-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.floating-card__notif-brand {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+}
+.floating-card__notif-sep,
+.floating-card__notif-time {
+    font-family: var(--font-body);
+    font-size: 12px;
+    color: var(--color-medium-gray);
+}
+.floating-card__notif-title {
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin: 0 0 4px;
+    line-height: 1.3;
+}
+.floating-card__notif-body {
+    font-family: var(--font-body);
+    font-size: 13px;
+    color: var(--color-medium-gray);
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Card 4 variant — same notif chrome, slightly tightened metrics. The
+   modifier sits on the SAME element as `.floating-card--notif` so the
+   base styles cascade through and we only override the deltas. */
+.floating-card--notif-compact {
+    width: clamp(240px, 19vw, 280px);
+    padding: 14px 16px;
+}
+.floating-card--notif-compact .floating-card__notif-brand {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+}
+.floating-card--notif-compact .floating-card__notif-title {
+    font-size: 14px;
+}
+.floating-card--notif-compact .floating-card__notif-body {
+    font-size: 12px;
+}
+
+
+/* ---- Card 2 : scoreboard (dark surface, lime accent on winning row) ----- */
+/* Dark glass over white section — provides high-contrast colour beat in
+   the middle of the canvas. Tinted shadow softer than the white-card
+   stack since the dark surface absorbs more of the perceived depth. */
+.floating-card--scoreboard {
+    /* `display: flex` + `flex-direction: column` is the cleanest way to
+       allow the `.floating-card__score-badge { align-self: center }` rule
+       to centre horizontally inside the flex container without giving up
+       the natural block layout of the rows above. */
+    display: flex;
+    flex-direction: column;
+    width: clamp(230px, 18vw, 280px);
+    padding: 18px 20px;
+    background: var(--color-text-primary);
+    color: var(--color-text-white);
+    border-radius: 24px;
+    box-shadow: 0 12px 36px rgba(16, 24, 40, 0.15);
+}
+.floating-card__score-eyebrow {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    margin: 0 0 14px;
+}
+.floating-card__score-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+}
+.floating-card__score-team {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.7);
+}
+/* Roboto 800 for the score numbers — same heading face used by .hero-title
+   and the streak number; the heavy weight + tight tracking reads as a
+   sportscaster scoreboard. */
+.floating-card__score-value {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: clamp(34px, 4vw, 44px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: rgba(255, 255, 255, 0.4);
+}
+/* Winning row — the team becomes solid white AND the score flips to the
+   lime accent. The combined emphasis (full-weight name + colour shift on
+   the score) communicates "this team won" without any extra icon. */
+.floating-card__score-row--winning .floating-card__score-team {
+    font-weight: 700;
+    color: var(--color-text-white);
+}
+.floating-card__score-row--winning .floating-card__score-value {
+    color: var(--color-accent);
+}
+.floating-card__score-badge {
+    align-self: center;
+    display: inline-block;
+    margin-top: 12px;
+    padding: 5px 12px;
+    background: var(--color-accent);
+    color: var(--color-text-primary);
+    border-radius: 999px;
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+
+/* ---- Card 3 : team grid (2×2 avatars) ----------------------------------- */
+/* Lightweight bordered card — meant to read as a "settings panel" / list
+   rather than a glassy elevated notification. 1.5px border + soft shadow
+   give it just enough definition over white. */
+.floating-card--team {
+    width: clamp(260px, 20vw, 300px);
+    padding: 16px;
+    background: var(--color-light-bg);
+    border: 1.5px solid rgba(16, 24, 40, 0.08);
+    border-radius: 20px;
+    box-shadow: 0 6px 24px rgba(16, 24, 40, 0.06);
+}
+.floating-card__team-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-medium-gray);
+    margin: 0 0 14px;
+}
+.floating-card__team-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+.floating-card__team-member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+/* Base avatar styling applies to both <img> (DiceBear remote SVG) and
+   <span> (the "MOI" lime tile). The img variant gets `object-fit: cover`
+   to handle the SVG aspect ratio gracefully; the span variant is layered
+   on top with `--me` for the lime fill + caption-style typography. */
+.floating-card__team-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid var(--color-light-bg);
+    object-fit: cover;
+    display: block;
+    background: var(--color-light-gray);
+}
+.floating-card__team-avatar--me {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-accent);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+.floating-card__team-caption {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--color-medium-gray);
+}
+
+
+/* ---- Card 5 : streak (lime fill, big number) ---------------------------- */
+/* Lime accent card — eye-catching colour beat at the bottom-left. The
+   lime-tinted shadow (rgba(215, 255, 0, 0.25)) bleeds the brand colour
+   into the surrounding white, reinforcing the energy of the card without
+   any extra glow / blur effect. */
+.floating-card--streak {
+    width: clamp(180px, 14vw, 220px);
+    padding: 16px 18px;
+    background: var(--color-accent);
+    color: var(--color-text-primary);
+    border-radius: 22px;
+    box-shadow: 0 10px 28px rgba(215, 255, 0, 0.25);
+}
+.floating-card__streak-eyebrow {
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin: 0 0 4px;
+}
+/* Roboto 800 super-large numeral — same heading family / weight as the
+   scoreboard score; tight letter-spacing prevents the wide digits from
+   stretching the card horizontally. */
+.floating-card__streak-number {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: clamp(60px, 7vw, 84px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin: 0;
+}
+.floating-card__streak-caption {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    margin: 6px 0 0;
+}
+
+
+/* ---- Card 6 : rotating CTA badge --------------------------------------- */
+/* Disc-shaped badge in lime. `position: relative` on `.floating-badge` so
+   the two absolute children (rotor + arrow) anchor to its bounding box.
+   The mobile width override (section 17) shrinks the disc to 100×100. */
+.floating-badge {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+        0 12px 32px rgba(215, 255, 0, 0.3),
+        0 4px 12px rgba(16, 24, 40, 0.08);
+}
+/* Rotor — the SVG text-on-path layer. `inset: 0` makes it fill the parent
+   disc so the SVG viewBox 0 0 130 130 lines up exactly with the disc
+   edge. The 12s linear spin uses the INDIVIDUAL `rotate:` property (not
+   `transform:`) so it doesn't clobber any future `transform` on the rotor
+   and so the property remains writable independently. Linear (not eased)
+   so the spin is mechanical / hypnotic — consistent angular velocity
+   reads as a polished motion graphic; easing would make it pulse. */
+.floating-badge__rotor {
+    position: absolute;
+    inset: 0;
+    animation: floating-badge-spin 12s linear infinite;
+}
+@keyframes floating-badge-spin {
+    from { rotate: 0deg; }
+    to   { rotate: 360deg; }
+}
+.floating-badge__rotor-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+.floating-badge__rotor-text {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    fill: var(--color-text-primary);
+}
+/* Centered arrow — explicitly NOT inside the rotor layer, so it stays
+   visually fixed while the text path orbits around it. `pointer-events:
+   none` because the whole section is decorative (no click target). The
+   arrow inherits `color` from the badge for `stroke="currentColor"` in
+   the inline SVG. */
+.floating-badge__arrow {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text-primary);
+    pointer-events: none;
+}
+
+
+/* ==========================================================================
    11. FAQ ACCORDION
    ========================================================================== */
 .faq {
@@ -3313,6 +3814,41 @@ p {
        Stays >= 10px so the line remains legible on the smallest viewport. */
     .footer-bottom {
         font-size: clamp(10px, 2.5vw, 11px);
+    }
+
+    /* ---- Floating cards (section 10.5) — mobile overrides ----------------
+       Drop two of the six cards (team grid + streak) to avoid an
+       overcrowded canvas on narrow viewports — the four remaining cards
+       (notif primary, scoreboard, notif compact, rotating badge) still
+       carry the full visual story (notification → match running → reminder
+       → CTA). The dropped cards (3, 5) are aria-hidden anyway, so there is
+       no a11y loss from `display: none`. Recalibrated positions push the
+       four survivors slightly off-screen left/right to read as "peeking
+       in" rather than gridded — same `overflow-x: clip` clips them. */
+    .floating-cards {
+        padding-inline: var(--mobile-hero-card-margin);
+        min-height: clamp(380px, 60svh, 480px);
+    }
+    .floating-card-parallax[data-card-id="3"],
+    .floating-card-parallax[data-card-id="5"] {
+        display: none;
+    }
+    .floating-card-parallax[data-card-id="1"] { top: 4%;  left: -8%; }
+    .floating-card-parallax[data-card-id="2"] { top: 36%; right: -5%; }
+    .floating-card-parallax[data-card-id="4"] { top: 64%; right: -10%; }
+    .floating-card-parallax[data-card-id="6"] { bottom: -30px; right: 4%; }
+
+    /* Smaller CTA disc on mobile. The SVG inside auto-scales via
+       `width: 100%; height: 100%` on `.floating-badge__rotor-svg`, so the
+       text-on-path arc adjusts proportionally — but the absolute font-size
+       on the textPath does NOT scale, so we shrink it explicitly here. */
+    .floating-badge {
+        width: 100px;
+        height: 100px;
+    }
+    .floating-badge__rotor-text {
+        font-size: 9px;
+        letter-spacing: 0.16em;
     }
 }
 

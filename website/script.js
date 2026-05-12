@@ -1285,6 +1285,289 @@
 
 
 /* ==========================================================================
+   FLOATING CARDS PARALLAX — depth-of-field scroll effect
+   --------------------------------------------------------------------------
+   Self-contained IIFE (mirrors the cursor-trail + launch-ticker structure
+   above: top-level, NOT nested inside the main IIFE). Pairs with the
+   `.floating-cards` decorative section injected between `.how-quest` and
+   `.faq` in index.html, and with the CSS rule `translate: 0 var(--parallax-y, 0px)`
+   on `.floating-card-parallax` in styles.css.
+
+   Contract (JS ↔ CSS handshake):
+     - JS READS: `data-parallax-speed` (float, e.g. 0.15) on every
+       `.floating-card-parallax` element. Read ONCE at setup, cached in
+       `cardData`, never re-queried in the per-frame path.
+     - JS WRITES: `--parallax-y` (px value as a string, e.g. "-42.50px") on
+       each `.floating-card-parallax` element. Written every rAF tick while
+       the section is in/near the viewport.
+     - CSS COMPOSES: the wrapper uses the individual `translate:` property
+       (NOT `transform:`) so the parallax composes cleanly with each card's
+       static `rotate:` (also an individual property) and with the inner
+       wrapper's keyframe-driven levitation `transform:` — three orthogonal
+       transform axes, no clobbering. This is the same individual-property
+       pattern the wordmark uses (translate vs. transform separation).
+     - CSS also applies the compositor hints (`translate3d` keyframe,
+       `will-change: translate`, `backface-visibility: hidden`) so iOS Safari
+       promotes each card to its own layer. JS does NO compositor work.
+
+   Per-frame budget (the hot path):
+     - 1 read: `latestScrollY` (a plain closure variable refreshed by the
+       scroll listener — NO `window.scrollY` access inside `tick`, so no
+       layout-thrash risk).
+     - N writes: `el.style.setProperty('--parallax-y', ...)` for each card.
+       setProperty on a custom prop is a cheap string assignment; the
+       cascade triggers a paint, not a re-layout (translate is composited).
+     - 0 layout reads. NO `getBoundingClientRect`, NO `getComputedStyle`,
+       NO `offsetTop` inside `tick`. All geometry is snapshotted in
+       `measureGeometry()` (load + resize + orientationchange only) — the
+       same discipline applied in the page-scroll-progress block around
+       line 235 (`measureScrollAnimationGeometry`).
+
+   Activation gate (IntersectionObserver, rootMargin 20% top/bottom):
+     The scroll listener is attached ONLY while the section intersects the
+     pre-warmed viewport. When the user scrolls past, we tear down the
+     scroll listener — no wasted CPU during long FAQ reads. The 20% top
+     and bottom rootMargin pre-arm the parallax before the section visibly
+     enters / after it visibly leaves, so a fast scroll never snaps from
+     stale `--parallax-y` to a fresh one. Same pattern as the waves block
+     IntersectionObserver around line 691.
+
+   Reduced-motion guard:
+     If `prefers-reduced-motion: reduce` matches, this IIFE early-returns.
+     No listeners, no observer, no rAF. The cards stay in their CSS base
+     position (the keyframe levitation is also disabled by the global
+     `* { animation-duration: 0.01ms !important }` rubric in styles.css's
+     reduced-motion block).
+
+   Coarse-pointer (touch) gate:
+     INTENTIONALLY ABSENT. Parallax on scroll is a desirable enhancement on
+     touch — finger-driven scroll is smoother on iOS Safari than trackpad
+     scroll, and the compositor hints applied CSS-side make the per-card
+     translate update sub-frame on modern iPhones. Contrast with the
+     cursor trail (mouse-only by design) and the waves animation (skipped
+     on touch because of a separate per-event `getBoundingClientRect` jank
+     surface — irrelevant here since this IIFE never reads layout per scroll).
+
+   Sign convention:
+     `parallaxY = -delta * speed`. When scrolling DOWN (delta > 0),
+     parallaxY is negative → the cards translate UP. Cards with a higher
+     `data-parallax-speed` translate further per scroll-pixel → they
+     appear to be in the FOREGROUND (move faster, like nearby objects past
+     a train window). Cards with a lower speed appear BACKGROUND (move
+     less, like distant objects). The badge (speed 0.25) is the most
+     foreground; the team card (speed 0.08) is the most background. The
+     net effect is a parallax depth-of-field reveal as the user scrolls
+     INTO the section from above and OUT of it from below.
+   ========================================================================== */
+(function () {
+    'use strict';
+
+    // Guard 1: reduced motion — fully disable the parallax. The cards stay
+    // in their CSS-defined base position (--parallax-y defaults to 0px via
+    // the var() fallback in the CSS `translate:` rule).
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // Guard 2: section not present (e.g. legal/utility pages, or a future
+    // refactor that removes the floating-cards section). Without the
+    // section, there's nothing to measure or observe — bail out silently.
+    const section = document.querySelector('.floating-cards');
+    if (!section) return;
+
+    // Guard 3: no cards inside the section (defensive — shouldn't happen
+    // with the current HTML, but a future edit could empty the section
+    // for an A/B test, and we don't want to leave a no-op observer + scroll
+    // listener attached).
+    const cards = Array.from(section.querySelectorAll('.floating-card-parallax'));
+    if (cards.length === 0) return;
+
+    // === Per-card data, snapshotted at setup ===
+    // Reading `dataset.parallaxSpeed` once at setup (string→float parse) is
+    // strictly cheaper than reading it on every rAF tick — even though
+    // dataset access is fast, the parseFloat would still allocate a Number
+    // each tick × N cards. Cached form is just a property read on a plain
+    // object literal. `el` is captured directly (no re-querying by ID).
+    const cardData = cards.map((card) => {
+        const raw = parseFloat(card.dataset.parallaxSpeed);
+        return {
+            el: card,
+            // Defensive fallback to 0 (= no parallax for that card) if the
+            // attribute is missing or unparseable. Never NaN-poisons the
+            // arithmetic downstream.
+            speed: Number.isFinite(raw) ? raw : 0
+        };
+    });
+
+    // === Geometry snapshot (NOT in the per-frame path) ===
+    // `sectionTopAtRest` = the section's TOP position in PAGE coordinates
+    // (i.e. as if scroll were 0). Computed by adding the current scrollY
+    // to the bounding-rect top, since `getBoundingClientRect().top` returns
+    // the viewport-relative position which already includes the active
+    // scroll offset. The "at rest" framing matches the page-scroll-progress
+    // block's `staticCarouselTop` pattern around line 148: we want a
+    // scroll-invariant reference point so the per-frame delta is a clean
+    // `latestScrollY - sectionTopAtRest`.
+    //
+    // Re-measured on load + resize + orientationchange (NEVER on scroll).
+    // The page can reflow vertically between resize events (e.g. webfonts
+    // loading shifts the lime-card buttons, which shifts the FAQ, which
+    // shifts the floating-cards section) — those reflows are caught by
+    // the `load` listener below. Inter-resize drift is typically zero,
+    // and visually negligible even when nonzero (a few px out of hundreds
+    // of px of section height).
+    let sectionTopAtRest = 0;
+
+    const measureGeometry = () => {
+        const rect = section.getBoundingClientRect();
+        const scrollY = window.scrollY || window.pageYOffset || 0;
+        sectionTopAtRest = rect.top + scrollY;
+    };
+
+    // === Scroll + rAF coalesce (mirrors page-scroll-progress block) ===
+    // `latestScrollY` is updated on every scroll event (single property
+    // read, no layout work) and consumed by the rAF callback. The
+    // `rafScheduled` flag ensures we coalesce multiple scroll events into
+    // a single rAF tick — at high scroll rates (e.g. 120Hz trackpad on
+    // ProMotion displays) the browser fires ~2 scroll events per frame,
+    // and we want exactly ONE setProperty pass per frame, not two.
+    let latestScrollY = window.scrollY || window.pageYOffset || 0;
+    let rafScheduled = false;
+
+    const tick = () => {
+        rafScheduled = false;
+
+        // `delta` = how far the user has scrolled past the section's
+        // resting position. Positive when the user has scrolled DOWN past
+        // the section's natural top; negative when the section is still
+        // below the current scroll position (user hasn't reached it yet).
+        // Sign convention drives the parallax direction (see header).
+        const delta = latestScrollY - sectionTopAtRest;
+
+        for (let i = 0; i < cardData.length; i++) {
+            const { el, speed } = cardData[i];
+            // Negative for downward scroll → cards translate UP (foreground
+            // motion). toFixed(2) caps the precision at sub-pixel level —
+            // anything finer is invisible and just wastes bytes in the
+            // CSSOM string. Keeps the inline-style attribute compact.
+            const parallaxY = -delta * speed;
+            el.style.setProperty('--parallax-y', parallaxY.toFixed(2) + 'px');
+        }
+    };
+
+    const onScroll = () => {
+        // ONLY work in the scroll listener: refresh the cached scrollY
+        // (which the rAF callback will consume) and schedule the rAF if
+        // none is pending. Zero layout reads, zero per-event allocations
+        // beyond the boolean flag flip. Keeps the listener cheap enough
+        // to leave on `{ passive: true }` without affecting the
+        // compositor's ability to keep scroll on its own thread (critical
+        // for iOS Safari touch-driven scroll smoothness).
+        latestScrollY = window.scrollY || window.pageYOffset || 0;
+        if (!rafScheduled) {
+            rafScheduled = true;
+            requestAnimationFrame(tick);
+        }
+    };
+
+    // === IntersectionObserver gate ===
+    // Attaches the scroll listener ONLY while the section is in or near
+    // the viewport. When the section is far above (user scrolled past) or
+    // far below (user hasn't reached it yet), the scroll listener is
+    // detached entirely — no per-scroll work, even though we'd be in the
+    // pure-arithmetic per-tick path anyway. Cheap defense against future
+    // additions accidentally bloating the per-tick cost.
+    //
+    // The 20% top/bottom rootMargin pre-warms the parallax before the
+    // section is visibly in the viewport: at typical 100vh, 20% = 200px
+    // of headroom, comfortably enough to absorb a single scroll-wheel
+    // tick (~100px) without any visible snap from a stale `--parallax-y`
+    // value to the fresh one. After detachment, the last-written
+    // `--parallax-y` persists on each card; the IO callback fires a
+    // synthetic `onScroll()` on re-entry so the cards re-sync before
+    // the next user scroll event.
+    let isVisible = false;
+    const io = new IntersectionObserver((entries) => {
+        for (let i = 0; i < entries.length; i++) {
+            const entry = entries[i];
+            const nowVisible = entry.isIntersecting;
+            if (nowVisible === isVisible) continue;
+            isVisible = nowVisible;
+            if (isVisible) {
+                window.addEventListener('scroll', onScroll, { passive: true });
+                // Synthetic resync — important when the user re-enters the
+                // section after a fast scroll: the cached scrollY (from the
+                // last time we were attached) may be stale, and the cards'
+                // current `--parallax-y` may correspond to a position
+                // hundreds of px away. One synthetic onScroll → rAF tick
+                // catches up before the next real scroll event.
+                onScroll();
+            } else {
+                window.removeEventListener('scroll', onScroll, { passive: true });
+            }
+        }
+    }, { rootMargin: '20% 0% 20% 0%' });
+    io.observe(section);
+
+    // === Layout-change re-measure (debounced 150ms) ===
+    // Same debounce window as the launch-ticker resize handler (line ~1401)
+    // and the page-scroll-progress block's natural ordering. 150ms is the
+    // sweet spot: fast enough to feel responsive at the end of a window-
+    // drag, slow enough to coalesce the burst of resize events Chrome
+    // fires during the drag (which can hit 60+ events/second). On
+    // orientationchange the handler fires once (no debounce needed
+    // for the trailing edge), but reusing the same path keeps the code
+    // simple and any extra trailing rAF tick is harmless.
+    let resizeTimer = null;
+    const onLayoutChange = () => {
+        if (resizeTimer !== null) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            resizeTimer = null;
+            measureGeometry();
+            // Re-tick immediately after re-measure so the cards reflect the
+            // new geometry on the next frame, not on the next user scroll.
+            // We bypass the `rafScheduled` flag intentionally: even if a
+            // scroll-driven rAF is in flight, a freshly re-measured
+            // geometry should produce its own tick — `rafScheduled = false`
+            // forces this. (Worst case: two ticks within one frame budget,
+            // each ~20µs of arithmetic + N setProperty — still well inside
+            // a 16ms frame.)
+            latestScrollY = window.scrollY || window.pageYOffset || 0;
+            if (!rafScheduled) {
+                rafScheduled = true;
+                requestAnimationFrame(tick);
+            }
+        }, 150);
+    };
+
+    window.addEventListener('resize', onLayoutChange, { passive: true });
+    window.addEventListener('orientationchange', onLayoutChange, { passive: true });
+    // `load` re-measure: webfonts (Inter via Google Fonts) can shift the
+    // vertical layout 100-500ms after first paint, moving the floating-
+    // cards section by tens of pixels. Without this re-measure, the
+    // initial `sectionTopAtRest` would be stale for the rest of the
+    // session. Mirrors the page-scroll-progress block's `load` listener.
+    window.addEventListener('load', () => {
+        measureGeometry();
+        latestScrollY = window.scrollY || window.pageYOffset || 0;
+        if (!rafScheduled) {
+            rafScheduled = true;
+            requestAnimationFrame(tick);
+        }
+    }, { passive: true });
+
+    // === Initial sync ===
+    // Run the first geometry measure synchronously (defer-script timing
+    // means the DOM is parsed; layout has been computed at least once by
+    // the time this IIFE evaluates) and schedule the first paint tick.
+    // This handles the case where the user loads the page already scrolled
+    // mid-document (e.g. anchor link, deep-link, reload-with-restored-
+    // scroll-position): the parallax is correct on first paint, not on
+    // first user scroll.
+    measureGeometry();
+    requestAnimationFrame(tick);
+})();
+
+
+/* ==========================================================================
    LAUNCH-TICKER START OFFSET — center first span at t=0
    --------------------------------------------------------------------------
    Contract with css-expert:
