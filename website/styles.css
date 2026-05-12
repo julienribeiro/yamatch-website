@@ -1965,19 +1965,20 @@ p {
    move from bottom-right to left-of-CTAs). */
 .floating-card-parallax[data-card-id="1"] { top: auto; bottom: 30%; right: auto; left: 2%; rotate: -8deg; }
 /* Cards inside `.how-quest` (host: position: relative + overflow-x: clip via §10.1) */
-/* Card 3 — moved up + pulled in (2026-05-12). Previous placement
-   (`top: 35%; right: -5%`) put it mid-section and bled too far past the
-   right edge. The user wants it near the `.how-quest-eyebrow` "PARCOURS"
-   row, so `top: 2%` anchors it right at the top of the section's
-   `padding-block` (the editorial header starts there), nudged up from
-   the original `6%` per user feedback ("encore un peu"). Re-tuned
-   2026-05-12: `right` taken from `3%` → `-4%` so the card's right edge
-   bleeds a touch past the viewport edge (user feedback: "un tout petit
-   peu plus vers la droite [...] l'un des bords dépasse un tout petit
-   peu de l'écran"). The bleed is clipped by `.how-quest { overflow-x:
-   clip }` (§10.1, line 1381) — `clip` does NOT promote overflow-y to
-   auto per CSS spec, so the section's vertical layout is unaffected. */
-.floating-card-parallax[data-card-id="3"] { top: 2%;   right: -1%; left: auto; rotate: 3deg; }   /* team grid — haut-droite */
+/* Card 3 — anchor switched right → left (2026-05-12). Previous history:
+   `top: 35%; right: -5%` → `top: 2%; right: 3%` → `right: -4%` → `right:
+   -1%` (all right-anchored, with varying degrees of right-edge bleed).
+   User feedback: "nettement décaler la card sur la gauche et éviter
+   finalement qu'elle sorte de l'écran". So we flip the anchor entirely:
+   `right: auto; left: 6%` parks the card on the LEFT side of `.how-quest`,
+   with a 6% gutter from the section's left content edge — close enough
+   to the `01` numeral / "Parcours" eyebrow column to feel intentional,
+   far enough to avoid any horizontal bleed off the viewport (the
+   `floating-card--team` is ~240–300px wide; at left: 6% of a 1024px
+   viewport ≈ 61px gutter, the card's right edge sits well inside the
+   viewport at every breakpoint ≥ 768px). `top: 2%` and `rotate: 3deg`
+   preserved from the previous placement. */
+.floating-card-parallax[data-card-id="3"] { top: 2%;   right: auto; left: 6%; rotate: 3deg; }   /* team grid — haut-gauche */
 /* Card 4 — moved into `.how-quest` (2026-05-12). Took over the bas-gauche
    slot previously occupied by the deleted Card 5 (streak). We keep the
    slot's `bottom: 8%; left: 6%` geometry (proven to balance Card 3 in the
