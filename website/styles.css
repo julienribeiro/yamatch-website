@@ -110,6 +110,22 @@
        writes the resulting --scroll value (in px) on .hero-carousel-embla.
        clamp(24px, 4vh, 56px): 24px floor on tiny viewports, 56px ceiling on 4K. */
     --desired-button-gap: clamp(24px, 4vh, 56px);
+
+    /* Height of the fixed launch announcement ticker that runs across the very
+       top of the page (.launch-ticker, section 4.5 below). Consumed by:
+         - .launch-ticker { height }                  → the ticker's own box height
+         - .wordmark { top }                          → pushes the fixed wordmark BELOW the ticker
+         - .hero { padding-block-start }              → reserves vertical room so the lime card
+                                                        is not covered by the fixed ticker
+       Kept as a fixed 30 px (no clamp) for predictable layout maths in the three
+       calc() consumers above. The token must remain defined even on pages where
+       the .launch-ticker DOM node is absent (legal / download / 404) — the
+       wordmark `top` calc reads it unconditionally. On those utility pages the
+       wordmark is overridden to `position: static` (sections 15 / 16 / §error-page),
+       so the (now larger) `top` value is dead-code and the ticker reservation in
+       `.hero` is moot since the utility pages never render `.hero` with this rule
+       (or override it: see `.error-page .hero`, line ~3060). */
+    --launch-ticker-height: 30px;
 }
 
 
@@ -205,6 +221,86 @@ p {
 
 
 /* ==========================================================================
+   4.5 LAUNCH TICKER (fixed announcement bar, top of viewport)
+   --------------------------------------------------------------------------
+   Lime announcement strip pinned to the top of every viewport. A duplicated
+   set of 4 spans inside .launch-ticker__track is translated horizontally
+   (-50%) by the `launchTickerScroll` keyframe so the row appears to scroll
+   continuously without visible seams (the second half is identical to the
+   first, so the loop wraps invisibly).
+
+   Stacking: z-index 80 sits ABOVE the wordmark (z-index 50, §6) so the
+   wordmark slides in BELOW the ticker, and BELOW .skip-link / .toast
+   (z-index 1000, §4 / §13) and the cursor trail / emoji (z-index 9998 / 9999,
+   §18) — the cursor companion intentionally floats over the ticker.
+
+   The .launch-ticker__sr <p> is visually hidden but exposed to assistive tech
+   (the .launch-ticker__track itself is aria-hidden because the duplicated
+   spans would be read 4× by a screen reader).
+
+   Reduced motion override lives in §19 — the animation is killed and a single
+   centred copy of the message is shown statically.
+   ========================================================================== */
+.launch-ticker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 80;
+    width: 100%;
+    height: var(--launch-ticker-height);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    background: var(--color-accent);
+    color: var(--color-text-black);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.launch-ticker__track {
+    display: flex;
+    align-items: center;
+    /* `width: max-content` lets the row size to its 4 spans + 3 inter-gaps
+       intrinsic width; `min-width: 200%` guarantees the row is at least
+       twice the viewport so the -50% keyframe never reveals an empty edge
+       even if the message is very short. */
+    width: max-content;
+    min-width: 200%;
+    gap: clamp(56px, 8vw, 96px);
+    white-space: nowrap;
+    will-change: transform;
+    animation: launchTickerScroll 18s linear infinite;
+}
+
+.launch-ticker__track span {
+    flex: 0 0 auto;
+    font-family: var(--font-body);
+    font-size: clamp(11px, 1.4vw, 13px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+/* Visually-hidden accessible copy — single readable sentence for screen
+   readers. Same recipe as the standard sr-only pattern (1×1 px box clipped
+   with `clip-path: inset(50%)`, taken out of flow with `position: absolute`,
+   nowrap to avoid synthetic line breaks). */
+.launch-ticker__sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+@keyframes launchTickerScroll {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(-50%, 0, 0); }
+}
+
+
+/* ==========================================================================
    5. FOCUS VISIBILITY (generic — feature overrides live with their feature)
    ========================================================================== */
 :focus-visible {
@@ -228,7 +324,15 @@ p {
     /* `fixed` instead of `absolute` so the logo stays at the top of the viewport for the entire scroll,
        not just the hero section. Top/left now resolve against the viewport, not against `.hero`. */
     position: fixed;
-    top: calc(var(--page-pad) / 2);
+    /* Anchor the wordmark in the white strip BELOW the launch ticker (§4.5). The
+       ticker is fixed `top: 0` with `height: var(--launch-ticker-height)`, so
+       the wordmark's vertical centre at `--launch-ticker-height + --page-pad/2`
+       sits halfway between the ticker's bottom edge and the lime card's top
+       edge — preserving the original "centred in the white strip" invariant.
+       Inert on the legal/download/error utility pages: those override
+       `.wordmark { position: static; top: auto }` (sections 15 / 16 / §error),
+       so this `top` value is ignored when the ticker isn't in the DOM. */
+    top: calc(var(--launch-ticker-height) + var(--page-pad) / 2);
     left: 50%;
     translate: -50% -50%;
     z-index: 50;
@@ -407,8 +511,17 @@ p {
     /* Equal margin between the viewport edge and the lime card, on every side (top/right/bottom/left).
        Horizontal value (`--page-pad`) is the shared gutter applied to every top-level section, so all
        sections align to the same left/right edge. Vertical padding mirrors it so the hero keeps its
-       symmetric breathing room around the card. */
-    padding-block: var(--page-pad);
+       symmetric breathing room around the card.
+       Top padding is bumped by `--launch-ticker-height` (§4.5) so the fixed
+       ticker bar at top: 0 does NOT cover the lime card's top edge — the white
+       strip below the ticker keeps its full `--page-pad` height (the wordmark
+       still sits half-way through that strip; see §6 `.wordmark { top }`).
+       Bottom padding is unchanged so the lime card → carousel rhythm is preserved.
+       The "equal margins on all four sides" hero invariant
+       (memory feedback_website_hero_pattern.md) is preserved: side and bottom
+       margins remain `--page-pad`; the top margin grows by exactly the ticker
+       height to compensate for the ticker's intrusion. */
+    padding-block: calc(var(--page-pad) + var(--launch-ticker-height)) var(--page-pad);
     padding-inline: var(--page-pad);
     background-color: var(--color-light-bg);
     /* Flow-axis compensation for the `--card-shrink` visual collapse.
@@ -3877,6 +3990,28 @@ p {
        pattern as the page-scroll-progress block. */
     .cursor-trail,
     .cursor-emoji {
+        display: none;
+    }
+
+    /* Launch ticker (§4.5) — kill the horizontal scroll animation and
+       collapse the duplicated track to a single, statically-centred copy
+       of the message. Hides the 2nd/3rd/4th spans (would otherwise queue
+       horizontally with the gap and look like a static repetition). The
+       blanket `* { animation-duration: 0.01ms }` rule above already
+       reduces the keyframe to a near-instant snap; the explicit
+       `animation: none` here removes it entirely (cleaner — no risk of a
+       residual frame at -50% before the 0.01ms shortcut takes effect),
+       and `transform: none + min-width: 0` lets the row sit naturally.
+       `justify-content: center` re-centres the surviving first span. */
+    .launch-ticker {
+        justify-content: center;
+    }
+    .launch-ticker__track {
+        animation: none;
+        transform: none;
+        min-width: 0;
+    }
+    .launch-ticker__track span:not(:first-child) {
         display: none;
     }
 }
