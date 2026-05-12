@@ -749,16 +749,16 @@
             const PERSONA_CONTENT = {
                 participant: {
                     steps: [
-                        { tag: 'Recherche',    title: 'Trouve ton tournoi',  body: "Filtre par sport, distance et date. On t'affiche ce qui se joue près de chez toi." },
-                        { tag: 'Inscription',  title: 'Inscris ton équipe',  body: "Compose ton roster, paye en ligne, reçois la confirmation. C'est plié en deux minutes." },
-                        { tag: 'Match day',    title: 'Joue, suis, gagne',   body: "Le jour J : check-in QR, scores en direct, arbre qui se met à jour. Tu n'as plus qu'à jouer." }
+                        { tag: 'Recherche',    title: 'Trouve un tournoi',   body: "On t’affiche les tournois les plus proches de ta position — ou autour de l’adresse de ton choix. Tu n’as plus qu’à choisir celui qui t’intéresse." },
+                        { tag: 'Inscription',  title: 'Inscris ton équipe',  body: "Réserve ta place en quelques secondes, puis associe une équipe existante ou crée ta dream team directement dans l’app." },
+                        { tag: 'Le jour J',    title: 'Place au jeu',        body: "Pointage à l’arrivée, matchs, arbitrage, classement, tableau final : tout se passe dans l’app le jour J. Tu n’as plus qu’à enfiler tes baskets." }
                     ]
                 },
                 organisateur: {
                     steps: [
-                        { tag: 'Création',     title: 'Créez votre tournoi',       body: "Renseignez format, dates, lots. Notre assistant vous guide étape par étape." },
-                        { tag: 'Inscriptions', title: 'Recevez les inscriptions',  body: "Les équipes s'inscrivent et paient via Yamatch. Vous suivez le remplissage en temps réel." },
-                        { tag: 'Jour J',       title: 'Lancez le jour J',          body: "Check-in, scores, arbre : tout est piloté depuis votre tableau de bord." }
+                        { tag: 'Création',     title: 'Créez votre tournoi',          body: "Renseignez le format, la date et l’adresse. Plus besoin d’affiche ni de post Instagram : publiez vos tournois en un clic." },
+                        { tag: 'Inscriptions', title: 'Automatisez les inscriptions', body: "Les équipes s’inscrivent et paient directement sur Yamatch. Finis les allers-retours entre appels, mails et tableaux Excel." },
+                        { tag: 'Le jour J',    title: 'Gérez le jour J',              body: "Pointage des équipes, arbitrage, matchs, tableau des scores : tout est piloté depuis l’app." }
                     ]
                 }
             };
@@ -781,12 +781,14 @@
                     const stepData = data.steps[i];
                     if (!stepData) return;
                     const tagLabel = step.querySelector('.quest-step-tag-label');
+                    const title    = step.querySelector('.quest-step-title');
                     const body     = step.querySelector('.quest-step-body');
                     if (tagLabel) tagLabel.textContent = stepData.tag;
+                    // Les <h3> sont statiquement remplis en HTML avec les titres Participant (défaut) pour
+                    // les crawlers SEO. JS les overwrite ici uniquement sur toggle persona — sur le 1er
+                    // render (Participant), l'écriture est idempotente (textContent identique au HTML).
+                    if (title)    title.textContent    = stepData.title;
                     if (body)     body.textContent     = stepData.body;
-                    // .quest-step-title est désormais figé en HTML statique pour
-                    // que Google reçoive un <h3> non-vide (SEO). Le titre ne
-                    // change donc plus quand l'utilisateur switch de persona.
                 });
             };
 

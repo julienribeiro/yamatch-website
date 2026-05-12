@@ -132,7 +132,7 @@ Any CDN script added in the future must include a `sha384` SRI hash and `crossor
 Three JSON-LD `<script type="application/ld+json">` blocks in `<head>`:
 1. **`Organization`** — name, url, logo, description (volley-only + "d'autres sports à venir"), email, foundingDate.
 2. **`WebSite`** — name, url, inLanguage, publisher.
-3. **`FAQPage`** — 6 `Question` + `Answer` pairs mirroring the visible accordion (kept in sync with HTML copy).
+3. **`FAQPage`** — 12 `Question` + `Answer` pairs mirroring the visible accordion (kept in sync with HTML copy).
 
 Utility pages that ship a `MobileApplication` JSON-LD block must also follow the volley-only copy rule.
 
@@ -161,7 +161,7 @@ Sections under `<main id="top">`, in order:
 1. **`.hero`** — lime card with title, subtitle, App Store / Google Play buttons; wordmark above
 2. **`.screens-rail`** — horizontal carousel with 5 phone screenshots
 3. **`section.how-quest#how-it-works`** — 3-step PARCOURS section with persona tabs; deep-link anchor `id="how-it-works"`
-4. **`section.faq#faq`** — accordion of 6 questions; deep-link anchor `id="faq"`
+4. **`section.faq#faq`** — accordion of 12 questions; deep-link anchor `id="faq"`
 5. **`<footer>`** — outside `<main>`, light-gray background (matches `.faq`), dark text, content centered
 
 ### Hero
@@ -192,22 +192,22 @@ section.how-quest#how-it-works (aria-labelledby="howQuestTitle", data-persona="p
 │   └── button.quest-tab (Organisateur)
 └── .quest-steps
     ├── .quest-step [index 0]
-    │   ├── h3.quest-step-title  ("Trouve ton tournoi")      ← STATIC HTML
+    │   ├── h3.quest-step-title  ("Trouve un tournoi")       ← STATIC HTML (Participant default)
     │   ├── .quest-step-tag-label                             ← JS-driven (persona switch)
     │   └── p.quest-step-body                                 ← JS-driven (persona switch)
     ├── .quest-step [index 1]
-    │   ├── h3.quest-step-title  ("Inscris ton équipe")      ← STATIC HTML
+    │   ├── h3.quest-step-title  ("Inscris ton équipe")      ← STATIC HTML (Participant default)
     │   ├── .quest-step-tag-label                             ← JS-driven (persona switch)
     │   └── p.quest-step-body                                 ← JS-driven (persona switch)
     └── .quest-step [index 2]
-        ├── h3.quest-step-title  ("Joue, suis, gagne")       ← STATIC HTML
+        ├── h3.quest-step-title  ("Place au jeu")             ← STATIC HTML (Participant default)
         ├── .quest-step-tag-label                             ← JS-driven (persona switch)
         └── p.quest-step-body                                 ← JS-driven (persona switch)
 ```
 
 **Heading hierarchy:** `<h1>` (hero) → `<h2>` (`how-quest-title`, `faq-title`) → `<h3>` (quest-step-titles).
 
-**Static `<h3>` titles (SEO):** the three `.quest-step-title` values ("Trouve ton tournoi", "Inscris ton équipe", "Joue, suis, gagne") are hard-coded in HTML. `renderPersona()` in `script.js` no longer writes to `.quest-step-title`; it only updates `.quest-step-tag-label` and `.quest-step-body`. This ensures Google receives a non-empty `<h3>` on initial parse. `PERSONA_CONTENT.{persona}.steps[].title` is still present in the JS data object but is **not consumed** for rendering.
+**`<h3>` titles — static default + JS swap:** the three `.quest-step-title` values ("Trouve un tournoi", "Inscris ton équipe", "Place au jeu") are hard-coded in HTML as the Participant default — ensuring Google receives non-empty `<h3>` on initial parse. `renderPersona()` in `script.js` writes `tag-label`, **`title`**, and `body` on every persona switch (`script.js:786–791`). On the first render (Participant), the title write is idempotent (textContent identical to the HTML default). On toggle to Organisateur, titles swap to `PERSONA_CONTENT.organisateur.steps[].title`: `"Créez votre tournoi"` / `"Automatisez les inscriptions"` / `"Gérez le jour J"` (`script.js:759–761`). SEO is preserved: crawlers always parse the Participant titles from static HTML.
 
 ---
 
@@ -654,3 +654,18 @@ The parallax IIFE (`script.js:1392`) evaluates three sequential guards before an
 - `draggable="false"` on phone images; `aria-hidden="true"` + `focusable="false"` on decorative SVG.
 - One CSS source (`styles.css`) → one minified output (`styles.min.css`, gitignored). HTML always points to `styles.min.css`. Two JS files: `carousel.js` (state machine) + `script.js` (all other JS). No XHTML mirror.
 - No Google Fonts `<link>` or `preconnect` tags. All fonts are self-hosted under `website/fonts/`.
+
+### Copy — registre de voix
+
+| Destinataire | Registre | Exemples |
+|---|---|---|
+| Participant (joueur) | `tu` | "Trouve un tournoi", "Inscris ton équipe", "Place au jeu" |
+| Organisateur | `vous` (vouvoiement) | "Créez votre tournoi", "Automatisez les inscriptions", "Gérez le jour J" |
+| FAQ | mixte selon la réponse | `tu` si la réponse s'adresse à un joueur, `vous` si à un organisateur |
+
+Cette distinction est portée par `PERSONA_CONTENT` dans `script.js` — ne pas mélanger les registres au sein d'un même step ou d'une même réponse FAQ.
+
+### Typographie — règles d'apostrophe et d'espacement
+
+- **Apostrophes typographiques** (U+2019 `'`) obligatoires dans toute la copy user-facing — jamais l'apostrophe droite ASCII (`'`).
+- **Espace insécable** (U+00A0) avant `%` et entre un nombre et son unité (`24 h`, `4,5 %`).

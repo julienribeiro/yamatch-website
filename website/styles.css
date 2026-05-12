@@ -1826,13 +1826,30 @@ p {
      vp 768  → 15px floor  (1.1vw = 8.45 < 15)
      vp 1364 → 15px floor  (1.1vw = 15.0 — crossover)
      vp 1454 → 16px ceiling reached (1.1vw ≈ 15.99)
-     vp 1440 → 15.84px (still inside the band; ceiling at vp ≈ 1454) */
+     vp 1440 → 15.84px (still inside the band; ceiling at vp ≈ 1454)
+
+   `min-height: calc(1.6em * 3)` (= 4.8em, exactly 3 lines at the body's
+   own line-height) locks every body cell to a 3-line floor. Rationale:
+   the Participant vs Organisateur copy for step 3 differs in length —
+   Participant E3 = 143 chars (wraps to 3 lines on mobile / edge col on
+   desktop), Organisateur E3 = 93 chars (would wrap to only 2 lines).
+   Without this floor, the section's total height would shrink by one
+   line-height (~24px) on persona toggle, making the floating cards /
+   FAQ below "jump" up. With the floor in place: all 6 bodies (3 steps
+   × 2 personas) reserve a 3-line slot; shorter copy leaves whitespace
+   below itself inside its own cell, which is visually invisible — the
+   column box stays the same regardless of persona.
+   `em` (not `rem`) keeps the floor fluid with the body's own clamp:
+   at 15px → 72px floor, at 16px → 76.8px floor. No magic px constant.
+   This is a FLOOR only; if a body grows to 4 lines on a narrower
+   viewport, it expands naturally (min-height doesn't cap). */
 .quest-step-body {
     font-family: var(--font-body);
     font-size: clamp(0.9375rem, 1.1vw, 1rem);
     line-height: 1.6;
     color: rgba(16, 24, 40, 0.7);
     margin: 0;
+    min-height: calc(1.6em * 3);
 }
 
 
