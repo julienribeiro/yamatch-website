@@ -1979,16 +1979,6 @@ p {
    viewport at every breakpoint ≥ 768px). `top: 2%` and `rotate: 3deg`
    preserved from the previous placement. */
 .floating-card-parallax[data-card-id="3"] { top: -4%;  right: 4%; left: auto; rotate: 3deg; }   /* team grid — haut-droite (bleed −4% au-dessus du flush) */
-/* Card 4 — moved into `.how-quest` (2026-05-12). Took over the bas-gauche
-   slot previously occupied by the deleted Card 5 (streak). We keep the
-   slot's `bottom: 8%; left: 6%` geometry (proven to balance Card 3 in the
-   haut-droite slot), but preserve Card 4's own identity rotation
-   `-5deg` rather than adopting Card 5's `+10deg` — the compact notif
-   card has always tilted slightly counter-clockwise, and the rotation
-   is part of its visual identity. `top: auto` + `right: auto` reset the
-   former `.faq` placement (`top: 45%; left: -4%`) so the card anchors
-   to the bottom-left corner of `.how-quest`. */
-.floating-card-parallax[data-card-id="4"] { top: auto; bottom: 8%; left: 6%; right: auto; rotate: -5deg; } /* notif J-1 compact — bas-gauche */
 /* Card 2 — moved from `.faq` to `.how-quest` (2026-05-12). Previous .faq
    placement was `top: 8%; right: 4%` (haut-droite of FAQ list). New host
    is `.how-quest`; user spec: "à gauche du texte Comment ça marche, juste
@@ -2067,13 +2057,11 @@ p {
 .floating-card-parallax[data-card-id="1"] .floating-card-inner { animation-name: floating-levitate-1; animation-duration: 4.5s; }
 .floating-card-parallax[data-card-id="2"] .floating-card-inner { animation-name: floating-levitate-2; animation-duration: 5.2s; }
 .floating-card-parallax[data-card-id="3"] .floating-card-inner { animation-name: floating-levitate-3; animation-duration: 6.0s; }
-.floating-card-parallax[data-card-id="4"] .floating-card-inner { animation-name: floating-levitate-4; animation-duration: 4.8s; }
 .floating-card-parallax[data-card-id="6"] .floating-card-inner { animation-name: floating-levitate-6; animation-duration: 5.0s; }
 
 @keyframes floating-levitate-1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
 @keyframes floating-levitate-2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
 @keyframes floating-levitate-3 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-@keyframes floating-levitate-4 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
 @keyframes floating-levitate-6 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
 
@@ -2102,13 +2090,10 @@ p {
    by bumping opacity — same defensive pattern applied universally to the
    project's glass surfaces. */
 /* Card 1 default layout: modern iOS notification.
-   Shell is now a 2-column flex row:
+   Shell is a 2-column flex row:
      - [icon 36×36 with the actual favicon] -- gap 12px --
      - [content column: header (brand title + timestamp right-aligned) + body]
-   The Card 4 variant (.floating-card--notif-compact) overrides this to keep
-   its previous block-layout (icon+brand inline as eyebrow, then bold title,
-   then body). The base rules below target the Card 1 markup; the compact
-   modifier block at the bottom remaps every override Card 4 needs. */
+   Card 1 is the only consumer of the `.floating-card--notif` variant. */
 .floating-card--notif {
     display: flex;
     flex-direction: row;
@@ -2126,11 +2111,9 @@ p {
     -webkit-backdrop-filter: blur(32px) saturate(180%);
     backdrop-filter: blur(32px) saturate(180%);
 }
-/* iOS-style 36×36 app-icon tile. For Card 1 the inner <img> (favicon)
-   fills the tile via object-fit: cover — no lime background bleeds through
-   so the favicon reads as the actual app icon. For Card 4 (no <img>, just
-   the ⏰ emoji), the compact override below restores the lime fill + flex
-   centering. */
+/* iOS-style 36×36 app-icon tile. The inner <img> (favicon) fills the tile
+   via object-fit: cover — no lime background bleeds through so the favicon
+   reads as the actual app icon. */
 .floating-card__notif-icon {
     flex: none;
     width: 36px;
@@ -2138,8 +2121,6 @@ p {
     border-radius: 9px; /* iOS app icon radius approx */
     overflow: hidden;
     display: block;
-    /* Reset font-size that was previously needed for the ⏰ emoji — Card 4
-       brings it back via .floating-card--notif-compact below. */
     line-height: 1;
 }
 .floating-card__notif-icon img {
@@ -2202,60 +2183,6 @@ p {
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-
-/* Card 4 variant — reverts the base flex layout back to the original
-   block flow (icon+brand inline header, then bold title, then body).
-   The modifier sits on the SAME element as `.floating-card--notif` so
-   we override every base rule the new Card 1 layout introduced. */
-.floating-card--notif-compact {
-    display: block;            /* annule le flex row de la base */
-    width: clamp(240px, 19vw, 280px);
-    padding: 14px 16px;
-}
-.floating-card--notif-compact .floating-card__notif-head {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
-}
-/* Card 4 has no <img> inside the icon — it's the ⏰ emoji directly. Restore
-   the previous lime-tile look + 32×32 size. */
-.floating-card--notif-compact .floating-card__notif-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--color-accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    line-height: 1;
-    flex-shrink: 0;
-    overflow: visible;
-}
-.floating-card--notif-compact .floating-card__notif-brand {
-    flex: 0 0 auto;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--color-text-primary);
-    line-height: 1.2;
-    overflow: visible;
-    white-space: normal;
-    text-overflow: clip;
-    min-width: 0;
-}
-.floating-card--notif-compact .floating-card__notif-title {
-    font-size: 14px;
-}
-.floating-card--notif-compact .floating-card__notif-body {
-    font-size: 12px;
-    /* Card 4 copy is short — no 2-line clamp needed. */
-    display: block;
-    overflow: visible;
 }
 
 
@@ -2364,13 +2291,13 @@ p {
 
 /* ---- Card 3 : team grid (2×2 avatars) ----------------------------------- */
 /* Reinforced glassmorphism — white variant (2026-05-12). Mirrors Card 1's
-   spec for visual consistency across the white-glass family (Card 1, Card
-   3, Card 4 all share the same translucent-white frosted plate look).
+   spec for visual consistency across the white-glass family (Card 1 and
+   Card 3 both share the same translucent-white frosted plate look).
    Changes vs. the previous opaque-white-with-grey-border card:
      - background 100% white → `rgba(255,255,255,0.55)`.
      - border switches from grey (#101828 @ 8%) to white-rim (`rgba(255,
        255,255,0.6)`) — the rim-light reads as glass-edge rather than
-       outline; aligns with Card 1 / Card 4.
+       outline; aligns with Card 1.
      - backdrop-filter blur 0 → 24px saturate(180%) — primary glass effect.
      - inset highlight 1px @ rgba(255,255,255,0.5) added — sheen along top
        edge.
@@ -2562,13 +2489,13 @@ p {
        stacking context as expected (below `.wordmark` z=50 etc.).
 
        `overflow-x: clip` (NOT `hidden` / `auto`): defensive horizontal
-       clipping for the two `.faq` cards that bleed past the inline
-       edges (card 2 `right: 4%` stays inside, card 4 `left: -4%` bleeds
-       past the left). Per CSS spec, `clip` does NOT promote overflow-y
-       to `auto` — critical because card 6 hangs below `.faq` via
-       `bottom: -40px` and must remain visible across the FAQ→footer
-       seam. Same spec rationale as `html, body { overflow-x: clip }` in
-       §3 and `.how-quest { overflow-x: clip }` in §10.1. */
+       clipping for `.faq`'s decorative card (card 6, centred via
+       `left: 50%` + `translate: -50%`). Per CSS spec, `clip` does NOT
+       promote overflow-y to `auto` — critical because card 6 hangs
+       below `.faq` via `bottom: -10%` and must remain visible across
+       the FAQ→footer seam. Same spec rationale as `html, body
+       { overflow-x: clip }` in §3 and `.how-quest { overflow-x: clip }`
+       in §10.1. */
     position: relative;
     overflow-x: clip;
     background-color: var(--color-light-bg);
@@ -4096,28 +4023,19 @@ p {
 
     /* ---- Floating cards (section 10.5) — mobile overrides ----------------
        Drop the team-grid card (3) to avoid an overcrowded canvas on
-       narrow viewports — the remaining four cards (notif primary
-       hero-hosted, scoreboard, notif compact, rotating badge) still
-       carry the full visual story (notification → match running →
-       reminder → CTA). Card 3 is aria-hidden anyway, so there is no
-       a11y loss from `display: none`.
+       narrow viewports — the remaining three cards (notif primary
+       hero-hosted, scoreboard, rotating badge) still carry the full
+       visual story (notification → match running → CTA). Card 3 is
+       aria-hidden anyway, so there is no a11y loss from `display: none`.
 
        2026-05-12: the `.floating-cards` host section was removed; cards
        are now hosted directly by `.hero` (card 1), `.how-quest` (cards
-       3, 4) and `.faq` (cards 2, 6). Mobile placements recalibrated for
+       2, 3) and `.faq` (card 6). Mobile placements recalibrated for
        each host's geometry. The host sections already carry their own
        mobile `padding-inline: var(--mobile-hero-card-margin)` (§10.1
        default + §17 .faq override earlier in this block), so the cards'
        negative `left` / `right` values bleed past the host's content
-       box, clipped by each host's `overflow-x: clip`.
-
-       2026-05-12 (later): Card 5 (streak lime) was deleted from the DOM;
-       Card 4 (compact notif J-1) moved from `.faq` into `.how-quest` to
-       take over the bas-gauche slot Card 5 vacated. Card 4 stays visible
-       on mobile (option A: recalibrated position) rather than mirroring
-       Card 5's former `display: none` — the compact notif keeps the
-       `.how-quest` section from looking deserted on narrow viewports
-       once Card 3 is hidden. */
+       box, clipped by each host's `overflow-x: clip`. */
     .floating-card-parallax[data-card-id="3"] {
         display: none;
     }
@@ -4131,22 +4049,13 @@ p {
        floor; the offset is smaller than desktop's `14%` because mobile CTAs
        sit relatively higher in the lime card on tall narrow viewports. */
     .floating-card-parallax[data-card-id="1"] { top: auto; bottom: 22%; right: auto; left: -6%; }
-    /* Card 4 hosted by `.how-quest` on mobile (2026-05-12, post-swap). Takes
-       over the bas-gauche corner left by Card 5. `bottom: 8%` mirrors the
-       desktop value; `left: -8%` adds a light leftward bleed (since Card 3
-       is hidden on mobile there's nothing fighting for the upper-right slot,
-       so the compact notif can sit comfortably low-left without crowding).
-       `top: auto` + `right: auto` reset any leftover values from Card 4's
-       former `.faq` mobile placement (`top: 50%; left: -12%`). */
-    .floating-card-parallax[data-card-id="4"] { top: auto; bottom: 8%; left: -8%; right: auto; }
     /* Card 2 — hidden on mobile (2026-05-12). Card 2 moved from `.faq` to
-       `.how-quest` on desktop; on mobile, `.how-quest` already hosts Card
-       4 (bas-gauche) — adding a second decorative card to the same narrow
-       section would crowd the editorial 3-column-stacked-as-1-column
-       layout. Mirrors Card 3's mobile treatment (`display: none` above)
-       for the same density reason. The desktop scoreboard remains visible
-       at ≥ 768px where there's enough horizontal real-estate for both
-       cards to breathe in `.how-quest`. */
+       `.how-quest` on desktop; on mobile, adding the scoreboard to the
+       narrow `.how-quest` section would crowd the editorial
+       3-column-stacked-as-1-column layout. Mirrors Card 3's mobile
+       treatment (`display: none` above) for the same density reason. The
+       desktop scoreboard remains visible at ≥ 768px where there's enough
+       horizontal real-estate for the card to breathe in `.how-quest`. */
     .floating-card-parallax[data-card-id="2"] { display: none; }
     /* Card 6 on mobile — same centring treatment as desktop (2026-05-12).
        Badge is 100px (see `.floating-badge` mobile override below). Le badge
