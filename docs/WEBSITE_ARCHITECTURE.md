@@ -662,17 +662,43 @@ Hidden on mobile: covered by the blanket `display: none !important` kill rule (`
 
 JS writes `--parallax-y` as a CSS custom property on each `.floating-card-parallax` element via `IntersectionObserver` + `scroll`. The base rule sets `translate: 0 var(--parallax-y, 0px)`. Cards that need X-centering override this with `translate: -50% var(--parallax-y, 0px)`. The individual `translate` property and the `transform: translateZ(0)` compositor hint sit on separate properties and do not conflict.
 
-#### Gates / early-returns (`script.js` IIFE, lines 1392–1719)
+Current `data-parallax-speed` values are harmonised in the `[0.06, 0.08]` range (card 1: `0.07`, card 2: `0.06`, card 3: `0.08`, card 6 badge: `0.06`). Speeds were reduced from their former `0.15–0.25` range to prevent a perceptible ~22px jump per 100px wheel detent; the lerp (see below) absorbs any residual quantisation.
 
-The parallax IIFE (`script.js:1392`) evaluates three sequential guards before any listener is registered. Guards 1 and 2 are permanent early-returns (the IIFE exits); Guard 3 is dynamic (a live MQL drives `setup()` / `teardown()`).
+#### Lerp model — target/current with self-rescheduling RAF
 
-- **Gate 1 — `prefers-reduced-motion` (`script.js:1398`):** `window.matchMedia('(prefers-reduced-motion: reduce)').matches` — if true, the entire IIFE returns immediately. Cards stay at their CSS-defined base position (`--parallax-y` defaults to `0px` via the `var()` fallback). Evaluated before any other work.
+The parallax engine uses a **target/current lerp** pattern rather than writing the geometry-derived value directly to `--parallax-y` on every scroll event.
 
-- **Gate 2 — no cards present (`script.js:1404`):** `cards.length === 0` — if no `.floating-card-parallax` elements exist in the DOM (e.g. future utility pages, or a refactor that removes them), the IIFE exits silently. No observer, no listener, no allocation.
+**Per-card state** (initialised in `cardData` map, `setup()` in `script.js`): each card record carries `targetY` (geometry-driven destination, recomputed each tick) and `currentY` (smoothed value actually written to `--parallax-y`). Both start at `0` in the map literal and are snapped to the geometry-correct value at the end of `setup()` — see "Snap patterns" below.
 
-- **Gate 3 — mobile breakpoint (`script.js:1406–1415`, initial branch `script.js:1702–1718`):** `window.matchMedia('(max-width: 767px)')` held as a live `MediaQueryList`. On mobile load, `setup()` is never called — no `IntersectionObserver`, no scroll/resize/orientationchange/load listener is attached. A `change` listener on the MQL handles breakpoint crossings mid-session: crossing into mobile calls `teardown()` (disconnects IO, removes all listeners, clears debounce timer); crossing back to desktop calls `setup()`. The pattern mirrors the launch-ticker MQL block (`script.js:~1747`). Safari < 14 fallback uses the deprecated `mobileQuery.addListener()` API.
+**Constants:**
+- `SMOOTHING = 0.14` — lerp fraction applied per frame: `currentY += (targetY - currentY) * SMOOTHING`. At 60 fps this closes ~90% of the remaining gap within ~15 frames (~250 ms) — brisk enough to feel responsive while masking wheel-detent quantisation.
+- `EPS = 0.1` — convergence threshold in px. When `|targetY - currentY| < EPS` for **all** cards, the loop exits and `rafRunning` flips to `false`.
 
-**IntersectionObserver scroll-gate:** within `setup()`, an `IntersectionObserver` (`rootMargin: '20% 0% 20% 0%'`, `script.js:1630`) tracks unique parent sections (`.how-quest`, `.faq`). The `window scroll` listener is attached only while at least one parent is intersecting (`visibleParents > 0`) and detached when none are. A counter (`visibleParents`) — not a boolean — handles the `.how-quest visible` → `.faq visible` → `.how-quest exits` transition without flapping the listener off then back on. A synthetic `onScroll()` call on IO re-entry re-syncs `--parallax-y` before the next real scroll event.
+**`tick()` (the rAF callback):** recomputes `targetY = -(latestScrollY - sectionTopAtRest) * speed` for each card, steps `currentY` toward it via the lerp, writes `--parallax-y`, and self-reschedules with `requestAnimationFrame(tick)` if at least one card has not yet converged. When all cards converge, `rafRunning = false` and the loop exits. The next scroll event re-arms it (see `onScroll`).
+
+**`onScroll()`:** only updates `latestScrollY` (one property read, zero layout work, `{ passive: true }`) and re-arms the loop via `requestAnimationFrame(tick)` **only if `!rafRunning`**. If the loop is already live it will pick up the updated `latestScrollY` on its next iteration.
+
+**Snap patterns — hard-jump to avoid animated "rentées":**
+
+- **Initial snap in `setup()`:** after `measureGeometry()` runs synchronously, `currentY = targetY` is set for every card and `--parallax-y` is written directly. This ensures cards mount at their geometry-correct position even when the page is loaded mid-scroll (anchor link to `#faq`, browser scroll restoration). Without the snap every card would lerp in from `0` over ~250 ms after first paint.
+
+- **Re-snap in `onLayoutChange` (debounced 150 ms):** after `resize` or `orientationchange` causes a re-measure, `sectionTopAtRest` shifts. Rather than letting the lerp loop ease from the stale `currentY` toward the new `targetY` (which reads as a jarring animated catch-up), the handler hard-snaps `currentY = targetY` and writes `--parallax-y` synchronously. A resize/orientation flip is a viewport discontinuity — a hard jump is correct.
+
+- **Re-snap in `loadListener`:** the `load` event fires after webfont swap, which can shift section tops by tens of pixels. The same snap pattern as `onLayoutChange` is applied so the cards don't drift visibly post-load.
+
+#### Gates / early-returns (`script.js` parallax IIFE)
+
+The parallax IIFE evaluates three sequential guards before any listener is registered. Guards 1 and 2 are permanent early-returns (the IIFE exits); Guard 3 is dynamic (a live MQL drives `setup()` / `teardown()`).
+
+- **Gate 1 — `prefers-reduced-motion`:** `window.matchMedia('(prefers-reduced-motion: reduce)').matches` — if true, the entire IIFE returns immediately. Cards stay at their CSS-defined base position (`--parallax-y` defaults to `0px` via the `var()` fallback). Evaluated before any other work.
+
+- **Gate 2 — no cards present:** `cards.length === 0` — if no `.floating-card-parallax` elements exist in the DOM (e.g. future utility pages, or a refactor that removes them), the IIFE exits silently. No observer, no listener, no allocation.
+
+- **Gate 3 — mobile breakpoint:** `window.matchMedia('(max-width: 767px)')` held as a live `MediaQueryList`. On mobile load, `setup()` is never called — no `IntersectionObserver`, no scroll/resize/orientationchange/load listener is attached. A `change` listener on the MQL handles breakpoint crossings mid-session: crossing into mobile calls `teardown()` (disconnects IO, removes all listeners, clears debounce timer, resets `rafRunning = false`); crossing back to desktop calls `setup()`. Safari < 14 fallback uses the deprecated `mobileQuery.addListener()` API.
+
+**IntersectionObserver scroll-gate:** within `setup()`, an `IntersectionObserver` (`rootMargin: '20% 0% 20% 0%'`) tracks unique parent sections (`.how-quest`, `.faq`). The `window scroll` listener is attached only while at least one parent is intersecting (`visibleParents > 0`) and detached when none are. A counter (`visibleParents`) — not a boolean — handles the `.how-quest visible` → `.faq visible` → `.how-quest exits` transition without flapping the listener off then back on. A synthetic `onScroll()` call on IO re-entry re-syncs `--parallax-y` before the next real scroll event.
+
+**Listener symmetry:** `setup()` attaches `scroll` (via IO gate), `resize`, `orientationchange`, `load`. `teardown()` removes the exact same references. `setup()` is idempotent (`if (io !== null) return`); `teardown()` is idempotent (`if (io === null) return`).
 
 ---
 
