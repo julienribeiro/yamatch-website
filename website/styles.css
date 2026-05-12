@@ -2015,7 +2015,7 @@ p {
    Rotation `+6deg` preserved — the scoreboard's right-tilt identity is
    maintained; now that the card sits on the LEFT, the tilt reads as
    "leaning toward the title" which feels intentional. */
-.floating-card-parallax[data-card-id="2"] { top: 12%;  left: 4%;  right: auto; rotate: 6deg; }   /* scoreboard — gauche, dans le header (au-dessus des quest-steps) */
+.floating-card-parallax[data-card-id="2"] { top: 12%;  left: 4%;  right: auto; rotate: -6deg; }  /* scoreboard — gauche, dans le header (au-dessus des quest-steps) */
 
 /* Cards inside `.faq` (host: position: relative + overflow-x: clip via §11) */
 /* Card 6 — centred horizontally under the last FAQ question (2026-05-12).
