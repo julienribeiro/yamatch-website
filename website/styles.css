@@ -1989,9 +1989,31 @@ p {
    former `.faq` placement (`top: 45%; left: -4%`) so the card anchors
    to the bottom-left corner of `.how-quest`. */
 .floating-card-parallax[data-card-id="4"] { top: auto; bottom: 8%; left: 6%; right: auto; rotate: -5deg; } /* notif J-1 compact — bas-gauche */
+/* Card 2 — moved from `.faq` to `.how-quest` (2026-05-12). Previous .faq
+   placement was `top: 8%; right: 4%` (haut-droite of FAQ list). New host
+   is `.how-quest`; user spec: "à gauche du texte Comment ça marche, juste
+   au-dessus de 01 sans que ça recouvre le texte".
+   Geometry inside `.how-quest`:
+     - `.how-quest-header` (eyebrow + centered H2 + persona pills) occupies
+       the top slab, followed by a `margin-bottom: clamp(48px, 7vh, 80px)`
+       gap, then the `.quest-steps` 3-column grid (which begins with each
+       column's `.quest-step-numeral`).
+     - `top: 28%` places the card's top edge roughly at the bottom-third
+       of the header zone — close enough to "01" to feel anchored to it,
+       but high enough that the card bottom (~150–180px later) settles in
+       the header-margin gap and does NOT overlap the "01" numeral.
+     - `left: 4%` parks the card on the LEFT side of the section, well
+       clear of the centered H2 (whose container caps at
+       `--container-max: 1200px` and centres via `margin-inline: auto`).
+       At any viewport ≥ 768px, the centred title's left edge sits at
+       least ~25–30% from the section's left edge, so the card (~280px
+       wide max) at `left: 4%` cannot overlap it.
+   Rotation `+6deg` preserved — the scoreboard's right-tilt identity is
+   maintained; now that the card sits on the LEFT, the tilt reads as
+   "leaning toward the title" which feels intentional. */
+.floating-card-parallax[data-card-id="2"] { top: 28%;  left: 4%;  right: auto; rotate: 6deg; }   /* scoreboard — gauche, juste au-dessus de "01" */
 
 /* Cards inside `.faq` (host: position: relative + overflow-x: clip via §11) */
-.floating-card-parallax[data-card-id="2"] { top: 8%;   right: 4%;  rotate: 6deg; }   /* scoreboard — haut-droite */
 /* Card 6 — centred horizontally under the last FAQ question (2026-05-12).
    Previous: `bottom: -40px; right: 5%` — badge sat in the bottom-right and
    bled 40px past the host's bottom edge. User request: move it to the
@@ -2012,10 +2034,14 @@ p {
 .floating-card-parallax[data-card-id="6"] {
     left: 50%;
     right: auto;
-    bottom: 4%;
+    bottom: -3%;
     translate: -50% var(--parallax-y, 0px);
     rotate: 12deg;
-} /* badge rotatif — centré horizontalement, sous la dernière question FAQ */
+} /* badge rotatif — centré horizontalement, descendu en léger bleed sous .faq
+     pour ne plus recouvrir la dernière question. `pointer-events: none` sur
+     la règle de base (voir ligne 1797) garantit que le bleed n'intercepte
+     pas de clics sur le footer en-dessous. Card 3 utilise déjà un pattern
+     similaire (top: -4% bleed au-dessus, ligne 1981). */
 
 /* Inner wrapper — continuous levitation. Each card gets its OWN keyframe
    (1–6) with a unique amplitude AND its own duration. We avoid
@@ -2229,27 +2255,22 @@ p {
 }
 
 
-/* ---- Card 2 : scoreboard (dark glass, lime accent on winning row) ------- */
-/* Reinforced glassmorphism — dark variant (2026-05-12). The card now sits
-   over `.faq` accordion items (titles, answer paragraphs) and must read
-   as a "dark frosted plate" rather than a fully opaque tile. Changes:
-     - background switched from `var(--color-text-primary)` (#101828, 100%
-       opaque) to `rgba(16, 24, 40, 0.65)` — 35% transparency lets the
-       underlying text bleed through faintly, suggesting depth.
-     - `backdrop-filter: blur(28px) saturate(180%)` — slightly heavier
-       blur than the white-glass variants (28 vs 24px) because the dark
-       fill's natural contrast against the white background already pulls
-       attention; the heavier blur dissolves the underlying type more
-       aggressively to keep the dark plate legible.
-     - `border: 1px solid rgba(255,255,255,0.10)` — subtle high-light rim
-       (white on dark, low alpha) replacing the previous no-border treatment;
-       reads as "edge of a glass plate caught in light".
-     - `inset 0 1px 0 0 rgba(255,255,255,0.08)` highlight — same sheen
-       pattern as the white variants, calibrated for the dark surface.
-   Text contrast: the scoreboard's text is white on rgba(16,24,40,0.65)
-   over `.faq`'s white background — composited contrast ratio remains
-   AAA-level (>7:1) because the underlying white is still > 3.5:1 from
-   the dark plate even at 35% transparency. */
+/* ---- Card 2 : scoreboard (solid noir, lime accent on winning row) ------ */
+/* Solid noir (2026-05-12, post-iteration). Previous treatment was glass
+   (`rgba(16,24,40,0.80)` + `backdrop-filter: blur(36px) saturate(180%)`,
+   itself iterated from an earlier `rgba(16,24,40,0.65)` + 28px blur). The
+   glass family diluted the saturated near-black against the white
+   `.how-quest` / `.faq` background, washing the scoreboard into a muddy
+   navy — user request: pure noir, no glass dilution.
+   Current treatment:
+     - background: `var(--color-text-primary)` (#101828, fully opaque) —
+       chromatically identical to the previous glass fill at 100% alpha.
+     - no `backdrop-filter` — solid plate, no compositor work.
+     - `border: 1px solid rgba(255,255,255,0.08)` — subtle high-light rim
+       (white on dark, low alpha) retained for material edge definition.
+     - `inset 0 1px 0 0 rgba(255,255,255,0.06)` highlight — reduced sheen
+       reads as physical plate caught in light rather than glass affectation.
+   Text contrast: white text on #101828 = ~17:1 (AAA, well above 7:1). */
 .floating-card--scoreboard {
     /* `display: flex` + `flex-direction: column` is the cleanest way to
        allow the `.floating-card__score-badge { align-self: center }` rule
@@ -2259,15 +2280,23 @@ p {
     flex-direction: column;
     width: clamp(230px, 18vw, 280px);
     padding: 18px 20px;
-    background: rgba(16, 24, 40, 0.80);
+    /* Solid noir (2026-05-12) — the previous glass treatment
+       (`rgba(16,24,40,0.80)` + `backdrop-filter: blur(36px) saturate(180%)`)
+       diluted the saturated near-black against the white `.how-quest` /
+       `.faq` background, washing the scoreboard into a muddy navy. User
+       request: pure noir, no glass dilution. `var(--color-text-primary)`
+       resolves to `#101828` — same hue as the previous translucent fill,
+       now opaque. We keep the subtle white-rim border + inner highlight
+       for a tactile premium feel (reads as a real physical plate caught
+       in light, not a flat sticker), but at reduced alpha so they read as
+       material detail rather than glass affectation. */
+    background: var(--color-text-primary);
     color: var(--color-text-white);
-    border: 1px solid rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 24px;
     box-shadow:
-        0 12px 36px rgba(16, 24, 40, 0.18),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
-    -webkit-backdrop-filter: blur(36px) saturate(180%);
-    backdrop-filter: blur(36px) saturate(180%);
+        0 12px 36px rgba(16, 24, 40, 0.20),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
 }
 .floating-card__score-eyebrow {
     font-family: var(--font-body);
@@ -2492,11 +2521,11 @@ p {
     .floating-card--team {
         background: rgba(255, 255, 255, 0.96);
     }
-    .floating-card--scoreboard {
-        background: rgba(16, 24, 40, 0.96);
-    }
-    /* `.floating-badge` is no longer glass (solid `var(--color-accent)`),
-       so it doesn't need a fallback bump here. */
+    /* `.floating-card--scoreboard` no longer needs a fallback bump — it's
+       fully opaque (`var(--color-text-primary)`, 2026-05-12) and no longer
+       uses `backdrop-filter`, so legacy browsers render it identically.
+       `.floating-badge` is no longer glass (solid `var(--color-accent)`),
+       so it doesn't need a fallback bump here either. */
 }
 
 
@@ -4106,18 +4135,27 @@ p {
        `top: auto` + `right: auto` reset any leftover values from Card 4's
        former `.faq` mobile placement (`top: 50%; left: -12%`). */
     .floating-card-parallax[data-card-id="4"] { top: auto; bottom: 8%; left: -8%; right: auto; }
-    /* Cards hosted by `.faq` on mobile */
-    .floating-card-parallax[data-card-id="2"] { top: 8%;   right: -8%; }
+    /* Card 2 — hidden on mobile (2026-05-12). Card 2 moved from `.faq` to
+       `.how-quest` on desktop; on mobile, `.how-quest` already hosts Card
+       4 (bas-gauche) — adding a second decorative card to the same narrow
+       section would crowd the editorial 3-column-stacked-as-1-column
+       layout. Mirrors Card 3's mobile treatment (`display: none` above)
+       for the same density reason. The desktop scoreboard remains visible
+       at ≥ 768px where there's enough horizontal real-estate for both
+       cards to breathe in `.how-quest`. */
+    .floating-card-parallax[data-card-id="2"] { display: none; }
     /* Card 6 on mobile — same centring treatment as desktop (2026-05-12).
-       Badge is 100px (see `.floating-badge` mobile override below), so a
-       slightly smaller `bottom: 3%` keeps it well inside `.faq`'s mobile
-       `padding-block: var(--mobile-hero-card-margin)` while sitting under
-       the last accordion item. `translate: -50% var(--parallax-y, 0px)`
-       preserves the JS-authored parallax Y while centring on X. */
+       Badge is 100px (see `.floating-badge` mobile override below). Le badge
+       est descendu en léger bleed (`bottom: -4%`) sous `.faq` pour ne plus
+       recouvrir le milieu de la dernière question FAQ ; le bleed est
+       sans danger car `pointer-events: none` sur la règle de base
+       (ligne 1797) garantit que le badge n'intercepte pas de clics sur le
+       footer. `translate: -50% var(--parallax-y, 0px)` préserve la
+       parallax-Y JS tout en centrant sur X. */
     .floating-card-parallax[data-card-id="6"] {
         left: 50%;
         right: auto;
-        bottom: 3%;
+        bottom: -4%;
         translate: -50% var(--parallax-y, 0px);
     }
 
