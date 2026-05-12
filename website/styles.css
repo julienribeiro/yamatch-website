@@ -4036,19 +4036,57 @@ p {
        default + §17 .faq override earlier in this block), so the cards'
        negative `left` / `right` values bleed past the host's content
        box, clipped by each host's `overflow-x: clip`. */
+    /* Card 3 — visible on mobile (revised 2026-05-12, second pass).
+       Previously `display: none` because the desktop placement `top: -4%; right: 4%`
+       (line 1981) sat awkwardly inside the narrow mobile `.how-quest`. User
+       feedback: bring back the team-grid card on the RIGHT side, aligned with
+       the "RECHERCHE" tag of step 01 in the mobile stacked `.quest-steps`,
+       with a slight right-edge bleed. The mobile `.quest-steps` stacks the
+       three columns vertically; `top: 38%` lands roughly on step 01's tag row
+       (header ≈ 0–25% of `.how-quest` height, step 01 ≈ 25–50%, with the
+       RECHERCHE tag sitting just under the "01" numeral inside that band).
+       Calibrate visually — viable range ~32–44% depending on viewport height
+       and current copy length. `right: -8%` produces the requested slight
+       bleed off the right edge (clipped by `.how-quest`'s `overflow-x: clip`,
+       same mechanism that contains Card 1's desktop `left: 2%` bleed).
+       `display: block` overrides the previous `display: none`. Desktop
+       `rotate: 3deg` (line 1981) is inherited unchanged. `left: auto` and
+       `bottom: auto` are defensive resets in case any earlier rule leaks
+       through (none currently does, but explicit is safer than implicit
+       when re-enabling a previously-hidden element). */
     .floating-card-parallax[data-card-id="3"] {
-        display: none;
+        display: block;
+        top: 38%;
+        right: -8%;
+        left: auto;
+        bottom: auto;
     }
-    /* Card 1 hosted by `.hero` on mobile (2026-05-12). On narrow viewports the
-       hero is vertically taller (lime card grows to ~85svh) and the CTAs sit
-       near its bottom. `left: -6%` mirrors the desktop bleed (was previously
-       `right: -6%`) — the card peeks slightly off the LEFT edge, freeing up
-       the right side of the hero where the user's eye lands on the CTAs.
-       `bottom: 10%` raises the card from the previous `6%` so its vertical
-       centre lines up with the CTAs row rather than sitting near the hero
-       floor; the offset is smaller than desktop's `14%` because mobile CTAs
-       sit relatively higher in the lime card on tall narrow viewports. */
-    .floating-card-parallax[data-card-id="1"] { top: auto; bottom: 22%; right: auto; left: -6%; }
+    /* Card 1 hosted by `.hero` on mobile (revised 2026-05-12, second pass).
+       Previous mobile placement was `bottom: 22%; left: -6%` — anchored to the
+       LEFT and overlapping the App Store / Google Play CTAs row. User feedback:
+       center the card horizontally and float it in the dead zone between the
+       hero's CTAs (above) and the `.how-quest` eyebrow "Parcours" (below).
+       Implementation: like Card 6 (line 4068 below), we centre on X by setting
+       `left: 50%` and overriding the base `translate:` (line 1924, which is
+       `0 var(--parallax-y, 0px)`) with `-50% var(--parallax-y, 0px)`. The `-50%`
+       shifts the wrapper left by half its own width so its centre lands on the
+       hero's centreline, while preserving the JS-authored parallax Y.
+       `bottom: -8%` parks the card just past the hero's bottom edge, producing
+       a small downward bleed into the seam between `.hero` and `.how-quest`.
+       Per CSS spec, `.hero`'s `overflow-x: clip` does NOT promote overflow-y
+       to `auto` — same guarantee that lets Card 6 hang past `.faq`'s bottom
+       (line 1939–1941). `right: auto` cancels the right anchor; the desktop
+       `rotate: -8deg` (line 1966) is inherited unchanged so the card keeps its
+       identity tilt. If the bleed visually overlaps the "Parcours" eyebrow
+       below, switch `bottom: -8%` to a less-negative value (e.g. `-2%`); if
+       it still overlaps the CTAs above, push to `-15%`. */
+    .floating-card-parallax[data-card-id="1"] {
+        top: auto;
+        bottom: -8%;
+        left: 50%;
+        right: auto;
+        translate: -50% var(--parallax-y, 0px);
+    }
     /* Card 2 — hidden on mobile (2026-05-12). Card 2 moved from `.faq` to
        `.how-quest` on desktop; on mobile, adding the scoreboard to the
        narrow `.how-quest` section would crowd the editorial
@@ -4058,17 +4096,21 @@ p {
        horizontal real-estate for the card to breathe in `.how-quest`. */
     .floating-card-parallax[data-card-id="2"] { display: none; }
     /* Card 6 on mobile — same centring treatment as desktop (2026-05-12).
-       Badge is 100px (see `.floating-badge` mobile override below). Le badge
-       est descendu en léger bleed (`bottom: -4%`) sous `.faq` pour ne plus
-       recouvrir le milieu de la dernière question FAQ ; le bleed est
-       sans danger car `pointer-events: none` sur la règle de base
-       (ligne 1797) garantit que le badge n'intercepte pas de clics sur le
-       footer. `translate: -50% var(--parallax-y, 0px)` préserve la
-       parallax-Y JS tout en centrant sur X. */
+       Badge is 100px (see `.floating-badge` mobile override below). Revised
+       2026-05-12 (second pass): `bottom: -8%` still overlapped the last FAQ
+       question on narrow viewports; pushed to `-15%` so the badge sits more
+       clearly past the `.faq` bottom edge, in the seam between FAQ and footer.
+       Per CSS spec, `.faq`'s `overflow-x: clip` does NOT promote overflow-y
+       to `auto` (see lines 1939–1941), so the negative `bottom` stays visible
+       across the FAQ→footer transition. `pointer-events: none` on the base
+       rule (line 1913) guarantees the bleed cannot intercept clicks on the
+       footer below. `translate: -50% var(--parallax-y, 0px)` preserves the
+       JS-authored parallax-Y while centring on X. If the badge still overlaps
+       the last question, drop further to `-20%`. */
     .floating-card-parallax[data-card-id="6"] {
         left: 50%;
         right: auto;
-        bottom: -8%;
+        bottom: -15%;
         translate: -50% var(--parallax-y, 0px);
     }
 
