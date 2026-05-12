@@ -3379,6 +3379,20 @@ p {
         line-height: 1.35;
     }
 
+    /* 404-specific subtitle — drastically smaller than the homepage hero subtitle.
+       The 404 copy ("Cette page n'existe pas ou a été déplacée. Reviens sur le terrain
+       principal.", index.html L45) is a UTILITY message, not the page's main hook —
+       it should read as light secondary text under the eyebrow + title, not compete
+       with them. Roughly -25% vs the homepage mobile clamp(0.95rem, 3.6vw, 1.15rem):
+       new range 12px floor (vp ≤ ~342) → 13.4px @ vp 480 → 14.4px ceiling (vp ≥ ~514).
+       Tighter line-height (1.4 vs homepage 1.35 — homepage forces a 2-line wrap via
+       <br class="br-mobile-only">; the 404 wraps naturally on 2 lines and benefits
+       from a hair more leading at the smaller size for legibility). */
+    .error-page .hero-subtitle {
+        font-size: clamp(0.75rem, 2.8vw, 0.9rem);
+        line-height: 1.4;
+    }
+
     .hero-buttons {
         gap: clamp(8px, 3vw, 12px);
     }
