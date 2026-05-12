@@ -751,7 +751,7 @@
                     steps: [
                         { tag: 'Recherche',    title: 'Trouve un tournoi',   body: "On t’affiche les tournois les plus proches de ta position — ou autour de l’adresse de ton choix. Tu n’as plus qu’à choisir celui qui t’intéresse." },
                         { tag: 'Inscription',  title: 'Inscris ton équipe',  body: "Réserve ta place en quelques secondes, puis associe une équipe existante ou crée ta dream team directement dans l’app." },
-                        { tag: 'Le jour J',    title: 'Place au jeu',        body: "Pointage à l’arrivée, matchs, arbitrage, classement, tableau final : tout se passe dans l’app le jour J. Tu n’as plus qu’à enfiler tes baskets." }
+                        { tag: 'Le jour J',    title: 'Place au jeu',        body: "Pointage à l’arrivée, matchs, arbitrage, classement, tableau final : tout se passe dans l’app. Tu n’as plus qu’à enfiler tes baskets." }
                     ]
                 },
                 organisateur: {
