@@ -298,6 +298,7 @@
                 carousel.style.setProperty('--active-scale', activeScale.toFixed(4));
                 heroCard.style.setProperty('--card-shrink', `${cardShrink}px`);
                 hero.style.setProperty('--hero-flow-collapse', `${flowCollapse}px`);
+                ROOT.style.setProperty('--wordmark-scroll-progress', progress.toFixed(4));
 
                 // Mirror the most recently written collapse so the NEXT
                 // `measureScrollAnimationGeometry` (on a future resize) can back-cancel

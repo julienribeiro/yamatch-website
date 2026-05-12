@@ -111,6 +111,22 @@
        clamp(24px, 4vh, 56px): 24px floor on tiny viewports, 56px ceiling on 4K. */
     --desired-button-gap: clamp(24px, 4vh, 56px);
 
+    /* Vertical lift applied to the fixed wordmark as the user scrolls into the
+       carousel zone. Magnitude is negative because the CSS positive y-axis points
+       DOWN — a negative `translate` y-component moves the element UP toward the
+       viewport top. Composed with the base `translate: -50% -50%` (section 6)
+       via `var(--wordmark-scroll-progress, 0) * var(--wordmark-scroll-lift)`, so
+       at progress 0 the wordmark stays at its anchored centre, and at progress 1
+       it has risen by exactly this many px. The progress variable is written by
+       script.js (page-scroll-progress block) on every rAF tick and is already
+       clamped to [0, 1] in JS — no CSS clamp needed. The `var(...)` fallback of
+       0 keeps the wordmark at its rest position when JS is absent / not yet run
+       / reduced-motion path skips the writer. -18px chosen as a "composed
+       editorial" magnitude: large enough to read as intentional motion, small
+       enough that the wordmark stays well clear of the launch-ticker bottom
+       edge above (--launch-ticker-height = 30px). */
+    --wordmark-scroll-lift: -18px;
+
     /* Height of the launch announcement ticker that runs across the very top of
        the document (.launch-ticker, section 4.5 below). Consumed by:
          - .launch-ticker { height }                  → the ticker's own box height
@@ -415,7 +431,18 @@ p {
        so this `top` value is ignored when the ticker isn't in the DOM. */
     top: calc(var(--launch-ticker-height) + var(--page-pad) / 2);
     left: 50%;
-    translate: -50% -50%;
+    /* Compose the centring translate (`-50% -50%`) with a scroll-driven vertical
+       lift. `--wordmark-scroll-progress` (0..1, written by script.js per rAF
+       tick on `documentElement`, inherited here) multiplies `--wordmark-scroll-lift`
+       (negative px magnitude declared in `:root`, section 2) so the wordmark
+       rises by `progress * |--wordmark-scroll-lift|` px as the user scrolls into
+       the carousel zone. Fallback `0` on the progress var keeps the wordmark at
+       rest position (translate: -50% -50%) when JS hasn't run yet, the writer
+       is skipped (reduced-motion / mobile paths), or the variable is otherwise
+       undefined. The Y component is a single `calc` so the individual `translate`
+       property still composes cleanly with the entrance keyframe's
+       `transform: translateY(...)` (transforms apply on top of `translate`). */
+    translate: -50% calc(-50% + var(--wordmark-scroll-progress, 0) * var(--wordmark-scroll-lift));
     z-index: 50;
     display: inline-flex;
     align-items: center;
