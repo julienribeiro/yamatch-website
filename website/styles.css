@@ -4054,35 +4054,43 @@ p {
        `bottom: auto` are defensive resets in case any earlier rule leaks
        through (none currently does, but explicit is safer than implicit
        when re-enabling a previously-hidden element). */
+    /* Card 3 — drastic descent (2026-05-12, third pass). User wants the
+       team-grid card to float at the level of the "Questions fréquentes"
+       H2 of the next section (`.faq`), not inside the mobile stack of
+       `.quest-steps`. Anchor flipped `top: 38%` → `bottom: -22%`: the card
+       hangs ~22 % past `.how-quest`'s bottom edge, landing in the top
+       padding of `.faq` near the H2 row. Per CSS spec, `.how-quest`'s
+       `overflow-x: clip` does NOT promote overflow-y to `auto`, so the
+       vertical bleed renders correctly into the next section. Right-edge
+       bleed preserved (`right: -8%`). Desktop `rotate: 3deg` inherited.
+       Viable calibration range: ~-18 % to ~-30 % depending on viewport
+       height and current copy length. */
     .floating-card-parallax[data-card-id="3"] {
         display: block;
-        top: 38%;
+        top: auto;
         right: -8%;
         left: auto;
-        bottom: auto;
+        bottom: -22%;
     }
-    /* Card 1 hosted by `.hero` on mobile (revised 2026-05-12, second pass).
-       Previous mobile placement was `bottom: 22%; left: -6%` — anchored to the
-       LEFT and overlapping the App Store / Google Play CTAs row. User feedback:
-       center the card horizontally and float it in the dead zone between the
-       hero's CTAs (above) and the `.how-quest` eyebrow "Parcours" (below).
-       Implementation: like Card 6 (line 4068 below), we centre on X by setting
-       `left: 50%` and overriding the base `translate:` (line 1924, which is
-       `0 var(--parallax-y, 0px)`) with `-50% var(--parallax-y, 0px)`. The `-50%`
-       shifts the wrapper left by half its own width so its centre lands on the
-       hero's centreline, while preserving the JS-authored parallax Y.
-       `bottom: -8%` parks the card just past the hero's bottom edge, producing
-       a small downward bleed into the seam between `.hero` and `.how-quest`.
-       Per CSS spec, `.hero`'s `overflow-x: clip` does NOT promote overflow-y
-       to `auto` — same guarantee that lets Card 6 hang past `.faq`'s bottom
-       (line 1939–1941). `right: auto` cancels the right anchor; the desktop
-       `rotate: -8deg` (line 1966) is inherited unchanged so the card keeps its
-       identity tilt. If the bleed visually overlaps the "Parcours" eyebrow
-       below, switch `bottom: -8%` to a less-negative value (e.g. `-2%`); if
-       it still overlaps the CTAs above, push to `-15%`. */
+    /* Card 1 hosted by `.hero` on mobile (revised 2026-05-12, third pass —
+       drastic descent). Previous placements: `bottom: 22%; left: -6%`
+       (over CTAs) → `bottom: -8%; left: 50%` (centred, small bleed past
+       hero's bottom). User feedback: the card was still perceived as
+       "centre of the carousel" — it must drop drastically so it hovers
+       JUST ABOVE the "Parcours" eyebrow of the next section (`.how-quest`).
+       New value: `bottom: -22%` — the card hangs ~22 % past `.hero`'s
+       bottom edge, landing in the top padding of `.how-quest`, just above
+       the eyebrow. Per CSS spec, `.hero`'s `overflow-x: clip` does NOT
+       promote overflow-y to `auto` — same guarantee that lets Card 6 hang
+       past `.faq`'s bottom (line 1939–1941). `left: 50%` + `translate:
+       -50% var(--parallax-y, 0px)` keeps the card centred horizontally
+       while preserving the JS-authored parallax Y. Desktop `rotate: -8deg`
+       (line 1966) inherited. Viable calibration range: ~-18 % to ~-28 %
+       — if it lands ON the eyebrow text, tighten toward -18 %; if it's
+       still inside the hero, push toward -28 %. */
     .floating-card-parallax[data-card-id="1"] {
         top: auto;
-        bottom: -8%;
+        bottom: -22%;
         left: 50%;
         right: auto;
         translate: -50% var(--parallax-y, 0px);
