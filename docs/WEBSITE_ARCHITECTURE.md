@@ -4,24 +4,153 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-05-11.
+Last sync: 2026-05-12.
+
+---
+
+## Positionnement produit
+
+Yamatch couvre **uniquement le volley-ball** aujourd'hui. La copy autorise (et encourage) la mention "d'autres sports à venir", **sans jamais nommer ces sports**.
+
+Cette règle s'applique partout où du contenu décrit le produit :
+- `website/index.html` — `<title>`, `<meta name="description">`, og/twitter tags, `<h1>`, body copy
+- `website/site.webmanifest` — champ `description`
+- `website/cgu/index.html` et toutes les autres pages légales
+- JSON-LD : blocs `Organization`, `MobileApplication`, `FAQPage`
+
+Cibles de longueur des balises SEO clés :
+
+| Balise | Cible | Règle |
+|--------|-------|-------|
+| `<title>` | 50–65 chars | mesurée en commentaire HTML |
+| `<meta name="description">` | 150–160 chars | mesurée en commentaire HTML |
+| `og:description` / `twitter:description` | 145–160 chars | mesurée en commentaire HTML |
 
 ---
 
 ## Tech stack
 
-Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework, no bundler, no build step. Four files:
+Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. **One build step: CSS minification** (see Build CSS below). Four source files:
 
 | File | Role | Approx. lines |
 |------|------|---------------|
 | `website/index.html` | Single page — hero + carousel + FAQ + footer | ~300 |
-| `website/styles.css` | All styles. Design tokens in `:root`. Heavy use of `clamp()`. | ~700 |
+| `website/styles.css` | All styles. Design tokens in `:root`. Heavy use of `clamp()`. **Source of truth — never minify by hand.** | ~700 |
 | `website/carousel.js` | Standalone IIFE: complete carousel gesture state machine (wheel + touch + rubber-band). Loaded via `<script src="carousel.js" defer>` **before** `script.js`. | ~245 |
 | `website/script.js` | Standalone IIFE: copyright year, toast, pending-CTA delegation, wordmark scroll-aware behaviour, wave-SVG animation, page-scroll-progress block. | ~454 |
 
 `carousel.js` is loaded first in HTML (`<script src="carousel.js" defer>` then `<script src="script.js" defer>`). Sequential `defer` tags guarantee execution order while keeping both scripts non-blocking.
 
-Only `live-server` (via `npx`) is permitted as an npm artifact.
+All 8 HTML files reference **`styles.min.css`** (the generated output), not `styles.css`.
+
+---
+
+## Build CSS
+
+| Aspect | Detail |
+|--------|--------|
+| Tool | `lightningcss-cli` (devDependency `^1.32.0`) |
+| Source | `website/styles.css` — single source of truth, never minified by hand |
+| Output | `website/styles.min.css` — generated; **gitignored** (never committed) |
+| Sizes | 204 KB source → 36 KB minified raw / 65 KB → 7 KB gzip (~89% gzip reduction) |
+| npm script | `npm run build:css` — `lightningcss --minify --bundle --targets '>= 0.5%' website/styles.css -o website/styles.min.css` |
+| Pre-hooks | `predev`, `prestart`, `prepreview` all run `build:css` automatically before `live-server` starts |
+| CI | `.github/workflows/deploy.yml` runs `npm ci` then `npm run build:css` before `upload-pages-artifact` |
+
+**Rule:** always edit `website/styles.css`. The minified file is a build artifact — do not edit it and do not commit it.
+
+---
+
+## Fonts
+
+All fonts are **self-hosted** (no Google Fonts CDN). Migrated 2026-05-12 — eliminates a third-party request, DNS lookup, and TLS handshake on every page load, and gives us native `font-weight: 800` (was faux-bold from Google's 700-only CDN payload).
+
+### Files in `website/fonts/`
+
+| File | Size | Axis |
+|------|------|------|
+| `Inter-Variable.woff2` | 48 KB | wght 100–900, upright |
+| `Inter-Italic-Variable.woff2` | 26 KB | wght 100–900, italic |
+| `Roboto-Variable.woff2` | 37 KB | wght 100–900, upright |
+| `Roboto-Italic-Variable.woff2` | 41 KB | wght 100–900, italic |
+| `Frick0.3-Regular.woff2` + `.woff` | — | weight 400, hero title only |
+
+Total Inter + Roboto VF: ~152 KB. Latin subset only (covers U+0000–00FF + U+2000–206F — sufficient for all French copy).
+
+### `@font-face` declarations (`styles.css` lines ~83–122)
+
+Each Inter and Roboto face declares `font-weight: 100 900` (full axis range) so any weight from 100 to 900 is served from a single file. `font-display: swap` matches the Frick face behavior.
+
+### Preload
+
+Every HTML file carries exactly one preload for the upright Inter VF (the most render-critical):
+```html
+<link rel="preload" as="font" type="font/woff2" href="fonts/Inter-Variable.woff2" crossorigin>
+```
+(Relative path for root pages; `../fonts/Inter-Variable.woff2` for sub-pages.)
+Roboto VF is **not** preloaded — it is used only for headings below the fold.
+
+### Weight 800 — native (no faux-bold)
+
+`.floating-card__team-eyebrow`, `.floating-card__score-value`, `.floating-badge__rotor-text` all declare `font-weight: 800`. With the VF, this resolves to the real `wght=800` axis position on both Inter and Roboto. The previous Google CDN payload only shipped wght=700, which caused faux-bold rendering on these elements.
+
+### No Google Fonts link tags
+
+No `<link rel="preconnect" href="https://fonts.googleapis.com">` or `fonts.gstatic.com` appear in any HTML file. Do not re-introduce them.
+
+---
+
+## SEO
+
+### Robots / indexing
+
+- `<meta name="robots" content="index, follow">` **and** `<meta name="googlebot" content="index, follow">` are present on all 7 indexable pages (home + 6 utility sub-pages: cgu, contact, download, politique-confidentialite, politique-annulation-remboursement, suppression-compte).
+- `website/404.html` retains `<meta name="robots" content="noindex">` and does **not** carry a googlebot tag.
+
+### Deep-link anchors
+
+| Section | Anchor |
+|---------|--------|
+| `.how-quest` | `id="how-it-works"` |
+| `.faq` | `id="faq"` |
+
+### Sitemap
+
+`website/sitemap.xml` lists only the home URL (`https://appyamatch.fr/`). Utility pages (CGU, politique, etc.) are intentionally excluded. `<lastmod>2026-05-12</lastmod>`.
+
+### SRI — CDN scripts
+
+The qrcode-generator CDN `<script>` carries:
+```html
+integrity="sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz"
+crossorigin="anonymous"
+```
+Any CDN script added in the future must include a `sha384` SRI hash and `crossorigin="anonymous"`.
+
+### JSON-LD blocks (`index.html`)
+
+Three JSON-LD `<script type="application/ld+json">` blocks in `<head>`:
+1. **`Organization`** — name, url, logo, description (volley-only + "d'autres sports à venir"), email, foundingDate.
+2. **`WebSite`** — name, url, inLanguage, publisher.
+3. **`FAQPage`** — 6 `Question` + `Answer` pairs mirroring the visible accordion (kept in sync with HTML copy).
+
+Utility pages that ship a `MobileApplication` JSON-LD block must also follow the volley-only copy rule.
+
+---
+
+## PWA manifest (`website/site.webmanifest`)
+
+| Field | Value |
+|-------|-------|
+| `name` | `"Yamatch"` |
+| `short_name` | `"Yamatch"` |
+| `description` | volley-only + "D'autres sports bientôt disponibles." |
+| `display` | `"standalone"` |
+| `theme_color` | `"#D7FF00"` |
+| `icons[192]` | `"purpose": "any"` |
+| `icons[512]` | `"purpose": "any maskable"` |
+
+The 512×512 icon's `purpose` was changed from `"any"` to `"any maskable"` as part of the 2026-05-12 SEO audit.
 
 ---
 
@@ -31,8 +160,9 @@ Sections under `<main id="top">`, in order:
 
 1. **`.hero`** — lime card with title, subtitle, App Store / Google Play buttons; wordmark above
 2. **`.screens-rail`** — horizontal carousel with 5 phone screenshots
-3. **`.faq`** — accordion of 6 questions
-4. **`<footer>`** — outside `<main>`, light-gray background (matches `.faq`), dark text, content centered
+3. **`section.how-quest#how-it-works`** — 3-step PARCOURS section with persona tabs; deep-link anchor `id="how-it-works"`
+4. **`section.faq#faq`** — accordion of 6 questions; deep-link anchor `id="faq"`
+5. **`<footer>`** — outside `<main>`, light-gray background (matches `.faq`), dark text, content centered
 
 ### Hero
 
@@ -45,9 +175,41 @@ Sections under `<main id="top">`, in order:
         ├── h1.hero-title > span.hero-title-slant ("Ton prochain tournoi t'attend")
         ├── p.hero-subtitle ("Compose ton équipe, il y a match")
         └── .hero-buttons
-            ├── a.btn-glass.js-pending-cta (App Store)
-            └── a.btn-glass.js-pending-cta (Google Play)
+            ├── a.btn-glass.js-pending-cta (App Store)  → toast "Bientôt disponible"
+            └── a.btn-glass.js-pending-cta (Google Play) → toast "Bientôt disponible"
 ```
+
+**Toast CTA:** clicking any `.js-pending-cta` shows the toast with the text `"Bientôt disponible"` (exact string, no ellipsis). Managed by the pending-CTA event delegation block in `script.js`.
+
+### How-quest (`section.how-quest#how-it-works`)
+
+```
+section.how-quest#how-it-works (aria-labelledby="howQuestTitle", data-persona="participant")
+├── .how-quest-eyebrow ("PARCOURS")
+├── h2#howQuestTitle.how-quest-title
+├── .quest-persona-tabs
+│   ├── button.quest-tab (Participant)
+│   └── button.quest-tab (Organisateur)
+└── .quest-steps
+    ├── .quest-step [index 0]
+    │   ├── h3.quest-step-title  ("Trouve ton tournoi")      ← STATIC HTML
+    │   ├── .quest-step-tag-label                             ← JS-driven (persona switch)
+    │   └── p.quest-step-body                                 ← JS-driven (persona switch)
+    ├── .quest-step [index 1]
+    │   ├── h3.quest-step-title  ("Inscris ton équipe")      ← STATIC HTML
+    │   ├── .quest-step-tag-label                             ← JS-driven (persona switch)
+    │   └── p.quest-step-body                                 ← JS-driven (persona switch)
+    └── .quest-step [index 2]
+        ├── h3.quest-step-title  ("Joue, suis, gagne")       ← STATIC HTML
+        ├── .quest-step-tag-label                             ← JS-driven (persona switch)
+        └── p.quest-step-body                                 ← JS-driven (persona switch)
+```
+
+**Heading hierarchy:** `<h1>` (hero) → `<h2>` (`how-quest-title`, `faq-title`) → `<h3>` (quest-step-titles).
+
+**Static `<h3>` titles (SEO):** the three `.quest-step-title` values ("Trouve ton tournoi", "Inscris ton équipe", "Joue, suis, gagne") are hard-coded in HTML. `renderPersona()` in `script.js` no longer writes to `.quest-step-title`; it only updates `.quest-step-tag-label` and `.quest-step-body`. This ensures Google receives a non-empty `<h3>` on initial parse. `PERSONA_CONTENT.{persona}.steps[].title` is still present in the JS data object but is **not consumed** for rendering.
+
+---
 
 ### Carousel (`.screens-rail`)
 
@@ -98,7 +260,7 @@ Each `.screen-card` contains:
 ### Typography
 ```css
 --font-heading: 'Roboto', system-ui, …;   /* + 'Frick 0.3' for hero title via @font-face */
---font-body: 'Inter', system-ui, …;       /* weights 400, 500, 600, 700, italic-500 */
+--font-body: 'Inter', system-ui, …;       /* weights 400, 500, 600, 700, 800, italic-500 */
 ```
 
 ### Layout
@@ -399,6 +561,76 @@ _Iteration history: full-bleed (`width: 100%`, reverted quickly) → side-margin
 
 ---
 
+## Floating cards — dimensions & mobile overrides
+
+All use the double-wrapper pattern: **outer** `.floating-card-parallax` carries position + parallax translate; **inner** `.floating-card-inner` carries the levitation keyframe. `pointer-events: none` on the outer wrapper is load-bearing (cards sit above interactive content).
+
+**Sur mobile (`max-width: 767px`), toutes les `.floating-card-parallax` sont masquées via `display: none !important` (`styles.css:4199`). Aucune card/badge n'est rendue. Décision prise 2026-05-12.**
+
+_(All per-card mobile position/dimension overrides that existed prior to 2026-05-12 have been removed from CSS and from this doc. The blanket kill rule supersedes them entirely.)_
+
+---
+
+### Card 1 — notification (`.floating-card--notif`, `[data-card-id="1"]`)
+
+Desktop host: `.hero` — `bottom: 30%; left: 2%; rotate: -8deg`.
+
+---
+
+### Card 3 — team grid (`.floating-card--team`, `[data-card-id="3"]`)
+
+Desktop host: `.how-quest` — `top: -13%; right: 4%; left: auto; rotate: 3deg`. Desktop width: `clamp(260px, 20vw, 300px)`.
+
+Rationale: at `-13%`, the card is lifted ~90–115 px above `.how-quest`'s top edge and floats visually in the lower-right area of `.hero`, just above the "PARCOURS" eyebrow. This is the arithmetic midpoint between the origin (`top: -4%`) and the previous value (`top: -22%`, judged too high). This relies on `.how-quest { overflow-x: clip }` which — per CSS spec — does **not** promote `overflow-y` to `auto`, so the negative-top bleed on the Y axis remains visible. Parallax: base rule `translate: 0 var(--parallax-y, 0px)`, `data-parallax-speed="0.08"` (no desktop override).
+
+---
+
+### Card 6 — rotating badge (`.floating-badge`, `[data-card-id="6"]`)
+
+Desktop host: `.faq` — `top: -8%; right: 8%; left: auto; bottom: auto; translate: 0 var(--parallax-y, 0px); rotate: 12deg`. Desktop size: `143px × 143px`.
+
+The badge is lifted above `.faq`'s top edge (via `top: -8%`) and appears visually in the lower-right area beneath step 3 of `.how-quest` (PARCOURS). This works because `.faq { overflow-x: clip }` — per CSS spec, `overflow-x: clip` does **not** promote `overflow-y` to `auto`, so the negative-top bleed remains visible. `right: 8%` resolves against `.faq`'s full-bleed padding-box width (≈ viewport width): 8% of 1440 px ≈ 115 px, placing the badge's left edge ~180–215 px from the right viewport edge — naturally under the rightmost `.quest-step` column (step 3). `translate: 0 var(--parallax-y, 0px)` preserves JS-driven Y parallax without the former `-50% X` centering shift (which was only needed when the badge was `left: 50%`-anchored).
+
+**+10% size bump (2026-05-12):** disc bumped from `130px → 143px` (`styles.css:2447`). The central arrow SVG (`index.html` line 547 carries HTML attrs `width="28" height="28"`) is bumped to `31px` via CSS override (`styles.css:2510` — `28 × 1.10 ≈ 30.8 → 31`; CSS wins over presentational HTML attrs per spec). `.floating-badge__rotor-text` stays at `font-size: 11px; letter-spacing: 0.18em` — the text arc scales automatically because `.floating-badge__rotor-svg` fills the disc with `width: 100%; height: 100%`, so the SVG viewBox (`0 0 130 130`) is physically stretched to 143px, enlarging the text-on-path proportionally.
+
+---
+
+### Card 2 — scoreboard (`.floating-card--scoreboard`, `[data-card-id="2"]`)
+
+Desktop host: `.how-quest` — `top: 4%; left: 4%; right: auto; rotate: -6deg`.
+
+| Property | Value |
+|----------|-------|
+| `top` | `4%` (raised from `12%` on 2026-05-12, delta −8 pts; floats at the eyebrow/"PARCOURS" / H2 level, widening the vertical gap above `.quest-step-numeral` "01") |
+| `left` | `4%` |
+| `right` | `auto` |
+| `rotate` | `-6deg` |
+| `translate` | `0 var(--parallax-y, 0px)` (inherited from base rule) |
+
+Rationale: the card sits on the **left** side of `.how-quest`, well clear of the centred H2 (whose container caps at `--container-max: 1200px`). At any viewport ≥ 768 px the centred H2's left edge sits at least ~25–30 % from the section's left edge, so the card (~280 px wide max) at `left: 4%` cannot overlap it. `top: 4%` positions the card's visual centre near the eyebrow/H2 row, accentuating the visual separation from the quest-steps below. The `−6deg` tilt reads as "leaning toward the title" given the left-side placement.
+
+Hidden on mobile: covered by the blanket `display: none !important` kill rule (`styles.css:4199`) along with all other cards. Original rationale: density — the narrow `.how-quest` cannot accommodate it without crowding the stacked-column layout.
+
+---
+
+### Parallax mechanism (all cards)
+
+JS writes `--parallax-y` as a CSS custom property on each `.floating-card-parallax` element via `IntersectionObserver` + `scroll`. The base rule sets `translate: 0 var(--parallax-y, 0px)`. Cards that need X-centering override this with `translate: -50% var(--parallax-y, 0px)`. The individual `translate` property and the `transform: translateZ(0)` compositor hint sit on separate properties and do not conflict.
+
+#### Gates / early-returns (`script.js` IIFE, lines 1392–1719)
+
+The parallax IIFE (`script.js:1392`) evaluates three sequential guards before any listener is registered. Guards 1 and 2 are permanent early-returns (the IIFE exits); Guard 3 is dynamic (a live MQL drives `setup()` / `teardown()`).
+
+- **Gate 1 — `prefers-reduced-motion` (`script.js:1398`):** `window.matchMedia('(prefers-reduced-motion: reduce)').matches` — if true, the entire IIFE returns immediately. Cards stay at their CSS-defined base position (`--parallax-y` defaults to `0px` via the `var()` fallback). Evaluated before any other work.
+
+- **Gate 2 — no cards present (`script.js:1404`):** `cards.length === 0` — if no `.floating-card-parallax` elements exist in the DOM (e.g. future utility pages, or a refactor that removes them), the IIFE exits silently. No observer, no listener, no allocation.
+
+- **Gate 3 — mobile breakpoint (`script.js:1406–1415`, initial branch `script.js:1702–1718`):** `window.matchMedia('(max-width: 767px)')` held as a live `MediaQueryList`. On mobile load, `setup()` is never called — no `IntersectionObserver`, no scroll/resize/orientationchange/load listener is attached. A `change` listener on the MQL handles breakpoint crossings mid-session: crossing into mobile calls `teardown()` (disconnects IO, removes all listeners, clears debounce timer); crossing back to desktop calls `setup()`. The pattern mirrors the launch-ticker MQL block (`script.js:~1747`). Safari < 14 fallback uses the deprecated `mobileQuery.addListener()` API.
+
+**IntersectionObserver scroll-gate:** within `setup()`, an `IntersectionObserver` (`rootMargin: '20% 0% 20% 0%'`, `script.js:1630`) tracks unique parent sections (`.how-quest`, `.faq`). The `window scroll` listener is attached only while at least one parent is intersecting (`visibleParents > 0`) and detached when none are. A counter (`visibleParents`) — not a boolean — handles the `.how-quest visible` → `.faq visible` → `.how-quest exits` transition without flapping the listener off then back on. A synthetic `onScroll()` call on IO re-entry re-syncs `--parallax-y` before the next real scroll event.
+
+---
+
 ## Memory of rejected approaches (do NOT propose these without explicit user request)
 
 - **Embla Carousel** (vendored CDN with SRI hash) — non-deterministic centering issues; replaced with custom JS state machine.
@@ -415,9 +647,10 @@ _Iteration history: full-bleed (`width: 100%`, reverted quickly) → side-margin
 ## Conventions reference
 
 - All design tokens in `:root`. No hardcoded hex/font/radius outside this block.
-- French copy throughout (`tu` form for player-facing).
+- French copy throughout (`tu` form for player-facing). Volley-only positioning — see Positionnement produit.
 - No emojis in markup unless explicitly requested.
-- No third-party scripts without explicit user approval.
+- No third-party scripts without explicit user approval. Any CDN script must carry a `sha384` SRI hash + `crossorigin="anonymous"`.
 - All `<img>` carry meaningful French alt text (or empty alt for decorative).
 - `draggable="false"` on phone images; `aria-hidden="true"` + `focusable="false"` on decorative SVG.
-- Single CSS file, single HTML file. Two JS files: `carousel.js` (state machine) + `script.js` (all other JS). No XHTML mirror.
+- One CSS source (`styles.css`) → one minified output (`styles.min.css`, gitignored). HTML always points to `styles.min.css`. Two JS files: `carousel.js` (state machine) + `script.js` (all other JS). No XHTML mirror.
+- No Google Fonts `<link>` or `preconnect` tags. All fonts are self-hosted under `website/fonts/`.

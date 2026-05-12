@@ -4,11 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#D7FF00">
-    <meta name="description" content="Trouve, réserve et joue ton prochain tournoi de foot, basket ou padel près de chez toi avec Yamatch — l'app dédiée aux sportifs amateurs.">
+    <!-- meta description: 156 chars -->
+    <meta name="description" content="Yamatch, l'app dédiée aux volleyeurs amateurs : trouve et réserve ton prochain tournoi de volley-ball près de chez toi. D'autres sports bientôt disponibles.">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
 
-    <meta property="og:title" content="Yamatch | Ton prochain tournoi t'attend">
+    <meta property="og:title" content="Yamatch | Réserve ton tournoi de volley-ball amateur">
     <meta property="og:site_name" content="Yamatch">
-    <meta property="og:description" content="Réservation de tournois sportifs amateurs. Joueurs et organisateurs réunis sur une seule app.">
+    <!-- og:description: 155 chars -->
+    <meta property="og:description" content="Trouve, réserve et joue ton prochain tournoi de volley-ball amateur près de chez toi. App gratuite — et d'autres sports arrivent prochainement sur Yamatch.">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="fr_FR">
     <meta property="og:url" content="https://appyamatch.fr/">
@@ -17,28 +21,28 @@
     <meta property="og:image:type" content="image/jpeg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Yamatch — Ton prochain tournoi t'attend. App de réservation de tournois sportifs amateurs (foot, basket, padel).">
+    <meta property="og:image:alt" content="Yamatch — Ton prochain tournoi de volley-ball t'attend. App de réservation de tournois amateurs.">
 
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Yamatch | Ton prochain tournoi t'attend">
-    <meta name="twitter:description" content="Trouve, réserve et joue ton prochain tournoi de foot, basket ou padel près de chez toi.">
+    <meta name="twitter:title" content="Yamatch | Réserve ton tournoi de volley-ball amateur">
+    <!-- twitter:description: 155 chars -->
+    <meta name="twitter:description" content="Trouve, réserve et joue ton prochain tournoi de volley-ball amateur près de chez toi. App gratuite — et d'autres sports arrivent prochainement sur Yamatch.">
     <meta name="twitter:image" content="https://appyamatch.fr/assets/social_preview.jpg">
-    <meta name="twitter:image:alt" content="Yamatch — Ton prochain tournoi t'attend. App de réservation de tournois sportifs amateurs.">
+    <meta name="twitter:image:alt" content="Yamatch — Ton prochain tournoi de volley-ball t'attend. App de réservation de tournois amateurs.">
 
     <link rel="canonical" href="https://appyamatch.fr/">
 
-    <title>Yamatch | Ton prochain tournoi t'attend</title>
+    <!-- title: 52 chars -->
+    <title>Yamatch | Réserve ton tournoi de volley-ball amateur</title>
 
     <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/icons/apple-touch-icon.png">
     <link rel="manifest" href="site.webmanifest">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Roboto:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link rel="preload" as="font" type="font/woff2" href="fonts/Inter-Variable.woff2" crossorigin>
 
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.min.css">
     <!-- qrcode-generator (Kazuhiko Arase, MIT) via CDN — utilisée par script.js pour
          générer la matrice du QR Code de la widget flottante en bas-droite. UMD browser
          build qui expose un global `window.qrcode` (factory function). Defer pour ne pas
@@ -47,11 +51,12 @@
          `/lib/browser.min.js`) par `qrcode-generator@1.4.4` qui a une URL CDN stable et
          une API browser-first explicite (qrcode(typeNumber, errorLevel) → addData → make
          → getModuleCount + isDark). -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" integrity="sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz" crossorigin="anonymous" defer></script>
     <script src="carousel.js" defer></script>
     <script src="script.js" defer></script>
 
     <!-- JSON-LD : Organization (knowledge panel + sitelinks) -->
+    <!-- TODO: sameAs LinkedIn/Instagram/TikTok quand actifs -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -59,7 +64,7 @@
         "name": "Yamatch",
         "url": "https://appyamatch.fr/",
         "logo": "https://appyamatch.fr/assets/icons/android-chrome-512x512.png",
-        "description": "Yamatch — application mobile de réservation de tournois sportifs amateurs (foot, basket, padel) en France.",
+        "description": "Yamatch — application mobile de réservation de tournois de volley-ball amateur en France. D'autres sports à venir.",
         "email": "contact@appyamatch.fr",
         "foundingDate": "2026",
         "sameAs": []
@@ -147,7 +152,7 @@
         "name": "Yamatch",
         "operatingSystem": "iOS, Android",
         "applicationCategory": "SportsApplication",
-        "description": "Yamatch — Réservation de tournois amateurs de foot, basket et padel.",
+        "description": "Yamatch — Réservation de tournois de volley-ball amateur. D'autres sports à venir prochainement.",
         "publisher": {
             "@type": "Organization",
             "name": "Yamatch"
@@ -193,7 +198,8 @@
         </button>
         <div class="hero-card">
         <div class="hero-card-inner">
-        <h1 class="hero-title"><span class="hero-title-slant">Ton prochain<br class="br-mobile-only"> tournoi t'attend</span></h1>
+        <!-- NOTE COPYWRITING : H1 repositionné volley-only (LOT 1, audit SEO 2026-05-12). Le sous-titre garde une formulation neutre (équipe / match). -->
+        <h1 class="hero-title"><span class="hero-title-slant">Ton prochain tournoi<br class="br-mobile-only"> de volley-ball t'attend</span></h1>
         <p class="hero-subtitle">Compose ton équipe,<br class="br-mobile-only"> il y a match</p>
         <div class="hero-buttons">
             <!-- TODO(yamatch): replace with real App Store URL -->
@@ -351,7 +357,7 @@
              switch persona. Les 3 articles restent visibles en permanence — le
              `aria-live="polite"` sur .quest-steps annonce les changements de texte
              quand on switch de persona. === -->
-    <section class="how-quest" data-persona="participant" aria-labelledby="howQuestTitle">
+    <section class="how-quest" id="how-it-works" data-persona="participant" aria-labelledby="howQuestTitle">
         <div class="how-quest-inner">
             <div class="how-quest-header">
                 <span class="how-quest-eyebrow">Parcours</span>
@@ -370,7 +376,7 @@
                         <span class="quest-step-tag-dot" aria-hidden="true"></span>
                         <span class="quest-step-tag-label"></span>
                     </span>
-                    <h3 class="quest-step-title"></h3>
+                    <h3 class="quest-step-title">Trouve ton tournoi</h3>
                     <p class="quest-step-body"></p>
                 </article>
                 <article class="quest-step">
@@ -379,7 +385,7 @@
                         <span class="quest-step-tag-dot" aria-hidden="true"></span>
                         <span class="quest-step-tag-label"></span>
                     </span>
-                    <h3 class="quest-step-title"></h3>
+                    <h3 class="quest-step-title">Inscris ton équipe</h3>
                     <p class="quest-step-body"></p>
                 </article>
                 <article class="quest-step">
@@ -388,7 +394,7 @@
                         <span class="quest-step-tag-dot" aria-hidden="true"></span>
                         <span class="quest-step-tag-label"></span>
                     </span>
-                    <h3 class="quest-step-title"></h3>
+                    <h3 class="quest-step-title">Joue, suis, gagne</h3>
                     <p class="quest-step-body"></p>
                 </article>
             </div>
@@ -441,7 +447,7 @@
         </div>
     </section>
 
-    <section class="faq" aria-labelledby="faqTitle">
+    <section class="faq" id="faq" aria-labelledby="faqTitle">
         <div class="faq-inner">
             <p class="faq-eyebrow">FAQ</p>
             <h2 class="faq-title" id="faqTitle">Questions fréquentes</h2>
