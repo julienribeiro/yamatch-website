@@ -20,29 +20,39 @@
 
     <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<body class="error-page">
 
-<main class="download-page">
-    <a class="wordmark wordmark-link" href="/" aria-label="Retour à l'accueil Yamatch">
-        <svg viewBox="0 0 1067.73 206.13" aria-hidden="true" focusable="false">
-            <path d="M277.28,3.42h28.94l22.78,99.93h1.42L353.19,3.42h79.15v199.29h-49.25V71.17h-3.42l-26.76,131.54h-46.4l-26.76-131.54h-3.42l-19.3,131.54h-9.97S277.28,3.42,277.28,3.42Z"/>
-            <path d="M480.72,3.42h84.84l42.7,199.29h-64.91l-2.85-20.5h-34.73l-2.85,20.5h-64.91L480.72,3.42ZM539.37,139.5l-14.23-74.02h-3.98l-14.24,74.02h32.46Z"/>
-            <path d="M638.43,52.95h-49.54V3.42h155.45v49.54h-49.54v149.76h-56.37V52.95Z"/>
-            <path d="M746.32,116.16v-26.19c0-60.64,6.83-89.97,77.73-89.97s77.72,27.33,77.72,75.73v12.81h-56.94v-21.35c0-11.67-4.56-18.79-20.78-18.79s-20.78,7.12-20.78,18.79v71.74c0,11.67,4.56,18.79,20.78,18.79s20.78-7.12,20.78-18.79v-22.49h56.94v13.95c0,48.4-6.83,75.73-77.72,75.73s-77.73-29.33-77.73-89.97Z"/>
-            <path d="M1011.35,125.27h-40.43v77.44h-56.37V3.42h56.37v79.15h40.43V3.42h56.37v199.29h-56.37v-77.44Z"/>
-            <path d="M201.99,3.41h84.84l-29.83,199.27h-64.91l4.61-20.5h-34.73l-10.31,20.5h-64.91L201.99,3.41ZM211.1,139.48l12.71-74.02h-3.99l-41.17,74.02h32.45Z"/>
-            <path d="M31.91,115.55L4.49,3.96h62.06l12.66,57.5h3.42L137.15,3.96h62.06l-108.66,111.59-31.91,87.68H0l31.91-87.68Z"/>
-        </svg>
-    </a>
+<a class="wordmark wordmark-link" href="/" aria-label="Retour à l'accueil Yamatch">
+    <svg viewBox="0 0 1067.73 206.13" aria-hidden="true" focusable="false">
+        <path d="M277.28,3.42h28.94l22.78,99.93h1.42L353.19,3.42h79.15v199.29h-49.25V71.17h-3.42l-26.76,131.54h-46.4l-26.76-131.54h-3.42l-19.3,131.54h-9.97S277.28,3.42,277.28,3.42Z"/>
+        <path d="M480.72,3.42h84.84l42.7,199.29h-64.91l-2.85-20.5h-34.73l-2.85,20.5h-64.91L480.72,3.42ZM539.37,139.5l-14.23-74.02h-3.98l-14.24,74.02h32.46Z"/>
+        <path d="M638.43,52.95h-49.54V3.42h155.45v49.54h-49.54v149.76h-56.37V52.95Z"/>
+        <path d="M746.32,116.16v-26.19c0-60.64,6.83-89.97,77.73-89.97s77.72,27.33,77.72,75.73v12.81h-56.94v-21.35c0-11.67-4.56-18.79-20.78-18.79s-20.78,7.12-20.78,18.79v71.74c0,11.67,4.56,18.79,20.78,18.79s20.78-7.12,20.78-18.79v-22.49h56.94v13.95c0,48.4-6.83,75.73-77.72,75.73s-77.73-29.33-77.73-89.97Z"/>
+        <path d="M1011.35,125.27h-40.43v77.44h-56.37V3.42h56.37v79.15h40.43V3.42h56.37v199.29h-56.37v-77.44Z"/>
+        <path d="M201.99,3.41h84.84l-29.83,199.27h-64.91l4.61-20.5h-34.73l-10.31,20.5h-64.91L201.99,3.41ZM211.1,139.48l12.71-74.02h-3.99l-41.17,74.02h32.45Z"/>
+        <path d="M31.91,115.55L4.49,3.96h62.06l12.66,57.5h3.42L137.15,3.96h62.06l-108.66,111.59-31.91,87.68H0l31.91-87.68Z"/>
+    </svg>
+</a>
 
-    <section class="download-hero" aria-labelledby="notFoundTitle">
-        <p class="download-eyebrow">Erreur 404</p>
-        <h1 id="notFoundTitle" class="download-title">Match introuvable</h1>
-        <p class="download-body">
-            On dirait que ce terrain n'existe pas. La page demandée a été
-            déplacée, supprimée, ou n'a peut-être jamais existé.
-        </p>
-        <a class="download-back" href="/">Retour à l'accueil</a>
+<main>
+    <section class="hero" aria-labelledby="errorTitle">
+        <div class="hero-card">
+            <div class="hero-card-inner">
+                <p class="hero-eyebrow">Erreur 404</p>
+                <h1 id="errorTitle" class="hero-title">
+                    <span class="hero-title-slant">Match introuvable</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Cette page n'existe pas ou a été déplacée.<br class="br-mobile-only">
+                    Reviens sur le terrain principal.
+                </p>
+                <div class="hero-buttons">
+                    <a class="btn-glass" href="/" aria-label="Retour à l'accueil Yamatch">
+                        <span class="glass-label">Retour à l'accueil</span>
+                    </a>
+                </div>
+            </div><!-- /.hero-card-inner -->
+        </div><!-- /.hero-card -->
     </section>
 </main>
 

@@ -2989,6 +2989,139 @@ p {
 
 
 /* ==========================================================================
+   16b. ERROR PAGE (404 — website/404.html)
+   --------------------------------------------------------------------------
+   Standalone 404 page that REUSES the hero pattern (lime card + slanted
+   title + glass CTA) but WITHOUT the homepage's sticky / scroll-driven
+   coupling. The 404 page intentionally loads NO JavaScript (statically
+   robust) — every JS-driven CSS variable (`--scroll`, `--card-shrink`,
+   `--hero-flow-collapse`) therefore stays at its `var(.., 0px)` fallback,
+   which is a clean no-op in every consumer rule (verified at lines 432,
+   557, 603).
+
+   Scoping contract: every override below is rooted on `.error-page` so the
+   homepage cascade is untouched. The override pattern mirrors the existing
+   `.download-page` / `.legal-page` recipe (sections 15 and 16) — same
+   wordmark static-positioning reset, same min-height: 100svh wrapper.
+
+   New class introduced by this section: `.hero-eyebrow`. Visual recipe
+   adapted from the existing eyebrow family (.faq-eyebrow line 2130,
+   .download-eyebrow line 2520, .legal-page-eyebrow line 2671): same
+   font-family / size / weight / tracking / case. Color differs: those
+   eyebrows sit on white surfaces and use `--color-medium-gray`; this one
+   sits on the LIME hero card so it uses `--color-text-black` for stronger
+   contrast and to match the on-card title/subtitle color.
+   ========================================================================== */
+
+/* Page shell — full-viewport flex column with the wordmark at the top
+   (now in normal flow, not fixed) and <main> centring the hero card. */
+.error-page {
+    min-height: 100vh;        /* fallback older Safari */
+    min-height: 100svh;       /* iOS 15.4+ : stable face URL bar */
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-light-bg);
+}
+
+.error-page main {
+    /* Grow to fill remaining vertical space; centre the hero block. */
+    flex: 1 1 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(40px, 8vh, 96px) clamp(24px, 6vw, 80px);
+}
+
+/* Wordmark override — same recipe as `.download-page .wordmark`
+   (section 15, line 2498) and `.legal-page .wordmark` (section 16,
+   line 2647). The default wordmark (section 6, line 227) is
+   `position: fixed; translate: -50% -50%; top: calc(--page-pad / 2); left: 50%`
+   so it floats over the lime hero card. On the 404 utility page we want
+   the wordmark to flow ABOVE the centred hero block as a normal logo;
+   resetting position / top / left / translate / transform makes it a
+   plain inline-flex element. The entrance keyframe (`wordmarkEntrance`)
+   still plays — just on a static-positioned element. */
+.error-page .wordmark {
+    position: static;
+    top: auto;
+    left: auto;
+    translate: none;
+    transform: none;
+    align-self: center;
+    margin-top: clamp(24px, 5vh, 56px);
+}
+
+/* Hero override — the homepage `.hero` (section 7.1, line 400) carries
+   `padding: var(--page-pad)` and a negative-margin-bottom collapse driven
+   by `--hero-flow-collapse`. On the 404 page neither is desired: the
+   `.error-page main` wrapper already supplies the centring + breathing
+   room, and there's no carousel below to pull up via flow-collapse. Reset
+   padding + margin-bottom; let `.error-page main` constrain the width. */
+.error-page .hero {
+    width: 100%;
+    max-width: 720px;
+    padding: 0;
+    margin-bottom: 0;
+}
+
+/* Hero-card override — the homepage `.hero-card` (section 7.2, line 468)
+   carries `min-height: calc(100svh - 2 * var(--page-pad))` so it fills
+   the viewport with room for the active phone image to peek below. On
+   the 404 page there is no carousel and no phone, so the giant min-height
+   would produce an absurdly tall lime tile. Reset to `auto` so the card
+   sizes to its content (eyebrow + title + subtitle + CTA). The
+   `cardEntrance` keyframe + `--card-shrink` clip-path stay in effect —
+   harmless no-ops because `--card-shrink` resolves to its `0px` fallback
+   without JS. */
+.error-page .hero-card {
+    min-height: auto;
+}
+
+/* Hero-card-inner override — the homepage `.hero-card-inner` (section
+   7.3, line 564) carries `padding: clamp(48px, 6vw, 88px) clamp(20px,
+   3.2vw, 48px)`. On the 404 the lime card is the ONLY page surface, so
+   we want a touch more horizontal generosity (no carousel below to
+   compete for attention). Slightly larger inline padding; vertical
+   padding inherits the same scale. */
+.error-page .hero-card-inner {
+    padding: clamp(48px, 8vw, 88px) clamp(32px, 6vw, 64px);
+}
+
+/* Hero-buttons override — the homepage hero has TWO buttons (App Store
+   + Google Play); the existing `.hero-buttons` rule (section 7.6, line
+   666) is `justify-content: center` with `gap` and side-by-side flex.
+   On 404 there is exactly one button (Retour à l'accueil). The flex
+   layout already handles a single child correctly — `justify-content:
+   center` simply centres it. No override required for layout, but we
+   explicitly pin `justify-content: center` here so a future change to
+   the homepage rule cannot accidentally shift the 404 button alignment. */
+.error-page .hero-buttons {
+    justify-content: center;
+}
+
+/* Hero-eyebrow — small-caps overline above the title. Visual recipe
+   matches the eyebrow family elsewhere on the site (.faq-eyebrow line
+   2130, .download-eyebrow line 2520, .legal-page-eyebrow line 2671):
+   Inter 600, 12 px, 0.16em tracking, uppercase. Color differs: the
+   other eyebrows live on WHITE surfaces and use `--color-medium-gray`;
+   this one sits on the LIME hero card so it uses `--color-text-black`
+   to match the on-card title/subtitle color and preserve contrast.
+   Centred to align with the centred title/subtitle/buttons stack inside
+   `.hero-card-inner` (which has `align-items: center` — see section 7.3,
+   line 568). */
+.hero-eyebrow {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-text-black);
+    margin: 0;
+    text-align: center;
+}
+
+
+/* ==========================================================================
    17. MOBILE MEDIA QUERIES (consolidated — overrides hero + carousel + quest)
    --------------------------------------------------------------------------
    Single consolidated @media (max-width: 767px) block. Mobile carousel shows
