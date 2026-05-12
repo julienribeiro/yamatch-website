@@ -41,7 +41,7 @@ Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. **One build step: C
 
 `carousel.js` is loaded first in HTML (`<script src="carousel.js" defer>` then `<script src="script.js" defer>`). Sequential `defer` tags guarantee execution order while keeping both scripts non-blocking.
 
-All 8 HTML files reference **`styles.min.css`** (the generated output), not `styles.css`.
+All 9 HTML files reference **`styles.min.css`** (the generated output), not `styles.css`.
 
 ---
 
@@ -104,7 +104,7 @@ No `<link rel="preconnect" href="https://fonts.googleapis.com">` or `fonts.gstat
 
 ### Robots / indexing
 
-- `<meta name="robots" content="index, follow">` **and** `<meta name="googlebot" content="index, follow">` are present on all 7 indexable pages (home + 6 utility sub-pages: cgu, contact, download, politique-confidentialite, politique-annulation-remboursement, suppression-compte).
+- `<meta name="robots" content="index, follow">` **and** `<meta name="googlebot" content="index, follow">` are present on all 8 indexable pages (home + 7 utility sub-pages: mentions-legales, cgu, contact, download, politique-confidentialite, politique-annulation-remboursement, suppression-compte).
 - `website/404.html` retains `<meta name="robots" content="noindex">` and does **not** carry a googlebot tag.
 
 ### Deep-link anchors
@@ -130,11 +130,56 @@ Any CDN script added in the future must include a `sha384` SRI hash and `crossor
 ### JSON-LD blocks (`index.html`)
 
 Three JSON-LD `<script type="application/ld+json">` blocks in `<head>`:
-1. **`Organization`** — name, url, logo, description (volley-only + "d'autres sports à venir"), email, foundingDate.
+1. **`Organization`** — name, legalName (`"Yamatch Corp"`), url, logo, description (volley-only + "d'autres sports à venir"), email, foundingDate (`"2026-05-12"` — ISO full date), taxID (`"104861091"`), vatID (`"FR63104861091"`), address (`PostalAddress`: 47 rue Vivienne, 75002 Paris, FR), sameAs (empty array, populated when social accounts go live).
 2. **`WebSite`** — name, url, inLanguage, publisher.
 3. **`FAQPage`** — 12 `Question` + `Answer` pairs mirroring the visible accordion (kept in sync with HTML copy).
 
 Utility pages that ship a `MobileApplication` JSON-LD block must also follow the volley-only copy rule.
+
+### Utility / legal sub-pages
+
+7 sub-pages live under `website/`:
+
+| Path | Title | `<main>` class | Notes |
+|------|-------|---------------|-------|
+| `cgu/` | CGU | `legal-page` | |
+| `contact/` | Contact | `legal-page` | |
+| `download/` | Télécharger | `legal-page` | |
+| `mentions-legales/` | Mentions légales | `legal-page` | Créée 2026-05-12 — LCEN art. 6-III-1, 12 sections |
+| `politique-annulation-remboursement/` | Annulation & remboursement | `legal-page` | |
+| `politique-confidentialite/` | Politique de confidentialité | `legal-page` | |
+| `suppression-compte/` | Suppression de compte | `legal-page` | |
+
+All 7 carry `<meta name="robots" content="index, follow">` + `<meta name="googlebot" content="index, follow">`. All are excluded from `sitemap.xml` (home URL only).
+
+Each legal page footer includes a `<nav class="legal-page-nav" aria-label="Autres documents légaux">` with a `<ul class="legal-page-nav-list">` listing the other legal pages. Standard nav order: Mentions légales (omitted on its own page), CGU, Politique de confidentialité, Annulation & remboursement, Suppression de compte, Contact.
+
+**Open placeholders (as of 2026-05-12):**
+- `mentions-legales/` § 6 (Domiciliation) — numéro d'agrément préfectoral de Vivienne Domiciliation (`[À COMPLÉTER]`).
+- `mentions-legales/` § 10 (Médiation conso) — nom et coordonnées du médiateur (`[À COMPLÉTER]`).
+- `cgu/`, `contact/`, `politique-annulation-remboursement/` — médiateur de la consommation (`[À DÉSIGNER]`, pre-existing).
+- `mentions-legales/` §1 (Éditeur) and `contact/` (Identité éditeur) — N° TVA `FR63 104 861 091` `(à confirmer)` — clé calculée 63, à valider sur l'avis SIRENE/SIE INSEE une fois la TVA activée pour la SASU.
+
+---
+
+## Société éditrice (Yamatch Corp)
+
+| Champ | Valeur |
+|-------|--------|
+| Dénomination sociale | Yamatch Corp |
+| Forme juridique | SASU (Société par actions simplifiée à associé unique) |
+| Capital social | 1 € (10 actions de 0,10 € intégralement libérées) |
+| Siège social | 47 rue Vivienne, 75002 Paris |
+| RCS | Paris 104 861 091 |
+| SIREN | 104 861 091 |
+| EUID | FR7501.104861091 |
+| N° TVA intracommunautaire | FR63 104 861 091 |
+| Email | contact@appyamatch.fr |
+| Date d'immatriculation | 12 mai 2026 |
+| Représentant légal / Directeur de la publication | Julien Ribeiro, Président |
+| Domiciliataire | Vivienne Domiciliation, RCS Paris 994 567 121, 47 rue Vivienne 75002 Paris |
+
+These identifiers are the authoritative values to use across all legal pages (`mentions-legales/`, `cgu/`, `politique-confidentialite/`, etc.) and in the `Organization` JSON-LD block.
 
 ---
 
