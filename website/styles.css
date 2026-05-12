@@ -3061,17 +3061,39 @@ p {
    6, line 220) so it floats over the lime hero card. On this utility page
    we want the wordmark to flow in the document like a normal logo, sized
    by the `.svg { height: 14px / 20px }` rule already declared in section 6.
-   Resetting `position`, `top`, `left`, `translate`, and the legacy
-   `transform: translateZ(0)` (still inherited from .wordmark line 255)
-   makes the link a plain inline-flex element centered by `.download-page`'s
+   Resetting `position`, `top`, `left`, and the cascaded `translate` so the
+   link is a plain inline-flex element centered by `.download-page`'s
    `align-items: center`. The entrance keyframe (`wordmarkEntrance`) still
-   plays — just on a static-positioned element instead of a fixed one. */
+   plays — just on a static-positioned element instead of a fixed one.
+
+   IMPORTANT — `translate: 0 0` (not `translate: none`) and DELIBERATELY no
+   `transform: none` override (2026-05-12 regression fix). The minifier
+   (lightningcss-cli, targets `>= 0.5%`) STRIPS `translate: none` from
+   the minified output whenever a sibling `transform: none` declaration is
+   present, because for legacy browsers without the individual `translate`
+   property `transform: none` already cancels everything. In our cascade
+   that optimisation is WRONG: the base `.wordmark` (section 6) declares
+   the modern individual `translate: -50% calc(-50% + …)`, so the child
+   rule MUST emit a `translate:` declaration to override it in modern
+   browsers — `transform: none` does NOT cancel the individual
+   `translate` property (they compose, see CSS Transforms Level 2).
+   Workaround that survives minification: emit `translate: 0 0` as the
+   explicit override, and DO NOT declare `transform: none`. The base
+   `.wordmark { transform: translateZ(0) }` (GPU-layer hint) cascades
+   through harmlessly — on a static-positioned element it produces zero
+   visible offset (Z = 0, no perspective). The `wordmarkEntrance`
+   keyframe still animates `transform: translateY(-10px → 0)` cleanly:
+   keyframe transforms override the static `transform: translateZ(0)`
+   during animation, and the entrance fades back to the static value
+   (visually identical to `transform: none`). Tested: `translate: 0 0`
+   IS preserved by lightningcss in the minified output when no
+   `transform: none` is present in the same rule. Symmetric to the
+   `.legal-page .wordmark` rule below — keep them in sync. */
 .download-page .wordmark {
     position: static;
     top: auto;
     left: auto;
-    translate: none;
-    transform: none;
+    translate: 0 0;
 }
 
 .download-hero {
@@ -3213,14 +3235,17 @@ p {
 }
 
 /* Wordmark override — identical to .download-page .wordmark (see section 15
-   commentary). Resets the fixed-positioned floating logo back to in-flow
-   so the layout's flex column places it cleanly above the article. */
+   commentary, including the lightningcss `translate: none` stripping
+   regression and the `translate: 0 0` workaround). Resets the
+   fixed-positioned floating logo back to in-flow so the layout's flex
+   column places it cleanly above the article. Keep this rule symmetric
+   with .download-page .wordmark — the two pages share the exact same
+   recipe. */
 .legal-page .wordmark {
     position: static;
     top: auto;
     left: auto;
-    translate: none;
-    transform: none;
+    translate: 0 0;
 }
 
 /* Article container — 72ch reading column. Wider than the .download-hero
