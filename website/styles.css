@@ -2051,15 +2051,15 @@ p {
     gap: 12px;
     width: clamp(280px, 22vw, 340px);
     padding: 14px 16px;
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.70);
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 22px;
     box-shadow:
         0 8px 32px rgba(16, 24, 40, 0.08),
         0 2px 6px rgba(16, 24, 40, 0.04),
         inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    backdrop-filter: blur(32px) saturate(180%);
 }
 /* iOS-style 36×36 app-icon tile. For Card 1 the inner <img> (favicon)
    fills the tile via object-fit: cover — no lime background bleeds through
@@ -2224,15 +2224,15 @@ p {
     flex-direction: column;
     width: clamp(230px, 18vw, 280px);
     padding: 18px 20px;
-    background: rgba(16, 24, 40, 0.65);
+    background: rgba(16, 24, 40, 0.80);
     color: var(--color-text-white);
     border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 24px;
     box-shadow:
         0 12px 36px rgba(16, 24, 40, 0.18),
         inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
-    -webkit-backdrop-filter: blur(28px) saturate(180%);
-    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(36px) saturate(180%);
+    backdrop-filter: blur(36px) saturate(180%);
 }
 .floating-card__score-eyebrow {
     font-family: var(--font-body);
@@ -2316,14 +2316,14 @@ p {
 .floating-card--team {
     width: clamp(260px, 20vw, 300px);
     padding: 16px;
-    background: rgba(255, 255, 255, 0.55);
+    background: rgba(255, 255, 255, 0.70);
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 20px;
     box-shadow:
         0 6px 24px rgba(16, 24, 40, 0.06),
         inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
-    -webkit-backdrop-filter: blur(24px) saturate(180%);
-    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    backdrop-filter: blur(32px) saturate(180%);
 }
 .floating-card__team-eyebrow {
     font-family: var(--font-body);
@@ -2399,15 +2399,15 @@ p {
 .floating-card--streak {
     width: clamp(180px, 14vw, 220px);
     padding: 16px 18px;
-    background: rgba(215, 255, 0, 0.55);
+    background: rgba(215, 255, 0, 0.70);
     color: var(--color-text-primary);
     border: 1px solid rgba(215, 255, 0, 0.7);
     border-radius: 22px;
     box-shadow:
         0 10px 28px rgba(215, 255, 0, 0.25),
         inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
-    -webkit-backdrop-filter: blur(20px) saturate(200%);
-    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    backdrop-filter: blur(28px) saturate(200%);
 }
 .floating-card__streak-eyebrow {
     font-family: var(--font-body);
@@ -2459,7 +2459,7 @@ p {
     width: 130px;
     height: 130px;
     border-radius: 50%;
-    background: rgba(215, 255, 0, 0.65);
+    background: rgba(215, 255, 0, 0.80);
     border: 1px solid rgba(215, 255, 0, 0.75);
     display: flex;
     align-items: center;
@@ -2468,8 +2468,8 @@ p {
         0 12px 32px rgba(215, 255, 0, 0.3),
         0 4px 12px rgba(16, 24, 40, 0.08),
         inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
-    -webkit-backdrop-filter: blur(20px) saturate(200%);
-    backdrop-filter: blur(20px) saturate(200%);
+    -webkit-backdrop-filter: blur(28px) saturate(200%);
+    backdrop-filter: blur(28px) saturate(200%);
 }
 /* Rotor — the SVG text-on-path layer. `inset: 0` makes it fill the parent
    disc so the SVG viewBox 0 0 130 130 lines up exactly with the disc
