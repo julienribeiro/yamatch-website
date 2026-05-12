@@ -53,7 +53,32 @@
 
 
 /* ==========================================================================
-   1. WEBFONT — Frick 0.3 by Dennis Grauel (OFL — see fonts/OFL.txt)
+   1. WEBFONTS — Frick 0.3 + Inter + Roboto (self-hosted, OFL — see fonts/OFL.txt)
+   --------------------------------------------------------------------------
+   Inter (body) and Roboto (heading) are both self-hosted as **variable fonts**
+   (latin subset only — French copy lives in U+0000-00FF + U+2000-206F + a few
+   currency / arrow / typographic glyphs already covered by the latin subset).
+   Four files only:
+     - fonts/Inter-Variable.woff2          (48 KB, upright, axis wght 100..900)
+     - fonts/Inter-Italic-Variable.woff2   (26 KB, italic,  axis wght 100..900)
+     - fonts/Roboto-Variable.woff2         (37 KB, upright, axis wght 100..900)
+     - fonts/Roboto-Italic-Variable.woff2  (41 KB, italic,  axis wght 100..900)
+   Total ~152 KB for every weight/style we use across the two families:
+     • Inter 400, 500, 500-italic, 600, 700  (body)
+     • Roboto 700 (most headings) + 800 (scoreboard score-value, badge rotor)
+   Migrated from Google Fonts CDN to self-hosted on 2026-05-12 — eliminates a
+   third-party request + DNS lookup + TLS handshake on every page load, and
+   gives us native 800 (was faux-bold from Google's 700-only CDN payload).
+
+   Each face declares a `font-weight` RANGE (100 900) so the browser picks the
+   right axis position from one file. We only request 400–800 via CSS, but
+   declare the full file range so any future heavier/lighter weight is
+   available without re-declaring the face.
+
+   `font-display: swap` matches the Frick face above. The browser shows the
+   fallback (system-ui / -apple-system) immediately, then swaps in Inter /
+   Roboto once loaded — same behaviour as the previous Google Fonts URL
+   (`&display=swap`).
    ========================================================================== */
 @font-face {
     font-family: 'Frick 0.3';
@@ -61,6 +86,38 @@
          url('fonts/Frick0.3-Regular.woff') format('woff');
     font-weight: 400;
     font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('fonts/Inter-Variable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Inter';
+    src: url('fonts/Inter-Italic-Variable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Variable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto';
+    src: url('fonts/Roboto-Italic-Variable.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: italic;
     font-display: swap;
 }
 
@@ -2057,7 +2114,7 @@ p {
    `pointer-events: none` on the base rule (line 1913) guarantees the badge
    cannot intercept clicks on the step 3 body copy beneath it. Comportement
    mobile : la card est masquée par la blanket `display: none !important`
-   (`styles.css:4142`) avec toutes les autres `.floating-card-parallax` —
+   (`styles.css:4199`) avec toutes les autres `.floating-card-parallax` —
    pas d'override mobile spécifique à la card 6. */
 .floating-card-parallax[data-card-id="6"] {
     top: -8%;

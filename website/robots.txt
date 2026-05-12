@@ -1,8 +1,7 @@
 User-agent: *
 Allow: /
 
-# Pages utilitaires noindex (déjà gérées via meta robots) :
-# /download/, /cgu/, /politique-annulation-remboursement/, /politique-confidentialite/,
-# /contact/, /suppression-compte/
+# Pages utilitaires (cgu, contact, politiques, download, suppression-compte)
+# = index, follow depuis l'audit SEO 2026-05-12.
 
 Sitemap: https://appyamatch.fr/sitemap.xml

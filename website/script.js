@@ -22,7 +22,7 @@
         const trigger = e.target.closest('.js-pending-cta');
         if (!trigger) return;
         e.preventDefault();
-        showToast("Bientôt disponible. Laisse-nous ton email pour être prévenu·e.");
+        showToast("Bientôt disponible");
     });
 
     // === Wordmark click-to-top — independent of scroll listener ===
@@ -781,11 +781,12 @@
                     const stepData = data.steps[i];
                     if (!stepData) return;
                     const tagLabel = step.querySelector('.quest-step-tag-label');
-                    const title    = step.querySelector('.quest-step-title');
                     const body     = step.querySelector('.quest-step-body');
                     if (tagLabel) tagLabel.textContent = stepData.tag;
-                    if (title)    title.textContent    = stepData.title;
                     if (body)     body.textContent     = stepData.body;
+                    // .quest-step-title est désormais figé en HTML statique pour
+                    // que Google reçoive un <h3> non-vide (SEO). Le titre ne
+                    // change donc plus quand l'utilisateur switch de persona.
                 });
             };
 
