@@ -1444,7 +1444,10 @@ p {
     letter-spacing: -0.025em;
     color: var(--color-text-primary);
     text-align: center;
-    margin: 0 0 clamp(16px, 2vh, 28px);
+    /* 2026-05-12 — tuned from clamp(16px, 2vh, 28px) to give the title slightly
+       more breathing room above the pill bar without opening a visible gap.
+       Conservative bump: +4px floor, +0.5vh mid, +4px ceiling. */
+    margin: 0 0 clamp(20px, 2.5vh, 32px);
 }
 
 /* --- 10.3 .quest-persona-tabs (segmented pill-bar) ----------------------- */
