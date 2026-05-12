@@ -219,6 +219,26 @@
         </div>
         </div><!-- /.hero-card-inner -->
         </div><!-- /.hero-card -->
+
+        <!-- Carte décorative flottante (purement visuelle, aria-hidden). Positionnée
+             en absolute via CSS, côté droit, juste sous les boutons App Store / Google Play.
+             pointer-events: none pour laisser passer les clics sur les CTAs. -->
+        <div class="floating-card-parallax" data-card-id="1" data-parallax-speed="0.15" aria-hidden="true">
+            <div class="floating-card-inner">
+                <article class="floating-card floating-card--notif">
+                    <span class="floating-card__notif-icon" aria-hidden="true">
+                        <img src="assets/icons/apple-touch-icon.png" alt="" width="32" height="32" loading="lazy" decoding="async">
+                    </span>
+                    <div class="floating-card__notif-content">
+                        <header class="floating-card__notif-head">
+                            <span class="floating-card__notif-brand">Nouveau tournoi disponible</span>
+                            <span class="floating-card__notif-time">il y a 2 min</span>
+                        </header>
+                        <p class="floating-card__notif-body">Volley 4×4 · Parc de la Tête d'Or · à 4,2 km</p>
+                    </div>
+                </article>
+            </div>
+        </div>
     </section>
 
     <!-- === Carrousel d'écrans — pattern hero-carousel (Spendesk-inspired).
@@ -377,41 +397,26 @@
         <!-- Cartes décoratives flottantes (purement visuelles, aria-hidden). Positionnées
              en absolute au-dessus du contenu de la section via CSS, pointer-events: none
              pour laisser passer les clics sur la pill bar et les colonnes. -->
-        <div class="floating-card-parallax" data-card-id="1" data-parallax-speed="0.15" aria-hidden="true">
-            <div class="floating-card-inner">
-                <article class="floating-card floating-card--notif">
-                    <header class="floating-card__notif-head">
-                        <span class="floating-card__notif-icon" aria-hidden="true">🏐</span>
-                        <span class="floating-card__notif-brand">YAMATCH</span>
-                        <span class="floating-card__notif-sep">·</span>
-                        <span class="floating-card__notif-time">il y a 2 min</span>
-                    </header>
-                    <p class="floating-card__notif-title">Nouveau tournoi près de toi !</p>
-                    <p class="floating-card__notif-body">Volley 4×4 · Parc de la Tête d'Or · à 4,2 km</p>
-                </article>
-            </div>
-        </div>
-
         <div class="floating-card-parallax" data-card-id="3" data-parallax-speed="0.08" aria-hidden="true">
             <div class="floating-card-inner">
                 <article class="floating-card floating-card--team">
-                    <p class="floating-card__team-eyebrow">TON ÉQUIPE · 4/4</p>
+                    <p class="floating-card__team-eyebrow">MON ÉQUIPE · 4/4</p>
                     <div class="floating-card__team-grid">
                         <div class="floating-card__team-member">
-                            <img class="floating-card__team-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lea" alt="" loading="lazy" decoding="async" width="52" height="52">
+                            <img class="floating-card__team-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=104&h=104&fit=crop&crop=faces&auto=format" alt="" loading="lazy" decoding="async" width="52" height="52">
                             <span class="floating-card__team-caption">Léa</span>
                         </div>
                         <div class="floating-card__team-member">
-                            <img class="floating-card__team-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tom" alt="" loading="lazy" decoding="async" width="52" height="52">
+                            <img class="floating-card__team-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=104&h=104&fit=crop&crop=faces&auto=format" alt="" loading="lazy" decoding="async" width="52" height="52">
                             <span class="floating-card__team-caption">Tom</span>
                         </div>
                         <div class="floating-card__team-member">
-                            <img class="floating-card__team-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sami" alt="" loading="lazy" decoding="async" width="52" height="52">
+                            <img class="floating-card__team-avatar" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=104&h=104&fit=crop&crop=faces&auto=format" alt="" loading="lazy" decoding="async" width="52" height="52">
                             <span class="floating-card__team-caption">Sami</span>
                         </div>
                         <div class="floating-card__team-member">
                             <span class="floating-card__team-avatar floating-card__team-avatar--me">MOI</span>
-                            <span class="floating-card__team-caption">Toi</span>
+                            <span class="floating-card__team-caption">Moi</span>
                         </div>
                     </div>
                 </article>

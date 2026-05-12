@@ -1943,9 +1943,27 @@ p {
    Rotation values are `data-card-id`-keyed so JS doesn't need to mirror
    them — the design tilt is purely CSS, JS only authors the parallax Y. */
 
+/* Card 1 — now hosted by `.hero` (moved 2026-05-12). Sits on the right
+   side of the hero, slightly BELOW the App Store / Google Play CTAs row.
+   `.hero` is `position: relative` (line 630) so it serves as the
+   containing block. `right: 2%` keeps the bleed minimal (the card stays
+   mostly inside the viewport, only its right edge peeks past the
+   `--page-pad` gutter). `bottom: 8%` places it just below the CTA row:
+   the hero is a flex column with `padding-block: var(--page-pad)`, and
+   the CTAs are the last in-flow child of `.hero-card-inner`, so 8%
+   from the hero's bottom lands the card a few rems below the CTAs row.
+   The rotate is preserved from the previous placement so the card
+   keeps its identity tilt. */
+.floating-card-parallax[data-card-id="1"] { top: auto; bottom: 8%; right: 2%; left: auto; rotate: -8deg; }
 /* Cards inside `.how-quest` (host: position: relative + overflow-x: clip via §10.1) */
-.floating-card-parallax[data-card-id="1"] { top: 10%;  left: -3%;  rotate: -8deg; }  /* notif iOS — haut-gauche */
-.floating-card-parallax[data-card-id="3"] { top: 35%;  right: -5%; rotate: 3deg; }   /* team grid — droite-milieu */
+/* Card 3 — moved up + pulled in (2026-05-12). Previous placement
+   (`top: 35%; right: -5%`) put it mid-section and bled too far past the
+   right edge. The user wants it near the `.how-quest-eyebrow` "PARCOURS"
+   row, so `top: 6%` anchors it just below the section's `padding-block`
+   top (the section's editorial header starts there). `right: 3%` keeps
+   the bleed minimal — the card sits mostly inside the viewport with
+   just its right edge peeking past the gutter. */
+.floating-card-parallax[data-card-id="3"] { top: 6%;   right: 3%;  left: auto; rotate: 3deg; }   /* team grid — haut-droite */
 .floating-card-parallax[data-card-id="5"] { bottom: 8%; left: 6%;  rotate: 10deg; }  /* streak lime — bas-gauche */
 
 /* Cards inside `.faq` (host: position: relative + overflow-x: clip via §11) */
@@ -2009,9 +2027,21 @@ p {
    ~1018 / ~2580) already covers browsers without backdrop-filter support
    by bumping opacity — same defensive pattern applied universally to the
    project's glass surfaces. */
+/* Card 1 default layout: modern iOS notification.
+   Shell is now a 2-column flex row:
+     - [icon 36×36 with the actual favicon] -- gap 12px --
+     - [content column: header (brand title + timestamp right-aligned) + body]
+   The Card 4 variant (.floating-card--notif-compact) overrides this to keep
+   its previous block-layout (icon+brand inline as eyebrow, then bold title,
+   then body). The base rules below target the Card 1 markup; the compact
+   modifier block at the bottom remaps every override Card 4 needs. */
 .floating-card--notif {
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* icon vertically centred on the 2 text rows */
+    gap: 12px;
     width: clamp(280px, 22vw, 340px);
-    padding: 16px 18px;
+    padding: 14px 16px;
     background: rgba(255, 255, 255, 0.55);
     border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 22px;
@@ -2022,38 +2052,61 @@ p {
     -webkit-backdrop-filter: blur(24px) saturate(180%);
     backdrop-filter: blur(24px) saturate(180%);
 }
+/* iOS-style 36×36 app-icon tile. For Card 1 the inner <img> (favicon)
+   fills the tile via object-fit: cover — no lime background bleeds through
+   so the favicon reads as the actual app icon. For Card 4 (no <img>, just
+   the ⏰ emoji), the compact override below restores the lime fill + flex
+   centering. */
+.floating-card__notif-icon {
+    flex: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px; /* iOS app icon radius approx */
+    overflow: hidden;
+    display: block;
+    /* Reset font-size that was previously needed for the ⏰ emoji — Card 4
+       brings it back via .floating-card--notif-compact below. */
+    line-height: 1;
+}
+.floating-card__notif-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+/* Right-hand column: stacks the header row (title + time) over the body. */
+.floating-card__notif-content {
+    flex: 1;
+    min-width: 0; /* allow text ellipsis inside */
+}
 .floating-card__notif-head {
     display: flex;
     flex-direction: row;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 8px;
-}
-/* Lime square app-icon — 32×32 token-sized; emoji centred via flex. */
-.floating-card__notif-icon {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--color-accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    line-height: 1;
-    flex-shrink: 0;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 2px;
 }
 .floating-card__notif-brand {
+    flex: 1;
+    min-width: 0;
     font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    text-transform: none;
     color: var(--color-text-primary);
+    line-height: 1.3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .floating-card__notif-sep,
 .floating-card__notif-time {
+    margin-left: auto;
+    flex: none;
     font-family: var(--font-body);
-    font-size: 12px;
+    font-size: 11px;
+    font-weight: 500;
     color: var(--color-medium-gray);
 }
 .floating-card__notif-title {
@@ -2068,26 +2121,67 @@ p {
     font-family: var(--font-body);
     font-size: 13px;
     color: var(--color-medium-gray);
-    line-height: 1.4;
+    line-height: 1.35;
     margin: 0;
+    /* Clamp to 2 lines max so the card stays compact regardless of copy. */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-/* Card 4 variant — same notif chrome, slightly tightened metrics. The
-   modifier sits on the SAME element as `.floating-card--notif` so the
-   base styles cascade through and we only override the deltas. */
+/* Card 4 variant — reverts the base flex layout back to the original
+   block flow (icon+brand inline header, then bold title, then body).
+   The modifier sits on the SAME element as `.floating-card--notif` so
+   we override every base rule the new Card 1 layout introduced. */
 .floating-card--notif-compact {
+    display: block;            /* annule le flex row de la base */
     width: clamp(240px, 19vw, 280px);
     padding: 14px 16px;
 }
+.floating-card--notif-compact .floating-card__notif-head {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+/* Card 4 has no <img> inside the icon — it's the ⏰ emoji directly. Restore
+   the previous lime-tile look + 32×32 size. */
+.floating-card--notif-compact .floating-card__notif-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--color-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+    overflow: visible;
+}
 .floating-card--notif-compact .floating-card__notif-brand {
+    flex: 0 0 auto;
     font-size: 11px;
+    font-weight: 700;
     letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    overflow: visible;
+    white-space: normal;
+    text-overflow: clip;
+    min-width: 0;
 }
 .floating-card--notif-compact .floating-card__notif-title {
     font-size: 14px;
 }
 .floating-card--notif-compact .floating-card__notif-body {
     font-size: 12px;
+    /* Card 4 copy is short — no 2-line clamp needed. */
+    display: block;
+    overflow: visible;
 }
 
 
@@ -4018,8 +4112,14 @@ p {
     .floating-card-parallax[data-card-id="5"] {
         display: none;
     }
-    /* Card hosted by `.how-quest` on mobile */
-    .floating-card-parallax[data-card-id="1"] { top: 6%;   left: -10%; }
+    /* Card 1 hosted by `.hero` on mobile (2026-05-12). On narrow viewports the
+       hero is vertically taller (CTAs stack, lime card grows to ~85svh) so the
+       card slips lower than on desktop. `right: -6%` lets it bleed slightly
+       more off the right edge than desktop — the hero is full-bleed on mobile
+       and the card would otherwise crowd the CTAs. Vertical anchor stays on
+       `bottom` so the card stays near the floor of the hero regardless of
+       the dynamic `--mobile-hero-card-margin-block` of the lime card above. */
+    .floating-card-parallax[data-card-id="1"] { top: auto; bottom: 6%; right: -6%; left: auto; }
     /* Cards hosted by `.faq` on mobile */
     .floating-card-parallax[data-card-id="2"] { top: 8%;   right: -8%; }
     .floating-card-parallax[data-card-id="4"] { top: 50%;  left: -12%; }
