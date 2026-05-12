@@ -1388,41 +1388,33 @@ p {
 }
 
 /* --- 10.2 .how-quest-header (eyebrow + title + persona pill-bar) --------- */
-/* Centered column above the 3-col triplet. `gap` controls the vertical
-   rhythm INSIDE the header (eyebrow → title → tabs). `margin-bottom` is
-   the separation between the header block and the first row of the
-   triplet — sized clamp(48px, 7vh, 80px) for an editorial breath that
-   resolves to ~48px on short viewports and ~80px on 1200px-tall screens.
-   No `flex: none` needed here (parent .how-quest-inner is a plain block,
-   not a flex parent). */
+/* Centered column above the 3-col triplet. The internal vertical rhythm
+   (eyebrow → title → tabs) is controlled by per-item `margin-bottom`
+   declarations (mirrors the FAQ pattern where `.faq-eyebrow` and
+   `.faq-title` each carry their own margin-bottom). The flex container
+   stays in column mode purely for `align-items: center` — `gap` is
+   intentionally NOT used here because it would stack on top of the item
+   margins and break the 1:1 parity with FAQ spacing. `margin-bottom` on
+   the header itself is the separation between the header block and the
+   first row of the triplet — sized clamp(48px, 7vh, 80px) for an
+   editorial breath that resolves to ~48px on short viewports and ~80px
+   on 1200px-tall screens. No `flex: none` needed here (parent
+   .how-quest-inner is a plain block, not a flex parent). */
 .how-quest-header {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: clamp(16px, 2vh, 28px);
     margin-bottom: clamp(48px, 7vh, 80px);
 }
 
 /* Eyebrow above the H2 — typography AND `margin-bottom` cloned 1:1 from
-   .faq-eyebrow (line ~1625) so the two in-page section eyebrows read as
-   identical siblings at every viewport (user request 2026-05-11: identical
-   spacing eyebrow→title in both sections). Note: this margin-bottom STACKS
-   on top of the parent `.how-quest-header`'s flex `gap`, so the visible
-   eyebrow→title distance in this section is `gap + 16px` while the FAQ's
-   is just `16px` — the literal margin-bottom values are identical, the
-   composed visual gap is not (the gap delta is intentional, controlled by
-   the header's flex `gap` token shared with the persona-tabs spacing
-   below). Color is the same muted gray used by the FAQ eyebrow.
-
-   PREMIUM UPGRADE 2026-05-11 (iteration 2): tiny lime dot prefix via
-   ::before so the eyebrow reads as a sport-tagged section opener rather
-   than a generic muted label (matches the "parcours premium / plan de
-   match" direction). Inline-flex on the eyebrow itself centers the dot
-   + label as a unit; the dot's vertical-align is handled by the flex
-   `align-items: center` so it tracks the cap-height of the 12 px label
-   precisely. Dot is 6 px lime with a hairline inset to read as a
-   refined "lit pixel" rather than a flat circle. */
+   .faq-eyebrow (line ~1816) so the two in-page section eyebrows read as
+   identical siblings at every viewport (user request 2026-05-12: the
+   visible eyebrow→title distance must match the FAQ's exactly). Color is
+   the same muted gray used by the FAQ eyebrow. The previous lime
+   `::before` dot has been removed (user request 2026-05-12) to keep the
+   eyebrow as a pure muted-label opener, identical in pattern to .faq-eyebrow. */
 .how-quest-eyebrow {
     font-family: var(--font-body);
     font-size: 12px;
@@ -1432,36 +1424,19 @@ p {
     color: var(--color-medium-gray);
     text-align: center;
     margin: 0 0 16px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.how-quest-eyebrow::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background-color: var(--color-accent);
-    /* Hairline inset highlight + tight halo. The halo is small enough
-       (4 px spread, 24 % alpha) to read as a refined accent rather than
-       a glow — keeps the épuré contract intact. */
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.45),
-        0 0 0 2px rgba(215, 255, 0, 0.12);
-    flex: none;
 }
 
 .how-quest-title {
-    /* Same family + weight + tracking + size as .faq-title (line ~1499) so
+    /* Same family + weight + tracking + size as .faq-title (line ~1826) so
        the two in-page H2 headings read as siblings — explicit re-use of the
        FAQ clamp ensures any future tweak to the FAQ stays in sync visually
        (the mobile override below also mirrors .faq-title's mobile clamp).
        PREMIUM UPGRADE 2026-05-11 (iteration 2): tightened tracking from
        -0.02em to -0.025em for a slightly more sport-bold display feel
        at the title scale. Weight stays 700 (NOT 800) per the
-       feedback_website_aesthetic memory: "weight 600–700 (NOT 900)". */
+       feedback_website_aesthetic memory: "weight 600–700 (NOT 900)".
+       `margin-bottom` controls the title→tabs spacing (see header rule
+       above for why we use per-item margins instead of a flex `gap`). */
     font-family: var(--font-heading);
     font-weight: 700;
     font-size: clamp(2rem, 4.5vw, 3rem);
@@ -1469,7 +1444,7 @@ p {
     letter-spacing: -0.025em;
     color: var(--color-text-primary);
     text-align: center;
-    margin: 0;
+    margin: 0 0 clamp(16px, 2vh, 28px);
 }
 
 /* --- 10.3 .quest-persona-tabs (segmented pill-bar) ----------------------- */
@@ -1742,10 +1717,12 @@ p {
 }
 
 /* Lime dot prefix inside the tag. Deliberately NO halo (box-shadow) —
-   the `.how-quest-eyebrow::before` (above the section title) already
-   carries a haloed lime dot; repeating the halo three times under the
-   eyebrow would dilute the accent. The tag dot here is a quieter
-   "label marker" affordance — 5px solid lime, no extras. */
+   kept as a quiet "label marker" affordance (5px solid lime, no extras)
+   so the three step tags read as a calm row of repeated markers, not a
+   triplicated accent burst. (Historical note: a haloed lime dot used to
+   sit on `.how-quest-eyebrow::before` above the section title; that dot
+   was removed 2026-05-12, which leaves these tag dots as the only lime
+   accents in the section header zone.) */
 .quest-step-tag-dot {
     width: 5px;
     height: 5px;
@@ -3199,9 +3176,13 @@ p {
         padding-inline: var(--mobile-hero-card-margin);
     }
 
-    .how-quest-header {
-        gap: clamp(12px, 2vh, 20px);
-    }
+    /* NOTE: no mobile override on .how-quest-header anymore — the previous
+       `gap: clamp(12px, 2vh, 20px)` was removed 2026-05-12 because the
+       header no longer uses a flex `gap` (the internal vertical rhythm is
+       carried entirely by per-item `margin-bottom` on `.how-quest-eyebrow`
+       and `.how-quest-title`, mirroring the FAQ pattern). Mobile inherits
+       those margins from the base rules — eyebrow→title = 16px (matches
+       .faq-eyebrow exactly), title→tabs = clamp(16px, 2vh, 28px). */
 
     .how-quest-title {
         /* Match the mobile .faq-title clamp (declared below this block)
