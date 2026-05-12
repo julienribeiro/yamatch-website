@@ -1679,10 +1679,36 @@
     const firstSpan = track.querySelector('span');
     if (!firstSpan) return;
 
+    // Mobile/tablet gate — the centering offset is a mobile-only feature.
+    // On desktop the ticker keeps its standard left-aligned start (span 1 at
+    // the viewport's left edge, the natural ticker behaviour). Same media
+    // query family used elsewhere in this file (cursor trail line 1529-1531,
+    // waves animation line 379-380) — `(max-width: 767px)` covers narrow
+    // viewports and `(pointer: coarse)` covers touch tablets that may have
+    // a viewport wider than 767px (iPad portrait = 768px). Stored as a
+    // MediaQueryList so we can attach `change` listeners below — those fire
+    // exactly once at the breakpoint crossing, with no debounce, while the
+    // resize listener catches in-bucket dimension changes.
+    const mobileTabletMQL = window.matchMedia('(max-width: 767px), (pointer: coarse)');
+
     // Measure → compute → write. Pure function: read DOM, write one CSS var,
     // no internal state, no rAF loop. Idempotent — calling it twice in a row
     // with no layout change writes the same value.
+    //
+    // Re-checks the media query on every call so a window-resize drag that
+    // crosses the 767px boundary mid-session toggles the offset on/off
+    // correctly. The desktop branch writes `0px` explicitly (rather than
+    // leaving a stale value) so a mobile→desktop transition resets cleanly.
     const updateOffset = () => {
+        if (!mobileTabletMQL.matches) {
+            // Desktop / fine-pointer path: explicit reset to 0 so a
+            // tablet→desktop resize doesn't leave a stale offset on the
+            // element. The keyframe then runs `0 → -50%` — the standard
+            // left-aligned ticker behaviour.
+            track.style.setProperty('--ticker-start-offset', '0px');
+            return;
+        }
+
         // `getBoundingClientRect().width` returns the rendered (post-layout)
         // sub-pixel width of the span — accurate to whatever the browser
         // actually painted, which is what we need to centre visually. Reading
@@ -1726,5 +1752,17 @@
             updateOffset();
         }, 150);
     }, { passive: true });
+
+    // MediaQueryList change listener — fires exactly once at each breakpoint
+    // crossing (mobile↔desktop). Complements the resize listener: covers
+    // pointer-type changes that don't necessarily produce a resize event
+    // (e.g. plugging in a mouse on a tablet), and reacts immediately at the
+    // 767px boundary without waiting for the 150ms resize debounce.
+    if (typeof mobileTabletMQL.addEventListener === 'function') {
+        mobileTabletMQL.addEventListener('change', updateOffset);
+    } else if (typeof mobileTabletMQL.addListener === 'function') {
+        // Safari < 14 fallback (deprecated API, still ships in older iOS).
+        mobileTabletMQL.addListener(updateOffset);
+    }
 })();
 
