@@ -121,11 +121,19 @@
        script.js (page-scroll-progress block) on every rAF tick and is already
        clamped to [0, 1] in JS — no CSS clamp needed. The `var(...)` fallback of
        0 keeps the wordmark at its rest position when JS is absent / not yet run
-       / reduced-motion path skips the writer. -18px chosen as a "composed
-       editorial" magnitude: large enough to read as intentional motion, small
-       enough that the wordmark stays well clear of the launch-ticker bottom
-       edge above (--launch-ticker-height = 30px). */
-    --wordmark-scroll-lift: -18px;
+       / reduced-motion path skips the writer. -32px chosen (2026-05-12, user
+       request to "réduire l'espace entre le logo et la bordure de l'écran"):
+       larger magnitude reads as more intentional and brings the glyphs closer
+       to the viewport top edge once the user is in the carousel zone. No ticker
+       overlap risk: the ticker (`position: relative`, 30px tall, §4.5) lives in
+       the document flow at viewport y = 0..30px AT scroll = 0, but by the time
+       --wordmark-scroll-progress climbs above ~0 the user has already scrolled
+       far enough (scrollY ≈ vh at progress = 0, ≈ 0.4vh at progress = 1) that
+       the ticker is no longer in the viewport. The fixed wordmark only moves
+       UP via this lift; since the lift in px is always << current scrollY along
+       the entire progress curve, the wordmark cannot reach the (now off-screen)
+       ticker plane. */
+    --wordmark-scroll-lift: -32px;
 
     /* Height of the launch announcement ticker that runs across the very top of
        the document (.launch-ticker, section 4.5 below). Consumed by:
@@ -435,14 +443,22 @@ p {
        lift. `--wordmark-scroll-progress` (0..1, written by script.js per rAF
        tick on `documentElement`, inherited here) multiplies `--wordmark-scroll-lift`
        (negative px magnitude declared in `:root`, section 2) so the wordmark
-       rises by `progress * |--wordmark-scroll-lift|` px as the user scrolls into
-       the carousel zone. Fallback `0` on the progress var keeps the wordmark at
-       rest position (translate: -50% -50%) when JS hasn't run yet, the writer
-       is skipped (reduced-motion / mobile paths), or the variable is otherwise
-       undefined. The Y component is a single `calc` so the individual `translate`
-       property still composes cleanly with the entrance keyframe's
-       `transform: translateY(...)` (transforms apply on top of `translate`). */
-    translate: -50% calc(-50% + var(--wordmark-scroll-progress, 0) * var(--wordmark-scroll-lift));
+       rises by up to `|--wordmark-scroll-lift|` px as the user scrolls into the
+       carousel zone. `min(progress * 3, 1)` accelerates completion 3× and clamps
+       to 1 (2026-05-12, user request: "le logo doit trouver sa place finale plus
+       rapidement au scroll"): the wordmark reaches its full lift at progress =
+       0.33 — i.e. after roughly the first third of the hero-→carousel scroll
+       zone — then stays pinned at the max for the remaining two-thirds. Effect:
+       the logo settles quickly into its scrolled position and stays there,
+       rather than crawling toward it across the entire hero zone. `min()` is
+       CSS-native, no JS branching needed. Fallback `0` on the progress var
+       keeps the wordmark at rest position (translate: -50% -50%) when JS hasn't
+       run yet, the writer is skipped (reduced-motion / mobile paths), or the
+       variable is otherwise undefined. The Y component is a single `calc` so
+       the individual `translate` property still composes cleanly with the
+       entrance keyframe's `transform: translateY(...)` (transforms apply on top
+       of `translate`). */
+    translate: -50% calc(-50% + min(var(--wordmark-scroll-progress, 0) * 3, 1) * var(--wordmark-scroll-lift));
     z-index: 50;
     display: inline-flex;
     align-items: center;
