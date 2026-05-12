@@ -111,20 +111,21 @@
        clamp(24px, 4vh, 56px): 24px floor on tiny viewports, 56px ceiling on 4K. */
     --desired-button-gap: clamp(24px, 4vh, 56px);
 
-    /* Height of the fixed launch announcement ticker that runs across the very
-       top of the page (.launch-ticker, section 4.5 below). Consumed by:
+    /* Height of the launch announcement ticker that runs across the very top of
+       the document (.launch-ticker, section 4.5 below). Consumed by:
          - .launch-ticker { height }                  → the ticker's own box height
-         - .wordmark { top }                          → pushes the fixed wordmark BELOW the ticker
-         - .hero { padding-block-start }              → reserves vertical room so the lime card
-                                                        is not covered by the fixed ticker
-       Kept as a fixed 30 px (no clamp) for predictable layout maths in the three
-       calc() consumers above. The token must remain defined even on pages where
-       the .launch-ticker DOM node is absent (legal / download / 404) — the
-       wordmark `top` calc reads it unconditionally. On those utility pages the
-       wordmark is overridden to `position: static` (sections 15 / 16 / §error-page),
-       so the (now larger) `top` value is dead-code and the ticker reservation in
-       `.hero` is moot since the utility pages never render `.hero` with this rule
-       (or override it: see `.error-page .hero`, line ~3060). */
+         - .wordmark { top }                          → pushes the fixed wordmark BELOW
+                                                        the ticker AT scroll = 0 (desktop:
+                                                        line 367; mobile: section 17)
+       Since 2026-05-12 the ticker is `position: relative` (in document flow), so
+       `.hero { padding-block-start }` no longer compensates for it (the ticker
+       pushes `.hero` down naturally by its own height — no reservation needed).
+       Kept as a fixed 30 px (no clamp) for predictable layout maths in the two
+       remaining calc() consumers above. The token must remain defined even on
+       pages where the .launch-ticker DOM node is absent (legal / download / 404)
+       — the wordmark `top` calc reads it unconditionally. On those utility pages
+       the wordmark is overridden to `position: static` (sections 15 / 16 /
+       §error-page), so the (now larger) `top` value is dead-code. */
     --launch-ticker-height: 30px;
 }
 
@@ -221,18 +222,23 @@ p {
 
 
 /* ==========================================================================
-   4.5 LAUNCH TICKER (fixed announcement bar, top of viewport)
+   4.5 LAUNCH TICKER (in-flow announcement bar, top of document)
    --------------------------------------------------------------------------
-   Lime announcement strip pinned to the top of every viewport. A duplicated
-   set of 4 spans inside .launch-ticker__track is translated horizontally
-   (-50%) by the `launchTickerScroll` keyframe so the row appears to scroll
-   continuously without visible seams (the second half is identical to the
-   first, so the loop wraps invisibly).
+   Lime announcement strip at the top of the document, in normal flow (NOT
+   `position: fixed` — see history note below). A duplicated set of 4 spans
+   inside .launch-ticker__track is translated horizontally (-50%) by the
+   `launchTickerScroll` keyframe so the row appears to scroll continuously
+   without visible seams (the second half is identical to the first, so the
+   loop wraps invisibly).
 
    Stacking: z-index 80 sits ABOVE the wordmark (z-index 50, §6) so the
-   wordmark slides in BELOW the ticker, and BELOW .skip-link / .toast
-   (z-index 1000, §4 / §13) and the cursor trail / emoji (z-index 9998 / 9999,
-   §18) — the cursor companion intentionally floats over the ticker.
+   wordmark slides in BELOW the ticker at scroll=0, and BELOW .skip-link /
+   .toast (z-index 1000, §4 / §13) and the cursor trail / emoji
+   (z-index 9998 / 9999, §18) — the cursor companion intentionally floats
+   over the ticker. The z-index is preserved (even though the ticker is no
+   longer fixed) so that the entrance animation of the wordmark — which
+   briefly translates downward through the ticker's plane — never paints
+   above the ticker.
 
    The .launch-ticker__sr <p> is visually hidden but exposed to assistive tech
    (the .launch-ticker__track itself is aria-hidden because the duplicated
@@ -240,11 +246,30 @@ p {
 
    Reduced motion override lives in §19 — the animation is killed and a single
    centred copy of the message is shown statically.
+
+   _2026-05-12: `position: fixed; top: 0` → `position: relative` (in flow).
+   The ticker now scrolls AWAY with the page rather than staying pinned at the
+   viewport top forever. `.hero { padding-block-start: var(--page-pad) }` no
+   longer adds `--launch-ticker-height` because the ticker's in-flow height
+   already pushes `.hero` down naturally; mobile `.wordmark { top }` was
+   bumped by `--launch-ticker-height` so the wordmark sits in the white strip
+   BELOW the ticker at scroll=0 with balanced top/bottom gap._
    ========================================================================== */
 .launch-ticker {
-    position: fixed;
-    top: 0;
-    left: 0;
+    /* `position: relative` (in normal flow, NOT `fixed`): the ticker sits at the
+       top of the document and scrolls AWAY with the page — once the user has
+       scrolled past it, it is gone for the rest of the session. The wordmark
+       (still `position: fixed`, §6) takes over as the only permanent top-of-
+       viewport UI after the ticker scrolls out. Previous `position: fixed; top: 0`
+       kept the ticker permanently pinned, which was retired 2026-05-12 on user
+       request: the announcement should be a one-time discovery, not a perpetual
+       banner. `--launch-ticker-height` is still consumed by `.wordmark { top }`
+       (§6) to offset the wordmark below the ticker AT scroll=0 — once the user
+       scrolls past, the fixed wordmark naturally appears to rise toward the
+       viewport top because the ticker is no longer underneath. Width is no
+       longer 100% (it's a block in flow and defaults to full width of its
+       container, here `<body>`). */
+    position: relative;
     z-index: 80;
     width: 100%;
     height: var(--launch-ticker-height);
@@ -295,9 +320,15 @@ p {
 .launch-ticker__track span {
     flex: 0 0 auto;
     font-family: var(--font-body);
-    /* Reduced ~15% (was clamp(11px, 1.4vw, 13px)) — a smaller body size
-       feels more discreet against the lime background. */
-    font-size: clamp(9.5px, 1.1vw, 11px);
+    /* Fixed 14 px (was clamp(9.5px, 1.1vw, 11px)) — the previous clamp
+       read as too timid on every viewport. A fixed 14 px keeps the bar
+       discreet but legible at arm's length on desktop and on a held phone.
+       Vertical fit: 14 px line-height-1 in a 30 px box (--launch-ticker-height)
+       leaves ~8 px of lime above and below the glyphs — comfortable, no
+       clipping. Holding `--launch-ticker-height: 30px` keeps the wordmark
+       vertical-centring calc untouched on desktop (.wordmark top, §6) and
+       on mobile (§17). */
+    font-size: 14px;
     /* Regular weight (was 800) — the mixed-case typography (only the Y
        of Yamatch and the L of Les capitalised, per HTML) already reads
        as restrained; 400 keeps the bar quiet above the hero. */
@@ -356,11 +387,19 @@ p {
     /* `fixed` instead of `absolute` so the logo stays at the top of the viewport for the entire scroll,
        not just the hero section. Top/left now resolve against the viewport, not against `.hero`. */
     position: fixed;
-    /* Anchor the wordmark in the white strip BELOW the launch ticker (§4.5). The
-       ticker is fixed `top: 0` with `height: var(--launch-ticker-height)`, so
-       the wordmark's vertical centre at `--launch-ticker-height + --page-pad/2`
-       sits halfway between the ticker's bottom edge and the lime card's top
-       edge — preserving the original "centred in the white strip" invariant.
+    /* Anchor the wordmark in the white strip BELOW the launch ticker (§4.5) AT
+       scroll = 0. The ticker sits in the document flow at viewport y = 0..
+       --launch-ticker-height (since 2026-05-12 it is `position: relative`),
+       and `.hero { padding-block: var(--page-pad) }` reserves another
+       `--page-pad` of white space before the lime card — so the lime card's top
+       edge is at viewport y = `--launch-ticker-height + --page-pad`. The
+       wordmark's vertical centre at `--launch-ticker-height + --page-pad/2`
+       therefore lands exactly halfway between the ticker's bottom edge and the
+       lime card's top edge — equal optical gap above and below the wordmark
+       glyphs at rest. Once the user scrolls past the ticker, the fixed wordmark
+       stays where the viewport says (it does NOT track the now-gone ticker);
+       the JS-driven `.is-condensed` / `.is-hidden` classes (§6 below) take over
+       its scroll-aware behaviour.
        Inert on the legal/download/error utility pages: those override
        `.wordmark { position: static; top: auto }` (sections 15 / 16 / §error),
        so this `top` value is ignored when the ticker isn't in the DOM. */
@@ -544,16 +583,17 @@ p {
        Horizontal value (`--page-pad`) is the shared gutter applied to every top-level section, so all
        sections align to the same left/right edge. Vertical padding mirrors it so the hero keeps its
        symmetric breathing room around the card.
-       Top padding is bumped by `--launch-ticker-height` (§4.5) so the fixed
-       ticker bar at top: 0 does NOT cover the lime card's top edge — the white
-       strip below the ticker keeps its full `--page-pad` height (the wordmark
-       still sits half-way through that strip; see §6 `.wordmark { top }`).
-       Bottom padding is unchanged so the lime card → carousel rhythm is preserved.
-       The "equal margins on all four sides" hero invariant
-       (memory feedback_website_hero_pattern.md) is preserved: side and bottom
-       margins remain `--page-pad`; the top margin grows by exactly the ticker
-       height to compensate for the ticker's intrusion. */
-    padding-block: calc(var(--page-pad) + var(--launch-ticker-height)) var(--page-pad);
+       Since 2026-05-12 the launch ticker is no longer `position: fixed` (§4.5):
+       it sits in the document flow ABOVE `.hero`, so its height already pushes
+       the hero down by `--launch-ticker-height` naturally. The previous extra
+       `+ var(--launch-ticker-height)` in this calc was a compensation for the
+       fixed ticker overlaying the viewport top; that compensation would now
+       double-count the offset (ticker pushes hero down AND hero adds its own
+       reservation = `2 × ticker_height` of unwanted whitespace above the lime
+       card). Reverted to the original symmetric `--page-pad` on both block
+       edges. The "equal margins on all four sides" hero invariant
+       (memory feedback_website_hero_pattern.md) is restored 1:1. */
+    padding-block: var(--page-pad);
     padding-inline: var(--page-pad);
     background-color: var(--color-light-bg);
     /* Flow-axis compensation for the `--card-shrink` visual collapse.
@@ -3423,20 +3463,27 @@ p {
         clip-path: inset(0 0 var(--card-shrink, 0px) 0 round clamp(24px, 7vw, 32px));
     }
 
-    /* Vertically centre the wordmark in the white strip between the viewport
-       top and the lime card's top edge. The strip height equals the card's
-       TOP margin, which is the block-axis token (--mobile-hero-card-margin-block);
-       the wordmark's centre sits at half of that. `translate: -50% -50%`
-       (already declared in the desktop rule, section 6) keeps the element's
-       centre locked to this `top` value regardless of its own height — so
-       equal gap above and below the wordmark by construction. Sourcing the
-       block token (NOT the inline one) is critical: the strip the wordmark
-       lives in is vertical, so the wordmark's vertical position must track
-       the vertical margin. Default desktop value (`var(--page-pad) / 2`) is
-       too small here because mobile overrides --page-pad to a much smaller
-       clamp than the card's block margin. */
+    /* Vertically centre the wordmark in the white strip between the ticker's
+       bottom edge and the lime card's top edge. Since 2026-05-12 the launch
+       ticker (§4.5) lives in the document flow at viewport y = 0..--launch-ticker-height
+       and `.hero { padding: 0 }` on mobile means the lime card's top edge sits
+       exactly at `viewport y = --launch-ticker-height + --mobile-hero-card-margin-block`.
+       The wordmark is `position: fixed`, so its `top` is measured from the
+       viewport. To land its centre at the midpoint between the ticker bottom
+       (`--launch-ticker-height`) and the lime card top, the centre must sit at
+       `--launch-ticker-height + --mobile-hero-card-margin-block / 2`.
+       `translate: -50% -50%` (already declared in the desktop rule, section 6)
+       keeps the element's centre locked to this `top` value regardless of its
+       own height — so equal gap above (between ticker bottom and wordmark top
+       edge) and below (between wordmark bottom edge and lime card top edge) by
+       construction. Sourcing the block token (NOT the inline one) is critical:
+       the strip the wordmark lives in is vertical, so the wordmark's vertical
+       position must track the vertical margin. Default desktop value
+       (`var(--launch-ticker-height) + var(--page-pad) / 2`) is too small here
+       because mobile overrides --page-pad to a much smaller clamp than the
+       card's block margin. */
     .wordmark {
-        top: calc(var(--mobile-hero-card-margin-block) / 2);
+        top: calc(var(--launch-ticker-height) + var(--mobile-hero-card-margin-block) / 2);
     }
 
     .hero-card-inner {
