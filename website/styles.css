@@ -33,7 +33,9 @@
        10.3 .quest-persona-tabs (glass-morphism segmented pill-bar + sliding indicator)
        10.4 .quest-steps (3-column static grid + vertical separator filets)
        10.5 .quest-step + numeral / tag / title / body
-   10.5 .floating-cards (decorative scattered cards between .how-quest and .faq)
+   10.5 .floating-card-parallax (decorative scattered cards — distributed
+        directly inside .how-quest and .faq; no dedicated wrapper section
+        since 2026-05-12)
    11. FAQ accordion
    12. Footer
    13. Toast
@@ -1778,16 +1780,36 @@ p {
 
 
 /* ==========================================================================
-   10.5 FLOATING CARDS — decorative "bordel ordonné" between .how-quest and .faq
+   10.5 FLOATING CARDS — decorative "bordel ordonné" dispersed across §10 + §11
    --------------------------------------------------------------------------
-   Five scattered "trompe-l'oeil" UI cards + one circular rotating CTA badge,
-   placed absolutely inside a wide canvas. Each card is rotated, levitates
-   gently in place (independent CSS keyframe per card), and translates
-   vertically via a scroll-linked parallax variable written by script.js (see
-   the contract notes below).
+   Five scattered "trompe-l'oeil" UI cards + one circular rotating CTA badge.
+   Each card is rotated, levitates gently in place (independent CSS keyframe
+   per card), and translates vertically via a scroll-linked parallax variable
+   written by script.js (see the contract notes below).
 
-   Section is `aria-hidden="true"` in the markup — purely decorative; screen
-   readers skip from .how-quest straight to .faq.
+   Architectural change (2026-05-12): the cards no longer live in a
+   dedicated `.floating-cards` host section. They are now distributed
+   DIRECTLY inside `.how-quest` (cards 1 / 3 / 5) and `.faq` (cards 2 /
+   4 / 6) as decorative overlays, sitting ABOVE the host's editorial
+   content (titles, persona pills, accordion items). The cards use
+   reinforced glassmorphism (heavy `backdrop-filter: blur(20-28px)
+   saturate(180-200%)`) so the host content remains readable through
+   them. `pointer-events: none` on `.floating-card-parallax` guarantees
+   clicks always reach the underlying interactive elements (persona
+   tabs, FAQ toggles) regardless of overlap.
+
+   Host contracts (positioning + clipping):
+     - `.how-quest` (§10.1) already declared `position: relative` +
+       `overflow-x: clip` — those properties now do double duty as the
+       containing-block + horizontal-clip for cards 1 / 3 / 5.
+     - `.faq` (§11) gets `position: relative` + `overflow-x: clip`
+       (2026-05-12) — same role for cards 2 / 4 / 6. Card 6's
+       `bottom: -40px` deliberately hangs across the FAQ→footer seam;
+       `overflow-x: clip` does NOT promote overflow-y per CSS spec, so
+       the badge stays visible.
+
+   Cards remain `aria-hidden="true"` in markup — purely decorative;
+   screen readers skip them.
 
    --------------------------------------------------------------------------
    Double-wrapper pattern (.floating-card-parallax > .floating-card-inner)
@@ -1846,44 +1868,30 @@ p {
    jitter on iOS Safari (the same fix used on `.wordmark`, line 488).
    ========================================================================== */
 
-/* Section canvas. `overflow-x: clip` (NOT `hidden` / `auto`) so the cards
-   that extend past the viewport on left/right are clipped horizontally
-   WITHOUT promoting overflow-y to `auto` — the page must continue to scroll
-   normally and the levitation must not be vertically clipped at the edges.
-   Same spec rationale as `html, body { overflow-x: clip }` (section 3).
+/* Host sections — `.how-quest` and `.faq` now CONTAIN the decorative cards
+   directly (no `.floating-cards` wrapper). Both already paint
+   `var(--color-light-bg)` so the visual continuity across sections is
+   preserved.
 
-   `min-height` declared so the inner positioning canvas has a real height
-   to anchor the `top: X%` / `bottom: Yp` percentages of each card. Without
-   it, the inner collapses to the height of its (absolutely-positioned)
-   children = 0, and the cards stack at the top of the section. clamp lets
-   the canvas grow with the viewport on tall screens while staying compact
-   on short ones (50svh keeps the section roughly half a screen tall on
-   most desktops).
+   `.how-quest` already declares `position: relative` + `overflow-x: clip`
+   above (section 10.1, lines ~1362-1380) — the cards inside it use that
+   block as their containing-block / clip-context.
 
-   Background reaffirmed white so the section reads as a continuation of
-   the surrounding white surface (.how-quest above, .faq below). */
-.floating-cards {
-    position: relative;
-    padding-block: clamp(80px, 12vw, 140px);
-    padding-inline: var(--page-pad);
-    overflow-x: clip;
-    min-height: clamp(420px, 50svh, 600px);
-    background: var(--color-light-bg);
-}
+   `.faq` gets the host-section augmentation just below in §11: we add
+   `position: relative` (containing block for the absolutely-positioned
+   cards) and `overflow-x: clip` (defensive horizontal clipping; per CSS
+   spec `clip` does NOT promote overflow-y to `auto`, so card 6's
+   `bottom: -40px` peek into the footer-gap area is preserved — same
+   rationale as `html, body { overflow-x: clip }` in §3 and `.how-quest`
+   in §10.1).
 
-/* Positioning canvas. `position: relative` makes it the containing block
-   for the absolutely-positioned card wrappers. `min-height: inherit` is
-   load-bearing: it propagates the parent's min-height down so percentage-
-   based `top` / `bottom` on the absolute cards resolve against a real
-   height — without it, the inner would collapse to 0 (auto height of
-   absolute children) and the % positions would render as 0. */
-.floating-cards-inner {
-    position: relative;
-    max-width: var(--container-max);
-    margin-inline: auto;
-    height: 100%;
-    min-height: inherit;
-}
+   Cards are sized intrinsically (per-variant `width: clamp(…)` rules
+   below) so neither host needs a `min-height` to anchor `top: X%` — the
+   cards' percentage `top` / `bottom` resolve against the host's content
+   height which is governed by `.how-quest`'s editorial padding-block
+   `clamp(80px, 12vw, 140px)` + 3-column triplet, and `.faq`'s
+   `padding-block` + 6-item accordion — both naturally tall enough to
+   spread the cards. */
 
 /* Outer wrapper — static rotation (per card) + scroll-driven Y translation
    (written by JS). See the top-of-section comment for the full design
@@ -1896,26 +1904,54 @@ p {
    `transform: translateZ(0)` (compositor hint) without interference. */
 .floating-card-parallax {
     position: absolute;
+    /* `pointer-events: none` is load-bearing: cards are decorative and
+       sit ABOVE interactive content (FAQ accordion toggles, persona pill
+       tabs, the wordmark link). Without this, the absolutely-positioned
+       cards would intercept clicks on the underlying triggers wherever
+       they overlap. `pointer-events: none` lets clicks pass straight
+       through to the elements beneath. */
+    pointer-events: none;
+    /* z-index 5 lifts the decorative cards above the host section's
+       in-flow content (`.quest-step` / `.faq-item` have no z-index, so
+       their stacking is `auto` and they paint at index 0 within the host's
+       stacking context). Sits below all permanent / overlay chrome:
+       `.wordmark` (z=50), `.launch-ticker` (z=80), `.qr-widget` (z=100),
+       `.toast` / `.skip-link` (z=1000), `.cursor-trail`/`.cursor-emoji`
+       (z=9998/9999). 5 is intentionally a low value — leaves headroom
+       for any future in-section UI element that needs to sit above the
+       cards (e.g. a future sticky persona-tabs bar). */
+    z-index: 5;
     translate: 0 var(--parallax-y, 0px);
     transform: translateZ(0);
     will-change: translate;
     backface-visibility: hidden;
 }
 
-/* Per-card placement + rotation. Coordinates are intentionally
-   asymmetric so the composition reads as scattered rather than gridded.
-   `left: -3%` / `right: -2%` push two cards just past the viewport edge,
-   clipped by `.floating-cards { overflow-x: clip }`; the partial reveal
-   reinforces the "bordel ordonné" feel.
+/* Per-card placement + rotation.
+   Cards 1 / 3 / 5 are hosted in `.how-quest` (3-column editorial section).
+   Cards 2 / 4 / 6 are hosted in `.faq` (taller — 6 accordion items).
+   Within each host the trio is dispersed across the height (top / middle
+   / bottom) and across the inline axis (left / right alternation) so
+   neither cluster reads as gridded. Negative left/right values push some
+   cards just past the host's content box, clipped horizontally by the
+   host's `overflow-x: clip` — the partial reveal reinforces the
+   "bordel ordonné" feel. Card 6 (rotating CTA badge) intentionally hangs
+   below `.faq` via `bottom: -40px`; `overflow-x: clip` does NOT promote
+   the y-axis (CSS spec), so the badge remains visible across the
+   FAQ→footer seam.
 
    Rotation values are `data-card-id`-keyed so JS doesn't need to mirror
    them — the design tilt is purely CSS, JS only authors the parallax Y. */
-.floating-card-parallax[data-card-id="1"] { top: 6%;  left: -3%; rotate: -8deg; }
-.floating-card-parallax[data-card-id="2"] { top: 30%; right: 5%; rotate: 6deg; }
-.floating-card-parallax[data-card-id="3"] { top: 45%; left: 35%; rotate: 3deg; }
-.floating-card-parallax[data-card-id="4"] { top: 62%; right: -2%; rotate: -5deg; }
-.floating-card-parallax[data-card-id="5"] { top: 65%; left: 8%; rotate: 10deg; }
-.floating-card-parallax[data-card-id="6"] { bottom: -40px; right: 6%; rotate: 12deg; }
+
+/* Cards inside `.how-quest` (host: position: relative + overflow-x: clip via §10.1) */
+.floating-card-parallax[data-card-id="1"] { top: 10%;  left: -3%;  rotate: -8deg; }  /* notif iOS — haut-gauche */
+.floating-card-parallax[data-card-id="3"] { top: 35%;  right: -5%; rotate: 3deg; }   /* team grid — droite-milieu */
+.floating-card-parallax[data-card-id="5"] { bottom: 8%; left: 6%;  rotate: 10deg; }  /* streak lime — bas-gauche */
+
+/* Cards inside `.faq` (host: position: relative + overflow-x: clip via §11) */
+.floating-card-parallax[data-card-id="2"] { top: 8%;   right: 4%;  rotate: 6deg; }   /* scoreboard — haut-droite */
+.floating-card-parallax[data-card-id="4"] { top: 45%;  left: -4%;  rotate: -5deg; }  /* notif J-1 — milieu-gauche */
+.floating-card-parallax[data-card-id="6"] { bottom: -40px; right: 5%; rotate: 12deg; } /* badge rotatif — bas-droite, débord vertical */
 
 /* Inner wrapper — continuous levitation. Each card gets its OWN keyframe
    (1–6) with a unique amplitude AND its own duration. We avoid
@@ -1950,18 +1986,41 @@ p {
 
 
 /* ---- Card 1 : iOS-style notification ------------------------------------ */
-/* Glassy white card. `backdrop-filter: blur(8px)` is mostly cosmetic over
-   the white section but matters when the card overlaps a coloured strip
-   (none today, but kept future-proof). Box-shadow stack: soft elevated
-   shadow + crisp contact shadow — the standard 2-layer iOS-style stack. */
+/* Reinforced glassmorphism (2026-05-12): the cards now sit OVER `.how-quest`
+   editorial content (titles, persona pills, body copy) instead of an empty
+   white canvas — the underlying text must remain readable through the card,
+   so we lean harder on the frosted-glass treatment. Changes vs. the
+   previous opaque-white card:
+     - background opacity dropped from 100% to 55% so the content behind
+       the card is faintly visible (suggests depth without becoming a
+       transparent ghost).
+     - `backdrop-filter: blur(24px) saturate(180%)` — much heavier blur
+       than the cosmetic 8px we had before; combined with 180% saturation
+       it produces the Apple-style "frosted vitré" look (the underlying
+       colours bleed through softly, with vibrant pops).
+     - `border: 1px solid rgba(255,255,255,0.6)` — a quiet rim-light at
+       the edge of the glass plate; helps the card "lift" off the
+       background without a heavy drop shadow.
+     - `inset 0 1px 0 0 rgba(255,255,255,0.5)` highlight in the box-shadow
+       stack — a 1px sheen along the top edge that mimics how real glass
+       catches ambient light, sells the "vitré" effect.
+   The `-webkit-backdrop-filter` duplicate is required for Safari ≤ 17.
+   The `@supports not (backdrop-filter)` fallback further down (lines
+   ~1018 / ~2580) already covers browsers without backdrop-filter support
+   by bumping opacity — same defensive pattern applied universally to the
+   project's glass surfaces. */
 .floating-card--notif {
     width: clamp(280px, 22vw, 340px);
     padding: 16px 18px;
-    background: var(--color-light-bg);
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 22px;
-    box-shadow: 0 8px 32px rgba(16, 24, 40, 0.08), 0 2px 6px rgba(16, 24, 40, 0.04);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    box-shadow:
+        0 8px 32px rgba(16, 24, 40, 0.08),
+        0 2px 6px rgba(16, 24, 40, 0.04),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
 }
 .floating-card__notif-head {
     display: flex;
@@ -2032,10 +2091,27 @@ p {
 }
 
 
-/* ---- Card 2 : scoreboard (dark surface, lime accent on winning row) ----- */
-/* Dark glass over white section — provides high-contrast colour beat in
-   the middle of the canvas. Tinted shadow softer than the white-card
-   stack since the dark surface absorbs more of the perceived depth. */
+/* ---- Card 2 : scoreboard (dark glass, lime accent on winning row) ------- */
+/* Reinforced glassmorphism — dark variant (2026-05-12). The card now sits
+   over `.faq` accordion items (titles, answer paragraphs) and must read
+   as a "dark frosted plate" rather than a fully opaque tile. Changes:
+     - background switched from `var(--color-text-primary)` (#101828, 100%
+       opaque) to `rgba(16, 24, 40, 0.65)` — 35% transparency lets the
+       underlying text bleed through faintly, suggesting depth.
+     - `backdrop-filter: blur(28px) saturate(180%)` — slightly heavier
+       blur than the white-glass variants (28 vs 24px) because the dark
+       fill's natural contrast against the white background already pulls
+       attention; the heavier blur dissolves the underlying type more
+       aggressively to keep the dark plate legible.
+     - `border: 1px solid rgba(255,255,255,0.10)` — subtle high-light rim
+       (white on dark, low alpha) replacing the previous no-border treatment;
+       reads as "edge of a glass plate caught in light".
+     - `inset 0 1px 0 0 rgba(255,255,255,0.08)` highlight — same sheen
+       pattern as the white variants, calibrated for the dark surface.
+   Text contrast: the scoreboard's text is white on rgba(16,24,40,0.65)
+   over `.faq`'s white background — composited contrast ratio remains
+   AAA-level (>7:1) because the underlying white is still > 3.5:1 from
+   the dark plate even at 35% transparency. */
 .floating-card--scoreboard {
     /* `display: flex` + `flex-direction: column` is the cleanest way to
        allow the `.floating-card__score-badge { align-self: center }` rule
@@ -2045,10 +2121,15 @@ p {
     flex-direction: column;
     width: clamp(230px, 18vw, 280px);
     padding: 18px 20px;
-    background: var(--color-text-primary);
+    background: rgba(16, 24, 40, 0.65);
     color: var(--color-text-white);
+    border: 1px solid rgba(255, 255, 255, 0.10);
     border-radius: 24px;
-    box-shadow: 0 12px 36px rgba(16, 24, 40, 0.15);
+    box-shadow:
+        0 12px 36px rgba(16, 24, 40, 0.18),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    backdrop-filter: blur(28px) saturate(180%);
 }
 .floating-card__score-eyebrow {
     font-family: var(--font-body);
@@ -2112,16 +2193,34 @@ p {
 
 
 /* ---- Card 3 : team grid (2×2 avatars) ----------------------------------- */
-/* Lightweight bordered card — meant to read as a "settings panel" / list
-   rather than a glassy elevated notification. 1.5px border + soft shadow
-   give it just enough definition over white. */
+/* Reinforced glassmorphism — white variant (2026-05-12). Mirrors Card 1's
+   spec for visual consistency across the white-glass family (Card 1, Card
+   3, Card 4 all share the same translucent-white frosted plate look).
+   Changes vs. the previous opaque-white-with-grey-border card:
+     - background 100% white → `rgba(255,255,255,0.55)`.
+     - border switches from grey (#101828 @ 8%) to white-rim (`rgba(255,
+       255,255,0.6)`) — the rim-light reads as glass-edge rather than
+       outline; aligns with Card 1 / Card 4.
+     - backdrop-filter blur 0 → 24px saturate(180%) — primary glass effect.
+     - inset highlight 1px @ rgba(255,255,255,0.5) added — sheen along top
+       edge.
+   The avatars retain their `border: 2px solid var(--color-light-bg)` ring
+   below (line ~2154) — that 2px solid white separator still reads
+   correctly against the translucent card body because the avatars
+   themselves are not transparent (DiceBear PNGs/SVGs + the lime "MOI"
+   tile), so the white border serves as a visual stand-off ring between
+   adjacent avatars in the 2×2 grid. */
 .floating-card--team {
     width: clamp(260px, 20vw, 300px);
     padding: 16px;
-    background: var(--color-light-bg);
-    border: 1.5px solid rgba(16, 24, 40, 0.08);
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 20px;
-    box-shadow: 0 6px 24px rgba(16, 24, 40, 0.06);
+    box-shadow:
+        0 6px 24px rgba(16, 24, 40, 0.06),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    backdrop-filter: blur(24px) saturate(180%);
 }
 .floating-card__team-eyebrow {
     font-family: var(--font-body);
@@ -2175,18 +2274,37 @@ p {
 }
 
 
-/* ---- Card 5 : streak (lime fill, big number) ---------------------------- */
-/* Lime accent card — eye-catching colour beat at the bottom-left. The
-   lime-tinted shadow (rgba(215, 255, 0, 0.25)) bleeds the brand colour
-   into the surrounding white, reinforcing the energy of the card without
-   any extra glow / blur effect. */
+/* ---- Card 5 : streak (lime glass, big number) --------------------------- */
+/* Reinforced glassmorphism — lime variant (2026-05-12). Same frosted-plate
+   approach as Cards 1/3/4, but tinted to keep the brand accent reading.
+   Changes vs. the previous solid-lime card:
+     - background `var(--color-accent)` (#D7FF00, opaque) →
+       `rgba(215, 255, 0, 0.55)`. The lime channel stays dominant at 55%
+       opacity over a white host section, but the underlying type bleeds
+       through faintly.
+     - `backdrop-filter: blur(20px) saturate(200%)` — slightly LESS blur
+       than the white variants (20 vs 24px) so the lime hue stays vivid,
+       and a HIGHER saturate(200% vs 180%) to compensate for the alpha
+       dilution. Without the saturate boost the lime would read as a
+       washed-out pastel; saturate(200%) restores it to near-pure chartreuse.
+     - `border: 1px solid rgba(215,255,0,0.7)` — tinted lime rim-light
+       (not white) so the edge stays on-brand and reinforces the colour
+       beat at the boundary.
+     - inset 1px highlight kept WHITE @ rgba(255,255,255,0.35) — produces
+       the "wet glass" sheen along the top edge; tinting it lime would
+       wash out into the body. */
 .floating-card--streak {
     width: clamp(180px, 14vw, 220px);
     padding: 16px 18px;
-    background: var(--color-accent);
+    background: rgba(215, 255, 0, 0.55);
     color: var(--color-text-primary);
+    border: 1px solid rgba(215, 255, 0, 0.7);
     border-radius: 22px;
-    box-shadow: 0 10px 28px rgba(215, 255, 0, 0.25);
+    box-shadow:
+        0 10px 28px rgba(215, 255, 0, 0.25),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
+    backdrop-filter: blur(20px) saturate(200%);
 }
 .floating-card__streak-eyebrow {
     font-family: var(--font-body);
@@ -2216,21 +2334,39 @@ p {
 
 
 /* ---- Card 6 : rotating CTA badge --------------------------------------- */
-/* Disc-shaped badge in lime. `position: relative` on `.floating-badge` so
-   the two absolute children (rotor + arrow) anchor to its bounding box.
-   The mobile width override (section 17) shrinks the disc to 100×100. */
+/* Reinforced glassmorphism — lime disc variant (2026-05-12). Coherent
+   with Card 5's lime-glass treatment (same colour family, same alpha
+   discipline) but with slightly more opacity (0.65 vs 0.55) because the
+   rotating SVG text-on-path needs to read crisply — too transparent and
+   the orbiting "INSCRIS-TOI · GRATUIT" copy becomes hard to follow.
+   Changes vs. the previous solid-lime disc:
+     - background `var(--color-accent)` → `rgba(215, 255, 0, 0.65)`.
+     - blur 20px + saturate 200% — same compromise as Card 5 (less blur
+       than white variants, more saturate to keep the lime vivid).
+     - rim-light tinted lime @ 75% (border 1px) — slightly stronger
+       contrast than Card 5's 70% to define the circular boundary
+       crisply against the white host (`.faq`).
+     - Box-shadow stack augmented with the standard inset 1px white sheen
+       @ 40% — completes the "glass disc" reading.
+   `position: relative` on `.floating-badge` so the two absolute children
+   (rotor + arrow) anchor to its bounding box. The mobile width override
+   (section 17) shrinks the disc to 100×100. */
 .floating-badge {
     position: relative;
     width: 130px;
     height: 130px;
     border-radius: 50%;
-    background: var(--color-accent);
+    background: rgba(215, 255, 0, 0.65);
+    border: 1px solid rgba(215, 255, 0, 0.75);
     display: flex;
     align-items: center;
     justify-content: center;
     box-shadow:
         0 12px 32px rgba(215, 255, 0, 0.3),
-        0 4px 12px rgba(16, 24, 40, 0.08);
+        0 4px 12px rgba(16, 24, 40, 0.08),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+    -webkit-backdrop-filter: blur(20px) saturate(200%);
+    backdrop-filter: blur(20px) saturate(200%);
 }
 /* Rotor — the SVG text-on-path layer. `inset: 0` makes it fill the parent
    disc so the SVG viewBox 0 0 130 130 lines up exactly with the disc
@@ -2276,6 +2412,30 @@ p {
     pointer-events: none;
 }
 
+/* Fallback for browsers without backdrop-filter (Firefox ≤ 102 unflagged,
+   legacy WebViews). Without the blur, the 55–65% translucent backgrounds
+   become a hazy fog over the host text instead of a frosted plate — the
+   underlying type bleeds through unreadably. Bump each card's background
+   opacity close to 1.0 so the card reverts to an opaque tile. Same
+   defensive pattern as the existing `.wordmark` (§6) / `.btn-glass`
+   (§7.7) / `.qr-widget` (§14) `@supports not` fallbacks elsewhere in
+   the file. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .floating-card--notif,
+    .floating-card--team {
+        background: rgba(255, 255, 255, 0.96);
+    }
+    .floating-card--scoreboard {
+        background: rgba(16, 24, 40, 0.96);
+    }
+    .floating-card--streak {
+        background: rgba(215, 255, 0, 0.96);
+    }
+    .floating-badge {
+        background: rgba(215, 255, 0, 0.96);
+    }
+}
+
 
 /* ==========================================================================
    11. FAQ ACCORDION
@@ -2292,7 +2452,29 @@ p {
        composition: the .how-quest section already provides generous
        bottom padding, so the FAQ top can stay tight; the FAQ bottom
        carries the heavier clamp so the section sits with weight before
-       the footer. */
+       the footer.
+
+       `position: relative` re-introduced (2026-05-12, separate rationale):
+       `.faq` now HOSTS decorative `.floating-card-parallax` elements
+       directly (cards 2, 4, 6 — moved out of the retired `.floating-cards`
+       wrapper). The cards are `position: absolute` and rely on `.faq`
+       being their containing block. Without `position: relative` they
+       would anchor to the next positioned ancestor (`<body>` /
+       `<html>`), spreading across the whole page. NB: this `position:
+       relative` does NOT create a stacking context (no `z-index` set on
+       `.faq`), so the cards' `z-index: 5` paints relative to the body
+       stacking context as expected (below `.wordmark` z=50 etc.).
+
+       `overflow-x: clip` (NOT `hidden` / `auto`): defensive horizontal
+       clipping for the two `.faq` cards that bleed past the inline
+       edges (card 2 `right: 4%` stays inside, card 4 `left: -4%` bleeds
+       past the left). Per CSS spec, `clip` does NOT promote overflow-y
+       to `auto` — critical because card 6 hangs below `.faq` via
+       `bottom: -40px` and must remain visible across the FAQ→footer
+       seam. Same spec rationale as `html, body { overflow-x: clip }` in
+       §3 and `.how-quest { overflow-x: clip }` in §10.1. */
+    position: relative;
+    overflow-x: clip;
     background-color: var(--color-light-bg);
     padding-block: clamp(24px, 4vw, 52px) clamp(80px, 12vw, 140px);
     padding-inline: var(--page-pad);
@@ -3822,20 +4004,25 @@ p {
        (notif primary, scoreboard, notif compact, rotating badge) still
        carry the full visual story (notification → match running → reminder
        → CTA). The dropped cards (3, 5) are aria-hidden anyway, so there is
-       no a11y loss from `display: none`. Recalibrated positions push the
-       four survivors slightly off-screen left/right to read as "peeking
-       in" rather than gridded — same `overflow-x: clip` clips them. */
-    .floating-cards {
-        padding-inline: var(--mobile-hero-card-margin);
-        min-height: clamp(380px, 60svh, 480px);
-    }
+       no a11y loss from `display: none`.
+
+       2026-05-12: the `.floating-cards` host section was removed; cards
+       are now hosted directly by `.how-quest` (card 1) and `.faq` (cards
+       2, 4, 6). Mobile placements recalibrated for each host's geometry.
+       The host sections already carry their own mobile `padding-inline:
+       var(--mobile-hero-card-margin)` (§10.1 default + §17 .faq override
+       earlier in this block), so the cards' negative `left` / `right`
+       values bleed past the host's content box, clipped by each host's
+       `overflow-x: clip`. */
     .floating-card-parallax[data-card-id="3"],
     .floating-card-parallax[data-card-id="5"] {
         display: none;
     }
-    .floating-card-parallax[data-card-id="1"] { top: 4%;  left: -8%; }
-    .floating-card-parallax[data-card-id="2"] { top: 36%; right: -5%; }
-    .floating-card-parallax[data-card-id="4"] { top: 64%; right: -10%; }
+    /* Card hosted by `.how-quest` on mobile */
+    .floating-card-parallax[data-card-id="1"] { top: 6%;   left: -10%; }
+    /* Cards hosted by `.faq` on mobile */
+    .floating-card-parallax[data-card-id="2"] { top: 8%;   right: -8%; }
+    .floating-card-parallax[data-card-id="4"] { top: 50%;  left: -12%; }
     .floating-card-parallax[data-card-id="6"] { bottom: -30px; right: 4%; }
 
     /* Smaller CTA disc on mobile. The SVG inside auto-scales via

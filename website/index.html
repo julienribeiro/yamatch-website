@@ -373,138 +373,59 @@
                 </article>
             </div>
         </div>
-    </section>
 
-    <!-- === Floating cards — "bordel ordonné" décoratif entre .how-quest et .faq ===
-         5 cartes en absolute positioning + 1 badge circulaire rotatif (en débord bas-droite).
-         Données fictives à but illustratif uniquement → `aria-hidden="true"` sur la section
-         entière (les SR users passent directement de .how-quest à .faq).
-         Contrat partagé avec css-expert / js-expert :
-           - `.floating-cards-inner` : conteneur de positionnement absolu.
-           - `.floating-card-parallax[data-card-id][data-parallax-speed]` : outer wrapper.
-             JS lit `data-parallax-speed` (float 0–1) pour calculer la translation parallax
-             au scroll et l'applique en transform sur l'outer (rotation + translate parallax).
-           - `.floating-card-inner` : inner wrapper. CSS y applique l'animation de lévitation
-             (keyframes float-up-down). Double conteneur pour éviter le conflit transforms
-             outer (rotation statique CSS + parallax dynamique JS) ↔ inner (lévitation CSS).
-           - `.floating-card--{notif,scoreboard,team,streak}` : modifiers visuels par type.
-           - `.floating-badge` (card 6) : badge rond avec SVG text-on-path rotatif. === -->
-    <section class="floating-cards" aria-hidden="true">
-        <div class="floating-cards-inner">
-
-            <!-- Card 1 : notification iOS-style — mise en avant principale du dispositif -->
-            <div class="floating-card-parallax" data-card-id="1" data-parallax-speed="0.15">
-                <div class="floating-card-inner">
-                    <article class="floating-card floating-card--notif">
-                        <header class="floating-card__notif-head">
-                            <span class="floating-card__notif-icon" aria-hidden="true">🏐</span>
-                            <span class="floating-card__notif-brand">YAMATCH</span>
-                            <span class="floating-card__notif-sep">·</span>
-                            <span class="floating-card__notif-time">il y a 2 min</span>
-                        </header>
-                        <p class="floating-card__notif-title">Nouveau tournoi près de toi !</p>
-                        <p class="floating-card__notif-body">Volley 4×4 · Parc de la Tête d'Or · à 4,2 km</p>
-                    </article>
-                </div>
+        <!-- Cartes décoratives flottantes (purement visuelles, aria-hidden). Positionnées
+             en absolute au-dessus du contenu de la section via CSS, pointer-events: none
+             pour laisser passer les clics sur la pill bar et les colonnes. -->
+        <div class="floating-card-parallax" data-card-id="1" data-parallax-speed="0.15" aria-hidden="true">
+            <div class="floating-card-inner">
+                <article class="floating-card floating-card--notif">
+                    <header class="floating-card__notif-head">
+                        <span class="floating-card__notif-icon" aria-hidden="true">🏐</span>
+                        <span class="floating-card__notif-brand">YAMATCH</span>
+                        <span class="floating-card__notif-sep">·</span>
+                        <span class="floating-card__notif-time">il y a 2 min</span>
+                    </header>
+                    <p class="floating-card__notif-title">Nouveau tournoi près de toi !</p>
+                    <p class="floating-card__notif-body">Volley 4×4 · Parc de la Tête d'Or · à 4,2 km</p>
+                </article>
             </div>
+        </div>
 
-            <!-- Card 2 : scoreboard volley (set final, victoire) -->
-            <div class="floating-card-parallax" data-card-id="2" data-parallax-speed="0.22">
-                <div class="floating-card-inner">
-                    <article class="floating-card floating-card--scoreboard">
-                        <p class="floating-card__score-eyebrow">SET 3 · FINAL</p>
-                        <div class="floating-card__score-row floating-card__score-row--winning">
-                            <span class="floating-card__score-team">LES SPIKEURS</span>
-                            <span class="floating-card__score-value">25</span>
+        <div class="floating-card-parallax" data-card-id="3" data-parallax-speed="0.08" aria-hidden="true">
+            <div class="floating-card-inner">
+                <article class="floating-card floating-card--team">
+                    <p class="floating-card__team-eyebrow">TON ÉQUIPE · 4/4</p>
+                    <div class="floating-card__team-grid">
+                        <div class="floating-card__team-member">
+                            <img class="floating-card__team-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lea" alt="" loading="lazy" decoding="async" width="52" height="52">
+                            <span class="floating-card__team-caption">Léa</span>
                         </div>
-                        <div class="floating-card__score-row">
-                            <span class="floating-card__score-team">TEAM RIVAL</span>
-                            <span class="floating-card__score-value">17</span>
+                        <div class="floating-card__team-member">
+                            <img class="floating-card__team-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tom" alt="" loading="lazy" decoding="async" width="52" height="52">
+                            <span class="floating-card__team-caption">Tom</span>
                         </div>
-                        <span class="floating-card__score-badge">VICTOIRE 🏆</span>
-                    </article>
-                </div>
-            </div>
-
-            <!-- Card 3 : ton équipe — 4 avatars 2×2 (3 DiceBear + 1 "MOI" lime) -->
-            <div class="floating-card-parallax" data-card-id="3" data-parallax-speed="0.08">
-                <div class="floating-card-inner">
-                    <article class="floating-card floating-card--team">
-                        <p class="floating-card__team-eyebrow">TON ÉQUIPE · 4/4</p>
-                        <div class="floating-card__team-grid">
-                            <div class="floating-card__team-member">
-                                <img class="floating-card__team-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Lea" alt="" loading="lazy" decoding="async" width="52" height="52">
-                                <span class="floating-card__team-caption">Léa</span>
-                            </div>
-                            <div class="floating-card__team-member">
-                                <img class="floating-card__team-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Tom" alt="" loading="lazy" decoding="async" width="52" height="52">
-                                <span class="floating-card__team-caption">Tom</span>
-                            </div>
-                            <div class="floating-card__team-member">
-                                <img class="floating-card__team-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sami" alt="" loading="lazy" decoding="async" width="52" height="52">
-                                <span class="floating-card__team-caption">Sami</span>
-                            </div>
-                            <div class="floating-card__team-member">
-                                <span class="floating-card__team-avatar floating-card__team-avatar--me">MOI</span>
-                                <span class="floating-card__team-caption">Toi</span>
-                            </div>
+                        <div class="floating-card__team-member">
+                            <img class="floating-card__team-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sami" alt="" loading="lazy" decoding="async" width="52" height="52">
+                            <span class="floating-card__team-caption">Sami</span>
                         </div>
-                    </article>
-                </div>
-            </div>
-
-            <!-- Card 4 : notification rappel J-1 (compact) -->
-            <div class="floating-card-parallax" data-card-id="4" data-parallax-speed="0.18">
-                <div class="floating-card-inner">
-                    <article class="floating-card floating-card--notif floating-card--notif-compact">
-                        <header class="floating-card__notif-head">
-                            <span class="floating-card__notif-icon" aria-hidden="true">⏰</span>
-                            <span class="floating-card__notif-brand">DEMAIN · 19H00</span>
-                        </header>
-                        <p class="floating-card__notif-title">Match vs Les Aces</p>
-                        <p class="floating-card__notif-body">N'oublie pas tes baskets 👟</p>
-                    </article>
-                </div>
-            </div>
-
-            <!-- Card 5 : streak / série en cours -->
-            <div class="floating-card-parallax" data-card-id="5" data-parallax-speed="0.12">
-                <div class="floating-card-inner">
-                    <article class="floating-card floating-card--streak">
-                        <p class="floating-card__streak-eyebrow">🔥 SÉRIE EN COURS</p>
-                        <p class="floating-card__streak-number">7</p>
-                        <p class="floating-card__streak-caption">matchs joués ce mois</p>
-                    </article>
-                </div>
-            </div>
-
-            <!-- Card 6 : badge circulaire rotatif (débord bas-droite).
-                 Texte courbé via <defs><path id="floating-badge-circle"> + <textPath>.
-                 Path = cercle complet (r=50 dans viewBox 130×130). Texte répété 2× pour
-                 bien remplir la circonférence. Flèche centrale : SVG outline arrow up-right. -->
-            <div class="floating-card-parallax floating-badge-parallax" data-card-id="6" data-parallax-speed="0.25">
-                <div class="floating-card-inner">
-                    <div class="floating-badge">
-                        <div class="floating-badge__rotor">
-                            <svg class="floating-badge__rotor-svg" viewBox="0 0 130 130" aria-hidden="true" focusable="false">
-                                <defs>
-                                    <path id="floating-badge-circle" fill="none" d="M 65 65 m -50 0 a 50 50 0 1 1 100 0 a 50 50 0 1 1 -100 0"/>
-                                </defs>
-                                <text class="floating-badge__rotor-text">
-                                    <textPath href="#floating-badge-circle" startOffset="0">INSCRIS-TOI · GRATUIT · INSCRIS-TOI · GRATUIT · </textPath>
-                                </text>
-                            </svg>
-                        </div>
-                        <div class="floating-badge__arrow" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
-                                <path d="M7 17 L17 7"/>
-                                <path d="M9 7 L17 7 L17 15"/>
-                            </svg>
+                        <div class="floating-card__team-member">
+                            <span class="floating-card__team-avatar floating-card__team-avatar--me">MOI</span>
+                            <span class="floating-card__team-caption">Toi</span>
                         </div>
                     </div>
-                </div>
+                </article>
             </div>
+        </div>
 
+        <div class="floating-card-parallax" data-card-id="5" data-parallax-speed="0.12" aria-hidden="true">
+            <div class="floating-card-inner">
+                <article class="floating-card floating-card--streak">
+                    <p class="floating-card__streak-eyebrow">🔥 SÉRIE EN COURS</p>
+                    <p class="floating-card__streak-number">7</p>
+                    <p class="floating-card__streak-caption">matchs joués ce mois</p>
+                </article>
+            </div>
         </div>
     </section>
 
@@ -592,6 +513,62 @@
                     </div>
                 </li>
             </ul>
+        </div>
+
+        <!-- Cartes décoratives flottantes (purement visuelles, aria-hidden). Positionnées
+             en absolute au-dessus du contenu FAQ via CSS, pointer-events: none pour ne
+             pas bloquer l'interaction avec l'accordion. -->
+        <div class="floating-card-parallax" data-card-id="2" data-parallax-speed="0.22" aria-hidden="true">
+            <div class="floating-card-inner">
+                <article class="floating-card floating-card--scoreboard">
+                    <p class="floating-card__score-eyebrow">SET 3 · FINAL</p>
+                    <div class="floating-card__score-row floating-card__score-row--winning">
+                        <span class="floating-card__score-team">LES SPIKEURS</span>
+                        <span class="floating-card__score-value">25</span>
+                    </div>
+                    <div class="floating-card__score-row">
+                        <span class="floating-card__score-team">TEAM RIVAL</span>
+                        <span class="floating-card__score-value">17</span>
+                    </div>
+                    <span class="floating-card__score-badge">VICTOIRE 🏆</span>
+                </article>
+            </div>
+        </div>
+
+        <div class="floating-card-parallax" data-card-id="4" data-parallax-speed="0.18" aria-hidden="true">
+            <div class="floating-card-inner">
+                <article class="floating-card floating-card--notif floating-card--notif-compact">
+                    <header class="floating-card__notif-head">
+                        <span class="floating-card__notif-icon" aria-hidden="true">⏰</span>
+                        <span class="floating-card__notif-brand">DEMAIN · 19H00</span>
+                    </header>
+                    <p class="floating-card__notif-title">Match vs Les Aces</p>
+                    <p class="floating-card__notif-body">N'oublie pas tes baskets 👟</p>
+                </article>
+            </div>
+        </div>
+
+        <div class="floating-card-parallax floating-badge-parallax" data-card-id="6" data-parallax-speed="0.25" aria-hidden="true">
+            <div class="floating-card-inner">
+                <div class="floating-badge">
+                    <div class="floating-badge__rotor">
+                        <svg class="floating-badge__rotor-svg" viewBox="0 0 130 130" aria-hidden="true" focusable="false">
+                            <defs>
+                                <path id="floating-badge-circle" fill="none" d="M 65 65 m -50 0 a 50 50 0 1 1 100 0 a 50 50 0 1 1 -100 0"/>
+                            </defs>
+                            <text class="floating-badge__rotor-text">
+                                <textPath href="#floating-badge-circle" startOffset="0">INSCRIS-TOI · GRATUIT · INSCRIS-TOI · GRATUIT · </textPath>
+                            </text>
+                        </svg>
+                    </div>
+                    <div class="floating-badge__arrow" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                            <path d="M7 17 L17 7"/>
+                            <path d="M9 7 L17 7 L17 15"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </main>

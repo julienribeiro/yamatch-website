@@ -1289,9 +1289,21 @@
    --------------------------------------------------------------------------
    Self-contained IIFE (mirrors the cursor-trail + launch-ticker structure
    above: top-level, NOT nested inside the main IIFE). Pairs with the
-   `.floating-cards` decorative section injected between `.how-quest` and
-   `.faq` in index.html, and with the CSS rule `translate: 0 var(--parallax-y, 0px)`
-   on `.floating-card-parallax` in styles.css.
+   `.floating-card-parallax` decorative wrappers **dispersed** across
+   `.how-quest` (cards 1, 3, 5) and `.faq` (cards 2, 4, 6) in index.html,
+   and with the CSS rule `translate: 0 var(--parallax-y, 0px)` on
+   `.floating-card-parallax` in styles.css.
+
+   Architecture note (2026-05-12):
+     The cards previously lived in a dedicated `.floating-cards` section
+     sandwiched between `.how-quest` and `.faq`. They are now scattered as
+     decorations directly inside `.how-quest` and `.faq` so each card sits
+     on top of the relevant content. There is no longer a single shared
+     parent — each card snapshots its OWN parent <section>'s top position
+     (`sectionTopAtRest`), and the per-frame delta is computed per-card
+     against that parent. Sections at different page Y positions therefore
+     each get their own zero-crossing, and a card's parallax is driven by
+     scroll past its OWN section rather than past a global anchor.
 
    Contract (JS ↔ CSS handshake):
      - JS READS: `data-parallax-speed` (float, e.g. 0.15) on every
@@ -1299,7 +1311,7 @@
        `cardData`, never re-queried in the per-frame path.
      - JS WRITES: `--parallax-y` (px value as a string, e.g. "-42.50px") on
        each `.floating-card-parallax` element. Written every rAF tick while
-       the section is in/near the viewport.
+       at least one parent section is in/near the viewport.
      - CSS COMPOSES: the wrapper uses the individual `translate:` property
        (NOT `transform:`) so the parallax composes cleanly with each card's
        static `rotate:` (also an individual property) and with the inner
@@ -1324,13 +1336,16 @@
        line 235 (`measureScrollAnimationGeometry`).
 
    Activation gate (IntersectionObserver, rootMargin 20% top/bottom):
-     The scroll listener is attached ONLY while the section intersects the
-     pre-warmed viewport. When the user scrolls past, we tear down the
-     scroll listener — no wasted CPU during long FAQ reads. The 20% top
-     and bottom rootMargin pre-arm the parallax before the section visibly
-     enters / after it visibly leaves, so a fast scroll never snaps from
-     stale `--parallax-y` to a fresh one. Same pattern as the waves block
-     IntersectionObserver around line 691.
+     The scroll listener is attached while AT LEAST ONE unique parent
+     section (`.how-quest` and/or `.faq`) intersects the pre-warmed
+     viewport. When the user scrolls past both, we tear down the scroll
+     listener — no wasted CPU during long footer reads. The 20% top and
+     bottom rootMargin pre-arm the parallax before any parent section
+     visibly enters / after the last one visibly leaves, so a fast scroll
+     never snaps from stale `--parallax-y` to a fresh one. Same pattern as
+     the waves block IntersectionObserver around line 691. Deduplication
+     via Set: if multiple cards share a parent, we observe each parent
+     section exactly once.
 
    Reduced-motion guard:
      If `prefers-reduced-motion: reduce` matches, this IIFE early-returns.
@@ -1357,7 +1372,7 @@
      less, like distant objects). The badge (speed 0.25) is the most
      foreground; the team card (speed 0.08) is the most background. The
      net effect is a parallax depth-of-field reveal as the user scrolls
-     INTO the section from above and OUT of it from below.
+     INTO each parent section from above and OUT of it from below.
    ========================================================================== */
 (function () {
     'use strict';
@@ -1367,17 +1382,10 @@
     // the var() fallback in the CSS `translate:` rule).
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-    // Guard 2: section not present (e.g. legal/utility pages, or a future
-    // refactor that removes the floating-cards section). Without the
-    // section, there's nothing to measure or observe — bail out silently.
-    const section = document.querySelector('.floating-cards');
-    if (!section) return;
-
-    // Guard 3: no cards inside the section (defensive — shouldn't happen
-    // with the current HTML, but a future edit could empty the section
-    // for an A/B test, and we don't want to leave a no-op observer + scroll
-    // listener attached).
-    const cards = Array.from(section.querySelectorAll('.floating-card-parallax'));
+    // Guard 2: no `.floating-card-parallax` wrappers present (e.g. legal /
+    // utility pages, or a future edit that removes them). Without any
+    // card, there's nothing to measure or observe — bail out silently.
+    const cards = Array.from(document.querySelectorAll('.floating-card-parallax'));
     if (cards.length === 0) return;
 
     // === Per-card data, snapshotted at setup ===
@@ -1386,6 +1394,13 @@
     // dataset access is fast, the parseFloat would still allocate a Number
     // each tick × N cards. Cached form is just a property read on a plain
     // object literal. `el` is captured directly (no re-querying by ID).
+    //
+    // Per-card `parentSection` is the nearest enclosing <section> ancestor
+    // (`.how-quest` or `.faq` in the current layout). `closest('section')`
+    // walks up the tree once at setup. The result is cached and used both
+    // by `measureGeometry` (to snapshot `sectionTopAtRest` per card) and
+    // by the IntersectionObserver setup (deduplicated via Set to observe
+    // each unique parent exactly once).
     const cardData = cards.map((card) => {
         const raw = parseFloat(card.dataset.parallaxSpeed);
         return {
@@ -1393,33 +1408,53 @@
             // Defensive fallback to 0 (= no parallax for that card) if the
             // attribute is missing or unparseable. Never NaN-poisons the
             // arithmetic downstream.
-            speed: Number.isFinite(raw) ? raw : 0
+            speed: Number.isFinite(raw) ? raw : 0,
+            parentSection: card.closest('section'),
+            // Will be filled in by measureGeometry(); zero until first
+            // measurement so a stray pre-measure tick reads as "card is
+            // at its CSS-defined base" (parallaxY = -latestScrollY * speed,
+            // visually subtle for typical small `speed` values).
+            sectionTopAtRest: 0
         };
     });
 
+    // Guard 3: every card lacks a <section> parent (degenerate case — a
+    // future refactor could put a card directly under <main> or <body>).
+    // `validCards` is what we work with from here on; the original
+    // `cardData` is discarded so the hot path never has to filter again.
+    const validCards = cardData.filter((d) => d.parentSection !== null);
+    if (validCards.length === 0) return;
+
     // === Geometry snapshot (NOT in the per-frame path) ===
-    // `sectionTopAtRest` = the section's TOP position in PAGE coordinates
-    // (i.e. as if scroll were 0). Computed by adding the current scrollY
-    // to the bounding-rect top, since `getBoundingClientRect().top` returns
-    // the viewport-relative position which already includes the active
-    // scroll offset. The "at rest" framing matches the page-scroll-progress
-    // block's `staticCarouselTop` pattern around line 148: we want a
-    // scroll-invariant reference point so the per-frame delta is a clean
-    // `latestScrollY - sectionTopAtRest`.
+    // For each card we snapshot its parent section's TOP position in PAGE
+    // coordinates (i.e. as if scroll were 0), computed by adding the
+    // current scrollY to the bounding-rect top. `getBoundingClientRect()`
+    // returns the viewport-relative position which already includes the
+    // active scroll offset, so the addition gives us a scroll-invariant
+    // reference point per card. The per-frame delta is then a clean
+    // `latestScrollY - sectionTopAtRest` per card.
+    //
+    // Why per-card (not per-section) cache: cards may share a parent (e.g.
+    // cards 1, 3, 5 all live in `.how-quest`), and reading per-section
+    // here would force a second-level map lookup in the hot path. By
+    // storing the resolved `sectionTopAtRest` directly on each card's
+    // record, the tick() loop is a flat per-card pass with zero
+    // indirection. Two `getBoundingClientRect` calls (one per unique
+    // section) is a non-issue: it runs at most a few times per minute
+    // (load + resize + orientationchange).
     //
     // Re-measured on load + resize + orientationchange (NEVER on scroll).
     // The page can reflow vertically between resize events (e.g. webfonts
-    // loading shifts the lime-card buttons, which shifts the FAQ, which
-    // shifts the floating-cards section) — those reflows are caught by
-    // the `load` listener below. Inter-resize drift is typically zero,
-    // and visually negligible even when nonzero (a few px out of hundreds
-    // of px of section height).
-    let sectionTopAtRest = 0;
-
+    // loading shifts the lime-card buttons, which shifts everything below
+    // by a few pixels) — those reflows are caught by the `load` listener
+    // and by the resize/orientationchange debounce.
     const measureGeometry = () => {
-        const rect = section.getBoundingClientRect();
         const scrollY = window.scrollY || window.pageYOffset || 0;
-        sectionTopAtRest = rect.top + scrollY;
+        for (let i = 0; i < validCards.length; i++) {
+            const d = validCards[i];
+            const rect = d.parentSection.getBoundingClientRect();
+            d.sectionTopAtRest = rect.top + scrollY;
+        }
     };
 
     // === Scroll + rAF coalesce (mirrors page-scroll-progress block) ===
@@ -1435,15 +1470,14 @@
     const tick = () => {
         rafScheduled = false;
 
-        // `delta` = how far the user has scrolled past the section's
-        // resting position. Positive when the user has scrolled DOWN past
-        // the section's natural top; negative when the section is still
-        // below the current scroll position (user hasn't reached it yet).
-        // Sign convention drives the parallax direction (see header).
-        const delta = latestScrollY - sectionTopAtRest;
-
-        for (let i = 0; i < cardData.length; i++) {
-            const { el, speed } = cardData[i];
+        for (let i = 0; i < validCards.length; i++) {
+            const { el, speed, sectionTopAtRest } = validCards[i];
+            // `delta` = how far the user has scrolled past this card's
+            // parent section's resting position. Positive when the user
+            // has scrolled DOWN past the section's natural top; negative
+            // when the section is still below the current scroll position.
+            // Sign convention drives the parallax direction (see header).
+            const delta = latestScrollY - sectionTopAtRest;
             // Negative for downward scroll → cards translate UP (foreground
             // motion). toFixed(2) caps the precision at sub-pixel level —
             // anything finer is invisible and just wastes bytes in the
@@ -1469,43 +1503,58 @@
     };
 
     // === IntersectionObserver gate ===
-    // Attaches the scroll listener ONLY while the section is in or near
-    // the viewport. When the section is far above (user scrolled past) or
-    // far below (user hasn't reached it yet), the scroll listener is
-    // detached entirely — no per-scroll work, even though we'd be in the
-    // pure-arithmetic per-tick path anyway. Cheap defense against future
-    // additions accidentally bloating the per-tick cost.
+    // Attaches the scroll listener while AT LEAST ONE unique parent section
+    // intersects the pre-warmed viewport. When the user has scrolled past
+    // every parent (or hasn't reached the first one yet), the scroll
+    // listener is detached entirely — no per-scroll work, even though
+    // we'd be in the pure-arithmetic per-tick path anyway. Cheap defense
+    // against future additions accidentally bloating the per-tick cost.
     //
     // The 20% top/bottom rootMargin pre-warms the parallax before the
-    // section is visibly in the viewport: at typical 100vh, 20% = 200px
-    // of headroom, comfortably enough to absorb a single scroll-wheel
-    // tick (~100px) without any visible snap from a stale `--parallax-y`
-    // value to the fresh one. After detachment, the last-written
+    // first section is visibly in the viewport: at typical 100vh, 20% =
+    // 200px of headroom, comfortably enough to absorb a single
+    // scroll-wheel tick (~100px) without any visible snap from a stale
+    // `--parallax-y` to the fresh one. After detachment, the last-written
     // `--parallax-y` persists on each card; the IO callback fires a
-    // synthetic `onScroll()` on re-entry so the cards re-sync before
-    // the next user scroll event.
-    let isVisible = false;
+    // synthetic `onScroll()` on re-entry so the cards re-sync before the
+    // next user scroll event.
+    //
+    // Visibility tracking uses a COUNTER (`visibleParents`) over the
+    // unique parent sections rather than a boolean per section: this
+    // correctly handles the transition `.how-quest visible` → `.faq
+    // visible` → `.how-quest no longer visible` without flapping the
+    // listener off-then-on. The counter is clamped at 0 defensively in
+    // case an IntersectionObserver delivers an unexpected duplicate
+    // "leaving" entry.
+    const uniqueParents = Array.from(new Set(validCards.map((d) => d.parentSection)));
+    let visibleParents = 0;
+    let listenerAttached = false;
+
     const io = new IntersectionObserver((entries) => {
         for (let i = 0; i < entries.length; i++) {
             const entry = entries[i];
-            const nowVisible = entry.isIntersecting;
-            if (nowVisible === isVisible) continue;
-            isVisible = nowVisible;
-            if (isVisible) {
-                window.addEventListener('scroll', onScroll, { passive: true });
-                // Synthetic resync — important when the user re-enters the
-                // section after a fast scroll: the cached scrollY (from the
-                // last time we were attached) may be stale, and the cards'
-                // current `--parallax-y` may correspond to a position
-                // hundreds of px away. One synthetic onScroll → rAF tick
-                // catches up before the next real scroll event.
-                onScroll();
+            if (entry.isIntersecting) {
+                visibleParents++;
             } else {
-                window.removeEventListener('scroll', onScroll, { passive: true });
+                visibleParents = Math.max(0, visibleParents - 1);
             }
         }
+        if (visibleParents > 0 && !listenerAttached) {
+            window.addEventListener('scroll', onScroll, { passive: true });
+            listenerAttached = true;
+            // Synthetic resync — important when the user re-enters a parent
+            // section after a fast scroll: the cached scrollY (from the
+            // last time we were attached) may be stale, and the cards'
+            // current `--parallax-y` may correspond to a position
+            // hundreds of px away. One synthetic onScroll → rAF tick
+            // catches up before the next real scroll event.
+            onScroll();
+        } else if (visibleParents === 0 && listenerAttached) {
+            window.removeEventListener('scroll', onScroll, { passive: true });
+            listenerAttached = false;
+        }
     }, { rootMargin: '20% 0% 20% 0%' });
-    io.observe(section);
+    uniqueParents.forEach((parent) => io.observe(parent));
 
     // === Layout-change re-measure (debounced 150ms) ===
     // Same debounce window as the launch-ticker resize handler (line ~1401)
@@ -1541,9 +1590,9 @@
     window.addEventListener('resize', onLayoutChange, { passive: true });
     window.addEventListener('orientationchange', onLayoutChange, { passive: true });
     // `load` re-measure: webfonts (Inter via Google Fonts) can shift the
-    // vertical layout 100-500ms after first paint, moving the floating-
-    // cards section by tens of pixels. Without this re-measure, the
-    // initial `sectionTopAtRest` would be stale for the rest of the
+    // vertical layout 100-500ms after first paint, moving each parent
+    // section by tens of pixels. Without this re-measure, the initial
+    // `sectionTopAtRest` values would be stale for the rest of the
     // session. Mirrors the page-scroll-progress block's `load` listener.
     window.addEventListener('load', () => {
         measureGeometry();
