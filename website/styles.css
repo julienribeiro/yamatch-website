@@ -2099,7 +2099,19 @@ p {
     flex-direction: row;
     align-items: center; /* icon vertically centred on the 2 text rows */
     gap: 12px;
-    width: clamp(280px, 22vw, 340px);
+    /* Width bumped 2026-05-12 (was `clamp(280px, 22vw, 340px)`): the brand
+       row "Nouveau tournoi dispo" was being ellipsized on the previous
+       width because the available text column (width − icon 36px − gap 12px
+       − padding 32px − time stamp ≈ 50px) was too tight to fit the 600-weight
+       Inter title at 14px. Bumping to `clamp(320px, 26vw, 400px)` adds ~40–60px
+       of room across the responsive range, which clears the ellipsis without
+       touching `.floating-card__notif-brand`'s `text-overflow: ellipsis`
+       safety net (kept defensively for any future copy that might still
+       overflow). Mobile override (line ~4091) is unaffected: card 1 is
+       centred via `left: 50%` + `translate: -50%` and its width follows
+       this same `clamp` (the `vw` middle term yields larger values on
+       larger screens anyway). */
+    width: clamp(320px, 26vw, 400px);
     padding: 14px 16px;
     background: rgba(255, 255, 255, 0.70);
     border: 1px solid rgba(255, 255, 255, 0.6);
@@ -4072,25 +4084,45 @@ p {
         left: auto;
         bottom: -22%;
     }
-    /* Card 1 hosted by `.hero` on mobile (revised 2026-05-12, third pass —
-       drastic descent). Previous placements: `bottom: 22%; left: -6%`
-       (over CTAs) → `bottom: -8%; left: 50%` (centred, small bleed past
-       hero's bottom). User feedback: the card was still perceived as
-       "centre of the carousel" — it must drop drastically so it hovers
-       JUST ABOVE the "Parcours" eyebrow of the next section (`.how-quest`).
-       New value: `bottom: -22%` — the card hangs ~22 % past `.hero`'s
-       bottom edge, landing in the top padding of `.how-quest`, just above
-       the eyebrow. Per CSS spec, `.hero`'s `overflow-x: clip` does NOT
-       promote overflow-y to `auto` — same guarantee that lets Card 6 hang
-       past `.faq`'s bottom (line 1939–1941). `left: 50%` + `translate:
+    /* Card 3 — mobile width reduction (2026-05-12). Desktop width is
+       `clamp(260px, 20vw, 300px)` (line 2322). On narrow viewports this is
+       too wide and crowds the right edge of `.how-quest`. The 2×2 avatar
+       grid needs at minimum: 2 × 52px (avatar) + 1 × 8px (gap) + 2 × 16px
+       (padding) = 144px, so a `clamp(180px, 50vw, 220px)` floor of 180px
+       leaves ~36px of inner breathing room around the grid — comfortable
+       and still compact. 50vw fluid track scales gently from the floor on
+       phones (<360px viewport) up to the 220px ceiling at 440px viewport
+       and beyond. Net: ~27–33 % narrower than the desktop value. */
+    .floating-card--team {
+        width: clamp(180px, 50vw, 220px);
+    }
+    /* Card 1 hosted by `.hero` on mobile (revised 2026-05-12, fourth pass —
+       drastic descent past the carousel). Previous placements: `bottom: 22%;
+       left: -6%` (over CTAs) → `bottom: -8%; left: 50%` (centred, small
+       bleed past hero's bottom) → `bottom: -22%` (still perceived as
+       overlapping the carousel slides above PARCOURS). User feedback:
+       the card must descend DRAMATICALLY, traversing the carousel zone
+       (`.screens-rail`, which sits below `.hero` on mobile) and landing
+       JUST ABOVE the "PARCOURS" eyebrow of `.how-quest` — i.e. ~one
+       carousel-section worth of vertical distance below `.hero`'s bottom
+       edge. New value: `bottom: -45%` — the card hangs ~45 % past `.hero`'s
+       100svh bottom (≈ 0.45 × 100svh ≈ 340–400px on a typical phone),
+       roughly the height of the `.screens-rail` block on mobile, so it
+       lands at the top of `.how-quest` near the eyebrow. Per CSS spec,
+       `.hero`'s `overflow-x: clip` does NOT promote overflow-y to `auto`
+       — same guarantee that lets Card 6 hang past `.faq`'s bottom (lines
+       1939–1941); the card remains visible across the hero→carousel→how-quest
+       seam. `pointer-events: none` on the base rule (line ~1913) ensures
+       the bleed cannot intercept clicks on the carousel slides or the
+       PARCOURS eyebrow it now floats over. `left: 50%` + `translate:
        -50% var(--parallax-y, 0px)` keeps the card centred horizontally
        while preserving the JS-authored parallax Y. Desktop `rotate: -8deg`
-       (line 1966) inherited. Viable calibration range: ~-18 % to ~-28 %
-       — if it lands ON the eyebrow text, tighten toward -18 %; if it's
-       still inside the hero, push toward -28 %. */
+       (line 1966) inherited. Calibration range: ~-40 % (just inside the
+       carousel) to ~-55 % (overlapping PARCOURS); -45 % targets the
+       sweet spot just above PARCOURS. */
     .floating-card-parallax[data-card-id="1"] {
         top: auto;
-        bottom: -22%;
+        bottom: -45%;
         left: 50%;
         right: auto;
         translate: -50% var(--parallax-y, 0px);
