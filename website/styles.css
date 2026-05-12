@@ -1943,18 +1943,27 @@ p {
    Rotation values are `data-card-id`-keyed so JS doesn't need to mirror
    them — the design tilt is purely CSS, JS only authors the parallax Y. */
 
-/* Card 1 — now hosted by `.hero` (moved 2026-05-12). Sits on the right
-   side of the hero, slightly BELOW the App Store / Google Play CTAs row.
+/* Card 1 — hosted by `.hero` (moved 2026-05-12). Sits on the LEFT side
+   of the hero, vertically aligned with the App Store / Google Play CTAs
+   row (= just under the "Compose ton équipe, il y a match" subtitle).
    `.hero` is `position: relative` (line 630) so it serves as the
-   containing block. `right: 2%` keeps the bleed minimal (the card stays
-   mostly inside the viewport, only its right edge peeks past the
-   `--page-pad` gutter). `bottom: 8%` places it just below the CTA row:
-   the hero is a flex column with `padding-block: var(--page-pad)`, and
-   the CTAs are the last in-flow child of `.hero-card-inner`, so 8%
-   from the hero's bottom lands the card a few rems below the CTAs row.
-   The rotate is preserved from the previous placement so the card
-   keeps its identity tilt. */
-.floating-card-parallax[data-card-id="1"] { top: auto; bottom: 8%; right: 2%; left: auto; rotate: -8deg; }
+   containing block.
+   - `left: 2%` keeps the bleed minimal (the card stays mostly inside
+     the viewport, only its left edge peeks past the `--page-pad`
+     gutter — mirror of the previous `right: 2%`).
+   - `bottom: 14%` raises the card from the previous `8%` so its
+     vertical centre lines up with the CTAs row rather than sitting
+     below it. Geometry: `.hero` total height ≈ `100svh`; lime card
+     fills `100svh - 2*--page-pad`; `.hero-card-inner` has
+     `padding-block: clamp(48px, 6vw, 88px)`, so the CTAs (last in-flow
+     child) sit roughly `--page-pad + 88px` above the hero's bottom
+     edge — that's ~10–13% of `100svh` at most viewport heights. `14%`
+     centres the card on that row (the card has its own height, so the
+     anchor is offset slightly upward from the buttons' bottom).
+   The rotate `-8deg` is preserved from the previous placement so the
+   card keeps its identity tilt. Repositioned 2026-05-12 (user request:
+   move from bottom-right to left-of-CTAs). */
+.floating-card-parallax[data-card-id="1"] { top: auto; bottom: 14%; right: auto; left: 2%; rotate: -8deg; }
 /* Cards inside `.how-quest` (host: position: relative + overflow-x: clip via §10.1) */
 /* Card 3 — moved up + pulled in (2026-05-12). Previous placement
    (`top: 35%; right: -5%`) put it mid-section and bled too far past the
@@ -4113,13 +4122,15 @@ p {
         display: none;
     }
     /* Card 1 hosted by `.hero` on mobile (2026-05-12). On narrow viewports the
-       hero is vertically taller (CTAs stack, lime card grows to ~85svh) so the
-       card slips lower than on desktop. `right: -6%` lets it bleed slightly
-       more off the right edge than desktop — the hero is full-bleed on mobile
-       and the card would otherwise crowd the CTAs. Vertical anchor stays on
-       `bottom` so the card stays near the floor of the hero regardless of
-       the dynamic `--mobile-hero-card-margin-block` of the lime card above. */
-    .floating-card-parallax[data-card-id="1"] { top: auto; bottom: 6%; right: -6%; left: auto; }
+       hero is vertically taller (lime card grows to ~85svh) and the CTAs sit
+       near its bottom. `left: -6%` mirrors the desktop bleed (was previously
+       `right: -6%`) — the card peeks slightly off the LEFT edge, freeing up
+       the right side of the hero where the user's eye lands on the CTAs.
+       `bottom: 10%` raises the card from the previous `6%` so its vertical
+       centre lines up with the CTAs row rather than sitting near the hero
+       floor; the offset is smaller than desktop's `14%` because mobile CTAs
+       sit relatively higher in the lime card on tall narrow viewports. */
+    .floating-card-parallax[data-card-id="1"] { top: auto; bottom: 10%; right: auto; left: -6%; }
     /* Cards hosted by `.faq` on mobile */
     .floating-card-parallax[data-card-id="2"] { top: 8%;   right: -8%; }
     .floating-card-parallax[data-card-id="4"] { top: 50%;  left: -12%; }
