@@ -1443,7 +1443,17 @@
             // measurement so a stray pre-measure tick reads as "card is
             // at its CSS-defined base" (parallaxY = -latestScrollY * speed,
             // visually subtle for typical small `speed` values).
-            sectionTopAtRest: 0
+            sectionTopAtRest: 0,
+            // === Lerp state (target/current pattern) ===
+            // `targetY` is the geometry-driven destination computed each
+            // tick from `latestScrollY - sectionTopAtRest`; `currentY` is
+            // the smoothed value actually written to `--parallax-y`. Both
+            // start at 0 here and are snapped to the geometry-correct value
+            // in `setup()` once `measureGeometry()` has run — this avoids a
+            // visible "rentrée" animation when the user lands mid-scroll
+            // (e.g. via an anchor link to #faq).
+            targetY: 0,
+            currentY: 0
         };
     });
 
@@ -1486,47 +1496,85 @@
         }
     };
 
-    // === Scroll + rAF coalesce (mirrors page-scroll-progress block) ===
+    // === Scroll + self-rescheduling rAF lerp loop ===
     // `latestScrollY` is updated on every scroll event (single property
     // read, no layout work) and consumed by the rAF callback. The
-    // `rafScheduled` flag ensures we coalesce multiple scroll events into
-    // a single rAF tick — at high scroll rates (e.g. 120Hz trackpad on
-    // ProMotion displays) the browser fires ~2 scroll events per frame,
-    // and we want exactly ONE setProperty pass per frame, not two.
+    // `rafRunning` flag tracks whether the lerp loop is currently alive;
+    // a fresh scroll event re-arms the loop only if it is idle (already
+    // converged and self-stopped), otherwise it lets the running loop
+    // pick up the new `latestScrollY` on its next iteration.
+    //
+    // Smoothing rationale: scroll-wheel events on desktop arrive in
+    // discrete 50-100px chunks ("wheel detents"). Writing the raw
+    // geometry-derived `parallaxY` straight to `--parallax-y` produces
+    // a visible jump per detent on every card. By easing `currentY`
+    // toward `targetY` with a per-frame fraction (`SMOOTHING`), each
+    // jump is dissolved into a multi-frame ramp that the eye reads as
+    // smooth motion. At 60fps a SMOOTHING of 0.14 converges ~90% of
+    // the remaining distance within ~15 frames (~250ms), which is
+    // brisk enough to feel responsive but slow enough to mask the
+    // wheel-detent quantization.
+    //
+    // Self-stop: when `|targetY - currentY| < EPS` for ALL cards, the
+    // loop exits and `rafRunning` flips to false. The next scroll
+    // event re-starts it. This avoids burning rAF ticks at rest.
+    const SMOOTHING = 0.14;
+    const EPS = 0.1;
     let latestScrollY = window.scrollY || window.pageYOffset || 0;
-    let rafScheduled = false;
+    let rafRunning = false;
 
     const tick = () => {
-        rafScheduled = false;
+        let stillAnimating = false;
 
         for (let i = 0; i < validCards.length; i++) {
-            const { el, speed, sectionTopAtRest } = validCards[i];
+            const d = validCards[i];
             // `delta` = how far the user has scrolled past this card's
             // parent section's resting position. Positive when the user
             // has scrolled DOWN past the section's natural top; negative
             // when the section is still below the current scroll position.
             // Sign convention drives the parallax direction (see header).
-            const delta = latestScrollY - sectionTopAtRest;
+            const delta = latestScrollY - d.sectionTopAtRest;
             // Negative for downward scroll → cards translate UP (foreground
-            // motion). toFixed(2) caps the precision at sub-pixel level —
-            // anything finer is invisible and just wastes bytes in the
-            // CSSOM string. Keeps the inline-style attribute compact.
-            const parallaxY = -delta * speed;
-            el.style.setProperty('--parallax-y', parallaxY.toFixed(2) + 'px');
+            // motion). The geometry-derived destination is recomputed every
+            // tick so that `latestScrollY` updates between scroll-event
+            // bursts feed into the lerp without being missed.
+            d.targetY = -delta * d.speed;
+            // Standard lerp: move a SMOOTHING fraction of the remaining
+            // distance per frame. Frame-rate-dependent on purpose — at
+            // 60fps it feels uniform; on a 120fps ProMotion display the
+            // motion is the same total duration in frame-count terms but
+            // half the wall-clock duration, which reads as slightly
+            // snappier (acceptable trade-off for vanilla-JS simplicity).
+            d.currentY += (d.targetY - d.currentY) * SMOOTHING;
+
+            if (Math.abs(d.targetY - d.currentY) > EPS) {
+                stillAnimating = true;
+            }
+
+            // toFixed(2) caps the precision at sub-pixel level — anything
+            // finer is invisible and just wastes bytes in the CSSOM
+            // string. Keeps the inline-style attribute compact.
+            d.el.style.setProperty('--parallax-y', d.currentY.toFixed(2) + 'px');
+        }
+
+        if (stillAnimating) {
+            requestAnimationFrame(tick);
+        } else {
+            rafRunning = false;
         }
     };
 
     const onScroll = () => {
         // ONLY work in the scroll listener: refresh the cached scrollY
-        // (which the rAF callback will consume) and schedule the rAF if
-        // none is pending. Zero layout reads, zero per-event allocations
-        // beyond the boolean flag flip. Keeps the listener cheap enough
-        // to leave on `{ passive: true }` without affecting the
-        // compositor's ability to keep scroll on its own thread (critical
-        // for iOS Safari touch-driven scroll smoothness).
+        // (which the lerp loop reads each tick) and re-arm the loop if
+        // it has self-stopped. Zero layout reads, zero per-event
+        // allocations beyond the boolean flag flip. Keeps the listener
+        // cheap enough to leave on `{ passive: true }` without affecting
+        // the compositor's ability to keep scroll on its own thread
+        // (critical for iOS Safari touch-driven scroll smoothness).
         latestScrollY = window.scrollY || window.pageYOffset || 0;
-        if (!rafScheduled) {
-            rafScheduled = true;
+        if (!rafRunning) {
+            rafRunning = true;
             requestAnimationFrame(tick);
         }
     };
@@ -1579,19 +1627,28 @@
         resizeTimer = setTimeout(() => {
             resizeTimer = null;
             measureGeometry();
-            // Re-tick immediately after re-measure so the cards reflect the
-            // new geometry on the next frame, not on the next user scroll.
-            // We bypass the `rafScheduled` flag intentionally: even if a
-            // scroll-driven rAF is in flight, a freshly re-measured
-            // geometry should produce its own tick — `rafScheduled = false`
-            // forces this. (Worst case: two ticks within one frame budget,
-            // each ~20µs of arithmetic + N setProperty — still well inside
-            // a 16ms frame.)
+            // After a re-measure, the `sectionTopAtRest` of each card has
+            // shifted — feeding the new geometry into the running lerp
+            // unchanged would produce a brusque animated catch-up from
+            // the stale `currentY` toward the new `targetY`. Instead we
+            // re-snap: recompute `targetY` against the fresh geometry
+            // and copy it into `currentY`, then write `--parallax-y`
+            // synchronously. The resize is itself a discontinuity in
+            // the user's viewport, so a hard jump here is correct.
             latestScrollY = window.scrollY || window.pageYOffset || 0;
-            if (!rafScheduled) {
-                rafScheduled = true;
-                requestAnimationFrame(tick);
+            for (let i = 0; i < validCards.length; i++) {
+                const d = validCards[i];
+                const delta = latestScrollY - d.sectionTopAtRest;
+                d.targetY = -delta * d.speed;
+                d.currentY = d.targetY;
+                d.el.style.setProperty('--parallax-y', d.currentY.toFixed(2) + 'px');
             }
+            // No need to re-arm the loop: targetY === currentY for every
+            // card, so the convergence test would exit on the first
+            // iteration anyway. Leaving `rafRunning` untouched is safe —
+            // if a scroll-driven loop was already running, it picks up
+            // the new geometry on its next tick; if not, the next user
+            // scroll re-arms it.
         }, 150);
     };
 
@@ -1646,10 +1703,18 @@
         // stack listeners).
         loadListener = () => {
             measureGeometry();
+            // Same re-snap pattern as `onLayoutChange`: webfont swap can
+            // shift each section's top by tens of pixels, so we hard-jump
+            // the lerp state to the geometry-correct value rather than
+            // letting the loop ease into it (which would read as a visible
+            // post-load animation).
             latestScrollY = window.scrollY || window.pageYOffset || 0;
-            if (!rafScheduled) {
-                rafScheduled = true;
-                requestAnimationFrame(tick);
+            for (let i = 0; i < validCards.length; i++) {
+                const d = validCards[i];
+                const delta = latestScrollY - d.sectionTopAtRest;
+                d.targetY = -delta * d.speed;
+                d.currentY = d.targetY;
+                d.el.style.setProperty('--parallax-y', d.currentY.toFixed(2) + 'px');
             }
         };
         window.addEventListener('load', loadListener, { passive: true });
@@ -1657,26 +1722,40 @@
         // === Initial sync ===
         // Run the first geometry measure synchronously (defer-script timing
         // means the DOM is parsed; layout has been computed at least once by
-        // the time this IIFE evaluates) and schedule the first paint tick.
-        // This handles the case where the user loads the page already scrolled
-        // mid-document (e.g. anchor link, deep-link, reload-with-restored-
-        // scroll-position): the parallax is correct on first paint, not on
-        // first user scroll.
+        // the time this IIFE evaluates), then SNAP the lerp state to the
+        // geometry-correct value — `currentY = targetY` for every card —
+        // so the cards mount at their final position rather than easing in
+        // from 0 over the first ~250ms after load. This is critical when
+        // the page is loaded mid-scroll (anchor link to #faq, browser
+        // scroll restoration, etc.): without the snap, every card would
+        // animate from its CSS-base into place after first paint, which
+        // reads as a glitchy "rentrée" rather than a static landing.
         measureGeometry();
-        if (!rafScheduled) {
-            rafScheduled = true;
-            requestAnimationFrame(tick);
+        latestScrollY = window.scrollY || window.pageYOffset || 0;
+        for (let i = 0; i < validCards.length; i++) {
+            const d = validCards[i];
+            const delta = latestScrollY - d.sectionTopAtRest;
+            d.targetY = -delta * d.speed;
+            d.currentY = d.targetY;
+            d.el.style.setProperty('--parallax-y', d.currentY.toFixed(2) + 'px');
         }
+        // No initial rAF kick — the snap above already paints the correct
+        // value. The loop will start on the first scroll event via
+        // `onScroll()` (or sooner via the IO `onScroll()` re-sync on entry).
     };
 
     // === teardown() — symmetric cleanup, no listener leaks ===
     // Disconnects the IO, removes every listener installed by `setup`, and
-    // pending timer / rAF schedules are left to drain harmlessly (the tick
-    // callback is a no-op for `--parallax-y` writes once the cards are
-    // `display: none` anyway; the `rafScheduled` flag will reset itself on
-    // the next tick). Last-written `--parallax-y` values persist on the
-    // cards' inline style — invisible while `display: none`, and the next
-    // `setup()` (on desktop re-entry) will overwrite them on its first tick.
+    // any in-flight rAF lerp loop is left to drain harmlessly (the tick
+    // callback's `--parallax-y` writes are silently no-op'd by the
+    // renderer once the cards hit `display: none` on mobile per styles.css
+    // §18). The lerp loop will self-stop within ~15 frames as `targetY`
+    // and `currentY` converge against a now-frozen `latestScrollY`; we
+    // also reset `rafRunning` to `false` explicitly so a subsequent
+    // `setup()` (on desktop re-entry) starts from a known-clean gate
+    // state. Last-written `--parallax-y` values persist on the cards'
+    // inline style — invisible while `display: none`, and the next
+    // `setup()` snaps them to the correct values on entry.
     const teardown = () => {
         if (io === null) return;
         io.disconnect();
@@ -1695,6 +1774,12 @@
             clearTimeout(resizeTimer);
             resizeTimer = null;
         }
+        // Explicit reset for cohérence — a still-running rAF tick will
+        // observe `validCards` unchanged and self-stop on its next
+        // iteration, then flip this flag itself; but the reset here
+        // covers the case where teardown is followed immediately by
+        // setup on a fast MQL flap.
+        rafRunning = false;
     };
 
     // === Mobile gate — initial state + breakpoint-change listener ===
