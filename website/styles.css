@@ -1978,11 +1978,19 @@ p {
    clip }` (§10.1, line 1381) — `clip` does NOT promote overflow-y to
    auto per CSS spec, so the section's vertical layout is unaffected. */
 .floating-card-parallax[data-card-id="3"] { top: 2%;   right: -1%; left: auto; rotate: 3deg; }   /* team grid — haut-droite */
-.floating-card-parallax[data-card-id="5"] { bottom: 8%; left: 6%;  rotate: 10deg; }  /* streak lime — bas-gauche */
+/* Card 4 — moved into `.how-quest` (2026-05-12). Took over the bas-gauche
+   slot previously occupied by the deleted Card 5 (streak). We keep the
+   slot's `bottom: 8%; left: 6%` geometry (proven to balance Card 3 in the
+   haut-droite slot), but preserve Card 4's own identity rotation
+   `-5deg` rather than adopting Card 5's `+10deg` — the compact notif
+   card has always tilted slightly counter-clockwise, and the rotation
+   is part of its visual identity. `top: auto` + `right: auto` reset the
+   former `.faq` placement (`top: 45%; left: -4%`) so the card anchors
+   to the bottom-left corner of `.how-quest`. */
+.floating-card-parallax[data-card-id="4"] { top: auto; bottom: 8%; left: 6%; right: auto; rotate: -5deg; } /* notif J-1 compact — bas-gauche */
 
 /* Cards inside `.faq` (host: position: relative + overflow-x: clip via §11) */
 .floating-card-parallax[data-card-id="2"] { top: 8%;   right: 4%;  rotate: 6deg; }   /* scoreboard — haut-droite */
-.floating-card-parallax[data-card-id="4"] { top: 45%;  left: -4%;  rotate: -5deg; }  /* notif J-1 — milieu-gauche */
 .floating-card-parallax[data-card-id="6"] { bottom: -40px; right: 5%; rotate: 12deg; } /* badge rotatif — bas-droite, débord vertical */
 
 /* Inner wrapper — continuous levitation. Each card gets its OWN keyframe
@@ -1997,8 +2005,8 @@ p {
    to come back rather than mechanically bouncing).
 
    Levitation amplitude per card is tuned to its visual weight: the
-   streak number card (5) bobs the most (-20px) to read as energetic;
-   the badge (6) bobs the least (-10px) to keep the CTA readable. */
+   scoreboard (2) bobs the most (-18px) to read as energetic; the
+   badge (6) bobs the least (-10px) to keep the CTA readable. */
 .floating-card-inner {
     animation: floating-levitate-1 4.5s ease-in-out infinite;
 }
@@ -2006,14 +2014,12 @@ p {
 .floating-card-parallax[data-card-id="2"] .floating-card-inner { animation-name: floating-levitate-2; animation-duration: 5.2s; }
 .floating-card-parallax[data-card-id="3"] .floating-card-inner { animation-name: floating-levitate-3; animation-duration: 6.0s; }
 .floating-card-parallax[data-card-id="4"] .floating-card-inner { animation-name: floating-levitate-4; animation-duration: 4.8s; }
-.floating-card-parallax[data-card-id="5"] .floating-card-inner { animation-name: floating-levitate-5; animation-duration: 5.5s; }
 .floating-card-parallax[data-card-id="6"] .floating-card-inner { animation-name: floating-levitate-6; animation-duration: 5.0s; }
 
 @keyframes floating-levitate-1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
 @keyframes floating-levitate-2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
 @keyframes floating-levitate-3 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 @keyframes floating-levitate-4 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
-@keyframes floating-levitate-5 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
 @keyframes floating-levitate-6 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
 
@@ -2263,9 +2269,8 @@ p {
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.7);
 }
-/* Roboto 800 for the score numbers — same heading face used by .hero-title
-   and the streak number; the heavy weight + tight tracking reads as a
-   sportscaster scoreboard. */
+/* Roboto 800 for the score numbers — same heading face used by .hero-title;
+   the heavy weight + tight tracking reads as a sportscaster scoreboard. */
 .floating-card__score-value {
     font-family: var(--font-heading);
     font-weight: 800;
@@ -2382,78 +2387,20 @@ p {
 }
 
 
-/* ---- Card 5 : streak (lime glass, big number) --------------------------- */
-/* Reinforced glassmorphism — lime variant (2026-05-12). Same frosted-plate
-   approach as Cards 1/3/4, but tinted to keep the brand accent reading.
-   Changes vs. the previous solid-lime card:
-     - background `var(--color-accent)` (#D7FF00, opaque) →
-       `rgba(215, 255, 0, 0.55)`. The lime channel stays dominant at 55%
-       opacity over a white host section, but the underlying type bleeds
-       through faintly.
-     - `backdrop-filter: blur(20px) saturate(200%)` — slightly LESS blur
-       than the white variants (20 vs 24px) so the lime hue stays vivid,
-       and a HIGHER saturate(200% vs 180%) to compensate for the alpha
-       dilution. Without the saturate boost the lime would read as a
-       washed-out pastel; saturate(200%) restores it to near-pure chartreuse.
-     - `border: 1px solid rgba(215,255,0,0.7)` — tinted lime rim-light
-       (not white) so the edge stays on-brand and reinforces the colour
-       beat at the boundary.
-     - inset 1px highlight kept WHITE @ rgba(255,255,255,0.35) — produces
-       the "wet glass" sheen along the top edge; tinting it lime would
-       wash out into the body. */
-.floating-card--streak {
-    width: clamp(180px, 14vw, 220px);
-    padding: 16px 18px;
-    background: rgba(215, 255, 0, 0.70);
-    color: var(--color-text-primary);
-    border: 1px solid rgba(215, 255, 0, 0.7);
-    border-radius: 22px;
-    box-shadow:
-        0 10px 28px rgba(215, 255, 0, 0.25),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.35);
-    -webkit-backdrop-filter: blur(28px) saturate(200%);
-    backdrop-filter: blur(28px) saturate(200%);
-}
-.floating-card__streak-eyebrow {
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    margin: 0 0 4px;
-}
-/* Roboto 800 super-large numeral — same heading family / weight as the
-   scoreboard score; tight letter-spacing prevents the wide digits from
-   stretching the card horizontally. */
-.floating-card__streak-number {
-    font-family: var(--font-heading);
-    font-weight: 800;
-    font-size: clamp(60px, 7vw, 84px);
-    line-height: 1;
-    letter-spacing: -0.04em;
-    margin: 0;
-}
-.floating-card__streak-caption {
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 500;
-    margin: 6px 0 0;
-}
-
-
 /* ---- Card 6 : rotating CTA badge --------------------------------------- */
-/* Reinforced glassmorphism — lime disc variant (2026-05-12). Coherent
-   with Card 5's lime-glass treatment (same colour family, same alpha
-   discipline) but with slightly more opacity (0.65 vs 0.55) because the
-   rotating SVG text-on-path needs to read crisply — too transparent and
-   the orbiting "INSCRIS-TOI · GRATUIT" copy becomes hard to follow.
+/* Reinforced glassmorphism — lime disc variant (2026-05-12). Sole
+   lime-translucent card remaining after Card 5's removal — opacity is
+   bumped slightly higher than a typical 0.55 frosted plate (0.65)
+   because the rotating SVG text-on-path needs to read crisply — too
+   transparent and the orbiting "INSCRIS-TOI · GRATUIT" copy becomes
+   hard to follow.
    Changes vs. the previous solid-lime disc:
      - background `var(--color-accent)` → `rgba(215, 255, 0, 0.65)`.
-     - blur 20px + saturate 200% — same compromise as Card 5 (less blur
-       than white variants, more saturate to keep the lime vivid).
-     - rim-light tinted lime @ 75% (border 1px) — slightly stronger
-       contrast than Card 5's 70% to define the circular boundary
-       crisply against the white host (`.faq`).
+     - blur 20px + saturate 200% — same compromise the (now removed)
+       Card 5 used (less blur than white variants, more saturate to keep
+       the lime vivid).
+     - rim-light tinted lime @ 75% (border 1px) — defines the circular
+       boundary crisply against the white host (`.faq`).
      - Box-shadow stack augmented with the standard inset 1px white sheen
        @ 40% — completes the "glass disc" reading.
    `position: relative` on `.floating-badge` so the two absolute children
@@ -2535,9 +2482,6 @@ p {
     }
     .floating-card--scoreboard {
         background: rgba(16, 24, 40, 0.96);
-    }
-    .floating-card--streak {
-        background: rgba(215, 255, 0, 0.96);
     }
     .floating-badge {
         background: rgba(215, 255, 0, 0.96);
@@ -4107,23 +4051,30 @@ p {
     }
 
     /* ---- Floating cards (section 10.5) — mobile overrides ----------------
-       Drop two of the six cards (team grid + streak) to avoid an
-       overcrowded canvas on narrow viewports — the four remaining cards
-       (notif primary, scoreboard, notif compact, rotating badge) still
-       carry the full visual story (notification → match running → reminder
-       → CTA). The dropped cards (3, 5) are aria-hidden anyway, so there is
-       no a11y loss from `display: none`.
+       Drop the team-grid card (3) to avoid an overcrowded canvas on
+       narrow viewports — the remaining four cards (notif primary
+       hero-hosted, scoreboard, notif compact, rotating badge) still
+       carry the full visual story (notification → match running →
+       reminder → CTA). Card 3 is aria-hidden anyway, so there is no
+       a11y loss from `display: none`.
 
        2026-05-12: the `.floating-cards` host section was removed; cards
-       are now hosted directly by `.how-quest` (card 1) and `.faq` (cards
-       2, 4, 6). Mobile placements recalibrated for each host's geometry.
-       The host sections already carry their own mobile `padding-inline:
-       var(--mobile-hero-card-margin)` (§10.1 default + §17 .faq override
-       earlier in this block), so the cards' negative `left` / `right`
-       values bleed past the host's content box, clipped by each host's
-       `overflow-x: clip`. */
-    .floating-card-parallax[data-card-id="3"],
-    .floating-card-parallax[data-card-id="5"] {
+       are now hosted directly by `.hero` (card 1), `.how-quest` (cards
+       3, 4) and `.faq` (cards 2, 6). Mobile placements recalibrated for
+       each host's geometry. The host sections already carry their own
+       mobile `padding-inline: var(--mobile-hero-card-margin)` (§10.1
+       default + §17 .faq override earlier in this block), so the cards'
+       negative `left` / `right` values bleed past the host's content
+       box, clipped by each host's `overflow-x: clip`.
+
+       2026-05-12 (later): Card 5 (streak lime) was deleted from the DOM;
+       Card 4 (compact notif J-1) moved from `.faq` into `.how-quest` to
+       take over the bas-gauche slot Card 5 vacated. Card 4 stays visible
+       on mobile (option A: recalibrated position) rather than mirroring
+       Card 5's former `display: none` — the compact notif keeps the
+       `.how-quest` section from looking deserted on narrow viewports
+       once Card 3 is hidden. */
+    .floating-card-parallax[data-card-id="3"] {
         display: none;
     }
     /* Card 1 hosted by `.hero` on mobile (2026-05-12). On narrow viewports the
@@ -4136,9 +4087,16 @@ p {
        floor; the offset is smaller than desktop's `14%` because mobile CTAs
        sit relatively higher in the lime card on tall narrow viewports. */
     .floating-card-parallax[data-card-id="1"] { top: auto; bottom: 22%; right: auto; left: -6%; }
+    /* Card 4 hosted by `.how-quest` on mobile (2026-05-12, post-swap). Takes
+       over the bas-gauche corner left by Card 5. `bottom: 8%` mirrors the
+       desktop value; `left: -8%` adds a light leftward bleed (since Card 3
+       is hidden on mobile there's nothing fighting for the upper-right slot,
+       so the compact notif can sit comfortably low-left without crowding).
+       `top: auto` + `right: auto` reset any leftover values from Card 4's
+       former `.faq` mobile placement (`top: 50%; left: -12%`). */
+    .floating-card-parallax[data-card-id="4"] { top: auto; bottom: 8%; left: -8%; right: auto; }
     /* Cards hosted by `.faq` on mobile */
     .floating-card-parallax[data-card-id="2"] { top: 8%;   right: -8%; }
-    .floating-card-parallax[data-card-id="4"] { top: 50%;  left: -12%; }
     .floating-card-parallax[data-card-id="6"] { bottom: -30px; right: 4%; }
 
     /* Smaller CTA disc on mobile. The SVG inside auto-scales via
