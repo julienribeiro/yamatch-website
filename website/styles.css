@@ -1977,7 +1977,7 @@ p {
    peu de l'écran"). The bleed is clipped by `.how-quest { overflow-x:
    clip }` (§10.1, line 1381) — `clip` does NOT promote overflow-y to
    auto per CSS spec, so the section's vertical layout is unaffected. */
-.floating-card-parallax[data-card-id="3"] { top: 2%;   right: -4%; left: auto; rotate: 3deg; }   /* team grid — haut-droite */
+.floating-card-parallax[data-card-id="3"] { top: 2%;   right: -1%; left: auto; rotate: 3deg; }   /* team grid — haut-droite */
 .floating-card-parallax[data-card-id="5"] { bottom: 8%; left: 6%;  rotate: 10deg; }  /* streak lime — bas-gauche */
 
 /* Cards inside `.faq` (host: position: relative + overflow-x: clip via §11) */
