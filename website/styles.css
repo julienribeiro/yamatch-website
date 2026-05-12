@@ -298,13 +298,19 @@ p {
     /* Reduced ~15% (was clamp(11px, 1.4vw, 13px)) — a smaller body size
        feels more discreet against the lime background. */
     font-size: clamp(9.5px, 1.1vw, 11px);
-    /* Regular weight (was 800) — uppercase + tracking already command
-       attention; dropping to 400 removes the "headline shouting" tone
-       and lets the bar sit quietly above the hero. */
+    /* Regular weight (was 800) — the mixed-case typography (only the Y
+       of Yamatch and the L of Les capitalised, per HTML) already reads
+       as restrained; 400 keeps the bar quiet above the hero. */
     font-weight: 400;
     line-height: 1;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+    /* Reduced from 0.04em → 0.01em: the wider tracking was tuned for
+       all-caps legibility. In mixed case, 0.04em reads as awkwardly
+       spaced; 0.01em respects the natural Inter metrics while still
+       giving a hair of breathing room for small sizes on the lime bar. */
+    letter-spacing: 0.01em;
+    /* text-transform removed (was `uppercase`) — the HTML now carries
+       the intended casing (only Y of "Yamatch" and L of "Les" capitalised);
+       forcing uppercase here would override that typographic intent. */
 }
 
 /* Visually-hidden accessible copy — single readable sentence for screen
