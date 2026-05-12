@@ -708,506 +708,159 @@
         }
     }
 
-    // === How-quest gamified parcours (3-step quest, persona swap) ===
-    // Sticky section between the carousel and the FAQ. Two personas (Participant /
-    // Organisateur) swap the textual + icon contents of the 3 cards via
-    // PERSONA_CONTENT (single source of truth — none of the copy lives in HTML).
-    // Scroll-driven mechanics:
-    //   - Vertical numbered progress bar (.quest-progress-bar) fills lime as
-    //     JS writes the CSS custom property --progress (0..1) on it. CSS
-    //     consumes the value via a ::after pseudo with transform: scaleY().
-    //   - Each .quest-step has a data-unlock threshold (0..1). Once progress
-    //     crosses the threshold, the card receives `.is-unlocked` (early
-    //     unlock for sense-of-progression).
-    //   - Each .quest-progress-step node receives `.is-active` on a
-    //     SEPARATE threshold derived from its physical position inside
-    //     the bar: for N equidistant nodes, node i (0-indexed) activates
-    //     at progress >= (i + 0.5) / N — the exact moment the lime fill
-    //     bar (transform: scaleY(--progress)) reaches the node's centre.
-    //     Decoupled from the card unlock so the bar fill and node light-up
-    //     stay perfectly in visual sync (CSS turns the active node lime).
-    //   - When all 3 steps are unlocked, .quest-completion-pill is revealed
-    //     (removeAttribute('hidden') + .is-visible after a double rAF so the
-    //     CSS transition can play).
-    // Persona switch:
-    //   - Updates tabs' aria-selected / tabindex / .is-active.
-    //   - Writes --indicator-x / --indicator-w on .quest-persona-tabs so the
-    //     CSS sliding lime indicator (::before) glides under the active tab.
-    //   - Resets cards' visual state, swaps the content via updateStepContent,
-    //     then immediately re-applies the cached lastProgress so the cards
-    //     (and the progress-bar's --progress + .is-active progress-steps)
-    //     return to whatever scroll level the user is currently at — without
-    //     a flash of empty state.
-    // Performance contract (mirrors page-scroll-progress block above):
-    //   - measureQuestGeometry() centralises ALL layout reads (getBoundingClientRect
-    //     + window.scrollY/innerHeight). Called on load/resize/orientationchange
-    //     and once at init. NEVER called from the scroll listener.
-    //   - updateQuestScroll() is pure: reads only window.scrollY and cached
-    //     scalars, runs arithmetic, writes inline styles + classes.
-    //   - Scroll listener registers { passive: true }, rAF-coalesced via rafId.
-    //   - measurePillIndicator() runs on setup + persona swap + resize only —
-    //     never in the hot scroll path.
-    // Reduced-motion: skip the scroll path entirely; show all cards unlocked +
-    // completion pill visible + progress bar fully filled from setup.
+    // === How-quest editorial (persona swap, sliding indicator) ===
+    // Refonte 2026-05-12 : remplace l'ancien "parcours gamifié" (cartes verrouillées
+    // scroll-driven, barre de progression numérotée, pill de complétion) par un
+    // design éditorial 3 colonnes statiques. Plus de scroll-driven, plus de
+    // gamification — les 3 .quest-step restent visibles en permanence et leur
+    // contenu textuel est swappé par persona.
+    //
+    // Ce que ce bloc fait (et SEUL) :
+    //   1. Switch persona : clic sur les pills Participant / Organisateur bascule
+    //      la classe .is-active, aria-selected, tabindex sur les tabs.
+    //   2. Navigation clavier WAI-ARIA tabs : ArrowLeft / ArrowRight cycliques
+    //      avec wrap, Home → premier, End → dernier. Pattern roving-tabindex
+    //      strict : un seul tab a tabindex="0", les autres ont tabindex="-1".
+    //   3. Indicateur lime glissant : écrit --indicator-x / --indicator-w sur
+    //      .quest-persona-tabs (consommés par .quest-persona-tabs::before en CSS,
+    //      cf. styles.css §10.3). Calcul = activeTab.offsetLeft - PERSONA_TABS_PADDING
+    //      pour X, activeTab.offsetWidth pour W. Le padding du parent (.quest-persona-tabs
+    //      { padding: 4px } en CSS) compense le offset induit par l'offsetParent
+    //      paddé — c'est pour ça qu'on soustrait 4.
+    //   4. Remplit le contenu des 3 .quest-step (tag-label / title / body) au load
+    //      et à chaque switch de persona depuis PERSONA_CONTENT.
+    //   5. Synchro data-persona : écrit la valeur active sur <section.how-quest>
+    //      (hook CSS pour variations futures — pas utilisé pour l'instant mais
+    //      le contrat est défini).
+    //
+    // Re-mesure de l'indicateur : sur resize / orientationchange / load (le load
+    // est nécessaire pour que les webfonts custom n'introduisent pas de décalage
+    // entre fallback system et Inter chargée).
     {
-        const questSection = document.querySelector('.how-quest');
+        const questPanel    = document.querySelector('.how-quest');
+        const personaTabsEl = document.querySelector('.quest-persona-tabs');
+        const questTabs     = personaTabsEl ? Array.from(personaTabsEl.querySelectorAll('.quest-persona-tab')) : [];
+        const questSteps    = Array.from(document.querySelectorAll('.quest-step'));
 
-        if (questSection) {
-            // Single source of truth for persona-specific content. No copy or
-            // SVG icon string is duplicated in HTML — updateStepContent below
-            // writes title/body via textContent and the icon via innerHTML
-            // (icons are inline strings authored here, all heroicons-style:
-            // viewBox 0 0 24 24, fill="none", stroke="currentColor",
-            // stroke-width="1.75", round caps + joins).
+        if (questPanel && personaTabsEl && questTabs.length > 0 && questSteps.length > 0) {
+            // Single source of truth for persona-specific textual content. No
+            // copy is duplicated in HTML — renderPersona below writes
+            // tag / title / body via textContent.
             const PERSONA_CONTENT = {
                 participant: {
-                    completion: "Let's go !",
                     steps: [
-                        {
-                            title: "Trouve ton tournoi",
-                            body: "Filtre par sport, distance et date. On t'affiche ce qui se joue près de chez toi.",
-                            // Loupe (magnifying glass)
-                            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>'
-                        },
-                        {
-                            title: "Inscris ton équipe",
-                            body: "Compose ton roster, paye en ligne, reçois la confirmation. C'est plié en deux minutes.",
-                            // Shield with team marks (3 small dots inside the shield)
-                            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v5.5c0 4.5-3.2 8.5-8 9.5-4.8-1-8-5-8-9.5V6l8-3z"/><circle cx="9" cy="11" r="1.2"/><circle cx="15" cy="11" r="1.2"/><circle cx="12" cy="14.5" r="1.2"/></svg>'
-                        },
-                        {
-                            title: "Joue, suis, gagne",
-                            body: "Le jour J : check-in QR, scores en direct, arbre qui se met à jour. Tu n'as plus qu'à jouer.",
-                            // Trophy
-                            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v4a5 5 0 01-10 0V4z"/><path d="M17 5h2a2 2 0 010 4 4 4 0 01-3 2"/><path d="M7 5H5a2 2 0 000 4 4 4 0 003 2"/></svg>'
-                        }
+                        { tag: 'Recherche',    title: 'Trouve ton tournoi',  body: "Filtre par sport, distance et date. On t'affiche ce qui se joue près de chez toi." },
+                        { tag: 'Inscription',  title: 'Inscris ton équipe',  body: "Compose ton roster, paye en ligne, reçois la confirmation. C'est plié en deux minutes." },
+                        { tag: 'Match day',    title: 'Joue, suis, gagne',   body: "Le jour J : check-in QR, scores en direct, arbre qui se met à jour. Tu n'as plus qu'à jouer." }
                     ]
                 },
                 organisateur: {
-                    completion: "Let's go !",
                     steps: [
-                        {
-                            title: "Créez votre tournoi",
-                            body: "Renseignez format, dates, lots. Notre assistant vous guide étape par étape.",
-                            // Calendar with a plus
-                            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17"/><path d="M8 3v4"/><path d="M16 3v4"/><path d="M12 13v4"/><path d="M10 15h4"/></svg>'
-                        },
-                        {
-                            title: "Recevez les inscriptions",
-                            body: "Les équipes s'inscrivent et paient via Yamatch. Vous suivez le remplissage en temps réel.",
-                            // Users with a check mark
-                            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M16 5.5l1.7 1.7L21 4"/></svg>'
-                        },
-                        {
-                            title: "Lancez le jour J",
-                            body: "Check-in, scores, arbre : tout est piloté depuis votre tableau de bord. Vos arbitres reçoivent leurs matchs.",
-                            // Play button inside a circle
-                            icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5l6 3.5-6 3.5v-7z"/></svg>'
-                        }
+                        { tag: 'Création',     title: 'Créez votre tournoi',       body: "Renseignez format, dates, lots. Notre assistant vous guide étape par étape." },
+                        { tag: 'Inscriptions', title: 'Recevez les inscriptions',  body: "Les équipes s'inscrivent et paient via Yamatch. Vous suivez le remplissage en temps réel." },
+                        { tag: 'Jour J',       title: 'Lancez le jour J',          body: "Check-in, scores, arbre : tout est piloté depuis votre tableau de bord." }
                     ]
                 }
             };
 
-            // Cached refs (each is queried once at setup and reused in every
-            // handler — no per-tick querySelector cost).
-            const questPanel = document.querySelector('#questStepsPanel');
-            const personaTabsEl = document.querySelector('.quest-persona-tabs');
-            const questTabs = document.querySelectorAll('.quest-persona-tab');
-            const questSteps = document.querySelectorAll('.quest-step');
-            const completionPill = document.querySelector('.quest-completion-pill');
-            // Vertical numbered progress bar (consumes --progress 0..1) and
-            // its three numbered <li> nodes (each receives `.is-active` once
-            // its corresponding .quest-step crosses its data-unlock threshold).
-            // Matched to .quest-step cards via data-step (1/2/3).
-            const progressBar = document.querySelector('.quest-progress-bar');
-            const progressSteps = document.querySelectorAll('.quest-progress-step');
+            // Padding du parent .quest-persona-tabs (CSS styles.css §10.3 :
+            // `.quest-persona-tabs { padding: 4px }`). offsetLeft du tab actif
+            // est mesuré par rapport à l'offsetParent (le parent paddé), donc
+            // pour aligner l'indicateur ::before (déjà à `left: 4px`) on
+            // soustrait ce padding du translateX.
+            const PERSONA_TABS_PADDING = 4;
 
-            // State.
-            const state = { persona: 'participant' };
-            // Last computed scroll progress (0..1). Persisted so applyPersona
-            // can re-apply the same progress immediately after a persona swap
-            // without waiting for the next scroll event.
-            let lastProgress = 0;
-            // Timeout id for the deferred [hidden] re-application on the
-            // completion pill. The CSS opacity transition is 320ms; we wait
-            // 360ms (40ms margin) before adding the hidden attribute back so
-            // the fade-out has time to render.
-            let completionHideTimer = null;
-            // Geometry caches — refreshed only by measureQuestGeometry() on
-            // load/resize/orientationchange. updateQuestScroll() reads these
-            // (plus window.scrollY) and never re-queries the DOM.
-            //   staticQuestTop = page-coordinate top of .how-quest (scroll-independent).
-            //   questHeight    = section's total height minus one viewport
-            //                    (= the scrollable distance over which progress
-            //                     interpolates 0..1).
-            let staticQuestTop = 0;
-            let questHeight = 1; // initial sentinel — avoids division by zero
-            let rafId = null;
-
-            const reduceMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-
-            // === Helpers ===
-
-            // Centralises ALL layout reads. Mirrors measureScrollAnimationGeometry
-            // in the page-scroll-progress block above — call only on
-            // load/resize/orientationchange + once at init. The result feeds
-            // updateQuestScroll's pure arithmetic path.
-            const measureQuestGeometry = () => {
-                const rect = questSection.getBoundingClientRect();
-                staticQuestTop = window.scrollY + rect.top;
-                // The section is sticky-pinned for ~rect.height pixels; once
-                // the section's bottom passes the viewport bottom, progress
-                // hits 1. The scrollable range is therefore (rect.height − vh).
-                // Math.max(1, ...) guards against rect.height <= vh edge cases
-                // and the initial pre-layout snapshot (avoids /0 in updateQuestScroll).
-                questHeight = Math.max(1, rect.height - window.innerHeight);
-            };
-
-            // Apply scroll-progress effects to the DOM. Pure write path.
-            //   1. Vertical progress-bar fill (--progress 0..1 on .quest-progress-bar).
-            //   2. Per-step unlock on .quest-step cards (class toggle).
-            //   3. Per-step .is-active toggle on .quest-progress-step nodes
-            //      (gated on a SEPARATE per-node threshold derived from
-            //      the node's physical position inside the bar:
-            //      (i + 0.5) / N — the moment the lime fill physically
-            //      reaches the node's centre. Decoupled from the cards'
-            //      data-unlock so the bar fill and node light-up stay in
-            //      perfect visual sync).
-            //   4. Completion pill reveal/hide.
-            const applyProgress = (progress) => {
-                // 1. Vertical progress-bar fill. CSS consumes --progress on
-                // the .quest-progress-bar root via a ::after pseudo with
-                // transform: scaleY(var(--progress, 0)) — pure GPU paint.
-                if (progressBar) {
-                    progressBar.style.setProperty('--progress', progress.toString());
-                }
-
-                // 2. Cards. Keep the early-unlock thresholds (data-unlock:
-                // 0.12 / 0.42 / 0.72 in HTML) so each card lights up well
-                // before the lime fill physically arrives at its row — gives
-                // the user a sense of forward momentum as they scroll into
-                // the section.
-                let unlockedCount = 0;
-                questSteps.forEach((step) => {
-                    const threshold = parseFloat(step.dataset.unlock);
-                    const isUnlocked = Number.isFinite(threshold) && progress >= threshold;
-                    if (isUnlocked) {
-                        step.classList.add('is-unlocked');
-                        unlockedCount++;
-                    } else {
-                        step.classList.remove('is-unlocked');
-                    }
-                });
-
-                // 3. Numbered progress-step nodes activate exactly when the
-                // lime fill bar physically reaches each node's centre — NOT
-                // on the same threshold as the cards. The bar fill is driven
-                // by `transform: scaleY(var(--progress))` on
-                // `.quest-progress-bar::after` (CSS §10.5), which scales from
-                // top down to bottom up linearly with `progress`. Inside the
-                // bar, the N nodes are equidistant (CSS:
-                // justify-content: space-between on `.quest-progress-bar`),
-                // so node `i` (0-indexed, top → bottom) is centred at
-                // `(i + 0.5) / N` of the bar's height. We use that fraction
-                // as the activation threshold: the node lights up at the
-                // very moment the lime fill catches up to it, eliminating
-                // the visual desync where node 2 was previously turning
-                // lime at progress 0.42 (card unlock) while the bar fill
-                // didn't reach node 2's centre until progress ≈ 0.5.
-                // Matched in DOM order — HTML lists nodes 1/2/3 top-to-bottom
-                // (see index.html lines 214/219/224), which is the same
-                // visual order the bar fill traverses.
-                const nodeCount = progressSteps.length;
-                progressSteps.forEach((node, i) => {
-                    const nodeThreshold = (i + 0.5) / nodeCount;
-                    node.classList.toggle('is-active', progress >= nodeThreshold);
-                });
-
-                // 4. Completion pill — visible only when all steps are unlocked.
-                if (questSteps.length > 0 && unlockedCount === questSteps.length) {
-                    showCompletionPill();
-                } else {
-                    hideCompletionPill();
-                }
-            };
-
-            // Reveal the completion pill. Idempotent: safe to call repeatedly
-            // while already visible (no-op aside from cancelling a pending
-            // hide-timer). The double rAF is necessary when transitioning out
-            // of [hidden]: removing the attribute switches `display` from
-            // `none` to `inline-flex` (CSS spec — UA `[hidden] { display:none }`
-            // overridden by .quest-completion-pill { display: inline-flex }),
-            // and the browser needs one frame to apply that before we can flip
-            // .is-visible and have the opacity/scale transition play.
-            const showCompletionPill = () => {
-                if (!completionPill) return;
-                if (completionHideTimer) {
-                    clearTimeout(completionHideTimer);
-                    completionHideTimer = null;
-                }
-                if (completionPill.hasAttribute('hidden')) {
-                    completionPill.removeAttribute('hidden');
-                    requestAnimationFrame(() => {
-                        requestAnimationFrame(() => {
-                            completionPill.classList.add('is-visible');
-                        });
-                    });
-                } else {
-                    completionPill.classList.add('is-visible');
-                }
-            };
-
-            // Hide the completion pill. Removes .is-visible immediately so the
-            // CSS transition (opacity + scale, 320ms) plays the fade-out, then
-            // re-adds [hidden] after 360ms (40ms margin past the transition)
-            // so the element returns to display:none and stops occupying any
-            // accessible / layout role.
-            const hideCompletionPill = () => {
-                if (!completionPill) return;
-                if (completionHideTimer) {
-                    clearTimeout(completionHideTimer);
-                    completionHideTimer = null;
-                }
-                // Already fully hidden — nothing to do.
-                if (!completionPill.classList.contains('is-visible') && completionPill.hasAttribute('hidden')) {
-                    return;
-                }
-                completionPill.classList.remove('is-visible');
-                completionHideTimer = setTimeout(() => {
-                    completionPill.setAttribute('hidden', '');
-                    completionHideTimer = null;
-                }, 360);
-            };
-
-            // Swap the textual + icon contents of all 3 step cards + the
-            // completion pill text to match the active persona. Uses
-            // textContent for title/body (safe) and innerHTML for the icon
-            // (the SVG strings are author-controlled constants — no user
-            // input crosses this boundary).
-            const updateStepContent = (persona) => {
-                const content = PERSONA_CONTENT[persona];
-                if (!content) return;
+            // Remplit les 3 .quest-step (tag-label / title / body) depuis
+            // PERSONA_CONTENT et écrit data-persona sur la section.
+            // textContent uniquement — pas d'icônes / pas d'innerHTML.
+            const renderPersona = (persona) => {
+                const data = PERSONA_CONTENT[persona];
+                if (!data) return;
+                questPanel.dataset.persona = persona;
                 questSteps.forEach((step, i) => {
-                    const stepData = content.steps[i];
+                    const stepData = data.steps[i];
                     if (!stepData) return;
-                    const titleEl = step.querySelector('.quest-step-title');
-                    const bodyEl = step.querySelector('.quest-step-body');
-                    const iconEl = step.querySelector('.quest-step-icon');
-                    if (titleEl) titleEl.textContent = stepData.title;
-                    if (bodyEl) bodyEl.textContent = stepData.body;
-                    if (iconEl) iconEl.innerHTML = stepData.icon;
+                    const tagLabel = step.querySelector('.quest-step-tag-label');
+                    const title    = step.querySelector('.quest-step-title');
+                    const body     = step.querySelector('.quest-step-body');
+                    if (tagLabel) tagLabel.textContent = stepData.tag;
+                    if (title)    title.textContent    = stepData.title;
+                    if (body)     body.textContent     = stepData.body;
                 });
-                if (completionPill) completionPill.textContent = content.completion;
             };
 
-            // Update tabs + tabpanel ARIA wiring for the active persona.
-            //   - .is-active class flips for the visual highlight.
-            //   - aria-selected reflects WAI-ARIA tab pattern (one true, others false).
-            //   - tabindex: roving-tabindex pattern — only the active tab is in
-            //     the document tab order; arrow keys move focus between tabs.
-            //   - aria-labelledby on the tabpanel updates so screen readers
-            //     announce the active tab as the panel's accessible name.
-            const updateTabs = (persona) => {
-                questTabs.forEach((tab) => {
-                    const isActive = tab.dataset.persona === persona;
+            // Indicateur lime glissant : écrit --indicator-x / --indicator-w
+            // sur .quest-persona-tabs (consommés par ::before en CSS). Lecture
+            // de offsetLeft / offsetWidth uniquement — pas d'écriture de
+            // layout, un seul forced-layout par appel. Appelée à init, à
+            // chaque switch de tab, et sur resize / orientationchange / load.
+            const measurePillIndicator = () => {
+                const active = questTabs.find((t) => t.classList.contains('is-active'));
+                if (!active) return;
+                personaTabsEl.style.setProperty('--indicator-x', `${active.offsetLeft - PERSONA_TABS_PADDING}px`);
+                personaTabsEl.style.setProperty('--indicator-w', `${active.offsetWidth}px`);
+            };
+
+            // Bascule l'état actif (classe + ARIA + roving-tabindex) puis
+            // re-render le contenu et re-mesure l'indicateur. Idempotent :
+            // appeler avec l'index déjà actif est sûr (les écritures sont
+            // toutes des set/toggle déterministes).
+            const setActiveTab = (idx) => {
+                if (idx < 0 || idx >= questTabs.length) return;
+                questTabs.forEach((tab, i) => {
+                    const isActive = i === idx;
                     tab.classList.toggle('is-active', isActive);
                     tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
                     tab.setAttribute('tabindex', isActive ? '0' : '-1');
                 });
-                if (questPanel) {
-                    const activeTab = Array.from(questTabs).find((t) => t.dataset.persona === persona);
-                    if (activeTab && activeTab.id) {
-                        questPanel.setAttribute('aria-labelledby', activeTab.id);
+                renderPersona(questTabs[idx].dataset.persona);
+                measurePillIndicator();
+            };
+
+            // Click + keyboard handlers (WAI-ARIA tab pattern).
+            //   ArrowLeft  → previous tab, wrap to last
+            //   ArrowRight → next tab, wrap to first
+            //   Home       → first tab
+            //   End        → last tab
+            // Sur navigation clavier on déplace AUSSI le focus, conformément
+            // au pattern roving-tabindex. Enter / Space sur un <button>
+            // déclenchent nativement click, donc pas besoin de handler dédié.
+            questTabs.forEach((tab, i) => {
+                tab.addEventListener('click', () => setActiveTab(i));
+                tab.addEventListener('keydown', (e) => {
+                    let targetIdx = null;
+                    if (e.key === 'ArrowLeft') {
+                        targetIdx = i === 0 ? questTabs.length - 1 : i - 1;
+                    } else if (e.key === 'ArrowRight') {
+                        targetIdx = i === questTabs.length - 1 ? 0 : i + 1;
+                    } else if (e.key === 'Home') {
+                        targetIdx = 0;
+                    } else if (e.key === 'End') {
+                        targetIdx = questTabs.length - 1;
                     }
-                }
-            };
-
-            // Reset every step card's VISUAL unlock state. Called by
-            // applyPersona before re-applying lastProgress. Critically does
-            // NOT touch the .quest-progress-bar's --progress nor the
-            // .quest-progress-step .is-active classes — the progress bar
-            // represents the scroll, not the persona, so a mid-scroll persona
-            // swap must leave the bar exactly where it is. The subsequent
-            // applyProgress(lastProgress) re-toggles .is-active on the
-            // progress-steps from scratch anyway (using the (i + 0.5) / N
-            // physical-position thresholds, independent of the cards'
-            // data-unlock), so even this comment-level distinction is
-            // just defensive: the visible result would be identical either
-            // way, but skipping the explicit reset avoids a one-frame flash
-            // of empty bar.
-            const resetStepVisualState = () => {
-                questSteps.forEach((step) => {
-                    step.classList.remove('is-unlocked');
+                    if (targetIdx === null) return;
+                    e.preventDefault();
+                    setActiveTab(targetIdx);
+                    questTabs[targetIdx].focus();
                 });
-                hideCompletionPill();
-            };
+            });
 
-            // Measure the active tab's offset/width and write the two custom
-            // properties consumed by the .quest-persona-tabs::before sliding
-            // indicator (CSS rule in styles.css §10.3). Math:
-            //   - .quest-persona-tabs has padding: 4px and position: relative.
-            //   - The ::before pseudo has top: 4px; left: 4px; width:
-            //     var(--indicator-w); transform: translateX(var(--indicator-x)).
-            //     `left: 4px` is its baseline X.
-            //   - The active tab's offsetLeft is measured against the offsetParent
-            //     (the padded .quest-persona-tabs), so the first tab's offsetLeft
-            //     equals the parent's padding-left (= 4px); subsequent tabs add
-            //     their preceding siblings + gap.
-            //   - To park the pseudo flush around the active tab we want its
-            //     visual left = activeTab.offsetLeft. Since the pseudo is
-            //     already at left: 4px, we need translateX = offsetLeft - 4.
-            // No layout writes inside this function (we only read offsetLeft /
-            // offsetWidth then write two custom properties), so the cost is one
-            // forced layout per call. Called only on setup + persona swap +
-            // resize / orientationchange — never in the hot scroll path.
-            const PERSONA_TABS_PADDING = 4; // matches CSS .quest-persona-tabs { padding: 4px }
-            const measurePillIndicator = () => {
-                if (!personaTabsEl) return;
-                const activeTab = personaTabsEl.querySelector('.quest-persona-tab.is-active');
-                if (!activeTab) return;
-                const indicatorX = activeTab.offsetLeft - PERSONA_TABS_PADDING;
-                const indicatorW = activeTab.offsetWidth;
-                personaTabsEl.style.setProperty('--indicator-x', `${indicatorX}px`);
-                personaTabsEl.style.setProperty('--indicator-w', `${indicatorW}px`);
-            };
+            // Init : si un tab porte déjà .is-active dans le HTML (cas par
+            // défaut "Participant"), on s'aligne dessus ; sinon on prend le
+            // premier. setActiveTab fait le render initial + la première mesure
+            // de l'indicateur.
+            const initialIdx = Math.max(0, questTabs.findIndex((t) => t.classList.contains('is-active')));
+            setActiveTab(initialIdx);
 
-            // Persona switch handler. Idempotent on same-persona call.
-            // Pipeline: data-persona attr → tabs ARIA → sliding indicator
-            // re-measure → visual reset → content swap → re-apply lastProgress.
-            // The re-apply makes the newly-swapped cards unlock immediately
-            // if the user is already scrolled past their thresholds (no need
-            // to wait for a fresh scroll event). The progress-bar fill
-            // (--progress) and its .is-active step nodes are preserved /
-            // rebuilt by applyProgress, so the bar never flashes empty.
-            const applyPersona = (persona) => {
-                if (persona === state.persona) return;
-                if (!PERSONA_CONTENT[persona]) return;
-                state.persona = persona;
-                questSection.setAttribute('data-persona', persona);
-
-                updateTabs(persona);
-                measurePillIndicator();
-                resetStepVisualState();
-                updateStepContent(persona);
-                applyProgress(lastProgress);
-            };
-
-            // Pure per-frame writer. NO layout reads — only window.scrollY (a
-            // single property read, no layout invalidation) plus cached scalars.
-            // All side-effects funnel through applyProgress.
-            const updateQuestScroll = () => {
-                rafId = null;
-                const scrollY = window.scrollY;
-                const offset = scrollY - staticQuestTop;
-                let progress = offset / questHeight;
-                if (progress < 0) progress = 0;
-                else if (progress > 1) progress = 1;
-
-                lastProgress = progress;
-                applyProgress(progress);
-            };
-
-            // WAI-ARIA tabs keyboard pattern: ArrowLeft/ArrowRight cycle
-            // (with wrap), Home jumps to first, End to last. Click also wired
-            // here for parity. Enter / Space activate the focused tab natively
-            // because the tabs are <button type="button"> — no extra handler
-            // needed (their click event fires).
-            const setupPersonaKeyboardNavigation = () => {
-                const tabsArr = Array.from(questTabs);
-                questTabs.forEach((tab) => {
-                    tab.addEventListener('keydown', (e) => {
-                        const idx = tabsArr.indexOf(tab);
-                        let targetIdx = null;
-                        if (e.key === 'ArrowLeft') {
-                            targetIdx = idx === 0 ? tabsArr.length - 1 : idx - 1;
-                        } else if (e.key === 'ArrowRight') {
-                            targetIdx = idx === tabsArr.length - 1 ? 0 : idx + 1;
-                        } else if (e.key === 'Home') {
-                            targetIdx = 0;
-                        } else if (e.key === 'End') {
-                            targetIdx = tabsArr.length - 1;
-                        }
-                        if (targetIdx === null) return;
-                        e.preventDefault();
-                        const targetTab = tabsArr[targetIdx];
-                        applyPersona(targetTab.dataset.persona);
-                        targetTab.focus();
-                    });
-                    tab.addEventListener('click', () => {
-                        applyPersona(tab.dataset.persona);
-                    });
-                });
-            };
-
-            // === Init ===
-
-            // Always render initial textual content (participant is the default
-            // persona, matched by the [data-persona="participant"] attribute on
-            // the section in HTML and by state.persona above).
-            updateStepContent(state.persona);
-            setupPersonaKeyboardNavigation();
-            // First indicator measure runs after the initial content render so
-            // the active tab has its final layout width (font has at least the
-            // system fallback at this point — the load listener below
-            // re-measures once webfonts settle, in case the metric width
-            // drifts).
-            measurePillIndicator();
-
-            if (reduceMotionQuery.matches) {
-                // Reduced-motion path: skip all scroll wiring, render the final
-                // state immediately (every step unlocked, completion pill
-                // visible, progress bar fully filled, every progress-step .is-active).
-                // The persona-swap pipeline still works (clicking a tab calls
-                // applyPersona → measurePillIndicator → resetStepVisualState →
-                // applyProgress(lastProgress)). We seed lastProgress to 1 so
-                // a subsequent persona swap immediately re-unlocks all cards
-                // and re-fills the progress bar.
-                questSteps.forEach((step) => {
-                    step.classList.add('is-unlocked');
-                });
-                progressSteps.forEach((node) => node.classList.add('is-active'));
-                if (progressBar) progressBar.style.setProperty('--progress', '1');
-                lastProgress = 1;
-                showCompletionPill();
-                // Re-measure the pill indicator on resize (responsive widths)
-                // and once the document fully loads (webfonts can shift the
-                // active tab's width by a pixel or two between system fallback
-                // and Inter). Cheap operation — no rAF coalescing needed
-                // because resize already fires at most once per browser frame.
-                window.addEventListener('resize', measurePillIndicator, { passive: true });
-                window.addEventListener('orientationchange', measurePillIndicator, { passive: true });
-                window.addEventListener('load', measurePillIndicator, { passive: true });
-                return;
-            }
-
-            // Normal (motion-allowed) path.
-            measureQuestGeometry();
-
-            const onScroll = () => {
-                if (!rafId) rafId = requestAnimationFrame(updateQuestScroll);
-            };
-            // Layout-affecting events: re-measure the section geometry AND
-            // the pill indicator (its tab width is responsive via the
-            // tab font-size clamp), then schedule a tick so the visual state
-            // matches the new geometry on the next frame.
-            const onLayoutChange = () => {
-                measureQuestGeometry();
-                measurePillIndicator();
-                if (!rafId) rafId = requestAnimationFrame(updateQuestScroll);
-            };
-
-            window.addEventListener('scroll', onScroll, { passive: true });
-            window.addEventListener('resize', onLayoutChange, { passive: true });
-            window.addEventListener('orientationchange', onLayoutChange, { passive: true });
-            // Re-measure once webfonts settle — the section's height can shift
-            // a few pixels between system fallback and Inter loading, and the
-            // active tab's width can shift correspondingly.
-            window.addEventListener('load', onLayoutChange, { passive: true });
-
-            // First tick to apply the initial state for whatever scroll
-            // position the page loaded at (e.g. user navigates back with a
-            // scroll restore mid-section).
-            requestAnimationFrame(updateQuestScroll);
+            // Re-mesure de l'indicateur sur événements layout-affecting. Le
+            // `load` est crucial : entre system-fallback et Inter (custom
+            // webfont), la largeur des labels peut shifter de quelques pixels,
+            // décalant l'indicateur. Pas de rAF-throttling nécessaire — ces
+            // events ne firent qu'une fois (ou au plus une fois par frame
+            // browser pour resize), et la fonction est purement passive.
+            window.addEventListener('resize', measurePillIndicator, { passive: true });
+            window.addEventListener('orientationchange', measurePillIndicator, { passive: true });
+            window.addEventListener('load', measurePillIndicator, { passive: true });
         }
     }
 
