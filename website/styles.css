@@ -262,20 +262,46 @@ p {
     /* `width: max-content` lets the row size to its 4 spans + 3 inter-gaps
        intrinsic width; `min-width: 200%` guarantees the row is at least
        twice the viewport so the -50% keyframe never reveals an empty edge
-       even if the message is very short. */
+       even if the message is very short.
+
+       Seamless-loop math: 4 spans (S) with `gap` (G) yield 3 internal gaps
+       and a track width of `4S + 3G`. The `-50%` keyframe translates by
+       `2S + 1.5G`, but the natural repetition period of the pattern is
+       `2S + 2G` (2 spans + their bracketing gaps). The 0.5G mismatch
+       produced a visible micro-jump on every loop. Closing the loop with
+       `padding-right: var(--ticker-gap)` makes the track width `4S + 4G`,
+       so `-50% = 2S + 2G` lands exactly on a repetition point — fully
+       seamless. The gap value is hoisted into a local custom property so
+       the `padding-right` always matches the `gap` precisely. */
+    --ticker-gap: clamp(56px, 8vw, 96px);
     width: max-content;
     min-width: 200%;
-    gap: clamp(56px, 8vw, 96px);
+    gap: var(--ticker-gap);
+    padding-right: var(--ticker-gap);
     white-space: nowrap;
     will-change: transform;
-    animation: launchTickerScroll 18s linear infinite;
+    /* `backface-visibility: hidden` is a compositor-stability hint:
+       promotes the element onto its own GPU layer with no back-face
+       culling cost, which on high-DPR displays smooths sub-pixel
+       interpolation of `translate3d` under a `linear` timing function
+       (the most demanding case — no easing to mask jitter). */
+    backface-visibility: hidden;
+    /* Slowed from 18s → 36s (×2) per user request: a more contemplative,
+       premium pace. Combined with the seamless-loop fix above and the
+       lighter typography below, the bar reads as calm rather than urgent. */
+    animation: launchTickerScroll 36s linear infinite;
 }
 
 .launch-ticker__track span {
     flex: 0 0 auto;
     font-family: var(--font-body);
-    font-size: clamp(11px, 1.4vw, 13px);
-    font-weight: 800;
+    /* Reduced ~15% (was clamp(11px, 1.4vw, 13px)) — a smaller body size
+       feels more discreet against the lime background. */
+    font-size: clamp(9.5px, 1.1vw, 11px);
+    /* Regular weight (was 800) — uppercase + tracking already command
+       attention; dropping to 400 removes the "headline shouting" tone
+       and lets the bar sit quietly above the hero. */
+    font-weight: 400;
     line-height: 1;
     letter-spacing: 0.04em;
     text-transform: uppercase;
@@ -4010,6 +4036,10 @@ p {
         animation: none;
         transform: none;
         min-width: 0;
+        /* Reset the seamless-loop padding (only meaningful when the
+           animation runs); leaving it would shift the lone surviving
+           span off-centre under `justify-content: center`. */
+        padding-right: 0;
     }
     .launch-ticker__track span:not(:first-child) {
         display: none;
