@@ -1997,7 +1997,23 @@ p {
     z-index: 5;
     translate: 0 var(--parallax-y, 0px);
     transform: translateZ(0);
-    will-change: translate;
+    /* `will-change: translate, transform` — list BOTH the individual
+       `translate` property (which JS animates via --parallax-y at 60Hz via
+       the rAF lerp loop, see script.js ~L1557) AND the `transform`
+       shorthand (carrying the static `translateZ(0)` compositor hint
+       above). Listing only `translate` left the browser free to treat the
+       `transform: translateZ(0)` GPU-layer promotion as a separate
+       optimisation track — on Safari this manifested as paint
+       invalidations at each parallax tick (the `translate` write would
+       compose on the GPU layer, but the layer itself was being
+       invalidated/repainted because the browser didn't connect the two
+       hints). Adding `transform` to the will-change list explicitly
+       binds the layer's lifetime to both properties — both are now
+       composited together, paint-free. Pair with the inner wrapper's
+       `will-change: transform` (line ~2168) which keeps the levitation
+       keyframe on its own GPU layer; the two layers can then animate
+       independently without forcing a re-rasterisation of the other. */
+    will-change: translate, transform;
     backface-visibility: hidden;
 }
 
@@ -2158,16 +2174,48 @@ p {
    badge (6) bobs the least (-10px) to keep the CTA readable. */
 .floating-card-inner {
     animation: floating-levitate-1 4.5s ease-in-out infinite;
+    /* GPU layer promotion (2026-05-12, jitter fix v2) — without these
+       hints the levitation keyframe `transform: translate3d(0, Yp, 0)`
+       runs on the SAME GPU layer as the parent `.floating-card-parallax`
+       (one layer for the whole subtree). At each parallax tick the
+       parent's `translate: 0 var(--parallax-y)` write causes the shared
+       layer to be re-rastered, including the inner's animated transform
+       — which on Safari produces visible micro-saccades on the cards
+       with the most visually complex contents (Card 2 scoreboard rows +
+       lime accent on winning team; Card 3 four avatar tiles with
+       borders).
+       `will-change: transform` + `backface-visibility: hidden` together
+       force Safari/Chromium to allocate this element to its OWN GPU
+       layer, separate from the parent's. The parent's parallax translate
+       and the inner's levitation animation then composite INDEPENDENTLY,
+       with no shared rasterisation cost — each layer is animated
+       directly on the compositor thread.
+       Cost: one extra GPU layer per card (≈ card box size × 4 bytes/px).
+       Cards are 230–400 px wide × 80–180 px tall, so each layer is at
+       most ~290 KB of VRAM. With 4 cards visible on desktop (1, 2, 3, 6)
+       the total overhead is ~1.2 MB — trivial on any modern integrated
+       GPU. Mobile (≤ 767px) is unaffected: the entire
+       `.floating-card-parallax` element is `display: none !important`
+       (§17, line ~4216), so the inner never paints — no layer is
+       allocated, no VRAM is consumed. */
+    will-change: transform;
+    backface-visibility: hidden;
 }
 .floating-card-parallax[data-card-id="1"] .floating-card-inner { animation-name: floating-levitate-1; animation-duration: 4.5s; }
 .floating-card-parallax[data-card-id="2"] .floating-card-inner { animation-name: floating-levitate-2; animation-duration: 5.2s; }
 .floating-card-parallax[data-card-id="3"] .floating-card-inner { animation-name: floating-levitate-3; animation-duration: 6.0s; }
 .floating-card-parallax[data-card-id="6"] .floating-card-inner { animation-name: floating-levitate-6; animation-duration: 5.0s; }
 
-@keyframes floating-levitate-1 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
-@keyframes floating-levitate-2 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-18px); } }
-@keyframes floating-levitate-3 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-@keyframes floating-levitate-6 { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+/* `translate3d(0, Yp, 0)` not `translateY(Yp)` — the explicit Z component
+   is the canonical Safari/iOS-WebKit cue that forces a 3D rendering
+   context. Combined with `will-change: transform` on the host above,
+   guarantees the animation is composited on the GPU thread, never
+   re-rasterised on main during the parent's scroll-driven parallax
+   translate writes. Visual result is identical to translateY (Z = 0). */
+@keyframes floating-levitate-1 { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -14px, 0); } }
+@keyframes floating-levitate-2 { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -18px, 0); } }
+@keyframes floating-levitate-3 { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -12px, 0); } }
+@keyframes floating-levitate-6 { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -10px, 0); } }
 
 
 /* ---- Card 1 : iOS-style notification ------------------------------------ */
