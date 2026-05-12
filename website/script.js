@@ -1280,9 +1280,9 @@
 
         // Embedded wordmark (centred logo) — Yamatch SVG with viewBox
         // 0 0 1067.73 206.13 (aspect ratio ≈ 5.181:1, wide & short).
-        // The <image href="wordmark.svg"> resolves relative to the host HTML
-        // document (`website/index.html`), so the bare filename is correct.
-        const LOGO_HREF = 'wordmark.svg';
+        // The <image href="assets/wordmark.svg"> resolves relative to the host
+        // HTML document (`website/index.html`), so the path is relative to it.
+        const LOGO_HREF = 'assets/wordmark.svg';
         const LOGO_ASPECT = 1067.73 / 206.13;
         const LOGO_WIDTH_RATIO = 0.42;  // 42% of QR width — visible without overwhelming the pattern
 
