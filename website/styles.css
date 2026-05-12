@@ -1968,11 +1968,12 @@ p {
 /* Card 3 — moved up + pulled in (2026-05-12). Previous placement
    (`top: 35%; right: -5%`) put it mid-section and bled too far past the
    right edge. The user wants it near the `.how-quest-eyebrow` "PARCOURS"
-   row, so `top: 6%` anchors it just below the section's `padding-block`
-   top (the section's editorial header starts there). `right: 3%` keeps
-   the bleed minimal — the card sits mostly inside the viewport with
-   just its right edge peeking past the gutter. */
-.floating-card-parallax[data-card-id="3"] { top: 6%;   right: 3%;  left: auto; rotate: 3deg; }   /* team grid — haut-droite */
+   row, so `top: 2%` anchors it right at the top of the section's
+   `padding-block` (the editorial header starts there), nudged up from
+   the original `6%` per user feedback ("encore un peu"). `right: 3%`
+   keeps the bleed minimal — the card sits mostly inside the viewport
+   with just its right edge peeking past the gutter. */
+.floating-card-parallax[data-card-id="3"] { top: 2%;   right: 3%;  left: auto; rotate: 3deg; }   /* team grid — haut-droite */
 .floating-card-parallax[data-card-id="5"] { bottom: 8%; left: 6%;  rotate: 10deg; }  /* streak lime — bas-gauche */
 
 /* Cards inside `.faq` (host: position: relative + overflow-x: clip via §11) */
