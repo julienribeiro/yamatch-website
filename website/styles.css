@@ -1963,7 +1963,7 @@ p {
    The rotate `-8deg` is preserved from the previous placement so the
    card keeps its identity tilt. Repositioned 2026-05-12 (user request:
    move from bottom-right to left-of-CTAs). */
-.floating-card-parallax[data-card-id="1"] { top: auto; bottom: 14%; right: auto; left: 2%; rotate: -8deg; }
+.floating-card-parallax[data-card-id="1"] { top: auto; bottom: 22%; right: auto; left: 2%; rotate: -8deg; }
 /* Cards inside `.how-quest` (host: position: relative + overflow-x: clip via §10.1) */
 /* Card 3 — moved up + pulled in (2026-05-12). Previous placement
    (`top: 35%; right: -5%`) put it mid-section and bled too far past the
@@ -4130,7 +4130,7 @@ p {
        centre lines up with the CTAs row rather than sitting near the hero
        floor; the offset is smaller than desktop's `14%` because mobile CTAs
        sit relatively higher in the lime card on tall narrow viewports. */
-    .floating-card-parallax[data-card-id="1"] { top: auto; bottom: 10%; right: auto; left: -6%; }
+    .floating-card-parallax[data-card-id="1"] { top: auto; bottom: 16%; right: auto; left: -6%; }
     /* Cards hosted by `.faq` on mobile */
     .floating-card-parallax[data-card-id="2"] { top: 8%;   right: -8%; }
     .floating-card-parallax[data-card-id="4"] { top: 50%;  left: -12%; }
