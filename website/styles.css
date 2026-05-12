@@ -358,8 +358,18 @@ p {
 }
 
 @keyframes launchTickerScroll {
-    from { transform: translate3d(0, 0, 0); }
-    to   { transform: translate3d(-50%, 0, 0); }
+    /* `--ticker-start-offset` (px) is set on `.launch-ticker__track` by an
+       IIFE in script.js to visually centre the first span on page load
+       (mobile primarily — desktop receives a larger offset by virtue of
+       wider viewports relative to the span width). Adding the same offset
+       to BOTH `from` and `to` shifts the whole animation timeline without
+       changing the translation distance: it remains exactly `-50%` of the
+       track width = `4(S+G)` with 8 spans = an integer multiple of the
+       repetition period `S+G`, so the seamless-loop math is preserved.
+       The `0px` fallback ensures pages where the IIFE does not run (or
+       where `.launch-ticker` is absent) still animate correctly from 0. */
+    from { transform: translate3d(var(--ticker-start-offset, 0px), 0, 0); }
+    to   { transform: translate3d(calc(var(--ticker-start-offset, 0px) - 50%), 0, 0); }
 }
 
 

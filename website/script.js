@@ -1629,3 +1629,102 @@
     requestAnimationFrame(render);
 })();
 
+
+/* ==========================================================================
+   LAUNCH-TICKER START OFFSET — center first span at t=0
+   --------------------------------------------------------------------------
+   Contract with css-expert:
+     @keyframes launchTickerScroll {
+         from { transform: translate3d(var(--ticker-start-offset, 0px), 0, 0); }
+         to   { transform: translate3d(calc(var(--ticker-start-offset, 0px) - 50%), 0, 0); }
+     }
+   The keyframe still translates by exactly 50% of the track width over its
+   period, so the seamless-loop math (see styles.css §4.5: 4S + 4G width with
+   `padding-right: var(--ticker-gap)` closing the loop) is preserved — the
+   start offset is a constant additive shift on both endpoints, NOT a change
+   to the translation distance. The loop remains seamless.
+
+   What this IIFE does:
+     1. Measures the first span width (S) and the viewport width (V).
+     2. Computes offset = max(0, (V - S) / 2). Capped at 0 to avoid pushing
+        the span off-screen LEFT when S > V (very narrow viewport with long
+        message — falls back to the current left-aligned behaviour).
+     3. Writes `--ticker-start-offset` (in px) on `.launch-ticker__track`
+        — scoped to the element, NOT on `:root`, to avoid polluting the
+        global cascade.
+     4. Recomputes on `window.resize` (debounced ~150ms) AND once
+        `document.fonts.ready` resolves (re-measure after custom font load,
+        which can shift `S`).
+
+   Early-returns:
+     - `.launch-ticker__track` absent (legal / utility pages don't render it).
+     - `prefers-reduced-motion: reduce` — the CSS `@media` block already
+       disables the animation, so the offset is irrelevant.
+
+   Timing note:
+     With `<script defer>`, this IIFE runs AFTER DOM parsing but BEFORE the
+     first paint of the ticker animation in the typical case — so the var
+     is set before the keyframe's `from` keyframe is sampled, no flash.
+     The fonts-ready re-measure handles the post-FOUT case where Inter
+     loads late and the span width changes.
+   ========================================================================== */
+(function () {
+    'use strict';
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const track = document.querySelector('.launch-ticker__track');
+    if (!track) return;
+
+    const firstSpan = track.querySelector('span');
+    if (!firstSpan) return;
+
+    // Measure → compute → write. Pure function: read DOM, write one CSS var,
+    // no internal state, no rAF loop. Idempotent — calling it twice in a row
+    // with no layout change writes the same value.
+    const updateOffset = () => {
+        // `getBoundingClientRect().width` returns the rendered (post-layout)
+        // sub-pixel width of the span — accurate to whatever the browser
+        // actually painted, which is what we need to centre visually. Reading
+        // `offsetWidth` would round to integer px and could miss the centre
+        // by up to 0.5px on HiDPI displays.
+        const spanWidth = firstSpan.getBoundingClientRect().width;
+        const viewportWidth = window.innerWidth;
+        // If the span is wider than the viewport (very small mobile + long
+        // message), Math.max clamps to 0 — a positive offset would push the
+        // span PAST the right edge at t=0, hiding its left half off-screen
+        // left. Better to fall back to the natural left-aligned start.
+        const offset = Math.max(0, (viewportWidth - spanWidth) / 2);
+        track.style.setProperty('--ticker-start-offset', offset + 'px');
+    };
+
+    // Initial write — runs before first paint thanks to `<script defer>`.
+    // Note: at this point custom fonts (Inter via Google Fonts) may not be
+    // loaded yet, so `spanWidth` is measured against the fallback stack.
+    // The `document.fonts.ready` re-measure below corrects this once the
+    // real font lands.
+    updateOffset();
+
+    // Re-measure once custom fonts have loaded — Inter shipped via Google
+    // Fonts can land 100-500ms after first paint, and the resulting glyph
+    // metrics shift the span width. Without this, the initial offset would
+    // be off by however much the fallback font's width differs from Inter's.
+    if (document.fonts && typeof document.fonts.ready?.then === 'function') {
+        document.fonts.ready.then(updateOffset).catch(() => { /* swallow */ });
+    }
+
+    // Debounced resize handler — 150ms is fast enough to feel responsive on
+    // a window-resize drag, slow enough to coalesce the burst of events the
+    // browser fires during the drag. The visual jump from re-writing the
+    // var mid-animation is acceptable (resize is rare; user accepts the
+    // compromise per task spec).
+    let resizeTimer = null;
+    window.addEventListener('resize', () => {
+        if (resizeTimer !== null) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+            resizeTimer = null;
+            updateOffset();
+        }, 150);
+    }, { passive: true });
+})();
+
