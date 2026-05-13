@@ -158,7 +158,6 @@ Each legal page footer includes a `<nav class="legal-page-nav" aria-label="Autre
 - `mentions-legales/` § 6 (Domiciliation) — numéro d'agrément préfectoral de Vivienne Domiciliation (`[À COMPLÉTER]`).
 - `mentions-legales/` § 10 (Médiation conso) — nom et coordonnées du médiateur (`[À COMPLÉTER]`).
 - `cgu/`, `contact/`, `politique-annulation-remboursement/` — médiateur de la consommation (`[À DÉSIGNER]`, pre-existing).
-- `mentions-legales/` §1 (Éditeur) and `contact/` (Identité éditeur) — N° TVA `FR63 104 861 091` `(à confirmer)` — clé calculée 63, à valider sur l'avis SIRENE/SIE INSEE une fois la TVA activée pour la SASU.
 
 ---
 
