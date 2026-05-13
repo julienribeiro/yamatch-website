@@ -1178,10 +1178,13 @@
    background — see memory/feedback_website_aesthetic.md):
      - TRAILS_COUNT = 50 (vs 80 in the original designali.in component).
        Dropped from 80 because Yamatch already runs concurrent rAF loops
-       (page-scroll writer, waves, floating-cards parallax) — 50×50 = 2500
+       (page-scroll writer, waves, floating-cards parallax) — 50×30 = 1500
        spring-node updates per frame leaves headroom on integrated GPUs.
-     - CHAIN_SIZE = 50 (kept). Reducing node count visibly shortens each
-       tendril and was rejected during tuning.
+     - CHAIN_SIZE = 30 (tuned 2026-05-13 after user test, down from 50).
+       Reducing node count visibly shortens each tendril — the previous 50
+       value produced trails that read as too long / too obtrusive; 30
+       lands at a more contained, calligraphic look while still oscillating
+       legibly on cursor stops.
      - LINE_WIDTH = 2 (vs 10 in the original). Subtle on light bg — at
        LINE_WIDTH = 3 the trails read as "obtrusive". 50 overlapping chains
        at LINE_WIDTH = 2 still produce a clear dense head near the cursor.
@@ -1201,14 +1204,14 @@
    the viewport at page load (which would happen if we anchored all 50
    chains at innerWidth/2, innerHeight/2 and started the rAF loop
    immediately — the first cursor position arriving on a corner would yank
-   2500 nodes from the centre in one frame). With lazy init, the page is
+   1500 nodes from the centre in one frame). With lazy init, the page is
    visually quiet until the user moves the cursor, and the chains seed
    directly at the cursor's first known position.
 
    Performance notes:
      - rAF loop runs continuously once seeded. Per-frame cost is dominated
        by TRAILS_COUNT × CHAIN_SIZE spring updates + TRAILS_COUNT canvas
-       strokes. With current tuning, ~2500 arithmetic updates + 50 strokes
+       strokes. With current tuning, ~1500 arithmetic updates + 50 strokes
        per 16.6ms frame, well within budget on modern desktop hardware.
      - mousemove listener registered { passive: true } — NO preventDefault
        (the original component's preventDefault was removed: it would
@@ -1243,7 +1246,7 @@
     // === Tunable constants ===
     // See header comment for the rationale behind each value.
     const TRAILS_COUNT = 50;       // number of independent spring chains
-    const CHAIN_SIZE = 50;         // nodes per chain (length of each tendril)
+    const CHAIN_SIZE = 30;         // nodes per chain — tuned 2026-05-13 (down from 50) after user test for shorter, more contained tendrils
     const SPRING_BASE = 0.4;       // base spring stiffness (per-chain jitter ±0.05)
     const FRICTION_BASE = 0.5;     // per-node velocity damping (per-chain jitter ±0.005)
     const DAMPENING = 0.025;       // intra-chain velocity coupling (predecessor → node)

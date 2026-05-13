@@ -780,7 +780,7 @@ Canvas 2D state (set inside `resize()`, not per-frame):
 | Constant | Value | Role |
 |---|---|---|
 | `TRAILS_COUNT` | 50 | number of independent spring chains (reduced from 80 to leave headroom for concurrent rAF loops: page-scroll writer, waves, floating-cards parallax) |
-| `CHAIN_SIZE` | 50 | nodes per chain — determines tendril length (reducing visibly shortens the tail; rejected during tuning) |
+| `CHAIN_SIZE` | 30 | nodes per chain — determines tendril length (réduit de 50 → 30 post-test utilisateur 2026-05-13 pour des tendrils plus contenus) |
 | `LINE_WIDTH` | 2 | px stroke width — subtle on light background; 3 px read as obtrusive |
 | `STROKE_ALPHA` | 0.04 | alpha over `rgba(16, 24, 40, …)` — upper edge of "subtle decoration" for the Yamatch épuré aesthetic |
 | `SPRING_BASE` | 0.4 | base spring stiffness for the first node of each chain |
