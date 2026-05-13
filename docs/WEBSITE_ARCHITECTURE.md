@@ -154,10 +154,8 @@ All 7 carry `<meta name="robots" content="index, follow">` + `<meta name="google
 
 Each legal page footer includes a `<nav class="legal-page-nav" aria-label="Autres documents légaux">` with a `<ul class="legal-page-nav-list">` listing the other legal pages. Standard nav order: Mentions légales (omitted on its own page), CGU, Politique de confidentialité, Annulation & remboursement, Suppression de compte, Contact.
 
-**Open placeholders (as of 2026-05-12):**
+**Open placeholders (as of 2026-05-13):**
 - `mentions-legales/` § 6 (Domiciliation) — numéro d'agrément préfectoral de Vivienne Domiciliation (`[À COMPLÉTER]`).
-- `mentions-legales/` § 10 (Médiation conso) — nom et coordonnées du médiateur (`[À COMPLÉTER]`).
-- `cgu/`, `contact/`, `politique-annulation-remboursement/` — médiateur de la consommation (`[À DÉSIGNER]`, pre-existing).
 
 ---
 
