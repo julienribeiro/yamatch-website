@@ -2885,8 +2885,8 @@ p {
 /* ==========================================================================
    12.1 FOOTER BRAND STRIP — mini wordmark + Instagram pastille
    --------------------------------------------------------------------------
-   Horizontal strip sitting ABOVE `.footer-list`: mini wordmark anchored
-   to the inline-start, Instagram pastille anchored to the inline-end —
+   Horizontal strip sitting ABOVE `.footer-list`: mini wordmark and
+   Instagram pastille centered together as a single inline group —
    on EVERY viewport (no `flex-direction: column` mobile override). The
    strip spans the full inner footer width (no `max-width` cap — matches
    `.footer-inner` width: 100%) and adds bottom margin to delineate from
@@ -2894,13 +2894,24 @@ p {
 
    Invariants:
      - Horizontal layout preserved on mobile (user request, 2026-05-13).
+     - Strip is HORIZONTALLY CENTERED on the page (user request, 2026-05-13
+       — revert from `space-between`). Wordmark + IG pastille sit together
+       in the middle of the footer with a small gap, reading as a single
+       brand signature block rather than two anchored corners.
      - Wordmark sized DELIBERATELY smaller than the fixed top-of-page
-       wordmark (mobile: 14px, desktop: 20px — see §6 line 594-600). Footer
-       wordmark target ~22px tall = signature, not a focal point.
-     - Instagram pastille = lime brand square (var(--color-accent)) with
-       BLACK icon (currentColor → stroke), border-radius 12px (between
-       --radius-input 16 and --radius-pill 100 — reads as a rounded square,
-       not a pill, not a sharp tile). Min hit area 44×44 (WCAG 2.5.5).
+       wordmark (top-of-page: 14px mobile / 20px desktop — see §6 line
+       594-600). Footer wordmark target 14px desktop / 12px mobile =
+       discreet signature, NOT
+       a focal point (was 22 / 18 before 2026-05-13 — drastically reduced
+       per user request so the IG pastille reads as the dominant CTA).
+     - Instagram pastille = lime brand circle (var(--color-accent)) with
+       BLACK icon (currentColor → stroke), border-radius 50% (perfect circle,
+       since the button is square 44×44 — 50% on a square element is the
+       canonical CSS idiom for "make this a circle"; on a non-square box it
+       would resolve to an ellipse, but the fixed 44×44 sizing guarantees a
+       true circle here). Min hit area 44×44 (WCAG 2.5.5). Intentionally ~3×
+       taller than the wordmark glyph at desktop sizing — the pastille IS the
+       CTA, the wordmark is just a brand signature.
      - No visible separator (border / hr) — whitespace alone delineates,
        per the épuré footer aesthetic already established §12.
      - Focus-visible matches the generic pattern (§5 line 461-465):
@@ -2909,8 +2920,14 @@ p {
 .footer-brand-strip {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 16px;
+    /* Centered on the page (2026-05-13) — was `space-between`. The strip
+       now reads as a unified brand signature block rather than two corner-
+       anchored elements. `gap: 20px` gives enough breathing room between
+       the 14px-tall wordmark and the 44×44 pastille so the disparity in
+       size doesn't make them feel glued together; the mobile override
+       below tightens to 16px since the viewport itself is narrower. */
+    justify-content: center;
+    gap: 20px;
     width: 100%;
     /* Bottom margin echoes the rhythm `.footer-bottom` uses for its top
        margin (clamp(28px, 4vw, 40px)) so the strip ↔ list ↔ copyright
@@ -2946,17 +2963,14 @@ p {
 
 .footer-wordmark {
     /* Height-only sizing: width: auto preserves the source aspect ratio
-       (1067:206 → ~5.18:1). 22px tall ≈ 114px wide — comfortably under the
-       half-strip width even on a 320px viewport (where the strip's flex
-       slot is ~(320 - 2*page-pad - 44 - gap)/2 ≈ 100px+, with `space-between`
-       letting the wordmark take its intrinsic size and the IG pastille take
-       its 44×44). Reads strictly smaller than the in-page wordmark (mobile
-       14px on .wordmark svg, but the visible glyph cap is ~9-10px due to
-       SVG aspect; this footer version is ~22px tall = ~2× the visible
-       glyph-height of the top wordmark — still small enough to read as a
-       signature rather than a heading). The mobile override below dials
-       it down to 18px on narrow screens. */
-    height: 22px;
+       (1067:206 → ~5.18:1). 14px tall ≈ 73px wide — discreet brand
+       signature rather than a focal element, paired with the 44×44 IG
+       pastille (~3× the wordmark height). User request 2026-05-13:
+       drastically reduce from the previous 22px to make the pastille
+       clearly read as the dominant footer CTA. The mobile override below
+       dials it down further to 12px on narrow screens to keep the same
+       visual weight ratio against the (still 44×44) pastille. */
+    height: 14px;
     width: auto;
     /* The `<img>` element has `width="120" height="32"` attributes (HTML
        hints to avoid layout shift before load). Those are overridden by
@@ -2988,11 +3002,14 @@ p {
        silently break the shape. */
     width: 44px;
     height: 44px;
-    /* Rounded-square (NOT pill): 12px sits between --radius-input (16) and
-       a sharp tile. Visually consistent with iOS/Android app-icon corner
-       radii at this scale, and matches the friendly-but-restrained
-       footer aesthetic. */
-    border-radius: 12px;
+    /* Perfect circle: 50% on a square element (width === height === 44px,
+       enforced just above) is the canonical CSS idiom for "make this a
+       circle". On a non-square box this would resolve to an ellipse, but the
+       fixed 44×44 sizing guarantees a true circle here. Preferred over
+       `border-radius: 999px` (which also produces a circle on a square via
+       clamping to min(w,h)/2) because `50%` is the more readable, intent-
+       signalling form. */
+    border-radius: 50%;
     background-color: var(--color-accent);
     /* Icon colour propagates to the inline SVG via `currentColor` on its
        stroke. See header comment above for the token choice rationale. */
@@ -3026,7 +3043,10 @@ p {
     /* Match the generic :focus-visible pattern (§5 line 461-465). Same
        outline width, colour, and offset used by .btn-glass and .faq-toggle
        — keeps the keyboard focus indicator visually consistent across
-       the site. */
+       the site. No explicit `border-radius` needed: modern browsers render
+       `outline` following the element's `border-radius`, so the focus ring
+       traces the 50% circle automatically (concentric circular halo around
+       the pastille). */
     outline: 2px solid var(--color-text-primary);
     outline-offset: 3px;
 }
@@ -3049,13 +3069,16 @@ p {
    on narrow viewports where the IG pastille (fixed 44px) takes up more
    relative horizontal space. The pastille itself stays 44×44 (WCAG min
    touch target — must not shrink). Bottom margin tightens slightly to
-   match the overall denser mobile footer rhythm. */
+   match the overall denser mobile footer rhythm. The gap also tightens
+   (20 → 16) so the two elements don't feel marooned in the narrower
+   centered strip. */
 @media (max-width: 767px) {
     .footer-wordmark {
-        height: 18px;
+        height: 12px;
     }
     .footer-brand-strip {
         margin-bottom: 20px;
+        gap: 16px;
     }
 }
 

@@ -209,10 +209,10 @@ Sections under `<main id="top">`, in order:
 
 ### Footer brand strip (`.footer-brand-strip`) — added 2026-05-13 (CSS §12.1)
 
-Decorative row rendered above the legal links. Flex row (`justify-content: space-between`) — horizontal on all screen sizes, no mobile stack.
+Decorative row rendered above the legal links. Flex row (`justify-content: center`, `gap: 20px` desktop / `gap: 16px` mobile) — horizontal on all screen sizes, no mobile stack. Layout and sizing adjusted 2026-05-13 following user feedback.
 
-- **Left:** `.footer-wordmark-link` > `.footer-wordmark` — SVG wordmark at 22px height desktop / 18px mobile (smaller than the fixed hero wordmark). `opacity: 0.75` on hover.
-- **Right:** `.footer-social-link.footer-social-instagram` — 44×44px touch target (WCAG AA), `border-radius: 12px`, background `var(--color-accent)` (#D7FF00 lime). Inline SVG Instagram icon 22×22, `stroke="currentColor"`, colour propagated via `color: var(--color-text-primary)` (#101828 noir). `scale(1.05)` + `opacity: 0.92` on hover.
+- **Left:** `.footer-wordmark-link` > `.footer-wordmark` — SVG wordmark at 14px height desktop / 12px mobile (drastically reduced; smaller than the fixed hero wordmark). `opacity: 0.75` on hover.
+- **Right:** `.footer-social-link.footer-social-instagram` — 44×44px touch target (WCAG AA), `border-radius: 50%` (perfect circle guaranteed by fixed 44×44 dimensions), background `var(--color-accent)` (#D7FF00 lime). Inline SVG Instagram icon 22×22, `stroke="currentColor"`, colour propagated via `color: var(--color-text-primary)` (#101828 noir). `scale(1.05)` + `opacity: 0.92` on hover.
 - Focus-visible: `outline: 2px solid var(--color-text-primary); outline-offset: 3px` — site-wide pattern (§19), no dedicated rule needed.
 - `prefers-reduced-motion`: transitions neutralised by the global §19 blanket rule — no dedicated override needed.
 - Both `<a>` tags carry no `target="_blank"` / `rel` (site convention, validated by reviewer on PR #10).
