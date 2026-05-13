@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-05-12.
+Last sync: 2026-05-13.
 
 ---
 
@@ -699,6 +699,110 @@ The parallax IIFE evaluates three sequential guards before any listener is regis
 **IntersectionObserver scroll-gate:** within `setup()`, an `IntersectionObserver` (`rootMargin: '20% 0% 20% 0%'`) tracks unique parent sections (`.how-quest`, `.faq`). The `window scroll` listener is attached only while at least one parent is intersecting (`visibleParents > 0`) and detached when none are. A counter (`visibleParents`) — not a boolean — handles the `.how-quest visible` → `.faq visible` → `.how-quest exits` transition without flapping the listener off then back on. A synthetic `onScroll()` call on IO re-entry re-syncs `--parallax-y` before the next real scroll event.
 
 **Listener symmetry:** `setup()` attaches `scroll` (via IO gate), `resize`, `orientationchange`, `load`. `teardown()` removes the exact same references. `setup()` is idempotent (`if (io !== null) return`); `teardown()` is idempotent (`if (io === null) return`).
+
+---
+
+## Cursor trail (§18 — `script.js` lines 1140–1440)
+
+Self-contained IIFE outside the main `script.js` IIFE. Pairs with two elements in `index.html` (lines 731–732):
+
+```html
+<canvas class="cursor-trail" aria-hidden="true"></canvas>
+<span class="cursor-emoji" aria-hidden="true">🏐</span>
+```
+
+CSS counterpart: `styles.css` §18 (`.cursor-trail`, `.cursor-emoji`) — full-viewport canvas pinned via `position: fixed; inset: 0`; emoji pinned at `top: 0; left: 0` with an initial off-screen `translate3d(-100px, -100px, 0)`.
+
+### Guards (desktop-only)
+
+The IIFE exits immediately (`return`) if any of the following match at page load:
+
+| Media query | Reason |
+|---|---|
+| `prefers-reduced-motion: reduce` | accessibility |
+| `pointer: coarse` | touch device — no cursor |
+| `max-width: 767px` | mobile viewport |
+
+These three guards mirror the CSS `display: none` rules in `styles.css` §18 so no listeners or rAF loops are attached on excluded devices.
+
+### Emoji rigid-follow
+
+On every `mousemove`, the emoji receives a direct `style.transform` write (no lerp, no easing):
+
+```
+translate3d(x, y, 0) translate(-50%, -50%)
+```
+
+The first `translate3d` places the emoji's top-left at the cursor pixel; the second `translate` (in `%` of the emoji's own size) recenters it on the hot-spot. CSS guarantees no `transform` transition on `.cursor-emoji` — only `opacity` is transitioned (120 ms ease, used for show/hide on `document` `mouseenter`/`mouseleave`).
+
+On `mouseleave`, `opacity` is set to `0`; on `mouseenter`, back to `1`. Spring state is NOT reset — chains continue oscillating and settle naturally.
+
+### Spring-chain multi-trails algorithm
+
+#### Data model
+
+| Object | Fields | Role |
+|---|---|---|
+| `Node` | `x, y, vx, vy` | one mass-spring node (viewport px) |
+| `Line` | `spring, friction, nodes[]` | one chain of `CHAIN_SIZE` nodes |
+| `pos` | `{x, y}` | shared cursor target (mutated per `mousemove`) |
+
+`TRAILS_COUNT` independent `Line` instances are stored in `lines[]`.
+
+#### Per-frame physics (called per `Line.update`)
+
+1. First node (`nodes[0]`) receives spring force toward `pos`:
+   ```
+   vx += (pos.x - x) * spring
+   vy += (pos.y - y) * spring
+   ```
+2. For nodes `i = 1 … CHAIN_SIZE-1`, spring force is toward the previous node + DAMPENING coupling from the predecessor's velocity:
+   ```
+   vx += (prev.x - x) * spring
+   vy += (prev.y - y) * spring
+   vx += prev.vx * DAMPENING
+   vy += prev.vy * DAMPENING
+   ```
+3. Per node: `vx *= friction`, `vy *= friction`, then `x += vx`, `y += vy`.
+4. After each node: `spring *= TENSION` (stiffness decays along the chain — tail is looser than head).
+
+#### Rendering (called per `Line.draw`)
+
+Smooth quadratic curves via the mid-point technique: for each pair of adjacent nodes `(a, b)`, the control point is `a` and the endpoint is the midpoint `(a+b)/2`. This guarantees C¹-continuous junctions with one `quadraticCurveTo` per node. The final segment terminates at the actual last node position so the tail tip is not clipped short. One `beginPath`/`stroke` per chain per frame.
+
+Canvas 2D state (set inside `resize()`, not per-frame):
+- `globalCompositeOperation = 'source-over'` — additive `lighter` does not work on Yamatch's near-white background (it was designed for black backgrounds).
+- `strokeStyle = rgba(16, 24, 40, 0.04)` — matches `--color-text-primary #101828`.
+- `lineWidth = LINE_WIDTH` (2 px).
+
+### Tuning constants
+
+| Constant | Value | Role |
+|---|---|---|
+| `TRAILS_COUNT` | 50 | number of independent spring chains (reduced from 80 to leave headroom for concurrent rAF loops: page-scroll writer, waves, floating-cards parallax) |
+| `CHAIN_SIZE` | 50 | nodes per chain — determines tendril length (reducing visibly shortens the tail; rejected during tuning) |
+| `LINE_WIDTH` | 2 | px stroke width — subtle on light background; 3 px read as obtrusive |
+| `STROKE_ALPHA` | 0.04 | alpha over `rgba(16, 24, 40, …)` — upper edge of "subtle decoration" for the Yamatch épuré aesthetic |
+| `SPRING_BASE` | 0.4 | base spring stiffness for the first node of each chain |
+| `FRICTION_BASE` | 0.5 | per-node velocity damping factor |
+| `DAMPENING` | 0.025 | intra-chain velocity coupling — fraction of predecessor velocity added to each node |
+| `TENSION` | 0.99 | spring decay multiplier applied after each node — makes the tail feel progressively looser |
+
+Per-chain jitter: each `Line` is constructed with `spring = SPRING_BASE ± 0.05` (random) and `friction = FRICTION_BASE ± 0.005` (random) so the 50 chains fan out into a brush-like cloud rather than moving in lockstep.
+
+### Lazy initialisation
+
+`lines` is `null` at startup. On the first `mousemove`, `initLines()` creates all 50 `Line` instances with `pos` already set to the cursor's first known position — nodes are seeded at the cursor, so the chains unspool from there on first movement. This avoids the one-shot "snake explosion" that would occur if chains were pre-anchored at `innerWidth/2, innerHeight/2` and the cursor first appeared in a corner.
+
+The rAF loop starts immediately at IIFE init (`requestAnimationFrame(render)`) but does nothing while `lines === null` — `render()` short-circuits after `clearRect`.
+
+### DPR-aware sizing
+
+`resize()` (called once at init and on `window resize`) sets `canvas.width = Math.round(innerWidth * dpr)` and applies `ctx.setTransform(dpr, 0, 0, dpr, 0, 0)` to RESET (not multiply) the transform matrix, preventing stacked scale factors on consecutive resizes. Because assigning `canvas.width/height` resets the 2D context state to defaults, `globalCompositeOperation`, `strokeStyle`, and `lineWidth` are re-applied inside `resize()`.
+
+### Contrast with the old polyline comet algorithm
+
+The prior implementation used a single polyline with a FIFO buffer of recent cursor positions faded by age (`MAX_AGE_MS`). The new system has no historical position buffer — `pos` holds only the current cursor position. The visual "memory" of past positions is encoded entirely in the physical state of the nodes (their `x, y, vx, vy`), not in an explicit buffer. The old system had one curve; the new system has 50 independent curves whose independent spring jitter produces the brush-like cloud effect.
 
 ---
 

@@ -1138,11 +1138,11 @@
 })();
 
 /* ==========================================================================
-   CURSOR TRAIL — volleyball emoji rigid-follow + canvas comet
+   CURSOR TRAIL — volleyball emoji rigid-follow + canvas spring-chain trails
    --------------------------------------------------------------------------
    Self-contained IIFE (kept outside the main script.js IIFE above so it can
    early-return cheaply on touch / mobile / reduced-motion without affecting
-   any other block). Pairs with index.html ~line 384–385:
+   any other block). Pairs with index.html ~line 731–732:
      <canvas class="cursor-trail" aria-hidden="true"></canvas>
      <span class="cursor-emoji" aria-hidden="true">🏐</span>
    and styles.css §18 (.cursor-trail, .cursor-emoji — full-viewport canvas
@@ -1150,36 +1150,82 @@
    initial off-screen translate3d(-100px, -100px, 0)).
 
    Behavior:
-     1. Emoji rigid-follow: every `mousemove`, write `transform: translate3d(
-        x, y, 0) translate(-50%, -50%)` directly. The first translate3d is in
+     1. Emoji rigid-follow (UNCHANGED from the prior comet implementation):
+        every `mousemove`, write `transform: translate3d(x, y, 0)
+        translate(-50%, -50%)` directly. The first translate3d is in
         absolute px (top-left lands at the cursor); the second translate is
         in % of the emoji's own size (recenters by half its width/height) —
         the emoji is thus centered exactly on the cursor hot-spot. NO lerp,
         NO easing — CSS guarantees no `transform` transition on .cursor-emoji
         (only `opacity` is transitioned, 120ms ease, used for show/hide
         on document mouseenter/mouseleave).
-     2. Comet trail: rAF loop clears the full canvas each frame, then
-        strokes a polyline through the recent mouse-position buffer (points
-        younger than MAX_AGE_MS = 500ms). Per-segment lineWidth and alpha
-        decay linearly from head (fresh, thick, opaque-ish) to tail (old,
-        thin, transparent). lineCap/lineJoin = 'round' for soft segment
-        junctions.
+     2. Spring-chain trails (NEW, replaces the previous polyline comet):
+        TRAILS_COUNT independent chains chase the cursor. Each chain is a
+        sequence of CHAIN_SIZE mass-spring nodes — the first node is
+        attracted to the cursor `pos`, and each subsequent node is attracted
+        to its predecessor. Per-tick, the spring constant decays along the
+        chain (`spring *= TENSION`), and node velocities receive both a
+        DAMPENING coupling from the predecessor and a per-node FRICTION
+        multiplier. The result is a soft, calligraphic tendril that lags
+        behind cursor motion and oscillates on stops. Each chain has small
+        jitter on `spring` (±0.05) and `friction` (±0.005) so the 50 chains
+        don't move in lockstep — they fan out into a brush-like cloud.
+        Rendering: smooth quadratic curves through the node positions
+        (mid-point trick) so segment junctions are continuous, with a single
+        `beginPath` / `stroke` per chain.
+
+   Tuning (chosen 2026-05-13 for the Yamatch épuré aesthetic on a near-white
+   background — see memory/feedback_website_aesthetic.md):
+     - TRAILS_COUNT = 50 (vs 80 in the original designali.in component).
+       Dropped from 80 because Yamatch already runs concurrent rAF loops
+       (page-scroll writer, waves, floating-cards parallax) — 50×50 = 2500
+       spring-node updates per frame leaves headroom on integrated GPUs.
+     - CHAIN_SIZE = 50 (kept). Reducing node count visibly shortens each
+       tendril and was rejected during tuning.
+     - LINE_WIDTH = 2 (vs 10 in the original). Subtle on light bg — at
+       LINE_WIDTH = 3 the trails read as "obtrusive". 50 overlapping chains
+       at LINE_WIDTH = 2 still produce a clear dense head near the cursor.
+     - STROKE_ALPHA = 0.04 over `rgba(16, 24, 40, …)` (Yamatch
+       `--color-text-primary` #101828, same RGB as the prior comet). The
+       original used additive `lighter` blend with `hsla(rainbow,…,0.025)`
+       on a black bg — useless on Yamatch's near-white bg. We use
+       `source-over` with a slightly elevated alpha (0.04 vs 0.025) to
+       stay perceptible without dominating. The éepuré aesthetic memory
+       calls for "subtle decoration" — 0.04 is at the upper edge of that.
+     - SPRING base = 0.4, FRICTION = 0.5, DAMPENING = 0.025, TENSION = 0.99.
+       All copied verbatim from the designali.in source — these are the
+       values that define the recognizable "look" of the effect.
+
+   Init strategy: LAZY. The chains are NOT created until the first
+   `mousemove` event. This avoids a one-shot "explosion" from the centre of
+   the viewport at page load (which would happen if we anchored all 50
+   chains at innerWidth/2, innerHeight/2 and started the rAF loop
+   immediately — the first cursor position arriving on a corner would yank
+   2500 nodes from the centre in one frame). With lazy init, the page is
+   visually quiet until the user moves the cursor, and the chains seed
+   directly at the cursor's first known position.
 
    Performance notes:
-     - rAF loop runs continuously, but when the cursor stops moving the
-       buffer drains within MAX_AGE_MS (500 ms) and the per-frame work
-       collapses to a single ctx.clearRect + a length-check short-circuit.
-     - mousemove listener registered { passive: true } — no preventDefault,
-       no scroll-blocking risk.
+     - rAF loop runs continuously once seeded. Per-frame cost is dominated
+       by TRAILS_COUNT × CHAIN_SIZE spring updates + TRAILS_COUNT canvas
+       strokes. With current tuning, ~2500 arithmetic updates + 50 strokes
+       per 16.6ms frame, well within budget on modern desktop hardware.
+     - mousemove listener registered { passive: true } — NO preventDefault
+       (the original component's preventDefault was removed: it would
+       suppress text selection across the entire page).
      - DPR scaling: canvas backing store is innerWidth*dpr × innerHeight*dpr
-       and ctx.setTransform(dpr, 0, 0, dpr, 0, 0) is reset (not multiplied)
+       and ctx.setTransform(dpr, 0, 0, dpr, 0, 0) is RESET (not multiplied)
        on every resize so consecutive resizes don't stack scale factors.
+     - No `visibilitychange` pause — the original component had a buggy
+       handler (sic, it set `running = true` on blur). We omit it; the
+       browser will throttle rAF on hidden tabs natively.
 
    Defensive early-return: matches the CSS hide rules in styles.css §18
    (max-width: 767px, pointer: coarse, prefers-reduced-motion: reduce) so
    we don't attach listeners or schedule rAF on devices where the
-   decoration is hidden anyway. Same guard family used elsewhere in this
-   codebase (script.js line 379–380 for the wave animation block).
+   decoration is hidden anyway. These guards also let us drop all
+   `touchstart` / `touchmove` handling from the source component: they
+   would never fire under the desktop-only gate.
    ========================================================================== */
 (function () {
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1195,14 +1241,26 @@
     if (!ctx) return;
 
     // === Tunable constants ===
-    const MAX_AGE_MS = 500;        // points older than this drop off the tail
-    const STROKE_HEAD = 8;         // px line width at the freshest segment
-    const TRAIL_ALPHA_HEAD = 0.85; // alpha at the head of the trail
-    const TRAIL_R = 16;            // Yamatch black stroke RGB — matches --color-text-primary #101828
-    const TRAIL_G = 24;
-    const TRAIL_B = 40;
+    // See header comment for the rationale behind each value.
+    const TRAILS_COUNT = 50;       // number of independent spring chains
+    const CHAIN_SIZE = 50;         // nodes per chain (length of each tendril)
+    const SPRING_BASE = 0.4;       // base spring stiffness (per-chain jitter ±0.05)
+    const FRICTION_BASE = 0.5;     // per-node velocity damping (per-chain jitter ±0.005)
+    const DAMPENING = 0.025;       // intra-chain velocity coupling (predecessor → node)
+    const TENSION = 0.99;          // spring decay along the chain (multiplied each node)
+    const LINE_WIDTH = 2;          // px stroke width — subtle on light bg
+    const STROKE_ALPHA = 0.04;     // alpha for the monochrome stroke colour
+    const STROKE_R = 16;           // Yamatch black RGB — matches --color-text-primary #101828
+    const STROKE_G = 24;
+    const STROKE_B = 40;
+    const STROKE_STYLE = 'rgba(' + STROKE_R + ', ' + STROKE_G + ', ' + STROKE_B + ', ' + STROKE_ALPHA + ')';
 
     // === Canvas DPR-aware sizing ===
+    // NOTE: assigning to `canvas.width` / `canvas.height` not only resizes
+    // the backing store but ALSO resets the 2D context state to defaults
+    // (strokeStyle → black, lineWidth → 1, globalCompositeOperation →
+    // source-over, transform → identity). We therefore re-apply our style
+    // setup AFTER each resize, not just once at IIFE init.
     let dpr = window.devicePixelRatio || 1;
     const resize = () => {
         dpr = window.devicePixelRatio || 1;
@@ -1216,19 +1274,125 @@
         // a second resize without this would stack dpr × dpr scales on the
         // existing transform, blowing up coordinates exponentially.
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        // Re-apply stable style state after the implicit context reset above.
+        // These never change during the loop's lifetime, so we set them here
+        // (on resize) rather than per-frame inside render().
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.strokeStyle = STROKE_STYLE;
+        ctx.lineWidth = LINE_WIDTH;
     };
     resize();
     window.addEventListener('resize', resize, { passive: true });
 
-    // === Mouse position buffer ===
-    // Each entry: { x, y, t } — viewport-relative coords + performance.now() ts.
-    // Bounded implicitly by the MAX_AGE_MS drain in the rAF render loop.
-    const points = [];
+    // === Spring-chain primitives ===
+    // `pos` is the SHARED target every Line.update reads. It is mutated on
+    // each mousemove (no buffering — instantaneous read). All Node positions
+    // are viewport-relative px (matches `e.clientX` / `e.clientY` directly).
+    const pos = { x: 0, y: 0 };
 
+    function Node() {
+        this.x = 0;
+        this.y = 0;
+        this.vx = 0;
+        this.vy = 0;
+    }
+
+    // A Line is one spring chain. `init(spring)` clones the requested base
+    // stiffness with a small per-chain randomisation so the TRAILS_COUNT
+    // chains don't move in lockstep. All nodes start at the current `pos`
+    // (i.e. at the cursor's first-known position) — the chain visibly
+    // unspools from that point on first cursor movement.
+    function Line(opts) {
+        this.spring = opts.spring + 0.1 * Math.random() - 0.05;   // ±0.05 jitter
+        this.friction = FRICTION_BASE + 0.01 * Math.random() - 0.005; // ±0.005 jitter
+        this.nodes = [];
+        for (let i = 0; i < CHAIN_SIZE; i++) {
+            const n = new Node();
+            n.x = pos.x;
+            n.y = pos.y;
+            this.nodes.push(n);
+        }
+    }
+
+    Line.prototype.update = function () {
+        // First node tracks the cursor directly via spring force.
+        let spring = this.spring;
+        const first = this.nodes[0];
+        first.vx += (pos.x - first.x) * spring;
+        first.vy += (pos.y - first.y) * spring;
+
+        // Subsequent nodes track their predecessor, with the spring decaying
+        // along the chain (so the tail feels looser than the head). Each node
+        // also picks up a fraction of its predecessor's velocity (DAMPENING)
+        // for smoother propagation. Friction applies uniformly per node.
+        let prev;
+        for (let i = 0, n; i < this.nodes.length; i++) {
+            n = this.nodes[i];
+            if (i > 0) {
+                prev = this.nodes[i - 1];
+                n.vx += (prev.x - n.x) * spring;
+                n.vy += (prev.y - n.y) * spring;
+                n.vx += prev.vx * DAMPENING;
+                n.vy += prev.vy * DAMPENING;
+            }
+            n.vx *= this.friction;
+            n.vy *= this.friction;
+            n.x += n.vx;
+            n.y += n.vy;
+            spring *= TENSION;
+        }
+    };
+
+    Line.prototype.draw = function () {
+        // Smooth quadratic curve through the node positions using the
+        // mid-point technique: control point = node i, end point = midpoint
+        // of nodes i and i+1. This guarantees C¹-continuous junctions
+        // between segments with only one quadraticCurveTo per node.
+        const nodes = this.nodes;
+        let x = nodes[0].x;
+        let y = nodes[0].y;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        let i;
+        const last = nodes.length - 2;
+        for (i = 1; i < last; i++) {
+            const a = nodes[i];
+            const b = nodes[i + 1];
+            x = 0.5 * (a.x + b.x);
+            y = 0.5 * (a.y + b.y);
+            ctx.quadraticCurveTo(a.x, a.y, x, y);
+        }
+        // Final segment: terminate at the actual last node position rather
+        // than the midpoint, so the tail tip doesn't get clipped short.
+        const a = nodes[i];
+        const b = nodes[i + 1];
+        ctx.quadraticCurveTo(a.x, a.y, b.x, b.y);
+        ctx.stroke();
+    };
+
+    // === Lazy-init state ===
+    // `lines` is created on first mousemove (see comment in header for the
+    // rationale — avoids a centre-of-viewport explosion at page load).
+    let lines = null;
+
+    const initLines = () => {
+        lines = [];
+        for (let i = 0; i < TRAILS_COUNT; i++) {
+            lines.push(new Line({ spring: SPRING_BASE }));
+        }
+    };
+
+    // === Mouse handlers ===
     window.addEventListener('mousemove', (e) => {
         const x = e.clientX;
         const y = e.clientY;
-        points.push({ x: x, y: y, t: performance.now() });
+        // Update the shared cursor target — every Line.update reads this
+        // on its next tick. No buffering, no FIFO drain.
+        pos.x = x;
+        pos.y = y;
+        // Lazy seed: create the 50 chains anchored at the current cursor
+        // position the first time we hear from the cursor.
+        if (lines === null) initLines();
         // Rigid emoji follow — direct write, zero interpolation. CSS .cursor-emoji
         // does NOT transition `transform` (only `opacity`), so this lands on
         // the next compositor frame with no easing.
@@ -1238,49 +1402,38 @@
         emoji.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0) translate(-50%, -50%)';
     }, { passive: true });
 
-    // Hide emoji + flush trail when the cursor leaves the document (window
-    // blur, system menu, switch tab via keyboard, etc.). Re-show on
-    // mouseenter — the next mousemove will re-seed the trail naturally.
+    // Hide emoji when the cursor leaves the document (window blur, system
+    // menu, switch tab via keyboard, etc.). Re-show on mouseenter. Unlike
+    // the previous comet implementation, we do NOT reset the spring state
+    // here — the chains just continue to oscillate in place and settle
+    // naturally (which reads as a pleasant lingering breath rather than
+    // an abrupt cut).
     document.addEventListener('mouseleave', () => {
         emoji.style.opacity = '0';
-        points.length = 0;
     });
     document.addEventListener('mouseenter', () => {
         emoji.style.opacity = '1';
     });
 
     // === rAF render loop ===
-    function render() {
-        const now = performance.now();
-        // Drop stale points (FIFO drain). Single while-shift is O(n) worst-case
-        // but n is small (a fast trackpad caps at ~60 events in 500ms at 120Hz).
-        while (points.length > 0 && now - points[0].t > MAX_AGE_MS) {
-            points.shift();
-        }
-        // Full clear each frame — guarantees no ghosting from prior strokes,
-        // and at idle (empty buffer) this is the only per-frame cost.
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    // Style state (globalCompositeOperation, strokeStyle, lineWidth) is set
+    // inside `resize()` — see comment there for why it has to live there
+    // and not be a one-shot at IIFE init. The only per-frame ctx state
+    // change is the `clearRect` and the path construction inside each
+    // Line.draw.
 
-        if (points.length >= 2) {
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            for (let i = 1; i < points.length; i++) {
-                const p0 = points[i - 1];
-                const p1 = points[i];
-                // freshness = 1 at the head (just-arrived), 0 at the tail
-                // (about to be dropped). Linear ramp on both width and alpha
-                // gives the classic comet-tail taper.
-                const age = (now - p1.t) / MAX_AGE_MS;
-                const freshness = age < 0 ? 1 : (age > 1 ? 0 : 1 - age);
-                ctx.lineWidth = STROKE_HEAD * freshness;
-                ctx.strokeStyle = 'rgba(' + TRAIL_R + ', ' + TRAIL_G + ', ' + TRAIL_B + ', ' + (freshness * TRAIL_ALPHA_HEAD) + ')';
-                ctx.beginPath();
-                ctx.moveTo(p0.x, p0.y);
-                ctx.lineTo(p1.x, p1.y);
-                ctx.stroke();
+    function render() {
+        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+        // If we haven't seen a cursor yet, just keep the frame loop alive —
+        // there's nothing to draw and no springs to integrate. This is also
+        // the steady-state when the user has not moved the mouse since
+        // page load.
+        if (lines !== null) {
+            for (let i = 0; i < lines.length; i++) {
+                lines[i].update();
+                lines[i].draw();
             }
         }
-
         requestAnimationFrame(render);
     }
     requestAnimationFrame(render);
