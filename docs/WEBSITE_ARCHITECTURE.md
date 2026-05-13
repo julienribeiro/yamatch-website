@@ -215,7 +215,7 @@ Decorative row rendered above the legal links. Flex row (`justify-content: cente
 - **Right:** `.footer-social-link.footer-social-instagram` — 44×44px touch target (WCAG AA), `border-radius: 50%` (perfect circle guaranteed by fixed 44×44 dimensions), background `var(--color-accent)` (#D7FF00 lime). Inline SVG Instagram icon 22×22, `stroke="currentColor"`, colour propagated via `color: var(--color-text-primary)` (#101828 noir). `scale(1.05)` + `opacity: 0.92` on hover.
 - Focus-visible: `outline: 2px solid var(--color-text-primary); outline-offset: 3px` — site-wide pattern (§19), no dedicated rule needed.
 - `prefers-reduced-motion`: transitions neutralised by the global §19 blanket rule — no dedicated override needed.
-- Both `<a>` tags carry no `target="_blank"` / `rel` (site convention, validated by reviewer on PR #10).
+- The wordmark link carries no `target`/`rel` (site convention preserved, validated by reviewer on PR #10). The Instagram link carries `target="_blank" rel="noopener noreferrer"` and an extended `aria-label` `"Suivre Yamatch sur Instagram (nouvelle fenêtre)"` — **deliberate exception** for social discovery: the user stays on the landing page while exploring Instagram, protecting the conversion funnel. Validated 2026-05-13.
 
 ### Hero
 
