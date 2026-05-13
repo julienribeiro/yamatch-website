@@ -2883,6 +2883,184 @@ p {
 
 
 /* ==========================================================================
+   12.1 FOOTER BRAND STRIP — mini wordmark + Instagram pastille
+   --------------------------------------------------------------------------
+   Horizontal strip sitting ABOVE `.footer-list`: mini wordmark anchored
+   to the inline-start, Instagram pastille anchored to the inline-end —
+   on EVERY viewport (no `flex-direction: column` mobile override). The
+   strip spans the full inner footer width (no `max-width` cap — matches
+   `.footer-inner` width: 100%) and adds bottom margin to delineate from
+   the legal-links row below.
+
+   Invariants:
+     - Horizontal layout preserved on mobile (user request, 2026-05-13).
+     - Wordmark sized DELIBERATELY smaller than the fixed top-of-page
+       wordmark (mobile: 14px, desktop: 20px — see §6 line 594-600). Footer
+       wordmark target ~22px tall = signature, not a focal point.
+     - Instagram pastille = lime brand square (var(--color-accent)) with
+       BLACK icon (currentColor → stroke), border-radius 12px (between
+       --radius-input 16 and --radius-pill 100 — reads as a rounded square,
+       not a pill, not a sharp tile). Min hit area 44×44 (WCAG 2.5.5).
+     - No visible separator (border / hr) — whitespace alone delineates,
+       per the épuré footer aesthetic already established §12.
+     - Focus-visible matches the generic pattern (§5 line 461-465):
+       2px outline `--color-text-primary`, 3px offset.
+   ========================================================================== */
+.footer-brand-strip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    /* Bottom margin echoes the rhythm `.footer-bottom` uses for its top
+       margin (clamp(28px, 4vw, 40px)) so the strip ↔ list ↔ copyright
+       cadence is consistent. Slightly tighter (24px → 32px) to keep the
+       footer overall compact: the strip is decorative chrome above the
+       legal links, not a section header. */
+    margin-bottom: clamp(24px, 3.5vw, 32px);
+}
+
+/* Wordmark mini — discreet brand signature.
+   `inline-flex` collapses the link box to the image's own dimensions so
+   the focus outline hugs the glyph rectangle (no orphan whitespace on the
+   right). `color: inherit` is a safety net: if a future wordmark.svg
+   variant uses `currentColor` on its paths, this link would pass the
+   parent's text colour through. The current asset has unkeyed `<path>`
+   (no `fill` attr) and is loaded via `<img>` (not inline `<svg>`), so the
+   browser renders the paths with the SVG default fill (black) — matches
+   the discreet brand-signature intent without needing extra CSS. */
+.footer-wordmark-link {
+    display: inline-flex;
+    align-items: center;
+    color: inherit;
+    /* Discreet feedback on hover — opacity dip is the same idiom used by
+       .footer-list a (§12 line 2870-2872 — opacity: 0.7), kept slightly
+       lighter here (0.75) since the wordmark already carries less visual
+       weight than a text link. The `a { transition: ... opacity }` base
+       rule (§3 line 256) drives the timing — no per-rule transition
+       needed. */
+}
+.footer-wordmark-link:hover {
+    opacity: 0.75;
+}
+
+.footer-wordmark {
+    /* Height-only sizing: width: auto preserves the source aspect ratio
+       (1067:206 → ~5.18:1). 22px tall ≈ 114px wide — comfortably under the
+       half-strip width even on a 320px viewport (where the strip's flex
+       slot is ~(320 - 2*page-pad - 44 - gap)/2 ≈ 100px+, with `space-between`
+       letting the wordmark take its intrinsic size and the IG pastille take
+       its 44×44). Reads strictly smaller than the in-page wordmark (mobile
+       14px on .wordmark svg, but the visible glyph cap is ~9-10px due to
+       SVG aspect; this footer version is ~22px tall = ~2× the visible
+       glyph-height of the top wordmark — still small enough to read as a
+       signature rather than a heading). The mobile override below dials
+       it down to 18px on narrow screens. */
+    height: 22px;
+    width: auto;
+    /* The `<img>` element has `width="120" height="32"` attributes (HTML
+       hints to avoid layout shift before load). Those are overridden by
+       this CSS, but the intrinsic aspect ratio is preserved by the browser
+       via `aspect-ratio: auto` semantics on `<img>` — `width: auto` then
+       resolves against the new height. */
+}
+
+/* Instagram pastille — lime brand square, black icon.
+   Token choice (lime): `var(--color-accent)` (#D7FF00) is the canonical
+   brand lime — the SAME token used by .hero-card (§7.2 line 849), the
+   .launch-ticker (§4.5 line 361), .floating-badge (§10), and every other
+   "lime accent" surface in the file. No `-light` / `-shade` derivative
+   exists; --color-accent IS the brand lime.
+   Token choice (icon colour): `var(--color-text-primary)` (#101828, near-
+   black) propagated to the inline SVG via `currentColor` on its
+   `stroke="currentColor"` paths. This is one shade off pure black
+   (--color-text-black, #000000), but matches the rest of the body copy
+   (§3 line 242) — keeps the icon visually tied to the surrounding text
+   rather than standing out as a pure-black tile. */
+.footer-social-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* 44×44 minimum touch target per WCAG 2.5.5 — applies on every
+       viewport including desktop (no shrink on hover). The square shape
+       (width === height) is enforced by both dimensions, not by aspect-
+       ratio, so a future inline-edit of one without the other will not
+       silently break the shape. */
+    width: 44px;
+    height: 44px;
+    /* Rounded-square (NOT pill): 12px sits between --radius-input (16) and
+       a sharp tile. Visually consistent with iOS/Android app-icon corner
+       radii at this scale, and matches the friendly-but-restrained
+       footer aesthetic. */
+    border-radius: 12px;
+    background-color: var(--color-accent);
+    /* Icon colour propagates to the inline SVG via `currentColor` on its
+       stroke. See header comment above for the token choice rationale. */
+    color: var(--color-text-primary);
+    /* Override the inherited `a { transition: color, opacity }` (§3 line
+       256) — we also want the hover scale to animate smoothly. The 180ms
+       duration sits between the global --transition (200ms) and the
+       faster button-hover idiom used by .btn-glass; matches the discreet
+       footer aesthetic. */
+    transition:
+        opacity var(--transition),
+        scale 180ms cubic-bezier(0.4, 0, 0.2, 1),
+        background-color var(--transition);
+}
+
+.footer-social-link:hover {
+    /* Subtle dual feedback: tiny scale lift (1.05) + opacity dip (0.92).
+       Scale uses the individual `scale` property (composes cleanly with
+       any future transform); the parent `a` already has a base transition
+       on color + opacity (§3 line 256), and the override above adds
+       `scale` to that list. Under prefers-reduced-motion (§19 line 4429),
+       `transition-duration: 0.01ms !important` collapses the animation
+       to an instant snap — both opacity and scale still apply, just
+       without the smooth tween (user opted out of motion, not of state
+       feedback). */
+    scale: 1.05;
+    opacity: 0.92;
+}
+
+.footer-social-link:focus-visible {
+    /* Match the generic :focus-visible pattern (§5 line 461-465). Same
+       outline width, colour, and offset used by .btn-glass and .faq-toggle
+       — keeps the keyboard focus indicator visually consistent across
+       the site. */
+    outline: 2px solid var(--color-text-primary);
+    outline-offset: 3px;
+}
+
+.footer-social-icon {
+    /* Icon dimensions: 22×22 inside the 44×44 pastille = 50% fill ratio,
+       same proportion Material / iOS icon tiles use. The source SVG has
+       `stroke-width="2"` declared on the root element (see index.html
+       line 712); kept as-is — at 22px the strokes read crisp without
+       feeling over-weighted on the lime background. */
+    width: 22px;
+    height: 22px;
+    /* `display: block` already inherited from the global `img, svg`
+       reset (§3 line 248) — no per-rule override needed. `currentColor`
+       on the SVG `stroke` attribute (markup) inherits from the parent
+       `.footer-social-link { color: var(--color-text-primary) }`. */
+}
+
+/* Mobile: dial the wordmark a hair smaller so the strip stays balanced
+   on narrow viewports where the IG pastille (fixed 44px) takes up more
+   relative horizontal space. The pastille itself stays 44×44 (WCAG min
+   touch target — must not shrink). Bottom margin tightens slightly to
+   match the overall denser mobile footer rhythm. */
+@media (max-width: 767px) {
+    .footer-wordmark {
+        height: 18px;
+    }
+    .footer-brand-strip {
+        margin-bottom: 20px;
+    }
+}
+
+
+/* ==========================================================================
    13. TOAST
    ========================================================================== */
 .toast {

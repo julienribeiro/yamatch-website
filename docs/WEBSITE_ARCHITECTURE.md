@@ -129,10 +129,11 @@ Any CDN script added in the future must include a `sha384` SRI hash and `crossor
 
 ### JSON-LD blocks (`index.html`)
 
-Three JSON-LD `<script type="application/ld+json">` blocks in `<head>`:
-1. **`Organization`** — name, legalName (`"Yamatch Corp"`), url, logo, description (volley-only + "d'autres sports à venir"), email, foundingDate (`"2026-05-12"` — ISO full date), taxID (`"104861091"`), vatID (`"FR63104861091"`), address (`PostalAddress`: 47 rue Vivienne, 75002 Paris, FR), sameAs (empty array, populated when social accounts go live).
+Four JSON-LD `<script type="application/ld+json">` blocks in `<head>`:
+1. **`Organization`** — name, legalName (`"Yamatch Corp"`), url, logo, description (volley-only + "d'autres sports à venir"), email, foundingDate (`"2026-05-12"` — ISO full date), taxID (`"104861091"`), vatID (`"FR63104861091"`), address (`PostalAddress`: 47 rue Vivienne, 75002 Paris, FR), sameAs (`["https://www.instagram.com/yamatch_app/"]` — Instagram active; additional entries added if/when LinkedIn or TikTok accounts go live).
 2. **`WebSite`** — name, url, inLanguage, publisher.
 3. **`FAQPage`** — 12 `Question` + `Answer` pairs mirroring the visible accordion (kept in sync with HTML copy).
+4. **`MobileApplication`** — name, operatingSystem, applicationCategory, offers, author.
 
 Utility pages that ship a `MobileApplication` JSON-LD block must also follow the volley-only copy rule.
 
@@ -205,6 +206,16 @@ Sections under `<main id="top">`, in order:
 3. **`section.how-quest#how-it-works`** — 3-step PARCOURS section with persona tabs; deep-link anchor `id="how-it-works"`
 4. **`section.faq#faq`** — accordion of 12 questions; deep-link anchor `id="faq"`
 5. **`<footer>`** — outside `<main>`, light-gray background (matches `.faq`), dark text, content centered
+
+### Footer brand strip (`.footer-brand-strip`) — added 2026-05-13 (CSS §12.1)
+
+Decorative row rendered above the legal links. Flex row (`justify-content: space-between`) — horizontal on all screen sizes, no mobile stack.
+
+- **Left:** `.footer-wordmark-link` > `.footer-wordmark` — SVG wordmark at 22px height desktop / 18px mobile (smaller than the fixed hero wordmark). `opacity: 0.75` on hover.
+- **Right:** `.footer-social-link.footer-social-instagram` — 44×44px touch target (WCAG AA), `border-radius: 12px`, background `var(--color-accent)` (#D7FF00 lime). Inline SVG Instagram icon 22×22, `stroke="currentColor"`, colour propagated via `color: var(--color-text-primary)` (#101828 noir). `scale(1.05)` + `opacity: 0.92` on hover.
+- Focus-visible: `outline: 2px solid var(--color-text-primary); outline-offset: 3px` — site-wide pattern (§19), no dedicated rule needed.
+- `prefers-reduced-motion`: transitions neutralised by the global §19 blanket rule — no dedicated override needed.
+- Both `<a>` tags carry no `target="_blank"` / `rel` (site convention, validated by reviewer on PR #10).
 
 ### Hero
 
