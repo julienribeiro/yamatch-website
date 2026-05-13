@@ -366,23 +366,39 @@ p {
 .launch-ticker__track {
     display: flex;
     align-items: center;
-    /* `width: max-content` lets the row size to its 4 spans + 3 inter-gaps
-       intrinsic width; `min-width: 200%` guarantees the row is at least
-       twice the viewport so the -50% keyframe never reveals an empty edge
-       even if the message is very short.
+    /* `width: max-content` lets the row size to its 8 spans + 7 inter-gaps
+       (+ 1 trailing `padding-right` gap, see below) intrinsic width — the
+       track is therefore exactly as wide as its content, with no trailing
+       empty space.
 
-       Seamless-loop math: 4 spans (S) with `gap` (G) yield 3 internal gaps
-       and a track width of `4S + 3G`. The `-50%` keyframe translates by
-       `2S + 1.5G`, but the natural repetition period of the pattern is
-       `2S + 2G` (2 spans + their bracketing gaps). The 0.5G mismatch
-       produced a visible micro-jump on every loop. Closing the loop with
-       `padding-right: var(--ticker-gap)` makes the track width `4S + 4G`,
-       so `-50% = 2S + 2G` lands exactly on a repetition point — fully
-       seamless. The gap value is hoisted into a local custom property so
-       the `padding-right` always matches the `gap` precisely. */
+       Seamless-loop math: N spans (S) with `gap` (G) yield N-1 internal
+       gaps and a track width of `N·S + (N-1)·G`. The `-50%` keyframe
+       translates by half that width. The natural repetition period of
+       the pattern is `S + G` (one span + its bracketing gap), so for
+       `-50%` to land exactly on a repetition boundary we need the total
+       track width to equal an even integer multiple of `S + G`. Closing
+       the loop with `padding-right: var(--ticker-gap)` makes the track
+       width `N·S + N·G = N·(S+G)`. With N = 8 (current HTML), `-50% =
+       4·(S+G)` = 4 repetitions — fully seamless, no micro-jump on loop.
+       The gap value is hoisted into a local custom property so the
+       `padding-right` always matches the `gap` precisely.
+
+       2026-05-13: `min-width: 200%` removed. It was a guard-rail intended
+       to cover the viewport when the message was very short, but on wide
+       viewports (≥1920px) the natural content width 8·(S+G) ≈ 3120px is
+       LESS than 200vw ≈ 3840px, so the track grew to 3840px and exposed
+       ~720px of trailing emptiness past the last span. During the scroll,
+       that emptiness drifted into view as a visible gap in the lime bar
+       just before the keyframe wrapped — the very "cut" the rule was
+       meant to prevent. With `width: max-content` only, the track is
+       exactly 8·(S+G) wide and no trailing void exists. Viewport coverage
+       on very wide displays is then guaranteed by the span count alone:
+       on a 4K+ viewport where 8·(S+G) is still narrower than the screen,
+       a small trailing void could reappear briefly each cycle; if that
+       ever ships, increase the span count in the HTML rather than
+       reintroducing `min-width: 200%`. */
     --ticker-gap: clamp(56px, 8vw, 96px);
     width: max-content;
-    min-width: 200%;
     gap: var(--ticker-gap);
     padding-right: var(--ticker-gap);
     white-space: nowrap;
