@@ -131,7 +131,20 @@
     --color-dark-surface: #000000;
     --color-light-bg: #FFFFFF;
     --color-light-gray: #F3F4F6;
-    --color-medium-gray: #99A1AF;
+    /* Muted label/eyebrow text colour on WHITE (or near-white glass) surfaces.
+       Bumped from #99A1AF (≈2.6:1 on #FFFFFF, FAILS WCAG AA) to #6A7282
+       (≈4.83:1 on #FFFFFF, PASSES AA for small text ≥ 4.5:1) on 2026-05-13
+       after a Lighthouse audit flagged 4 contrast violations on the home page
+       (.how-quest-eyebrow, .quest-step-tag-label, .faq-eyebrow). Same cool-
+       neutral hue family as before — only the lightness changes — so every
+       call site (13 selectors: .how-quest-eyebrow, .quest-persona-tabs button,
+       .quest-step-tag, .floating-card__notif-{sep,time}, .floating-card__team-
+       eyebrow, .floating-card__team-caption, .faq-eyebrow, .qr-widget-caption,
+       .download-eyebrow, .legal-page-{eyebrow,updated,nav-title}) keeps its
+       muted-label hierarchy while clearing the AA bar. The token is never
+       used on dark/lime surfaces — those use --color-text-black/--color-text-
+       white instead — so darkening it cannot hurt contrast elsewhere. */
+    --color-medium-gray: #6A7282;
     --color-text-primary: #101828;
     --color-text-white: #FFFFFF;
     /* Pure black, distinct from --color-text-primary (#101828). Used where the

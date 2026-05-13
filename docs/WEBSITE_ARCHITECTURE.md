@@ -313,7 +313,7 @@ Each `.screen-card` contains:
 --color-dark-surface: #000000;
 --color-light-bg: #FFFFFF;
 --color-light-gray: #F3F4F6;
---color-medium-gray: #99A1AF;
+--color-medium-gray: #6A7282;        /* ≈4.66:1 on #FFFFFF — passes WCAG AA (small text). Bumped from #99A1AF (≈2.6:1, failed AA) after Lighthouse audit 2026-05 flagging .how-quest-eyebrow, .quest-step-tag-label, .faq-eyebrow */
 --color-text-primary: #101828;
 --color-text-white: #FFFFFF;
 --color-text-black: #000000;          /* pure black: wordmark, hero-title, hero-subtitle, faq-icon */
