@@ -2340,7 +2340,7 @@ p {
 .floating-card__notif-body {
     font-family: var(--font-body);
     font-size: 13px;
-    color: var(--color-medium-gray);
+    color: var(--color-text-primary);
     line-height: 1.35;
     margin: 0;
     /* Clamp to 2 lines max so the card stays compact regardless of copy. */
