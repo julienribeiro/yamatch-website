@@ -51,6 +51,7 @@
          `/lib/browser.min.js`) par `qrcode-generator@1.4.4` qui a une URL CDN stable et
          une API browser-first explicite (qrcode(typeNumber, errorLevel) → addData → make
          → getModuleCount + isDark). -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" integrity="sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz" crossorigin="anonymous" defer></script>
     <script src="carousel.js" defer></script>
     <script src="script.js" defer></script>
@@ -469,15 +470,15 @@
                     <p class="floating-card__team-eyebrow">MON ÉQUIPE · 4/4</p>
                     <div class="floating-card__team-grid">
                         <div class="floating-card__team-member">
-                            <img class="floating-card__team-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=104&h=104&fit=crop&crop=faces&auto=format" alt="" loading="lazy" decoding="async" width="52" height="52">
+                            <img class="floating-card__team-avatar" src="assets/avatar-team-1.jpg" alt="" loading="lazy" decoding="async" width="52" height="52">
                             <span class="floating-card__team-caption">Léa</span>
                         </div>
                         <div class="floating-card__team-member">
-                            <img class="floating-card__team-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=104&h=104&fit=crop&crop=faces&auto=format" alt="" loading="lazy" decoding="async" width="52" height="52">
+                            <img class="floating-card__team-avatar" src="assets/avatar-team-2.jpg" alt="" loading="lazy" decoding="async" width="52" height="52">
                             <span class="floating-card__team-caption">Tom</span>
                         </div>
                         <div class="floating-card__team-member">
-                            <img class="floating-card__team-avatar" src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=104&h=104&fit=crop&crop=faces&auto=format" alt="" loading="lazy" decoding="async" width="52" height="52">
+                            <img class="floating-card__team-avatar" src="assets/avatar-team-3.jpg" alt="" loading="lazy" decoding="async" width="52" height="52">
                             <span class="floating-card__team-caption">Sami</span>
                         </div>
                         <div class="floating-card__team-member">
@@ -513,156 +514,156 @@
             <h2 class="faq-title" id="faqTitle">Questions fréquentes</h2>
             <ul class="faq-list">
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-1">
+                    <button class="faq-toggle" type="button" id="faqToggle-1" aria-expanded="false" aria-controls="faqAnswer-1">
                         <span class="faq-question">C’est quoi Yamatch&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-1" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-1" role="region" aria-labelledby="faqToggle-1">
                         <div class="faq-answer-inner">
                             <p>Yamatch, c’est l’app qui simplifie les tournois sportifs amateurs, pour les participants comme pour les organisateurs.<br>Côté participant, tu trouves un tournoi près de chez toi, tu réserves ta place et tu suis tes matchs en direct.<br>Côté organisateur, vous créez vos tournois, gérez les inscriptions, le pointage, l’arbitrage et le tableau des scores depuis l’app.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-2">
+                    <button class="faq-toggle" type="button" id="faqToggle-2" aria-expanded="false" aria-controls="faqAnswer-2">
                         <span class="faq-question">Quels sports sont disponibles sur l’app&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-2" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-2" role="region" aria-labelledby="faqToggle-2">
                         <div class="faq-answer-inner">
                             <p>Le volley-ball est le seul sport disponible pour l’instant. D’autres sports seront ajoutés progressivement.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-3">
+                    <button class="faq-toggle" type="button" id="faqToggle-3" aria-expanded="false" aria-controls="faqAnswer-3">
                         <span class="faq-question">Combien ça coûte&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-3" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-3" role="region" aria-labelledby="faqToggle-3">
                         <div class="faq-answer-inner">
                             <p>L’app est gratuite à télécharger. Les frais d’inscription à un tournoi sont fixés par l’organisateur. Seule une commission Yamatch de 4,5 % s’ajoute aux frais d’inscription : elle couvre le paiement sécurisé et le fonctionnement de la plateforme.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-4">
+                    <button class="faq-toggle" type="button" id="faqToggle-4" aria-expanded="false" aria-controls="faqAnswer-4">
                         <span class="faq-question">Comment puis-je organiser mon propre tournoi&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-4" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-4" role="region" aria-labelledby="faqToggle-4">
                         <div class="faq-answer-inner">
                             <p>Seuls les associations sportives, clubs et entreprises peuvent créer des tournois sur Yamatch. Pour commencer, rendez-vous dans la section Organisation et renseignez les informations de votre structure. Notre équipe vérifie votre compte sous 24 h, puis vous pouvez publier votre premier tournoi.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-5">
+                    <button class="faq-toggle" type="button" id="faqToggle-5" aria-expanded="false" aria-controls="faqAnswer-5">
                         <span class="faq-question">Combien de joueurs par équipe&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-5" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-5" role="region" aria-labelledby="faqToggle-5">
                         <div class="faq-answer-inner">
                             <p>Cela dépend du format choisi par l’organisateur (4×4, 6×6, etc.).<br>L’effectif exact est indiqué sur la page de chaque tournoi avant la réservation.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-6">
+                    <button class="faq-toggle" type="button" id="faqToggle-6" aria-expanded="false" aria-controls="faqAnswer-6">
                         <span class="faq-question">Puis-je m’inscrire seul·e à un tournoi&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-6" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-6" role="region" aria-labelledby="faqToggle-6">
                         <div class="faq-answer-inner">
                             <p>Les inscriptions se font par équipe. Une fois ta place réservée, tu peux associer une équipe existante ou en créer une nouvelle et inviter tes coéquipiers à la rejoindre.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-7">
+                    <button class="faq-toggle" type="button" id="faqToggle-7" aria-expanded="false" aria-controls="faqAnswer-7">
                         <span class="faq-question">Est-ce que les paiements sont sécurisés&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-7" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-7" role="region" aria-labelledby="faqToggle-7">
                         <div class="faq-answer-inner">
                             <p>Oui. Les paiements sont traités par Stripe, leader mondial du paiement en ligne et partenaire de millions d’entreprises (dont Apple, Google et Amazon). Stripe est conforme au standard PCI-DSS niveau 1, le plus haut niveau de certification du secteur. Yamatch ne stocke aucune donnée de carte bancaire : tu peux réserver tes tournois en toute sérénité.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-8">
+                    <button class="faq-toggle" type="button" id="faqToggle-8" aria-expanded="false" aria-controls="faqAnswer-8">
                         <span class="faq-question">Quels moyens de paiement sont acceptés&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-8" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-8" role="region" aria-labelledby="faqToggle-8">
                         <div class="faq-answer-inner">
                             <p>Tu peux régler par carte bancaire ou via le wallet de ton mobile : Apple Pay sur iOS, Google Pay sur Android.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-9">
+                    <button class="faq-toggle" type="button" id="faqToggle-9" aria-expanded="false" aria-controls="faqAnswer-9">
                         <span class="faq-question">Comment ça se passe le jour du tournoi&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-9" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-9" role="region" aria-labelledby="faqToggle-9">
                         <div class="faq-answer-inner">
                             <p>Tout se passe dans l’app. Tu valides ton arrivée, tu suis le planning de tes matchs en temps réel, puis tu consultes le classement et le tableau du tournoi au fur et à mesure de la journée.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-10">
+                    <button class="faq-toggle" type="button" id="faqToggle-10" aria-expanded="false" aria-controls="faqAnswer-10">
                         <span class="faq-question">Est-ce qu’il est possible de contacter l’organisateur&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-10" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-10" role="region" aria-labelledby="faqToggle-10">
                         <div class="faq-answer-inner">
                             <p>Oui. Chaque organisateur renseigne au moins un canal de contact de son choix (e-mail, compte Instagram ou téléphone) accessible directement depuis la page du tournoi.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-11">
+                    <button class="faq-toggle" type="button" id="faqToggle-11" aria-expanded="false" aria-controls="faqAnswer-11">
                         <span class="faq-question">Une réservation peut-elle être remboursée&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-11" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-11" role="region" aria-labelledby="faqToggle-11">
                         <div class="faq-answer-inner">
                             <p>Le remboursement est à la discrétion de l’organisateur. S’inscrire à un tournoi t’engage à être présent. Si tu préviens suffisamment tôt et qu’une autre équipe peut prendre ta place, l’organisateur peut accepter un remboursement complet.</p>
                         </div>
                     </div>
                 </li>
                 <li class="faq-item">
-                    <button class="faq-toggle" type="button" aria-expanded="false" aria-controls="faqAnswer-12">
+                    <button class="faq-toggle" type="button" id="faqToggle-12" aria-expanded="false" aria-controls="faqAnswer-12">
                         <span class="faq-question">Que se passe-t-il si l’organisateur annule le tournoi&nbsp;?</span>
                         <span class="faq-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         </span>
                     </button>
-                    <div class="faq-answer" id="faqAnswer-12" role="region" aria-labelledby="faqTitle">
+                    <div class="faq-answer" id="faqAnswer-12" role="region" aria-labelledby="faqToggle-12">
                         <div class="faq-answer-inner">
                             <p>Si un tournoi est annulé par l’organisateur, l’intégralité des frais d’inscription est automatiquement remboursée à toutes les équipes inscrites.</p>
                         </div>

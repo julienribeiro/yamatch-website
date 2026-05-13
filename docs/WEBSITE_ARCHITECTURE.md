@@ -116,7 +116,17 @@ No `<link rel="preconnect" href="https://fonts.googleapis.com">` or `fonts.gstat
 
 ### Sitemap
 
-`website/sitemap.xml` lists only the home URL (`https://appyamatch.fr/`). Utility pages (CGU, politique, etc.) are intentionally excluded. `<lastmod>2026-05-12</lastmod>`.
+`website/sitemap.xml` lists 7 URLs. `/download/` remains excluded (UA redirect, not indexable).
+
+| URL | `<lastmod>` | `<changefreq>` | `<priority>` |
+|-----|-------------|----------------|--------------|
+| `https://appyamatch.fr/` | 2026-05-12 | weekly | 1.0 |
+| `https://appyamatch.fr/mentions-legales/` | 2026-05-13 | monthly | 0.4 |
+| `https://appyamatch.fr/cgu/` | 2026-05-13 | monthly | 0.4 |
+| `https://appyamatch.fr/politique-annulation-remboursement/` | 2026-05-13 | monthly | 0.4 |
+| `https://appyamatch.fr/politique-confidentialite/` | 2026-05-13 | monthly | 0.4 |
+| `https://appyamatch.fr/suppression-compte/` | 2026-05-13 | monthly | 0.4 |
+| `https://appyamatch.fr/contact/` | 2026-05-13 | monthly | 0.5 |
 
 ### SRI — CDN scripts
 
@@ -151,7 +161,7 @@ Utility pages that ship a `MobileApplication` JSON-LD block must also follow the
 | `politique-confidentialite/` | Politique de confidentialité | `legal-page` | |
 | `suppression-compte/` | Suppression de compte | `legal-page` | |
 
-All 7 carry `<meta name="robots" content="index, follow">` + `<meta name="googlebot" content="index, follow">`. All are excluded from `sitemap.xml` (home URL only).
+All 7 carry `<meta name="robots" content="index, follow">` + `<meta name="googlebot" content="index, follow">`. All 6 utility pages are now included in `sitemap.xml` (see Sitemap section); only `/download/` remains excluded.
 
 Each legal page footer includes a `<nav class="legal-page-nav" aria-label="Autres documents légaux">` with a `<ul class="legal-page-nav-list">` listing the other legal pages. Standard nav order: Mentions légales (omitted on its own page), CGU, Politique de confidentialité, Annulation & remboursement, Suppression de compte, Contact.
 
