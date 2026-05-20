@@ -4,13 +4,13 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-05-13.
+Last sync: 2026-05-20.
 
 ---
 
 ## Positionnement produit
 
-Yamatch couvre **uniquement le volley-ball** aujourd'hui. La copy autorise (et encourage) la mention "d'autres sports à venir", **sans jamais nommer ces sports**.
+Yamatch est positionné comme une **app de tournois sportifs amateurs** — le **volleyball** est le premier sport disponible, d'autres sports arrivent. La copy autorise (et encourage) la mention "d'autres sports à venir", **sans jamais nommer ces sports** (formulations correctes : "& co", "et plus", "d'autres sports" ; interdit : nommer un second sport comme basket ou foot).
 
 Cette règle s'applique partout où du contenu décrit le produit :
 - `website/index.html` — `<title>`, `<meta name="description">`, og/twitter tags, `<h1>`, body copy
@@ -140,12 +140,12 @@ Any CDN script added in the future must include a `sha384` SRI hash and `crossor
 ### JSON-LD blocks (`index.html`)
 
 Four JSON-LD `<script type="application/ld+json">` blocks in `<head>`:
-1. **`Organization`** — name, legalName (`"Yamatch Corp"`), url, logo, description (volley-only + "d'autres sports à venir"), email, foundingDate (`"2026-05-12"` — ISO full date), taxID (`"104861091"`), vatID (`"FR63104861091"`), address (`PostalAddress`: 47 rue Vivienne, 75002 Paris, FR), sameAs (`["https://www.instagram.com/yamatch_app/"]` — Instagram active; additional entries added if/when LinkedIn or TikTok accounts go live).
+1. **`Organization`** — name, legalName (`"Yamatch Corp"`), url, logo, description (`"Yamatch — application mobile de réservation de tournois sportifs amateurs en France. Volleyball déjà disponible, d'autres sports à venir."`), email, foundingDate (`"2026-05-12"` — ISO full date), taxID (`"104861091"`), vatID (`"FR63104861091"`), address (`PostalAddress`: 47 rue Vivienne, 75002 Paris, FR), sameAs (`["https://www.instagram.com/yamatch_app/"]` — Instagram active; additional entries added if/when LinkedIn or TikTok accounts go live).
 2. **`WebSite`** — name, url, inLanguage, publisher.
 3. **`FAQPage`** — 12 `Question` + `Answer` pairs mirroring the visible accordion (kept in sync with HTML copy).
 4. **`MobileApplication`** — name, operatingSystem, applicationCategory, offers, author.
 
-Utility pages that ship a `MobileApplication` JSON-LD block must also follow the volley-only copy rule.
+The `MobileApplication` description in `index.html` reads: `"Yamatch — Réservation de tournois sportifs amateurs. Volleyball disponible aujourd'hui, d'autres sports à venir prochainement."` Utility pages that ship a `MobileApplication` JSON-LD block must follow the same multi-sport positioning rule (volleyball named, other sports unnamed).
 
 ### Utility / legal sub-pages
 
@@ -197,7 +197,7 @@ These identifiers are the authoritative values to use across all legal pages (`m
 |-------|-------|
 | `name` | `"Yamatch"` |
 | `short_name` | `"Yamatch"` |
-| `description` | volley-only + "D'autres sports bientôt disponibles." |
+| `description` | `"Yamatch — Trouve, réserve et joue ton prochain tournoi de volleyball amateur près de chez toi. D'autres sports bientôt disponibles."` |
 | `display` | `"standalone"` |
 | `theme_color` | `"#D7FF00"` |
 | `icons[192]` | `"purpose": "any"` |
@@ -840,7 +840,7 @@ The prior implementation used a single polyline with a FIFO buffer of recent cur
 ## Conventions reference
 
 - All design tokens in `:root`. No hardcoded hex/font/radius outside this block.
-- French copy throughout (`tu` form for player-facing). Volley-only positioning — see Positionnement produit.
+- French copy throughout (`tu` form for player-facing). Multi-sport positioning (volleyball first, other sports unnamed) — see Positionnement produit.
 - No emojis in markup unless explicitly requested.
 - No third-party scripts without explicit user approval. Any CDN script must carry a `sha384` SRI hash + `crossorigin="anonymous"`.
 - All `<img>` carry meaningful French alt text (or empty alt for decorative).
