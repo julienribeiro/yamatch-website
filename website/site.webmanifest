@@ -1,7 +1,7 @@
 {
     "name": "Yamatch",
     "short_name": "Yamatch",
-    "description": "Yamatch — Trouve, réserve et joue ton prochain tournoi de volley-ball amateur près de chez toi. D'autres sports bientôt disponibles.",
+    "description": "Yamatch — Trouve, réserve et joue ton prochain tournoi de volleyball amateur près de chez toi. D'autres sports bientôt disponibles.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#FFFFFF",
