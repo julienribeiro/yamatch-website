@@ -1,0 +1,17 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "W8JKU3PMD9.com.appyamatch.yamatch",
+        "paths": [
+          "/auth/callback",
+          "/invite/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["W8JKU3PMD9.com.appyamatch.yamatch"]
+  }
+}

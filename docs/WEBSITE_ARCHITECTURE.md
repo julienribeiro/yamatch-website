@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-05-20.
+Last sync: 2026-05-26.
 
 ---
 
@@ -834,6 +834,87 @@ The prior implementation used a single polyline with a FIFO buffer of recent cur
 - **Auto-rotating carousel** — user wants user-driven, not auto-advance.
 - **`max-width` on `.hero-card`** — caps the side margins on wide viewports, breaking the equal-on-all-sides margin invariant.
 - **`transform: translate(-50%, -50%)` on the wordmark** — fights the entrance animation; use the `translate` individual property instead.
+
+---
+
+## Mobile deep-linking — `.well-known/`
+
+Two static JSON manifests enable native deep-linking between the website and the Yamatch iOS/Android apps. They live under `website/.well-known/` and are served at `https://appyamatch.fr/.well-known/*` automatically by GitHub Pages after every push to `main`.
+
+**No extra server configuration is required.** GitHub Pages has natively served `apple-app-site-association` (without extension) with `Content-Type: application/json` since 2016. No `vercel.json`, no `.htaccess`, no custom headers config.
+
+### Deployment pipeline
+
+The workflow `.github/workflows/deploy.yml` uploads `./website` as the Pages artifact. Because `website/.well-known/` is part of that tree, both files are deployed on every `git push main` (typically live within 1–3 minutes).
+
+To verify the Apple file is reachable after deployment:
+
+```bash
+curl -I https://appyamatch.fr/.well-known/apple-app-site-association
+# Expect: HTTP/2 200 + content-type: application/json
+```
+
+Apple's CDN (APNs / CFNetwork) revalidates the AASA automatically every few hours. A freshly installed app reads the file at install time; an already-installed app picks up changes on the next revalidation cycle. **Modifying `paths` or `appID` in the AASA requires a full app reinstall on the device to take effect** (CFNetwork caches aggressively).
+
+---
+
+### `website/.well-known/apple-app-site-association` — Apple Universal Links
+
+| Field | Value |
+|-------|-------|
+| File | `website/.well-known/apple-app-site-association` (no extension — required by Apple spec) |
+| Format | Raw JSON, no build step |
+| `applinks.details[0].appID` | `W8JKU3PMD9.com.appyamatch.yamatch` |
+| `applinks.details[0].paths` | `/auth/callback`, `/invite/*` |
+| `webcredentials.apps[0]` | `W8JKU3PMD9.com.appyamatch.yamatch` |
+
+**URL patterns handled natively by the iOS app (opens in-app, not Safari):**
+- `https://appyamatch.fr/auth/callback` — OAuth / magic-link callback after login
+- `https://appyamatch.fr/invite/*` — any URL under `/invite/` (tournament or team invite links)
+
+Any URL not matching these paths falls through to the browser normally.
+
+---
+
+### `website/.well-known/assetlinks.json` — Android App Links
+
+| Field | Value |
+|-------|-------|
+| File | `website/.well-known/assetlinks.json` |
+| Format | JSON array |
+| `relation` | `["delegate_permission/common.handle_all_urls"]` |
+| `target.namespace` | `android_app` |
+| `target.package_name` | `com.appyamatch.yamatch` |
+| `target.sha256_cert_fingerprints` | **see TODO below** |
+
+**⚠️ TODO critique — SHA-256 fingerprint manquant**
+
+Le champ `sha256_cert_fingerprints` contient actuellement le placeholder :
+
+```
+PLACEHOLDER_SHA256_DEBUG_OR_RELEASE_HERE
+```
+
+**Sans un vrai SHA-256, Android refuse de prendre le verdict App Link et ouvre le navigateur au lieu de l'app.** Le founder doit remplacer ce placeholder avant que les Android App Links fonctionnent en production.
+
+Comment obtenir la valeur :
+
+```bash
+# Pour le keystore de release :
+keytool -list -v -keystore release.jks -alias <alias> | grep "SHA256"
+
+# Pour l'APK signé (si le keystore n'est pas disponible directement) :
+apksigner verify --print-certs app-release.apk | grep "SHA-256"  # (remplacer par le chemin réel de l'APK)
+
+# Format attendu dans assetlinks.json (exemple) :
+# "AB:CD:EF:12:34:56:78:90:..."  (64 caractères hex séparés par des ':'  )
+```
+
+Le même fichier peut lister plusieurs empreintes (debug + release) en les ajoutant comme entrées supplémentaires dans le tableau `sha256_cert_fingerprints`. Après modification, vérifier via [Google's Statement List Checker](https://developers.google.com/digital-asset-links/tools/generator) (après déploiement — attendre 1-3 min de propagation GitHub Pages avant de tester) ou :
+
+```bash
+curl https://appyamatch.fr/.well-known/assetlinks.json
+```
 
 ---
 
