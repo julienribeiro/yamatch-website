@@ -3859,20 +3859,33 @@ p {
 }
 
 /* Wordmark override — same recipe as `.download-page .wordmark`
-   (section 15, line 2498) and `.legal-page .wordmark` (section 16,
-   line 2647). The default wordmark (section 6, line 227) is
-   `position: fixed; translate: -50% -50%; top: calc(--page-pad / 2); left: 50%`
-   so it floats over the lime hero card. On the 404 utility page we want
-   the wordmark to flow ABOVE the centred hero block as a normal logo;
-   resetting position / top / left / translate / transform makes it a
-   plain inline-flex element. The entrance keyframe (`wordmarkEntrance`)
-   still plays — just on a static-positioned element. */
+   (section 15) and `.legal-page .wordmark` (section 16). The default
+   wordmark (section 6) is `position: fixed; translate: -50% calc(-50% + …);
+   top: calc(--launch-ticker-height + --page-pad / 2); left: 50%` so it
+   floats over the lime hero card. On the 404 utility page we want the
+   wordmark to flow ABOVE the centred hero block as a normal logo;
+   resetting position / top / left / translate makes it a plain inline-flex
+   element. The entrance keyframe (`wordmarkEntrance`) still plays — just
+   on a static-positioned element.
+   IMPORTANT — `translate: 0 0` (not `translate: none`) and DELIBERATELY no
+   `transform: none` override. See the full rationale at `.download-page
+   .wordmark` (line 3299–3321). Summary: lightningcss-cli STRIPS
+   `translate: none` from the minified output when a sibling `transform:
+   none` is present in the same rule (it assumes `transform: none` already
+   cancels everything, which is only true for legacy browsers without the
+   individual `translate` property). In our cascade the modern `translate:
+   -50% calc(...)` on `.wordmark` (§6) MUST be explicitly overridden — the
+   stripped result left the wordmark visibly shifted ~50% of its width to
+   the LEFT on 404 (pre-existing visual bug). `translate: 0 0` survives
+   minification; the base `transform: translateZ(0)` GPU-layer hint
+   cascades through harmlessly (Z=0, no perspective → zero visible offset).
+   Keep this rule symmetric with `.download-page .wordmark` and
+   `.legal-page .wordmark`. */
 .error-page .wordmark {
     position: static;
     top: auto;
     left: auto;
-    translate: none;
-    transform: none;
+    translate: 0 0;
     align-self: center;
     margin-top: clamp(24px, 5vh, 56px);
 }
