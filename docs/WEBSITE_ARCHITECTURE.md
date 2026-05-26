@@ -55,7 +55,7 @@ All 9 HTML files reference **`styles.min.css`** (the generated output), not `sty
 | Sizes | 204 KB source → 36 KB minified raw / 65 KB → 7 KB gzip (~89% gzip reduction) |
 | npm script | `npm run build:css` — `lightningcss --minify --bundle --targets '>= 0.5%' website/styles.css -o website/styles.min.css` |
 | Pre-hooks | `predev`, `prestart`, `prepreview` all run `build:css` automatically before `live-server` starts |
-| CI | `.github/workflows/deploy.yml` runs `npm ci` then `npm run build:css` before `upload-pages-artifact` |
+| CI | `.github/workflows/deploy.yml` runs `npm ci` then `npm run build:css` before the custom tar + `upload-artifact` step |
 
 **Rule:** always edit `website/styles.css`. The minified file is a build artifact — do not edit it and do not commit it.
 
@@ -845,19 +845,30 @@ Two static JSON manifests enable native deep-linking between the website and the
 
 ### Deployment pipeline
 
-The workflow `.github/workflows/deploy.yml` uploads `./website` as the Pages artifact. Because `website/.well-known/` is part of that tree, both files are deployed on every `git push main` (typically live within 1–3 minutes).
+The workflow `.github/workflows/deploy.yml` uploads `./website` as the Pages artifact via a custom tar step (see below). Because `website/.well-known/` is part of that tree, both files are deployed on every `git push main` (typically live within 1–3 minutes).
 
-#### `website/.nojekyll` — sentinel file (mandatory, do not delete)
+#### Custom tar workflow — required (do not revert)
 
-`website/.nojekyll` is an empty (0-byte) file that must exist at the root of the served directory.
+`actions/upload-pages-artifact@v5` (the standard GitHub Pages upload action) internally runs `tar --exclude=.[^/]*`, which silently strips **every dotfile and dotfolder** — including `.well-known/` and `.nojekyll` — before the artifact ever reaches the CDN. The result is a guaranteed 404 on `/.well-known/*` with no build error and no warning. Root cause confirmed by inspecting GitHub Actions run `26437651146`.
 
-**Why it is required.** GitHub Pages runs a Jekyll pre-processing step by default — even when no `_config.yml` is present. One of Jekyll's hard-wired rules is to strip every path whose name starts with a dot before copying the artifact to the CDN. Without `.nojekyll`, the entire `.well-known/` folder is silently dropped: every request to `/.well-known/*` returns HTTP 404 (serving `404.html`). The presence of `.nojekyll` tells GitHub Pages to skip Jekyll processing entirely and publish the directory tree verbatim.
+**Fix (currently in place).** The deploy workflow uses a manual tar + `actions/upload-artifact@v4` instead:
 
-**Post-deployment bug (commit `5b8d051`).** After the AASA + `assetlinks.json` files were added, `curl https://appyamatch.fr/.well-known/apple-app-site-association` returned HTTP 404. Root cause: `.nojekyll` was absent. Fix: create `website/.nojekyll` (empty, 0 byte). Deep-linking was broken until this file was present.
+- Step `Tar artifact (preserve dotfiles for .well-known/)` — tars `./website` excluding only `.git` and `.github`, preserving all other dotfiles.
+- Step `Upload artifact` (`actions/upload-artifact@v4`, `include-hidden-files: true`) — uploads the tar without stripping.
+
+See `.github/workflows/deploy.yml` lines ~34-49 for the exact YAML.
+
+**Critical invariant — do not revert to `actions/upload-pages-artifact@v5`.** Doing so silently re-breaks Universal Links and Android App Links on the next deploy with no build error and no runtime signal on device.
+
+#### `website/.nojekyll` — defence-in-depth sentinel (do not delete)
+
+`website/.nojekyll` is an empty (0-byte) file at the root of the served directory.
+
+**Why.** If the workflow is ever reverted to `actions/upload-pages-artifact@v5`, GitHub Pages' Jekyll pre-processing layer would additionally strip dotfolders at serving time. `.nojekyll` disables that second layer of stripping. It is not the current fix (the CI tar step is), but it guards against a regression at a different layer.
 
 **Side effects of disabling Jekyll: none.** The site uses no Jekyll features — no `_config.yml`, no `_layouts/`, no `_includes/`, no front-matter. Disabling Jekyll is pure gain.
 
-**Critical invariant — do not delete this file.** Removing `website/.nojekyll` re-enables Jekyll processing, silently kills the `.well-known/` folder on next deploy, and breaks both iOS Universal Links and Android App Links with no warning or build error. There is no runtime signal that deep-linking stopped working; it fails silently on device. The file must remain at `website/.nojekyll` as long as deep-linking is in scope.
+**Do not delete this file.** It costs nothing and provides a second line of defence if the upload action is ever changed.
 
 To verify the Apple file is reachable after deployment:
 

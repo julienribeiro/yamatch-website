@@ -31,8 +31,21 @@ jobs:
       - name: Minify CSS (writes website/styles.min.css)
         run: npm run build:css
       - uses: actions/configure-pages@v6
-      - uses: actions/upload-pages-artifact@v5
+      - name: Tar artifact (preserve dotfiles for .well-known/)
+        run: |
+          tar \
+            --dereference --hard-dereference \
+            --directory ./website \
+            -cvf "${RUNNER_TEMP}/artifact.tar" \
+            --exclude=.git \
+            --exclude=.github \
+            .
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          path: ./website
+          name: github-pages
+          path: ${{ runner.temp }}/artifact.tar
+          include-hidden-files: true
+          retention-days: 1
       - id: deployment
         uses: actions/deploy-pages@v5
