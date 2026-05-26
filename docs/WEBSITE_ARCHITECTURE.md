@@ -88,6 +88,9 @@ Every HTML file carries exactly one preload for the upright Inter VF (the most r
 <link rel="preload" as="font" type="font/woff2" href="fonts/Inter-Variable.woff2" crossorigin>
 ```
 (Relative path for root pages; `../fonts/Inter-Variable.woff2` for sub-pages.)
+
+> **`404.html` — root-relative paths required.** `404.html` lives at the site root but GitHub Pages serves it at the URL that triggered the 404 (e.g. `/auth/callback`). A relative `href="fonts/Inter-Variable.woff2"` would resolve to `/auth/fonts/Inter-Variable.woff2` → another 404 → page rendered unstyled (previously caused unstyled 404 on deep URLs like `/auth/callback`). All assets in `404.html` must use root-relative paths: `/fonts/Inter-Variable.woff2`, `/styles.min.css`.
+
 Roboto VF is **not** preloaded — it is used only for headings below the fold.
 
 ### Weight 800 — native (no faux-bold)
