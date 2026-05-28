@@ -166,12 +166,11 @@
         <p id="tournamentId" class="tournament-id" hidden></p>
 
         <p id="tournamentBody" class="download-body">
-            Pour voir ce tournoi, ouvre Yamatch sur ton iPhone ou Android.
+            Pour rejoindre ce tournoi, ouvre Yamatch.
         </p>
 
         <div class="tournament-ctas">
-            <a id="openInApp" class="tournament-cta-primary" href="#">Ouvrir dans Yamatch</a>
-            <a class="tournament-cta-secondary" href="../download/">Télécharger l'app</a>
+            <a id="openInApp" class="tournament-cta-primary" href="#">Rejoindre le tournoi</a>
         </div>
     </section>
 
@@ -182,11 +181,15 @@
 
 <script>
     // TODO once App Store + Play Store links are available :
-    // - Detect mobile via UA sniffing or matchMedia
-    // - On CTA primaire tap, try custom scheme
-    // - If after 1.5s the page is still visible (= app not installed), redirect to store
-    // - iOS link : https://apps.apple.com/app/yamatch/id<APP_ID>  (waiting App Store approval)
-    // - Android link : https://play.google.com/store/apps/details?id=com.appyamatch.yamatch  (after Play Store publication)
+    // - Replace the fallbackUrl = '/download/' line in joinTournament() with
+    //   platform-specific URLs :
+    //   - iOS : https://apps.apple.com/app/yamatch/id<APP_ID>  (waiting App Store approval)
+    //   - Android : https://play.google.com/store/apps/details?id=com.appyamatch.yamatch  (waiting Play Store publication)
+    // - Detection via UA sniffing :
+    //   const ua = navigator.userAgent;
+    //   if (/iPhone|iPad|iPod/i.test(ua)) fallbackUrl = '<iOS_STORE_URL>';
+    //   else if (/Android/i.test(ua)) fallbackUrl = '<ANDROID_STORE_URL>';
+    //   else fallbackUrl = '/download/';
     (function () {
         // Extrait l'ID du tournoi depuis la query string (?id=<id>, posé par
         // le bounce 404.html) ou depuis le path (cas d'un hit direct sur
@@ -230,28 +233,66 @@
             bodyEl.textContent = "Cette page est destinée à l'ouverture d'un tournoi spécifique depuis un partage.";
         }
 
+        // Smart deep link : tente d'ouvrir l'app via le schéma custom ; si
+        // après 1.5s la page est toujours visible (= app non installée /
+        // schéma non intercepté), redirige vers /download/.
+        //
+        // Le flag `didLeavePage` est crucial : iOS bascule l'onglet Safari
+        // en background quand l'app intercepte le schéma → l'événement
+        // `visibilitychange` se déclenche avec `hidden` → on sait qu'il NE
+        // faut PAS rediriger vers la page de téléchargement.
+        function joinTournament(targetId) {
+            if (!isValidId(targetId)) return; // safety
+            var appUrl = 'com.appyamatch.yamatch://tournament/' + encodeURIComponent(targetId);
+            var fallbackUrl = '/download/';
+            var didLeavePage = false;
+
+            function handleVisibilityChange() {
+                if (document.visibilityState === 'hidden') {
+                    didLeavePage = true;
+                }
+            }
+            function handlePageHide() {
+                didLeavePage = true;
+            }
+
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.addEventListener('pagehide', handlePageHide);
+
+            // Déclenche la navigation vers le schéma custom — iOS / Android
+            // interceptent et ouvrent l'app si installée. On ne peut PAS
+            // utiliser https://appyamatch.fr/... car iOS ne déclenche les
+            // Universal Links que quand l'origine diffère du domaine cible
+            // (by-design Apple).
+            window.location.href = appUrl;
+
+            // Après 1.5s, si on est toujours sur la page (app pas installée),
+            // redirige vers /download/. Cleanup systématique des listeners.
+            window.setTimeout(function () {
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+                window.removeEventListener('pagehide', handlePageHide);
+                if (!didLeavePage && document.visibilityState === 'visible') {
+                    window.location.href = fallbackUrl;
+                }
+            }, 1500);
+        }
+
         if (idValid) {
-            // Schéma custom — iOS / Android interceptent et ouvrent l'app si
-            // installée. On ne peut PAS utiliser https://appyamatch.fr/...
-            // car iOS ne déclenche les Universal Links que quand l'origine
-            // diffère du domaine cible (by-design Apple). Même-domaine =
-            // navigation interne, donc aucune interception.
             var appUrl = 'com.appyamatch.yamatch://tournament/' + encodeURIComponent(id);
             openInAppLink.setAttribute('href', appUrl);
             openInAppLink.setAttribute('target', '_self');
 
             openInAppLink.addEventListener('click', function (evt) {
-                // Re-déclenche la navigation explicitement pour donner à iOS
-                // une chance fraîche d'intercepter le schéma custom.
                 evt.preventDefault();
-                window.location.href = appUrl;
+                joinTournament(id);
             });
         } else {
-            // Pas d'ID valide → on désactive le CTA primaire (impossible de
-            // construire le schéma sans ID).
+            // Pas d'ID valide → on désactive le CTA proprement (visuellement
+            // grisé + bloqué aux interactions + signalé à l'a11y).
             openInAppLink.setAttribute('href', '#');
             openInAppLink.setAttribute('aria-disabled', 'true');
             openInAppLink.setAttribute('role', 'link');
+            openInAppLink.setAttribute('tabindex', '-1');
             openInAppLink.style.opacity = '0.5';
             openInAppLink.style.pointerEvents = 'none';
             openInAppLink.style.cursor = 'not-allowed';
