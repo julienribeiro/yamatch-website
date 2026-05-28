@@ -181,10 +181,16 @@
 </main>
 
 <script>
+    // TODO once App Store + Play Store links are available :
+    // - Detect mobile via UA sniffing or matchMedia
+    // - On CTA primaire tap, try custom scheme
+    // - If after 1.5s the page is still visible (= app not installed), redirect to store
+    // - iOS link : https://apps.apple.com/app/yamatch/id<APP_ID>  (waiting App Store approval)
+    // - Android link : https://play.google.com/store/apps/details?id=com.appyamatch.yamatch  (after Play Store publication)
     (function () {
-        // Extract the tournament ID either from the query string
-        // (?id=<id>, set by the 404.html bounce) or from the path
-        // (when index.html is served directly for /tournament/).
+        // Extrait l'ID du tournoi depuis la query string (?id=<id>, posé par
+        // le bounce 404.html) ou depuis le path (cas d'un hit direct sur
+        // /tournament/<id>).
         function readTournamentId() {
             var params = new URLSearchParams(window.location.search);
             var fromQuery = params.get('id');
@@ -201,8 +207,8 @@
             return null;
         }
 
-        // Permissive ID guard — accepts UUIDs, slugs, alphanumeric tokens.
-        // Rejects anything containing whitespace or slashes.
+        // Garde permissive — accepte UUIDs, slugs, tokens alphanumériques.
+        // Rejette tout ce qui contient espace ou slash.
         function isValidId(value) {
             if (!value) return false;
             if (value.length > 128) return false;
@@ -220,24 +226,40 @@
             idEl.textContent = id;
             idEl.hidden = false;
         } else {
-            // Generic mode — no specific tournament reference.
+            // Mode générique — pas de tournoi spécifique référencé.
             bodyEl.textContent = "Cette page est destinée à l'ouverture d'un tournoi spécifique depuis un partage.";
         }
 
-        // Universal Link target — when the user taps "Ouvrir dans Yamatch"
-        // on iOS Safari with the app installed, iOS will intercept the
-        // navigation and open the app. Without the app, Safari follows the
-        // link back to this page (which is fine — same fallback content).
-        var canonicalUrl = 'https://appyamatch.fr/tournament/' + (idValid ? encodeURIComponent(id) : '');
-        openInAppLink.setAttribute('href', canonicalUrl);
+        if (idValid) {
+            // Schéma custom — iOS / Android interceptent et ouvrent l'app si
+            // installée. On ne peut PAS utiliser https://appyamatch.fr/...
+            // car iOS ne déclenche les Universal Links que quand l'origine
+            // diffère du domaine cible (by-design Apple). Même-domaine =
+            // navigation interne, donc aucune interception.
+            var appUrl = 'com.appyamatch.yamatch://tournament/' + encodeURIComponent(id);
+            openInAppLink.setAttribute('href', appUrl);
+            openInAppLink.setAttribute('target', '_self');
 
-        openInAppLink.addEventListener('click', function (evt) {
-            // Re-trigger the navigation explicitly to give iOS a fresh
-            // chance at the Universal Link interception. No-op on Android /
-            // desktop where the link is a regular navigation.
-            evt.preventDefault();
-            window.location.href = canonicalUrl;
-        });
+            openInAppLink.addEventListener('click', function (evt) {
+                // Re-déclenche la navigation explicitement pour donner à iOS
+                // une chance fraîche d'intercepter le schéma custom.
+                evt.preventDefault();
+                window.location.href = appUrl;
+            });
+        } else {
+            // Pas d'ID valide → on désactive le CTA primaire (impossible de
+            // construire le schéma sans ID).
+            openInAppLink.setAttribute('href', '#');
+            openInAppLink.setAttribute('aria-disabled', 'true');
+            openInAppLink.setAttribute('role', 'link');
+            openInAppLink.style.opacity = '0.5';
+            openInAppLink.style.pointerEvents = 'none';
+            openInAppLink.style.cursor = 'not-allowed';
+
+            openInAppLink.addEventListener('click', function (evt) {
+                evt.preventDefault();
+            });
+        }
     })();
 </script>
 
