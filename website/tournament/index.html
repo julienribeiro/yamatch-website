@@ -115,6 +115,30 @@
             margin: 0;
         }
 
+        /* Price pill — dark inline-block on its own centred row between
+           the criteria line and the primary CTA. Width hugs the content
+           (size-to-fit), uses the dark text token as background to
+           mirror the .tournament-cta-secondary recipe. Hidden by default
+           via the [hidden] HTML attribute on the wrap; JS shows it when
+           price_per_team > 0. */
+        .tournament-price-wrap {
+            text-align: center;
+            margin-top: clamp(12px, 1.6vh, 16px);
+            margin-bottom: clamp(24px, 3.2vh, 32px);
+        }
+
+        .tournament-price-pill {
+            display: inline-block;
+            background-color: var(--color-text-primary);
+            color: var(--color-text-white);
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 0.9375rem;
+            line-height: 1;
+            padding: 10px 18px;
+            border-radius: var(--radius-pill);
+        }
+
         .tournament-ctas {
             display: flex;
             flex-direction: column;
@@ -224,6 +248,10 @@
             <span class="tournament-skeleton tournament-skeleton-body" aria-hidden="true">&nbsp;</span>
         </p>
 
+        <div id="tournamentPriceWrap" class="tournament-price-wrap" hidden>
+            <span id="tournamentPrice" class="tournament-price-pill"></span>
+        </div>
+
         <div class="tournament-ctas">
             <a id="openInApp" class="tournament-cta-primary" href="#" aria-disabled="true">Rejoindre le tournoi</a>
         </div>
@@ -282,6 +310,8 @@
         var titleEl = document.getElementById('tournamentTitle');
         var bodyEl = document.getElementById('tournamentBody');
         var cancelledEl = document.getElementById('tournamentCancelledNote');
+        var priceWrapEl = document.getElementById('tournamentPriceWrap');
+        var priceEl = document.getElementById('tournamentPrice');
         var openInAppLink = document.getElementById('openInApp');
 
         // Disable the CTA (visual grey + a11y signal + no-op handler). Used
@@ -323,25 +353,42 @@
             cancelledEl.hidden = !show;
         }
 
+        // Show / hide the price pill. `formatted` is either a non-empty
+        // string ("80 €") or null — null hides the wrap entirely (no
+        // empty "0 €" rendering). Used by every render state.
+        function setPricePill(formatted) {
+            if (!formatted) {
+                priceWrapEl.hidden = true;
+                priceEl.textContent = '';
+                return;
+            }
+            priceEl.textContent = formatted;
+            priceWrapEl.hidden = false;
+        }
+
         // "80.00" → "80 €" (locale fr-FR, integer). Falls back to null
-        // if parsing fails — never throws.
+        // if parsing fails or value is non-positive — never throws.
+        // null/0 hide the price pill (no "0 €" rendering — meaningless).
         function formatPrice(numericString) {
             if (numericString === null || numericString === undefined) return null;
             var n = parseFloat(numericString);
-            if (isNaN(n)) return null;
+            if (isNaN(n) || n <= 0) return null;
             var rounded = Math.round(n);
             return rounded.toLocaleString('fr-FR') + ' €';
         }
 
-        // Build "Pools + Bracket · Mixte · Paris · 80 €" — joins only the
-        // truthy segments with " · " (U+00B7 middle dot, spaces around).
+        // Build "4v4 · Mixte · Paris" — joins only the truthy segments
+        // with " · " (U+00B7 middle dot, spaces around). The team format
+        // (NvN) replaces the previous competition format (Pools / Bracket).
+        // Price now lives in its own centred pill below this line.
         function formatCriteria(tournament) {
             var segments = [];
-            if (tournament.format) segments.push(String(tournament.format));
+            var n = tournament.players_per_team;
+            if (typeof n === 'number' && isFinite(n) && n > 0) {
+                segments.push(n + 'v' + n);
+            }
             if (tournament.gender) segments.push(String(tournament.gender));
             if (tournament.location) segments.push(String(tournament.location));
-            var price = formatPrice(tournament.price_per_team);
-            if (price) segments.push(price);
             return segments.join(' · ');
         }
 
@@ -352,7 +399,7 @@
             var url = SUPABASE_URL
                 + '/rest/v1/tournaments'
                 + '?id=eq.' + encodeURIComponent(targetId)
-                + '&select=title,format,gender,location,price_per_team,status';
+                + '&select=title,players_per_team,gender,location,price_per_team,status';
             return fetch(url, {
                 method: 'GET',
                 headers: {
@@ -376,6 +423,7 @@
             setTitleText('Tournoi introuvable');
             setBodyText("Ce tournoi n'existe plus ou a été retiré.");
             showCancelledNote(false);
+            setPricePill(null);
             disableCta();
         }
 
@@ -383,12 +431,17 @@
             setTitleText('Tournoi Yamatch');
             setBodyText('Lien de tournoi invalide ou expiré.');
             showCancelledNote(false);
+            setPricePill(null);
             disableCta();
         }
 
         function renderSuccess(tournament, targetId) {
             setTitleText(tournament.title || 'Tournoi Yamatch');
             setBodyText(formatCriteria(tournament));
+            // Price pill stays visible for cancelled tournaments (legit
+            // info even when registration is closed). Hidden only when
+            // price_per_team is null / 0 / unparseable.
+            setPricePill(formatPrice(tournament.price_per_team));
             var isCancelled = tournament.status === 'cancelled';
             showCancelledNote(isCancelled);
             if (isCancelled) {
