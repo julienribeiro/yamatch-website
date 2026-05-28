@@ -52,6 +52,9 @@
            - a minimal in-flow footer.
            No tokens introduced; only spacing + the lime/dark CTAs which mirror
            the accent button + .download-back recipes already in styles.css. */
+        /* .tournament-id : kept as orphan class for backward compat after
+           the ID chip was removed (founder UX change — surface tournament
+           name + criteria instead of the raw ID). */
         .tournament-id {
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             font-size: 0.8125rem;
@@ -61,6 +64,54 @@
             border-radius: 8px;
             word-break: break-all;
             max-width: 100%;
+            margin: 0;
+        }
+
+        /* Skeleton bars used during fetch — shimmer-less, just a neutral
+           pulsing fill on the title + body slots. Avoids importing the
+           full shimmer animation framework for a single-use loading state. */
+        .tournament-skeleton {
+            display: inline-block;
+            background: linear-gradient(
+                90deg,
+                rgba(16, 24, 40, 0.06) 0%,
+                rgba(16, 24, 40, 0.12) 50%,
+                rgba(16, 24, 40, 0.06) 100%
+            );
+            background-size: 200% 100%;
+            border-radius: 6px;
+            color: transparent;
+            animation: tournamentSkeletonPulse 1.4s ease-in-out infinite;
+        }
+
+        .tournament-skeleton-title {
+            height: 1.2em;
+            width: min(280px, 70vw);
+        }
+
+        .tournament-skeleton-body {
+            height: 1em;
+            width: min(220px, 60vw);
+        }
+
+        @keyframes tournamentSkeletonPulse {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tournament-skeleton {
+                animation: none;
+            }
+        }
+
+        /* Cancelled banner — slim red-tinted sub-line above the criteria
+           when the tournament was cancelled but the share link is still
+           live. Stays editorial (no badge / no icon). */
+        .tournament-cancelled-note {
+            font-family: var(--font-body);
+            font-size: 0.9375rem;
+            color: var(--color-error);
             margin: 0;
         }
 
@@ -161,16 +212,20 @@
 
     <section class="download-hero" aria-labelledby="tournamentTitle">
         <p class="download-eyebrow">Tournoi Yamatch</p>
-        <h1 id="tournamentTitle" class="download-title">Ouvre ce tournoi dans l'app</h1>
+        <h1 id="tournamentTitle" class="download-title" aria-live="polite">
+            <span class="tournament-skeleton tournament-skeleton-title" aria-hidden="true">&nbsp;</span>
+        </h1>
 
-        <p id="tournamentId" class="tournament-id" hidden></p>
+        <p id="tournamentCancelledNote" class="tournament-cancelled-note" hidden>
+            Ce tournoi a été annulé.
+        </p>
 
-        <p id="tournamentBody" class="download-body">
-            Pour rejoindre ce tournoi, ouvre Yamatch.
+        <p id="tournamentBody" class="download-body" aria-live="polite">
+            <span class="tournament-skeleton tournament-skeleton-body" aria-hidden="true">&nbsp;</span>
         </p>
 
         <div class="tournament-ctas">
-            <a id="openInApp" class="tournament-cta-primary" href="#">Rejoindre le tournoi</a>
+            <a id="openInApp" class="tournament-cta-primary" href="#" aria-disabled="true">Rejoindre le tournoi</a>
         </div>
     </section>
 
@@ -191,6 +246,12 @@
     //   else if (/Android/i.test(ua)) fallbackUrl = '<ANDROID_STORE_URL>';
     //   else fallbackUrl = '/download/';
     (function () {
+        // Supabase staging — anon publishable key. Same key is shipped in
+        // the Flutter app for the same project (uqxjxkxcbsjcscrrlwae). RLS
+        // restricts SELECT on `tournaments` to published rows for anon.
+        var SUPABASE_URL = 'https://uqxjxkxcbsjcscrrlwae.supabase.co';
+        var SUPABASE_ANON_KEY = 'sb_publishable_QaQlQg5nQTLCl_tzQE5wtA_WJfhsj47';
+
         // Extrait l'ID du tournoi depuis la query string (?id=<id>, posé par
         // le bounce 404.html) ou depuis le path (cas d'un hit direct sur
         // /tournament/<id>).
@@ -218,21 +279,127 @@
             return /^[A-Za-z0-9_\-]+$/.test(value);
         }
 
-        var id = readTournamentId();
-        var idValid = isValidId(id);
-
-        var idEl = document.getElementById('tournamentId');
+        var titleEl = document.getElementById('tournamentTitle');
         var bodyEl = document.getElementById('tournamentBody');
+        var cancelledEl = document.getElementById('tournamentCancelledNote');
         var openInAppLink = document.getElementById('openInApp');
 
-        if (idValid) {
-            idEl.textContent = id;
-            idEl.hidden = false;
-        } else {
-            // Mode générique — pas de tournoi spécifique référencé.
-            bodyEl.textContent = "Cette page est destinée à l'ouverture d'un tournoi spécifique depuis un partage.";
+        // Disable the CTA (visual grey + a11y signal + no-op handler). Used
+        // for every non-success state (no ID, fetch error, not found).
+        function disableCta() {
+            openInAppLink.setAttribute('href', '#');
+            openInAppLink.setAttribute('aria-disabled', 'true');
+            openInAppLink.setAttribute('role', 'link');
+            openInAppLink.setAttribute('tabindex', '-1');
+            openInAppLink.style.opacity = '0.5';
+            openInAppLink.style.pointerEvents = 'none';
+            openInAppLink.style.cursor = 'not-allowed';
         }
 
+        function enableCta(targetId) {
+            var appUrl = 'com.appyamatch.yamatch://tournament/' + encodeURIComponent(targetId);
+            openInAppLink.setAttribute('href', appUrl);
+            openInAppLink.setAttribute('target', '_self');
+            openInAppLink.setAttribute('aria-disabled', 'false');
+            openInAppLink.removeAttribute('tabindex');
+            openInAppLink.style.opacity = '';
+            openInAppLink.style.pointerEvents = '';
+            openInAppLink.style.cursor = '';
+            openInAppLink.addEventListener('click', function (evt) {
+                evt.preventDefault();
+                joinTournament(targetId);
+            });
+        }
+
+        // Render helpers — always go through textContent for fetched data
+        // (XSS-safe, DB string injection neutralised).
+        function setTitleText(text) {
+            titleEl.textContent = text;
+        }
+        function setBodyText(text) {
+            bodyEl.textContent = text;
+        }
+        function showCancelledNote(show) {
+            cancelledEl.hidden = !show;
+        }
+
+        // "80.00" → "80 €" (locale fr-FR, integer). Falls back to null
+        // if parsing fails — never throws.
+        function formatPrice(numericString) {
+            if (numericString === null || numericString === undefined) return null;
+            var n = parseFloat(numericString);
+            if (isNaN(n)) return null;
+            var rounded = Math.round(n);
+            return rounded.toLocaleString('fr-FR') + ' €';
+        }
+
+        // Build "Pools + Bracket · Mixte · Paris · 80 €" — joins only the
+        // truthy segments with " · " (U+00B7 middle dot, spaces around).
+        function formatCriteria(tournament) {
+            var segments = [];
+            if (tournament.format) segments.push(String(tournament.format));
+            if (tournament.gender) segments.push(String(tournament.gender));
+            if (tournament.location) segments.push(String(tournament.location));
+            var price = formatPrice(tournament.price_per_team);
+            if (price) segments.push(price);
+            return segments.join(' · ');
+        }
+
+        // GET /rest/v1/tournaments?id=eq.<id>&select=... — returns the
+        // first row or null. Throws on network / HTTP error so the caller
+        // can render the "introuvable" state.
+        function fetchTournament(targetId) {
+            var url = SUPABASE_URL
+                + '/rest/v1/tournaments'
+                + '?id=eq.' + encodeURIComponent(targetId)
+                + '&select=title,format,gender,location,price_per_team,status';
+            return fetch(url, {
+                method: 'GET',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                    'Accept': 'application/json'
+                }
+            }).then(function (res) {
+                if (!res.ok) {
+                    throw new Error('HTTP ' + res.status);
+                }
+                return res.json();
+            }).then(function (rows) {
+                if (!Array.isArray(rows) || rows.length === 0) return null;
+                return rows[0];
+            });
+        }
+
+        // ---------- Render states ----------
+        function renderNotFound() {
+            setTitleText('Tournoi introuvable');
+            setBodyText("Ce tournoi n'existe plus ou a été retiré.");
+            showCancelledNote(false);
+            disableCta();
+        }
+
+        function renderInvalidLink() {
+            setTitleText('Tournoi Yamatch');
+            setBodyText('Lien de tournoi invalide ou expiré.');
+            showCancelledNote(false);
+            disableCta();
+        }
+
+        function renderSuccess(tournament, targetId) {
+            setTitleText(tournament.title || 'Tournoi Yamatch');
+            setBodyText(formatCriteria(tournament));
+            var isCancelled = tournament.status === 'cancelled';
+            showCancelledNote(isCancelled);
+            if (isCancelled) {
+                // Cancelled tournament — user can no longer register.
+                disableCta();
+            } else {
+                enableCta(targetId);
+            }
+        }
+
+        // ---------- Smart deep link ----------
         // Smart deep link : tente d'ouvrir l'app via le schéma custom ; si
         // après 1.5s la page est toujours visible (= app non installée /
         // schéma non intercepté), redirige vers /download/.
@@ -277,30 +444,24 @@
             }, 1500);
         }
 
-        if (idValid) {
-            var appUrl = 'com.appyamatch.yamatch://tournament/' + encodeURIComponent(id);
-            openInAppLink.setAttribute('href', appUrl);
-            openInAppLink.setAttribute('target', '_self');
-
-            openInAppLink.addEventListener('click', function (evt) {
-                evt.preventDefault();
-                joinTournament(id);
-            });
-        } else {
-            // Pas d'ID valide → on désactive le CTA proprement (visuellement
-            // grisé + bloqué aux interactions + signalé à l'a11y).
-            openInAppLink.setAttribute('href', '#');
-            openInAppLink.setAttribute('aria-disabled', 'true');
-            openInAppLink.setAttribute('role', 'link');
-            openInAppLink.setAttribute('tabindex', '-1');
-            openInAppLink.style.opacity = '0.5';
-            openInAppLink.style.pointerEvents = 'none';
-            openInAppLink.style.cursor = 'not-allowed';
-
-            openInAppLink.addEventListener('click', function (evt) {
-                evt.preventDefault();
-            });
+        // ---------- Orchestration ----------
+        var id = readTournamentId();
+        if (!isValidId(id)) {
+            renderInvalidLink();
+            return;
         }
+
+        // Loading state is already in the DOM (skeleton bars in
+        // #tournamentTitle + #tournamentBody, CTA aria-disabled).
+        fetchTournament(id).then(function (tournament) {
+            if (!tournament) {
+                renderNotFound();
+            } else {
+                renderSuccess(tournament, id);
+            }
+        }).catch(function (_err) {
+            renderNotFound();
+        });
     })();
 </script>
 
