@@ -7,6 +7,24 @@
     <meta name="description" content="Page introuvable sur Yamatch.">
     <meta name="robots" content="noindex">
 
+    <!-- Universal Link bounce: /tournament/<id> has no real file on GitHub
+         Pages, so it lands here (404.html). We redirect to the canonical
+         /tournament/?id=<id> fallback page before any pixel is painted.
+         The redirect preserves the ID so /tournament/index.html can resolve
+         it from the query string. Mirrors the AASA path /tournament/* and
+         the in-app deep link handler. Same-domain `replace` so the 404 URL
+         is not kept in history. -->
+    <script>
+        (function () {
+            var path = window.location.pathname;
+            var match = path.match(/^\/tournament\/([^\/]+)\/?$/);
+            if (match && match[1]) {
+                var id = decodeURIComponent(match[1]);
+                window.location.replace('/tournament/?id=' + encodeURIComponent(id));
+            }
+        })();
+    </script>
+
     <!-- OpenGraph / Twitter : présents même sur 404 pour que les bots crawlers
          (iMessage, WhatsApp, Slack, Twitter, etc.) génèrent un rich preview
          lorsqu'ils fetch une route inconnue (ex. /invite/<token> côté SPA). -->

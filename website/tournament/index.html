@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#D7FF00">
+    <meta name="description" content="Ouvre ce tournoi dans Yamatch, l'app de réservation de tournois sportifs amateurs.">
+    <meta name="robots" content="noindex">
+
+    <!-- OpenGraph / Twitter : présents pour que les bots crawlers
+         (iMessage, WhatsApp, Slack) génèrent un rich preview lorsqu'un
+         lien /tournament/<id> est partagé. -->
+    <meta property="og:title" content="Yamatch | Ouvre ce tournoi dans l'app">
+    <meta property="og:site_name" content="Yamatch">
+    <meta property="og:description" content="Pour voir ce tournoi, ouvre Yamatch sur ton iPhone ou Android.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:url" content="https://appyamatch.fr/tournament/">
+    <meta property="og:image" content="https://appyamatch.fr/assets/social_preview.jpg">
+    <meta property="og:image:secure_url" content="https://appyamatch.fr/assets/social_preview.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Yamatch — Ton prochain tournoi t'attend. App de réservation de tournois sportifs amateurs.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Yamatch | Ouvre ce tournoi dans l'app">
+    <meta name="twitter:description" content="Pour voir ce tournoi, ouvre Yamatch sur ton iPhone ou Android.">
+    <meta name="twitter:image" content="https://appyamatch.fr/assets/social_preview.jpg">
+    <meta name="twitter:image:alt" content="Yamatch — Ton prochain tournoi t'attend. App de réservation de tournois sportifs amateurs.">
+
+    <title>Yamatch — Ouvrir ce tournoi</title>
+
+    <link rel="icon" type="image/x-icon" sizes="48x48" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/icons/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/icons/android-chrome-512x512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <link rel="preload" as="font" type="font/woff2" href="../fonts/Inter-Variable.woff2" crossorigin>
+
+    <link rel="stylesheet" href="../styles.min.css">
+
+    <style>
+        /* Scoped overrides for the tournament fallback page.
+           Re-uses the .download-page / .download-hero recipe (centred column,
+           wordmark reset, editorial typography) and adds:
+           - a stacked two-CTA layout (lime primary + dark secondary)
+           - an optional monospace ID chip below the title
+           - a minimal in-flow footer.
+           No tokens introduced; only spacing + the lime/dark CTAs which mirror
+           the accent button + .download-back recipes already in styles.css. */
+        .tournament-id {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.8125rem;
+            color: var(--color-medium-gray);
+            background: rgba(16, 24, 40, 0.04);
+            padding: 6px 12px;
+            border-radius: 8px;
+            word-break: break-all;
+            max-width: 100%;
+            margin: 0;
+        }
+
+        .tournament-ctas {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            width: 100%;
+            max-width: 320px;
+            margin-top: clamp(12px, 2vh, 24px);
+        }
+
+        /* Lime primary CTA — uses the brand accent token, black text.
+           Mirrors the .download-back geometry but with the lime fill. */
+        .tournament-cta-primary,
+        .tournament-cta-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: clamp(12px, 1.4vh, 16px) clamp(20px, 2.5vw, 32px);
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: clamp(0.9rem, 1vw, 1rem);
+            text-decoration: none;
+            border-radius: var(--radius-pill);
+            transition:
+                background-color 220ms cubic-bezier(0.4, 0, 0.2, 1),
+                color 220ms cubic-bezier(0.4, 0, 0.2, 1),
+                transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .tournament-cta-primary {
+            background-color: var(--color-accent);
+            color: var(--color-text-primary);
+        }
+
+        .tournament-cta-primary:hover {
+            transform: translateY(-1px);
+            background-color: #C8EE00;
+        }
+
+        .tournament-cta-primary:focus-visible {
+            outline: 2px solid var(--color-text-primary);
+            outline-offset: 3px;
+        }
+
+        .tournament-cta-secondary {
+            background-color: var(--color-text-primary);
+            color: var(--color-text-white);
+        }
+
+        .tournament-cta-secondary:hover {
+            background-color: var(--color-button-glass-hover);
+        }
+
+        .tournament-cta-secondary:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 3px;
+        }
+
+        /* Minimal in-flow footer — small Inter line centred at the bottom of
+           the page. Re-uses .download-page's flex column layout so the footer
+           sits naturally below the hero. */
+        .tournament-footer {
+            font-family: var(--font-body);
+            font-size: 0.8125rem;
+            color: var(--color-medium-gray);
+            margin: 0;
+        }
+
+        .tournament-footer a {
+            color: var(--color-medium-gray);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .tournament-footer a:hover {
+            color: var(--color-text-primary);
+        }
+    </style>
+</head>
+<body>
+
+<main class="download-page">
+    <a class="wordmark wordmark-link" href="../" aria-label="Retour à l'accueil Yamatch">
+        <svg viewBox="0 0 1067.73 206.13" aria-hidden="true" focusable="false">
+            <path d="M277.28,3.42h28.94l22.78,99.93h1.42L353.19,3.42h79.15v199.29h-49.25V71.17h-3.42l-26.76,131.54h-46.4l-26.76-131.54h-3.42l-19.3,131.54h-9.97S277.28,3.42,277.28,3.42Z"/>
+            <path d="M480.72,3.42h84.84l42.7,199.29h-64.91l-2.85-20.5h-34.73l-2.85,20.5h-64.91L480.72,3.42ZM539.37,139.5l-14.23-74.02h-3.98l-14.24,74.02h32.46Z"/>
+            <path d="M638.43,52.95h-49.54V3.42h155.45v49.54h-49.54v149.76h-56.37V52.95Z"/>
+            <path d="M746.32,116.16v-26.19c0-60.64,6.83-89.97,77.73-89.97s77.72,27.33,77.72,75.73v12.81h-56.94v-21.35c0-11.67-4.56-18.79-20.78-18.79s-20.78,7.12-20.78,18.79v71.74c0,11.67,4.56,18.79,20.78,18.79s20.78-7.12,20.78-18.79v-22.49h56.94v13.95c0,48.4-6.83,75.73-77.72,75.73s-77.73-29.33-77.73-89.97Z"/>
+            <path d="M1011.35,125.27h-40.43v77.44h-56.37V3.42h56.37v79.15h40.43V3.42h56.37v199.29h-56.37v-77.44Z"/>
+            <path d="M201.99,3.41h84.84l-29.83,199.27h-64.91l4.61-20.5h-34.73l-10.31,20.5h-64.91L201.99,3.41ZM211.1,139.48l12.71-74.02h-3.99l-41.17,74.02h32.45Z"/>
+            <path d="M31.91,115.55L4.49,3.96h62.06l12.66,57.5h3.42L137.15,3.96h62.06l-108.66,111.59-31.91,87.68H0l31.91-87.68Z"/>
+        </svg>
+    </a>
+
+    <section class="download-hero" aria-labelledby="tournamentTitle">
+        <p class="download-eyebrow">Tournoi Yamatch</p>
+        <h1 id="tournamentTitle" class="download-title">Ouvre ce tournoi dans l'app</h1>
+
+        <p id="tournamentId" class="tournament-id" hidden></p>
+
+        <p id="tournamentBody" class="download-body">
+            Pour voir ce tournoi, ouvre Yamatch sur ton iPhone ou Android.
+        </p>
+
+        <div class="tournament-ctas">
+            <a id="openInApp" class="tournament-cta-primary" href="#">Ouvrir dans Yamatch</a>
+            <a class="tournament-cta-secondary" href="../download/">Télécharger l'app</a>
+        </div>
+    </section>
+
+    <p class="tournament-footer">
+        <a href="../">Retour au site</a>
+    </p>
+</main>
+
+<script>
+    (function () {
+        // Extract the tournament ID either from the query string
+        // (?id=<id>, set by the 404.html bounce) or from the path
+        // (when index.html is served directly for /tournament/).
+        function readTournamentId() {
+            var params = new URLSearchParams(window.location.search);
+            var fromQuery = params.get('id');
+            if (fromQuery && fromQuery.trim().length > 0) {
+                return fromQuery.trim();
+            }
+            // /tournament/<id> direct hit (unlikely on GitHub Pages without
+            // a real file, but safe-guard for future hosting changes).
+            var path = window.location.pathname.replace(/\/+$/, '');
+            var match = path.match(/\/tournament\/(.+)$/);
+            if (match && match[1]) {
+                return decodeURIComponent(match[1]);
+            }
+            return null;
+        }
+
+        // Permissive ID guard — accepts UUIDs, slugs, alphanumeric tokens.
+        // Rejects anything containing whitespace or slashes.
+        function isValidId(value) {
+            if (!value) return false;
+            if (value.length > 128) return false;
+            return /^[A-Za-z0-9_\-]+$/.test(value);
+        }
+
+        var id = readTournamentId();
+        var idValid = isValidId(id);
+
+        var idEl = document.getElementById('tournamentId');
+        var bodyEl = document.getElementById('tournamentBody');
+        var openInAppLink = document.getElementById('openInApp');
+
+        if (idValid) {
+            idEl.textContent = id;
+            idEl.hidden = false;
+        } else {
+            // Generic mode — no specific tournament reference.
+            bodyEl.textContent = "Cette page est destinée à l'ouverture d'un tournoi spécifique depuis un partage.";
+        }
+
+        // Universal Link target — when the user taps "Ouvrir dans Yamatch"
+        // on iOS Safari with the app installed, iOS will intercept the
+        // navigation and open the app. Without the app, Safari follows the
+        // link back to this page (which is fine — same fallback content).
+        var canonicalUrl = 'https://appyamatch.fr/tournament/' + (idValid ? encodeURIComponent(id) : '');
+        openInAppLink.setAttribute('href', canonicalUrl);
+
+        openInAppLink.addEventListener('click', function (evt) {
+            // Re-trigger the navigation explicitly to give iOS a fresh
+            // chance at the Universal Link interception. No-op on Android /
+            // desktop where the link is a regular navigation.
+            evt.preventDefault();
+            window.location.href = canonicalUrl;
+        });
+    })();
+</script>
+
+</body>
+</html>
