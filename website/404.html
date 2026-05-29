@@ -7,14 +7,15 @@
     <meta name="description" content="Page introuvable sur Yamatch.">
     <meta name="robots" content="noindex">
 
-    <!-- Universal Link bounce: /tournament/<id> and /invite/<token> have no
-         real file on GitHub Pages, so they land here (404.html). We redirect
-         to the canonical /tournament/?id=<id> or /invite/?token=<token>
-         fallback page before any pixel is painted.
+    <!-- Universal Link bounce: /tournament/<id>, /invite/<token> and
+         /org-invite/<token> have no real file on GitHub Pages, so they land
+         here (404.html). We redirect to the canonical /tournament/?id=<id>,
+         /invite/?token=<token> or /org-invite/?token=<token> fallback page
+         before any pixel is painted.
          The redirect preserves the ID / token so the target index.html can
          resolve it from the query string. Mirrors the AASA paths
-         /tournament/* + /invite/* and the in-app deep link handler.
-         Same-domain `replace` so the 404 URL is not kept in history. -->
+         /tournament/* + /invite/* + /org-invite/* and the in-app deep link
+         handler. Same-domain `replace` so the 404 URL is not kept in history. -->
     <script>
         (function () {
             var path = window.location.pathname;
@@ -22,6 +23,12 @@
             if (tournamentMatch && tournamentMatch[1]) {
                 var id = decodeURIComponent(tournamentMatch[1]);
                 window.location.replace('/tournament/?id=' + encodeURIComponent(id));
+                return;
+            }
+            var orgInviteMatch = path.match(/^\/org-invite\/([^\/]+)\/?$/);
+            if (orgInviteMatch && orgInviteMatch[1]) {
+                var orgToken = decodeURIComponent(orgInviteMatch[1]);
+                window.location.replace('/org-invite/?token=' + encodeURIComponent(orgToken));
                 return;
             }
             var inviteMatch = path.match(/^\/invite\/([^\/]+)\/?$/);
