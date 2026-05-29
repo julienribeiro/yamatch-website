@@ -8,6 +8,7 @@
           "/auth/callback",
           "/invite/*",
           "/org-invite/*",
+          "/owner-transfer/*",
           "/tournament/*"
         ]
       }

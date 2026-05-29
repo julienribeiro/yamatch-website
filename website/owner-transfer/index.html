@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#D7FF00">
+    <meta name="description" content="Transfert de propriété d'une organisation sur Yamatch, l'app de réservation de tournois sportifs amateurs.">
+    <meta name="robots" content="noindex">
+
+    <!-- OpenGraph / Twitter : présents pour que les bots crawlers
+         (iMessage, WhatsApp, Slack) génèrent un rich preview lorsqu'un
+         lien /owner-transfer/<token> est partagé. -->
+    <meta property="og:title" content="Yamatch | Transfert de propriété">
+    <meta property="og:site_name" content="Yamatch">
+    <meta property="og:description" content="Pour accepter ce transfert de propriété, ouvre Yamatch sur ton iPhone ou Android.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:url" content="https://appyamatch.fr/owner-transfer/">
+    <meta property="og:image" content="https://appyamatch.fr/assets/social_preview.jpg">
+    <meta property="og:image:secure_url" content="https://appyamatch.fr/assets/social_preview.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Yamatch — Ton prochain tournoi t'attend. App de réservation de tournois sportifs amateurs.">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Yamatch | Transfert de propriété">
+    <meta name="twitter:description" content="Pour accepter ce transfert de propriété, ouvre Yamatch sur ton iPhone ou Android.">
+    <meta name="twitter:image" content="https://appyamatch.fr/assets/social_preview.jpg">
+    <meta name="twitter:image:alt" content="Yamatch — Ton prochain tournoi t'attend. App de réservation de tournois sportifs amateurs.">
+
+    <title>Yamatch — Transfert de propriété</title>
+
+    <link rel="icon" type="image/x-icon" sizes="48x48" href="../favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/icons/favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/icons/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/icons/android-chrome-512x512.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="../site.webmanifest">
+
+    <link rel="preload" as="font" type="font/woff2" href="../fonts/Inter-Variable.woff2" crossorigin>
+
+    <link rel="stylesheet" href="../styles.min.css">
+
+    <style>
+        /* Scoped overrides for the owner-transfer fallback page.
+           Re-uses the .download-page / .download-hero recipe (centred column,
+           wordmark reset, editorial typography) and adds:
+           - a stacked single-CTA layout (lime primary)
+           - a skeleton bar loader for title/body during fetch
+           - a slim red-tinted note for expired / revoked states
+           - a minimal in-flow footer.
+           No tokens introduced; only spacing + the lime CTA which mirrors
+           the accent button recipe already in styles.css. Mirrors the
+           org-invite + team invite + tournament fallback pages for visual
+           consistency. */
+
+        /* Skeleton bars used during fetch — shimmer-less, just a neutral
+           pulsing fill on the title + body slots. Avoids importing the
+           full shimmer animation framework for a single-use loading state. */
+        .invite-skeleton {
+            display: inline-block;
+            background: linear-gradient(
+                90deg,
+                rgba(16, 24, 40, 0.06) 0%,
+                rgba(16, 24, 40, 0.12) 50%,
+                rgba(16, 24, 40, 0.06) 100%
+            );
+            background-size: 200% 100%;
+            border-radius: 6px;
+            color: transparent;
+            animation: inviteSkeletonPulse 1.4s ease-in-out infinite;
+        }
+
+        .invite-skeleton-title {
+            height: 1.2em;
+            width: min(280px, 70vw);
+        }
+
+        .invite-skeleton-body {
+            height: 1em;
+            width: min(220px, 60vw);
+        }
+
+        @keyframes inviteSkeletonPulse {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .invite-skeleton {
+                animation: none;
+            }
+        }
+
+        /* Status note — slim red-tinted sub-line above the helper line when
+           the transfer is no longer actionable but the share link is still
+           live. Stays editorial (no badge / no icon). */
+        .invite-status-note {
+            font-family: var(--font-body);
+            font-size: 0.9375rem;
+            color: var(--color-error);
+            margin: 0;
+        }
+
+        .invite-ctas {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 12px;
+            width: 100%;
+            max-width: 320px;
+            margin-top: clamp(12px, 2vh, 24px);
+        }
+
+        /* Lime primary CTA — uses the brand accent token, black text.
+           Mirrors the .download-back geometry but with the lime fill. */
+        .invite-cta-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: clamp(12px, 1.4vh, 16px) clamp(20px, 2.5vw, 32px);
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: clamp(0.9rem, 1vw, 1rem);
+            text-decoration: none;
+            border-radius: var(--radius-pill);
+            background-color: var(--color-accent);
+            color: var(--color-text-primary);
+            transition:
+                background-color 220ms cubic-bezier(0.4, 0, 0.2, 1),
+                color 220ms cubic-bezier(0.4, 0, 0.2, 1),
+                transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .invite-cta-primary:hover {
+            transform: translateY(-1px);
+            background-color: #C8EE00;
+        }
+
+        .invite-cta-primary:focus-visible {
+            outline: 2px solid var(--color-text-primary);
+            outline-offset: 3px;
+        }
+
+        /* Minimal in-flow footer — small Inter line centred at the bottom of
+           the page. Re-uses .download-page's flex column layout so the footer
+           sits naturally below the hero. */
+        .invite-footer {
+            font-family: var(--font-body);
+            font-size: 0.8125rem;
+            color: var(--color-medium-gray);
+            margin: 0;
+        }
+
+        .invite-footer a {
+            color: var(--color-medium-gray);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .invite-footer a:hover {
+            color: var(--color-text-primary);
+        }
+    </style>
+</head>
+<body>
+
+<main class="download-page">
+    <a class="wordmark wordmark-link" href="../" aria-label="Retour à l'accueil Yamatch">
+        <svg viewBox="0 0 1067.73 206.13" aria-hidden="true" focusable="false">
+            <path d="M277.28,3.42h28.94l22.78,99.93h1.42L353.19,3.42h79.15v199.29h-49.25V71.17h-3.42l-26.76,131.54h-46.4l-26.76-131.54h-3.42l-19.3,131.54h-9.97S277.28,3.42,277.28,3.42Z"/>
+            <path d="M480.72,3.42h84.84l42.7,199.29h-64.91l-2.85-20.5h-34.73l-2.85,20.5h-64.91L480.72,3.42ZM539.37,139.5l-14.23-74.02h-3.98l-14.24,74.02h32.46Z"/>
+            <path d="M638.43,52.95h-49.54V3.42h155.45v49.54h-49.54v149.76h-56.37V52.95Z"/>
+            <path d="M746.32,116.16v-26.19c0-60.64,6.83-89.97,77.73-89.97s77.72,27.33,77.72,75.73v12.81h-56.94v-21.35c0-11.67-4.56-18.79-20.78-18.79s-20.78,7.12-20.78,18.79v71.74c0,11.67,4.56,18.79,20.78,18.79s20.78-7.12,20.78-18.79v-22.49h56.94v13.95c0,48.4-6.83,75.73-77.72,75.73s-77.73-29.33-77.73-89.97Z"/>
+            <path d="M1011.35,125.27h-40.43v77.44h-56.37V3.42h56.37v79.15h40.43V3.42h56.37v199.29h-56.37v-77.44Z"/>
+            <path d="M201.99,3.41h84.84l-29.83,199.27h-64.91l4.61-20.5h-34.73l-10.31,20.5h-64.91L201.99,3.41ZM211.1,139.48l12.71-74.02h-3.99l-41.17,74.02h32.45Z"/>
+            <path d="M31.91,115.55L4.49,3.96h62.06l12.66,57.5h3.42L137.15,3.96h62.06l-108.66,111.59-31.91,87.68H0l31.91-87.68Z"/>
+        </svg>
+    </a>
+
+    <section class="download-hero" aria-labelledby="inviteTitle">
+        <p class="download-eyebrow">Transfert de propriété</p>
+        <h1 id="inviteTitle" class="download-title" aria-live="polite">
+            <span class="invite-skeleton invite-skeleton-title" aria-hidden="true">&nbsp;</span>
+        </h1>
+
+        <p id="inviteStatusNote" class="invite-status-note" hidden></p>
+
+        <p id="inviteBody" class="download-body" aria-live="polite">
+            <span class="invite-skeleton invite-skeleton-body" aria-hidden="true">&nbsp;</span>
+        </p>
+
+        <div class="invite-ctas">
+            <a id="openInApp" class="invite-cta-primary" href="#" aria-disabled="true">Ouvrir dans Yamatch</a>
+        </div>
+    </section>
+
+    <p class="invite-footer">
+        <a href="../">Retour au site</a>
+    </p>
+</main>
+
+<script>
+    // TODO once App Store + Play Store links are available :
+    // - Replace the fallbackUrl = '/download/' line in openTransfer() with
+    //   platform-specific URLs :
+    //   - iOS : https://apps.apple.com/app/yamatch/id<APP_ID>  (waiting App Store approval)
+    //   - Android : https://play.google.com/store/apps/details?id=com.appyamatch.yamatch  (waiting Play Store publication)
+    // - Detection via UA sniffing :
+    //   const ua = navigator.userAgent;
+    //   if (/iPhone|iPad|iPod/i.test(ua)) fallbackUrl = '<iOS_STORE_URL>';
+    //   else if (/Android/i.test(ua)) fallbackUrl = '<ANDROID_STORE_URL>';
+    //   else fallbackUrl = '/download/';
+    (function () {
+        // Supabase staging — anon publishable key. Same key is shipped in
+        // the Flutter app for the same project (uqxjxkxcbsjcscrrlwae). The
+        // RPC `preview_owner_transfer` is SECURITY DEFINER with EXECUTE
+        // granted to anon — returns transfer metadata without exposing the
+        // raw table.
+        var SUPABASE_URL = 'https://uqxjxkxcbsjcscrrlwae.supabase.co';
+        var SUPABASE_ANON_KEY = 'sb_publishable_QaQlQg5nQTLCl_tzQE5wtA_WJfhsj47';
+
+        // Extrait le token depuis la query string (?token=<token>, posé par
+        // le bounce 404.html) ou depuis le path (cas d'un hit direct sur
+        // /owner-transfer/<token>).
+        function readTransferToken() {
+            var params = new URLSearchParams(window.location.search);
+            var fromQuery = params.get('token');
+            if (fromQuery && fromQuery.trim().length > 0) {
+                return fromQuery.trim();
+            }
+            // /owner-transfer/<token> direct hit (unlikely on GitHub Pages
+            // without a real file, but safe-guard for future hosting changes).
+            var path = window.location.pathname.replace(/\/+$/, '');
+            var match = path.match(/\/owner-transfer\/(.+)$/);
+            if (match && match[1]) {
+                return decodeURIComponent(match[1]);
+            }
+            return null;
+        }
+
+        // Garde permissive — accepte UUIDs (alphanumérique + tirets).
+        // Rejette tout ce qui contient espace, slash ou autres caractères.
+        function isValidToken(value) {
+            if (!value) return false;
+            if (value.length > 128) return false;
+            return /^[A-Za-z0-9\-]+$/.test(value);
+        }
+
+        var titleEl = document.getElementById('inviteTitle');
+        var bodyEl = document.getElementById('inviteBody');
+        var statusNoteEl = document.getElementById('inviteStatusNote');
+        var openInAppLink = document.getElementById('openInApp');
+
+        // Disable the CTA (visual grey + a11y signal + no-op handler). Used
+        // for every non-actionable state (no token, fetch error, not found,
+        // expired, revoked, KYC in progress).
+        function disableCta() {
+            openInAppLink.setAttribute('href', '#');
+            openInAppLink.setAttribute('aria-disabled', 'true');
+            openInAppLink.setAttribute('role', 'link');
+            openInAppLink.setAttribute('tabindex', '-1');
+            openInAppLink.style.opacity = '0.5';
+            openInAppLink.style.pointerEvents = 'none';
+            openInAppLink.style.cursor = 'not-allowed';
+        }
+
+        function enableCta(targetToken) {
+            var appUrl = 'com.appyamatch.yamatch://owner-transfer/' + encodeURIComponent(targetToken);
+            openInAppLink.setAttribute('href', appUrl);
+            openInAppLink.setAttribute('target', '_self');
+            openInAppLink.setAttribute('aria-disabled', 'false');
+            openInAppLink.removeAttribute('tabindex');
+            openInAppLink.style.opacity = '';
+            openInAppLink.style.pointerEvents = '';
+            openInAppLink.style.cursor = '';
+            openInAppLink.addEventListener('click', function (evt) {
+                evt.preventDefault();
+                openTransfer(targetToken);
+            });
+        }
+
+        // Render helpers — always go through textContent for fetched data
+        // (XSS-safe, DB string injection neutralised).
+        function setTitleText(text) {
+            titleEl.textContent = text;
+        }
+        function setBodyText(text) {
+            bodyEl.textContent = text;
+        }
+        function setStatusNote(text) {
+            if (!text) {
+                statusNoteEl.hidden = true;
+                statusNoteEl.textContent = '';
+                return;
+            }
+            statusNoteEl.textContent = text;
+            statusNoteEl.hidden = false;
+        }
+
+        // Choisit le libellé du propriétaire actuel à afficher selon les
+        // champs disponibles. L'email n'est JAMAIS surfacé — info privée.
+        // Priorité : pseudo > firstname > fallback générique.
+        function currentOwnerDisplayName(transfer) {
+            if (transfer.current_owner_pseudo && String(transfer.current_owner_pseudo).trim().length > 0) {
+                return String(transfer.current_owner_pseudo).trim();
+            }
+            if (transfer.current_owner_firstname && String(transfer.current_owner_firstname).trim().length > 0) {
+                return String(transfer.current_owner_firstname).trim();
+            }
+            return 'Quelqu’un';
+        }
+
+        // POST /rest/v1/rpc/preview_owner_transfer — returns first row
+        // (success) or null (empty array). Catches the P0001
+        // 'invite_not_found' raise from the RPC and converts it to a null
+        // return so the caller renders the not-found state. Other HTTP
+        // errors throw.
+        function fetchTransfer(targetToken) {
+            var url = SUPABASE_URL + '/rest/v1/rpc/preview_owner_transfer';
+            return fetch(url, {
+                method: 'POST',
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ p_token: targetToken })
+            }).then(function (res) {
+                if (res.ok) {
+                    return res.json().then(function (rows) {
+                        if (!Array.isArray(rows) || rows.length === 0) return null;
+                        return rows[0];
+                    });
+                }
+                // Le RPC raise 'invite_not_found' (code P0001) quand le
+                // token n'existe pas → on traite comme not-found.
+                if (res.status === 400 || res.status === 404) {
+                    return res.json().then(function (err) {
+                        if (err && (err.code === 'P0001' || err.message === 'invite_not_found')) {
+                            return null;
+                        }
+                        throw new Error('HTTP ' + res.status);
+                    }).catch(function () {
+                        // JSON parse error → treat as not-found.
+                        return null;
+                    });
+                }
+                throw new Error('HTTP ' + res.status);
+            });
+        }
+
+        // ---------- Render states ----------
+        function renderNotFound() {
+            setTitleText('Transfert introuvable');
+            setBodyText("Ce lien n’est pas valide ou le transfert a été supprimé.");
+            setStatusNote(null);
+            disableCta();
+        }
+
+        function renderInvalidLink() {
+            setTitleText('Transfert de propriété');
+            setBodyText("Lien de transfert invalide ou expiré.");
+            setStatusNote(null);
+            disableCta();
+        }
+
+        function renderExpired(transfer) {
+            setTitleText(transfer.organization_name || 'Transfert de propriété');
+            setBodyText("Ce transfert de propriété a expiré.");
+            setStatusNote("Demande une nouvelle proposition de transfert.");
+            disableCta();
+        }
+
+        function renderRevoked(transfer) {
+            setTitleText(transfer.organization_name || 'Transfert de propriété');
+            setBodyText("Ce transfert de propriété a été annulé.");
+            setStatusNote(null);
+            disableCta();
+        }
+
+        // KYC déjà soumis : la vérification est en cours côté Yamatch. La
+        // page reste informative, CTA désactivé (rien à faire dans l'app).
+        function renderKycInProgress(transfer) {
+            setTitleText(transfer.organization_name || 'Transfert de propriété');
+            setBodyText("La vérification de ce transfert est en cours. Tu recevras une réponse sous 24h.");
+            setStatusNote(null);
+            disableCta();
+        }
+
+        // KYC pas encore soumis : on invite à ouvrir l'app pour accepter et
+        // compléter la vérification (upload de pièces impossible sur le web).
+        function renderActionable(transfer, targetToken) {
+            setTitleText(transfer.organization_name || 'Transfert de propriété');
+            var who = currentOwnerDisplayName(transfer);
+            setBodyText(who + " te propose de devenir propriétaire de cette organisation. Ouvre Yamatch pour accepter et compléter ta vérification.");
+            setStatusNote(null);
+            enableCta(targetToken);
+        }
+
+        // ---------- Smart deep link ----------
+        // Smart deep link : tente d'ouvrir l'app via le schéma custom ; si
+        // après 1.5s la page est toujours visible (= app non installée /
+        // schéma non intercepté), redirige vers /download/.
+        //
+        // Le flag `didLeavePage` est crucial : iOS bascule l'onglet Safari
+        // en background quand l'app intercepte le schéma → l'événement
+        // `visibilitychange` se déclenche avec `hidden` → on sait qu'il NE
+        // faut PAS rediriger vers la page de téléchargement.
+        function openTransfer(targetToken) {
+            if (!isValidToken(targetToken)) return; // safety
+            var appUrl = 'com.appyamatch.yamatch://owner-transfer/' + encodeURIComponent(targetToken);
+            var fallbackUrl = '/download/';
+            var didLeavePage = false;
+
+            function handleVisibilityChange() {
+                if (document.visibilityState === 'hidden') {
+                    didLeavePage = true;
+                }
+            }
+            function handlePageHide() {
+                didLeavePage = true;
+            }
+
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.addEventListener('pagehide', handlePageHide);
+
+            // Déclenche la navigation vers le schéma custom — iOS / Android
+            // interceptent et ouvrent l'app si installée. On ne peut PAS
+            // utiliser https://appyamatch.fr/... car iOS ne déclenche les
+            // Universal Links que quand l'origine diffère du domaine cible
+            // (by-design Apple).
+            window.location.href = appUrl;
+
+            // Après 1.5s, si on est toujours sur la page (app pas installée),
+            // redirige vers /download/. Cleanup systématique des listeners.
+            window.setTimeout(function () {
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+                window.removeEventListener('pagehide', handlePageHide);
+                if (!didLeavePage && document.visibilityState === 'visible') {
+                    window.location.href = fallbackUrl;
+                }
+            }, 1500);
+        }
+
+        // ---------- Orchestration ----------
+        var token = readTransferToken();
+        if (!isValidToken(token)) {
+            renderInvalidLink();
+            return;
+        }
+
+        // Loading state is already in the DOM (skeleton bars in
+        // #inviteTitle + #inviteBody, CTA aria-disabled).
+        fetchTransfer(token).then(function (transfer) {
+            if (!transfer) {
+                renderNotFound();
+                return;
+            }
+            // Check révoqué d'abord (état terminal explicite), puis expiré
+            // (état temporel), puis KYC en cours (état informatif). Une
+            // proposition révoquée ET expirée affichera "annulé" — l'action
+            // explicite prime sur le simple timeout.
+            if (transfer.revoked_at) {
+                renderRevoked(transfer);
+                return;
+            }
+            if (transfer.expires_at) {
+                var expiresMs = Date.parse(transfer.expires_at);
+                if (!isNaN(expiresMs) && expiresMs < Date.now()) {
+                    renderExpired(transfer);
+                    return;
+                }
+            }
+            // KYC déjà soumis → vérification en cours, page informative.
+            if (transfer.kyc_submitted_at) {
+                renderKycInProgress(transfer);
+                return;
+            }
+            renderActionable(transfer, token);
+        }).catch(function (_err) {
+            renderNotFound();
+        });
+    })();
+</script>
+
+</body>
+</html>
