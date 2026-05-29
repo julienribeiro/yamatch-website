@@ -9,6 +9,7 @@
           "/invite/*",
           "/org-invite/*",
           "/owner-transfer/*",
+          "/referee/*",
           "/tournament/*"
         ]
       }
