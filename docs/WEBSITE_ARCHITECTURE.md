@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-05-26.
+Last sync: 2026-07-05.
 
 ---
 
@@ -158,7 +158,7 @@ The `MobileApplication` description in `index.html` reads: `"Yamatch — Réserv
 |------|-------|---------------|-------|
 | `cgu/` | CGU | `legal-page` | |
 | `contact/` | Contact | `legal-page` | |
-| `download/` | Télécharger | `legal-page` | |
+| `download/` | Télécharger | `download-page` | UA-redirect page (iOS-only), not a legal doc — see Download page section below |
 | `mentions-legales/` | Mentions légales | `legal-page` | Créée 2026-05-12 — LCEN art. 6-III-1, 12 sections |
 | `politique-annulation-remboursement/` | Annulation & remboursement | `legal-page` | |
 | `politique-confidentialite/` | Politique de confidentialité | `legal-page` | |
@@ -214,7 +214,7 @@ The 512×512 icon's `purpose` was changed from `"any"` to `"any maskable"` as pa
 
 Sections under `<main id="top">`, in order:
 
-1. **`.hero`** — lime card with title, subtitle, App Store / Google Play buttons; wordmark above
+1. **`.hero`** — lime card with title, subtitle, App Store (live link) / Google Play (pending) buttons; wordmark above
 2. **`.screens-rail`** — horizontal carousel with 5 phone screenshots
 3. **`section.how-quest#how-it-works`** — 3-step PARCOURS section with persona tabs; deep-link anchor `id="how-it-works"`
 4. **`section.faq#faq`** — accordion of 12 questions; deep-link anchor `id="faq"`
@@ -241,11 +241,26 @@ Decorative row rendered above the legal links. Flex row (`justify-content: cente
         ├── h1.hero-title > span.hero-title-slant ("Ton prochain tournoi t'attend")
         ├── p.hero-subtitle ("Compose ton équipe, il y a match")
         └── .hero-buttons
-            ├── a.btn-glass.js-pending-cta (App Store)  → toast "Bientôt disponible"
+            ├── a.btn-glass (App Store)              → real external link, no toast
             └── a.btn-glass.js-pending-cta (Google Play) → toast "Bientôt disponible"
 ```
 
-**Toast CTA:** clicking any `.js-pending-cta` shows the toast with the text `"Bientôt disponible"` (exact string, no ellipsis). Managed by the pending-CTA event delegation block in `script.js`.
+**App Store button — live since 2026-07 (iOS app shipped):** `data-cta="app-store"`, `href="https://apps.apple.com/fr/app/yamatch/id6773454974"`, `target="_blank" rel="noopener"`, `aria-label="Télécharger sur l'App Store"`. It no longer carries the `js-pending-cta` class, so clicking it navigates to the real App Store listing instead of showing the toast. This is the same App Store ID (`id6773454974`) used by the `/download/` UA-redirect page (see below).
+
+**Google Play button — still pending:** `data-cta="play-store"`, `href="#"`, class `js-pending-cta`, `aria-label="Disponible sur Google Play"`. The Android app has not shipped to the Play Store yet; the `<!-- TODO(yamatch): replace with real Google Play URL -->` comment above it in `index.html` remains in place until it does.
+
+**Toast CTA:** clicking any `.js-pending-cta` element (currently only the Google Play button) shows the toast with the text `"Bientôt disponible"` (exact string, no ellipsis). Managed by the pending-CTA event delegation block in `script.js`. The App Store button is no longer part of this delegation's effective target set since it lost the `.js-pending-cta` class — the delegation logic itself is unchanged (still listens for `.js-pending-cta` clicks generically), it simply has one fewer matching element.
+
+### Download page (`website/download/index.html`) — UA redirect, iOS-only
+
+Standalone utility page, `<main class="download-page">`, excluded from `sitemap.xml` (see SEO — Sitemap). It exists as the QR-code target and as a manual fallback link.
+
+- **QR code target:** `website/script.js` renders the homepage's QR widget with `QR_VALUE = 'https://appyamatch.fr/download/'` (unchanged by this update) — the QR always points at this routing page, never directly at the App Store, so the destination can change without regenerating the QR.
+- **UA-detection script (inline `<script>` at the bottom of the page):** tests `/iPhone|iPad|iPod/i` against `navigator.userAgent` (with the `!window.MSStream` guard against legacy IE false positives). If iOS is detected, `window.location.replace('https://apps.apple.com/fr/app/yamatch/id6773454974')` fires immediately — same App Store ID as the hero App Store button.
+- **Android + desktop:** no redirect fires; the visitor stays on the page. Visible content: `<h1>` "Télécharge Yamatch", body copy stating the app is available on the App Store and the Android version is coming soon, a `.download-back` CTA linking to the same App Store URL (`target="_blank" rel="noopener"`), and a second `.download-back` link back to the homepage (`../`).
+- The page carries no JSON-LD block. Its `<meta name="description">` should be kept in sync with this iOS-live / Android-pending state — flag drift if a future edit reintroduces "bientôt disponible sur toutes les plateformes" style copy.
+
+---
 
 ### How-quest (`section.how-quest#how-it-works`)
 

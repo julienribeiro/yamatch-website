@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#D7FF00">
-    <meta name="description" content="Yamatch — Télécharge l'app pour réserver tes tournois de volleyball amateur. D'autres sports bientôt disponibles.">
+    <meta name="description" content="Yamatch — Télécharge l'app sur l'App Store pour réserver tes tournois de volleyball amateur. Version Android bientôt disponible.">
     <meta name="robots" content="index, follow">
     <meta name="googlebot" content="index, follow">
 
@@ -39,29 +39,28 @@
 
     <section class="download-hero" aria-labelledby="downloadTitle">
         <p class="download-eyebrow">L'app</p>
-        <h1 id="downloadTitle" class="download-title">Bientôt disponible</h1>
+        <h1 id="downloadTitle" class="download-title">Télécharge Yamatch</h1>
         <p class="download-body">
-            Yamatch arrive très prochainement sur l'App Store et Google Play.
-            Reviens nous voir bientôt&nbsp;!
+            L'app Yamatch est disponible sur l'App&nbsp;Store.
+            La version Android arrive très bientôt.
         </p>
+        <a class="download-back" href="https://apps.apple.com/fr/app/yamatch/id6773454974" target="_blank" rel="noopener">Télécharger sur l'App&nbsp;Store</a>
         <a class="download-back" href="../">Retour au site</a>
     </section>
 </main>
 
 <script>
-    // UA detection redirect — désactivé tant que les apps ne sont pas en store.
-    // Quand elles sortiront, décommenter et remplir les 2 URLs.
-    // (function() {
-    //     var ua = navigator.userAgent || '';
-    //     var isIOS = /iPhone|iPad|iPod/i.test(ua) && !window.MSStream;
-    //     var isAndroid = /Android/i.test(ua);
-    //     if (isIOS) {
-    //         window.location.replace('https://apps.apple.com/app/idXXXXXXXX');
-    //     } else if (isAndroid) {
-    //         window.location.replace('https://play.google.com/store/apps/details?id=com.yamatch');
-    //     }
-    //     // Desktop : reste sur la page "Bientôt disponible".
-    // })();
+    // UA detection redirect — iOS uniquement.
+    // Android + desktop restent sur la page (« iOS dispo / Android bientôt »)
+    // tant que le Google Play Store n'est pas encore publié.
+    (function() {
+        var ua = navigator.userAgent || '';
+        var isIOS = /iPhone|iPad|iPod/i.test(ua) && !window.MSStream;
+        if (isIOS) {
+            window.location.replace('https://apps.apple.com/fr/app/yamatch/id6773454974');
+        }
+        // Android + desktop : aucune redirection.
+    })();
 </script>
 
 </body>
