@@ -43,6 +43,8 @@ Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. **One build step: C
 
 All 9 HTML files reference **`styles.min.css`** (the generated output), not `styles.css`.
 
+`website/vendor/qrcode.min.js` (20,768 bytes) is a vendored third-party library — **not** one of the four source files above and not authored in-repo. It ships `qrcode-generator@1.4.4` (Kazuhiko Arase, MIT license), byte-identical to the former jsdelivr CDN build. Loaded via `<script src="vendor/qrcode.min.js" defer>` in `index.html`, **before** `script.js`, which calls the global `window.qrcode` factory to render the homepage QR widget. See SEO → Third-party scripts below for the CDN → self-host migration history.
+
 ---
 
 ## Build CSS
@@ -131,14 +133,27 @@ No `<link rel="preconnect" href="https://fonts.googleapis.com">` or `fonts.gstat
 | `https://appyamatch.fr/suppression-compte/` | 2026-05-13 | monthly | 0.4 |
 | `https://appyamatch.fr/contact/` | 2026-05-13 | monthly | 0.5 |
 
-### SRI — CDN scripts
+### Third-party scripts — none (self-hosted, migrated 2026-07-05)
 
-The qrcode-generator CDN `<script>` carries:
+The site ships **zero third-party `<script>` dependencies** — every script is same-origin. Until 2026-07-05, the qrcode-generator library was loaded from the jsdelivr CDN with an SRI hash:
+
 ```html
-integrity="sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz"
-crossorigin="anonymous"
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"
+        integrity="sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz"
+        crossorigin="anonymous" defer></script>
 ```
-Any CDN script added in the future must include a `sha384` SRI hash and `crossorigin="anonymous"`.
+
+It is now vendored in-repo at `website/vendor/qrcode.min.js` (byte-identical to the CDN build) and loaded same-origin:
+
+```html
+<script src="vendor/qrcode.min.js" defer></script>
+```
+
+No `integrity`/`crossorigin` attributes are needed (same-origin request never needs SRI). The `<link rel="preconnect" href="https://cdn.jsdelivr.net">` that used to warm the CDN connection was removed at the same time.
+
+**Why:** eliminates the last third-party network request on the page — no DNS lookup/TLS handshake to a third-party host, no exposure to CDN outages, and no external request for privacy-conscious browsers (e.g. Firefox strict tracking protection) or ad/script blockers to flag.
+
+**Rule for the future:** any CDN script reintroduced must include a `sha384` SRI hash and `crossorigin="anonymous"` (see Conventions reference).
 
 ### JSON-LD blocks (`index.html`)
 
@@ -964,7 +979,7 @@ curl https://appyamatch.fr/.well-known/assetlinks.json
 - All design tokens in `:root`. No hardcoded hex/font/radius outside this block.
 - French copy throughout (`tu` form for player-facing). Multi-sport positioning (volleyball first, other sports unnamed) — see Positionnement produit.
 - No emojis in markup unless explicitly requested.
-- No third-party scripts without explicit user approval. Any CDN script must carry a `sha384` SRI hash + `crossorigin="anonymous"`.
+- No third-party scripts — the site is 100% same-origin (qrcode-generator vendored at `website/vendor/qrcode.min.js`, migrated off the jsdelivr CDN 2026-07-05 — see SEO → Third-party scripts). Any CDN script reintroduced without explicit user approval must carry a `sha384` SRI hash + `crossorigin="anonymous"`.
 - All `<img>` carry meaningful French alt text (or empty alt for decorative).
 - `draggable="false"` on phone images; `aria-hidden="true"` + `focusable="false"` on decorative SVG.
 - One CSS source (`styles.css`) → one minified output (`styles.min.css`, gitignored). HTML always points to `styles.min.css`. Two JS files: `carousel.js` (state machine) + `script.js` (all other JS). No XHTML mirror.

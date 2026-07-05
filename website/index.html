@@ -46,16 +46,17 @@
     <link rel="preload" as="font" type="font/woff2" href="fonts/Inter-Variable.woff2" crossorigin>
 
     <link rel="stylesheet" href="styles.min.css">
-    <!-- qrcode-generator (Kazuhiko Arase, MIT) via CDN — utilisée par script.js pour
-         générer la matrice du QR Code de la widget flottante en bas-droite. UMD browser
-         build qui expose un global `window.qrcode` (factory function). Defer pour ne pas
-         bloquer le rendu initial. NB: on a remplacé `qrcode@1.5.4` (path `/build/...` 404
-         sur jsdelivr — le package npm n'a pas ce fichier; son entrée browser réelle est
-         `/lib/browser.min.js`) par `qrcode-generator@1.4.4` qui a une URL CDN stable et
-         une API browser-first explicite (qrcode(typeNumber, errorLevel) → addData → make
-         → getModuleCount + isDark). -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" integrity="sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz" crossorigin="anonymous" defer></script>
+    <!-- qrcode-generator@1.4.4 (Kazuhiko Arase, MIT) — AUTO-HÉBERGÉ dans le repo
+         (website/vendor/qrcode.min.js), utilisée par script.js pour générer la matrice
+         du QR Code de la widget flottante en bas-droite. UMD browser build qui expose un
+         global `window.qrcode` (factory function). Defer pour ne pas bloquer le rendu
+         initial ET pour préserver l'ordre d'exécution (ce script doit rester AVANT
+         carousel.js / script.js). NB: passé du CDN jsdelivr au self-host — même origine,
+         donc plus besoin de `integrity`/`crossorigin`/`preconnect`. Motivation : indépendance
+         CDN (Firefox protection anti-pistage stricte ou un bloqueur peut bloquer
+         cdn.jsdelivr.net et casser le widget), plus de risque de rupture SRI. Le fichier
+         local est byte-identique au build CDN (hash SRI vérifié avant commit). -->
+    <script src="vendor/qrcode.min.js" defer></script>
     <script src="carousel.js" defer></script>
     <script src="script.js" defer></script>
 
