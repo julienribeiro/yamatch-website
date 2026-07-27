@@ -34,10 +34,10 @@ Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. **One build step: C
 
 | File | Role | Approx. lines |
 |------|------|---------------|
-| `website/index.html` | Single page — hero + carousel + FAQ + footer | ~300 |
-| `website/styles.css` | All styles. Design tokens in `:root`. Heavy use of `clamp()`. **Source of truth — never minify by hand.** | ~700 |
-| `website/carousel.js` | Standalone IIFE: complete carousel gesture state machine (wheel + touch + rubber-band). Loaded via `<script src="carousel.js" defer>` **before** `script.js`. | ~245 |
-| `website/script.js` | Standalone IIFE: copyright year, toast scaffolding (`window.yamatchToast`, exposed but currently zero in-repo callers since both hero CTAs became real links — see Hero below), wordmark scroll-aware behaviour, wave-SVG animation, page-scroll-progress block, how-quest persona editorial, QR widget rendering, floating-card parallax spring-chain, and more. | ~2100 |
+| `website/index.html` | Single page — hero + carousel + FAQ + footer | ~762 |
+| `website/styles.css` | All styles. Design tokens in `:root`. Heavy use of `clamp()`. **Source of truth — never minify by hand.** | ~4734 |
+| `website/carousel.js` | Standalone IIFE: complete carousel gesture state machine (wheel + touch + rubber-band). Loaded via `<script src="carousel.js" defer>` **before** `script.js`. | ~419 |
+| `website/script.js` | Standalone IIFE: copyright year, toast scaffolding (`window.yamatchToast`, exposed but currently zero in-repo callers since both hero CTAs became real links — see Hero below), wordmark scroll-aware behaviour, wave-SVG animation, page-scroll-progress block, how-quest persona editorial, QR widget rendering, floating-card parallax spring-chain, and more. | ~2103 |
 
 `carousel.js` is loaded first in HTML (`<script src="carousel.js" defer>` then `<script src="script.js" defer>`). Sequential `defer` tags guarantee execution order while keeping both scripts non-blocking.
 
@@ -54,7 +54,7 @@ All 9 HTML files reference **`styles.min.css`** (the generated output), not `sty
 | Tool | `lightningcss-cli` (devDependency `^1.32.0`) |
 | Source | `website/styles.css` — single source of truth, never minified by hand |
 | Output | `website/styles.min.css` — generated; **gitignored** (never committed) |
-| Sizes | 204 KB source → 36 KB minified raw / 65 KB → 7 KB gzip (~89% gzip reduction) |
+| Sizes | 224 KB source → 37 KB minified raw / 71 KB → 7 KB gzip (~90% gzip reduction) |
 | npm script | `npm run build:css` — `lightningcss --minify --bundle --targets '>= 0.5%' website/styles.css -o website/styles.min.css` |
 | Pre-hooks | `predev`, `prestart`, `prepreview` all run `build:css` automatically before `live-server` starts |
 | CI | `.github/workflows/deploy.yml` runs `npm ci` then `npm run build:css` before the custom tar + `upload-artifact` step |
@@ -580,6 +580,8 @@ html, body { overflow-x: clip; }
 - `.hero-carousel-embla { --nbr-slide: 1; --slide-spacing: clamp(16px, 4vw, 28px); --scroll: 0 }` — exactly one slide visible per viewport (slide width = container width = viewport − 2×`--mobile-hero-card-margin` = lime card width). No lift. Carousel is intentionally pushed below the fold (visible on scroll).
 - `.screens-rail { padding-inline: var(--mobile-hero-card-margin); padding-block: clamp(40px, 7vw, 96px); background: var(--color-light-bg) }` — `padding-inline` aligns the rail's left/right edges with the lime card edges; neighbouring slides peek into the padding area, providing swipe affordance.
 - `.faq { padding-inline: var(--mobile-hero-card-margin); padding-block: var(--mobile-hero-card-margin) }` — overrides `--page-pad` on mobile so the FAQ left/right edges align with the lime card and carousel, not the wider desktop gutter; `padding-block` reuses the inline token (the FAQ block padding is independent of the hero card block-axis split). Footer keeps `--page-pad`.
+- `.glass-eyebrow { display: none }` (`styles.css:4258`) — the eyebrow line of the `.btn-glass` CTAs is hidden entirely on mobile; the narrow 320–414 px viewport leaves only ~55–80 px of label width, too tight for the two-line "Télécharger sur / App Store" stack. The `aria-label` on `.btn-glass` already carries the full "Télécharger sur l'App Store" / "Télécharger sur Google Play" copy to screen readers, so there is no semantic loss.
+- `.glass-label { font-size: clamp(10px, 2.6vw, 12px); white-space: nowrap }` (`styles.css:4271`) — shrinks and locks the CTA label to a single line so "Google Play" never wraps inside its button; the desktop clamp collapses to a 12 px floor on mobile, which is still too wide for the ~55 px label slot at vp 320, hence the tighter 10 px floor.
 - JS: page-scroll-progress checks `mobileQuery.matches` and skips.
 
 ---

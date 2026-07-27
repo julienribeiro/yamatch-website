@@ -30,7 +30,7 @@ You are a senior front-end engineer working on the **Yamatch marketing website**
 |------|------|
 | `website/index.html` | The single page — hero (wordmark, lime card, iPhone mockup) + footer |
 | `website/styles.css` | All styles. Design tokens in `:root`. Lots of clamps for responsive scaling. |
-| `website/script.js` | Single IIFE: copyright year, toast, pending-CTA delegation, scroll-driven phone animation. ~80 lines. |
+| `website/script.js` | Single IIFE: copyright year, toast, pending-CTA delegation, scroll-driven phone animation. ~2100 lines. |
 | `website/wordmark.svg` | Yamatch wordmark (also inlined in index.html for `currentColor` support) |
 | `website/fonts/Frick0.3-Regular.woff2` (+ `.woff`) | Display heading font. **OFL-licensed**, see `fonts/OFL.txt`. UPPERCASE-ONLY typeface. |
 | `website/balls/*.png` | Sport ball PNG assets (currently unused — the bouncing-ball animation was removed; the files are kept in case the user wants to revive that pattern) |

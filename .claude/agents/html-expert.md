@@ -16,7 +16,7 @@ Before proposing or making any modification, you MUST execute these steps in ord
 1. **Read the architecture doc** — `docs/WEBSITE_ARCHITECTURE.md` (full file). This is the canonical source of truth for the website's current state. If it disagrees with the actual code, the CODE wins and you flag the doc drift in your report.
 
 2. **Read the actual code** —
-   - `website/index.html` (full file — ~300 lines, doable)
+   - `website/index.html` (full file — ~762 lines, doable)
    - `website/styles.css` (full file, even though you won't modify it — you need to know what selectors are styled to avoid breaking them)
    - `website/script.js` (full file, even though you won't modify it — JS may query specific selectors and you must preserve them)
 

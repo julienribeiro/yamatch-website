@@ -16,7 +16,7 @@ Skipping any step is a fireable offense; token economy is NEVER a valid reason t
 1. **Read the architecture doc** — `docs/WEBSITE_ARCHITECTURE.md` (full file). Single source of truth.
 
 2. **Read the actual code** —
-   - `website/styles.css` (full file — ~700 lines, READ IT ALL, do not skim)
+   - `website/styles.css` (full file — ~4700 lines, READ IT ALL, do not skim)
    - `website/index.html` (full file — to know which classes/IDs exist in the DOM and which transformations they receive from JS)
    - `website/script.js` (full file — to know which CSS variables JS writes to, which inline styles it sets, which classes it toggles)
 
