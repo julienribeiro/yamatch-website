@@ -4253,7 +4253,7 @@ p {
        and button padding); two-line "Télécharger sur / App Store" stacks read
        cluttered at that size. Single-line label-only is cleaner and matches
        the épuré aesthetic. The `aria-label` on .btn-glass already conveys the
-       full "Télécharger sur l'App Store" / "Disponible sur Google Play" copy
+       full "Télécharger sur l'App Store" / "Télécharger sur Google Play" copy
        to screen readers, so no semantic loss. */
     .glass-eyebrow {
         display: none;
