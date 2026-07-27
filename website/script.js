@@ -15,15 +15,17 @@
         clearTimeout(toastTimeout);
         toastTimeout = setTimeout(() => toast.classList.remove('visible'), 4000);
     };
+    // Exposed as a public API on `window` — deliberately kept even though no
+    // in-repo caller exists today. The former `.js-pending-cta` click
+    // delegation (toast "Bientôt disponible") was removed on 2026-07-27 when
+    // the Android app shipped to Google Play and the hero Google Play button
+    // became a real external link (index.html:283), leaving zero elements
+    // carrying that class. Keeping the delegation alive would have been both
+    // dead code AND a hazard: any element that ever picked up the class by
+    // mistake would silently have its default action `preventDefault()`ed.
+    // `window.yamatchToast(message)` remains the supported entry point for
+    // any future ad-hoc notification (inline handler, console, future block).
     window.yamatchToast = showToast;
-
-    // Pending CTA delegation — store buttons aren't live yet.
-    document.addEventListener('click', (e) => {
-        const trigger = e.target.closest('.js-pending-cta');
-        if (!trigger) return;
-        e.preventDefault();
-        showToast("Bientôt disponible");
-    });
 
     // === Wordmark click-to-top — independent of scroll listener ===
     {

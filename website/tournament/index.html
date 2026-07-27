@@ -263,16 +263,11 @@
 </main>
 
 <script>
-    // TODO once App Store + Play Store links are available :
-    // - Replace the fallbackUrl = '/download/' line in joinTournament() with
-    //   platform-specific URLs :
-    //   - iOS : https://apps.apple.com/app/yamatch/id<APP_ID>  (waiting App Store approval)
-    //   - Android : https://play.google.com/store/apps/details?id=com.appyamatch.yamatch  (waiting Play Store publication)
-    // - Detection via UA sniffing :
-    //   const ua = navigator.userAgent;
-    //   if (/iPhone|iPad|iPod/i.test(ua)) fallbackUrl = '<iOS_STORE_URL>';
-    //   else if (/Android/i.test(ua)) fallbackUrl = '<ANDROID_STORE_URL>';
-    //   else fallbackUrl = '/download/';
+    // Fallback store — l'app est live sur les deux stores :
+    //   - iOS     : https://apps.apple.com/fr/app/yamatch/id6773454974
+    //   - Android : https://play.google.com/store/apps/details?id=com.appyamatch.yamatch
+    // La détection UA vit dans joinTournament() ; le desktop (aucun match) retombe
+    // sur /download/, qui affiche les deux boutons store.
     (function () {
         // Supabase staging — anon publishable key. Same key is shipped in
         // the Flutter app for the same project (uqxjxkxcbsjcscrrlwae). RLS
@@ -455,7 +450,7 @@
         // ---------- Smart deep link ----------
         // Smart deep link : tente d'ouvrir l'app via le schéma custom ; si
         // après 1.5s la page est toujours visible (= app non installée /
-        // schéma non intercepté), redirige vers /download/.
+        // schéma non intercepté), redirige vers le store de la plateforme.
         //
         // Le flag `didLeavePage` est crucial : iOS bascule l'onglet Safari
         // en background quand l'app intercepte le schéma → l'événement
@@ -464,7 +459,16 @@
         function joinTournament(targetId) {
             if (!isValidId(targetId)) return; // safety
             var appUrl = 'com.appyamatch.yamatch://tournament/' + encodeURIComponent(targetId);
+            // iOS testé en premier : aucun UA iOS ne contient « Android ».
+            // Desktop (aucun match) garde /download/, qui affiche les deux
+            // boutons store. Même recette que download/index.html.
+            var ua = navigator.userAgent || '';
             var fallbackUrl = '/download/';
+            if (/iPhone|iPad|iPod/i.test(ua) && !window.MSStream) {
+                fallbackUrl = 'https://apps.apple.com/fr/app/yamatch/id6773454974';
+            } else if (/Android/i.test(ua)) {
+                fallbackUrl = 'https://play.google.com/store/apps/details?id=com.appyamatch.yamatch';
+            }
             var didLeavePage = false;
 
             function handleVisibilityChange() {
@@ -487,7 +491,8 @@
             window.location.href = appUrl;
 
             // Après 1.5s, si on est toujours sur la page (app pas installée),
-            // redirige vers /download/. Cleanup systématique des listeners.
+            // redirige vers le store (ou /download/ sur desktop). Cleanup
+            // systématique des listeners.
             window.setTimeout(function () {
                 document.removeEventListener('visibilitychange', handleVisibilityChange);
                 window.removeEventListener('pagehide', handlePageHide);

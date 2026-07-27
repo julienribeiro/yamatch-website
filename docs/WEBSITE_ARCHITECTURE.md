@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-07-05.
+Last sync: 2026-07-27.
 
 ---
 
@@ -37,7 +37,7 @@ Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. **One build step: C
 | `website/index.html` | Single page — hero + carousel + FAQ + footer | ~300 |
 | `website/styles.css` | All styles. Design tokens in `:root`. Heavy use of `clamp()`. **Source of truth — never minify by hand.** | ~700 |
 | `website/carousel.js` | Standalone IIFE: complete carousel gesture state machine (wheel + touch + rubber-band). Loaded via `<script src="carousel.js" defer>` **before** `script.js`. | ~245 |
-| `website/script.js` | Standalone IIFE: copyright year, toast, pending-CTA delegation, wordmark scroll-aware behaviour, wave-SVG animation, page-scroll-progress block. | ~454 |
+| `website/script.js` | Standalone IIFE: copyright year, toast scaffolding (`window.yamatchToast`, exposed but currently zero in-repo callers since both hero CTAs became real links — see Hero below), wordmark scroll-aware behaviour, wave-SVG animation, page-scroll-progress block, how-quest persona editorial, QR widget rendering, floating-card parallax spring-chain, and more. | ~2100 |
 
 `carousel.js` is loaded first in HTML (`<script src="carousel.js" defer>` then `<script src="script.js" defer>`). Sequential `defer` tags guarantee execution order while keeping both scripts non-blocking.
 
@@ -161,9 +161,11 @@ Four JSON-LD `<script type="application/ld+json">` blocks in `<head>`:
 1. **`Organization`** — name, legalName (`"Yamatch Corp"`), url, logo, description (`"Yamatch — application mobile de réservation de tournois sportifs amateurs en France. Volleyball déjà disponible, d'autres sports à venir."`), email, foundingDate (`"2026-05-12"` — ISO full date), taxID (`"104861091"`), vatID (`"FR63104861091"`), address (`PostalAddress`: 47 rue Vivienne, 75002 Paris, FR), sameAs (`["https://www.instagram.com/yamatch_app/"]` — Instagram active; additional entries added if/when LinkedIn or TikTok accounts go live).
 2. **`WebSite`** — name, url, inLanguage, publisher.
 3. **`FAQPage`** — 12 `Question` + `Answer` pairs mirroring the visible accordion (kept in sync with HTML copy).
-4. **`MobileApplication`** — name, operatingSystem, applicationCategory, offers, author.
+4. **`MobileApplication`** — name, operatingSystem, applicationCategory, description, `installUrl`, publisher/offers, author.
 
 The `MobileApplication` description in `index.html` reads: `"Yamatch — Réservation de tournois sportifs amateurs. Volleyball disponible aujourd'hui, d'autres sports à venir prochainement."` Utility pages that ship a `MobileApplication` JSON-LD block must follow the same multi-sport positioning rule (volleyball named, other sports unnamed).
+
+`installUrl` is an array of both store links (added 2026-07-27 when the Android app shipped to Google Play): `["https://apps.apple.com/fr/app/yamatch/id6773454974", "https://play.google.com/store/apps/details?id=com.appyamatch.yamatch"]`.
 
 ### Utility / legal sub-pages
 
@@ -229,7 +231,7 @@ The 512×512 icon's `purpose` was changed from `"any"` to `"any maskable"` as pa
 
 Sections under `<main id="top">`, in order:
 
-1. **`.hero`** — lime card with title, subtitle, App Store (live link) / Google Play (pending) buttons; wordmark above
+1. **`.hero`** — lime card with title, subtitle, App Store + Google Play buttons (both live links since 2026-07-27); wordmark above
 2. **`.screens-rail`** — horizontal carousel with 5 phone screenshots
 3. **`section.how-quest#how-it-works`** — 3-step PARCOURS section with persona tabs; deep-link anchor `id="how-it-works"`
 4. **`section.faq#faq`** — accordion of 12 questions; deep-link anchor `id="faq"`
@@ -256,24 +258,41 @@ Decorative row rendered above the legal links. Flex row (`justify-content: cente
         ├── h1.hero-title > span.hero-title-slant ("Ton prochain tournoi t'attend")
         ├── p.hero-subtitle ("Compose ton équipe, il y a match")
         └── .hero-buttons
-            ├── a.btn-glass (App Store)              → real external link, no toast
-            └── a.btn-glass.js-pending-cta (Google Play) → toast "Bientôt disponible"
+            ├── a.btn-glass (App Store)    → real external link, target="_blank" rel="noopener"
+            └── a.btn-glass (Google Play)  → real external link, target="_blank" rel="noopener"
 ```
 
-**App Store button — live since 2026-07 (iOS app shipped):** `data-cta="app-store"`, `href="https://apps.apple.com/fr/app/yamatch/id6773454974"`, `target="_blank" rel="noopener"`, `aria-label="Télécharger sur l'App Store"`. It no longer carries the `js-pending-cta` class, so clicking it navigates to the real App Store listing instead of showing the toast. This is the same App Store ID (`id6773454974`) used by the `/download/` UA-redirect page (see below).
+**Both hero CTAs are live external links (Google Play joined the App Store on 2026-07-27, when the Android app shipped).** Neither carries a `.js-pending-cta` class or a `href="#"` placeholder any more; there is no longer a "pending" state on the homepage.
 
-**Google Play button — still pending:** `data-cta="play-store"`, `href="#"`, class `js-pending-cta`, `aria-label="Disponible sur Google Play"`. The Android app has not shipped to the Play Store yet; the `<!-- TODO(yamatch): replace with real Google Play URL -->` comment above it in `index.html` remains in place until it does.
+- **App Store button** — `data-cta="app-store"`, `href="https://apps.apple.com/fr/app/yamatch/id6773454974"`, `target="_blank" rel="noopener"`, `aria-label="Télécharger sur l'App Store"`. Live since 2026-07 (iOS app shipped). Same App Store ID (`id6773454974`) used by the `/download/` UA-redirect page and every smart deep-link bridge page (see below).
+- **Google Play button** — `data-cta="play-store"`, `href="https://play.google.com/store/apps/details?id=com.appyamatch.yamatch"`, `target="_blank" rel="noopener"`, `aria-label="Télécharger sur Google Play"`. Live since 2026-07-27. The `<!-- TODO(yamatch): replace with real Google Play URL -->` comment that used to sit above it in `index.html` is gone.
 
-**Toast CTA:** clicking any `.js-pending-cta` element (currently only the Google Play button) shows the toast with the text `"Bientôt disponible"` (exact string, no ellipsis). Managed by the pending-CTA event delegation block in `script.js`. The App Store button is no longer part of this delegation's effective target set since it lost the `.js-pending-cta` class — the delegation logic itself is unchanged (still listens for `.js-pending-cta` clicks generically), it simply has one fewer matching element.
+**Toast scaffolding — kept, currently unused:** `script.js` still exposes `window.yamatchToast(message)` (shows the `#toast` element for 4s), but the `.js-pending-cta` click-delegation block that used to call it (toast text `"Bientôt disponible"`) was removed on 2026-07-27 — there is no longer any element in the DOM carrying that class. `window.yamatchToast` remains available as a public API for any future ad-hoc notification; it has zero in-repo callers today.
 
-### Download page (`website/download/index.html`) — UA redirect, iOS-only
+### Download page (`website/download/index.html`) — UA redirect, bi-store
 
-Standalone utility page, `<main class="download-page">`, excluded from `sitemap.xml` (see SEO — Sitemap). It exists as the QR-code target and as a manual fallback link.
+Standalone utility page, `<main class="download-page">`, excluded from `sitemap.xml` (see SEO — Sitemap). It exists as the QR-code target and as a manual fallback link. Updated 2026-07-27 to route to both stores now that Android has shipped (previously iOS-only, Android "coming soon").
 
-- **QR code target:** `website/script.js` renders the homepage's QR widget with `QR_VALUE = 'https://appyamatch.fr/download/'` (unchanged by this update) — the QR always points at this routing page, never directly at the App Store, so the destination can change without regenerating the QR.
-- **UA-detection script (inline `<script>` at the bottom of the page):** tests `/iPhone|iPad|iPod/i` against `navigator.userAgent` (with the `!window.MSStream` guard against legacy IE false positives). If iOS is detected, `window.location.replace('https://apps.apple.com/fr/app/yamatch/id6773454974')` fires immediately — same App Store ID as the hero App Store button.
-- **Android + desktop:** no redirect fires; the visitor stays on the page. Visible content: `<h1>` "Télécharge Yamatch", body copy stating the app is available on the App Store and the Android version is coming soon, a `.download-back` CTA linking to the same App Store URL (`target="_blank" rel="noopener"`), and a second `.download-back` link back to the homepage (`../`).
-- The page carries no JSON-LD block. Its `<meta name="description">` should be kept in sync with this iOS-live / Android-pending state — flag drift if a future edit reintroduces "bientôt disponible sur toutes les plateformes" style copy.
+- **QR code target:** `website/script.js` renders the homepage's QR widget with `QR_VALUE = 'https://appyamatch.fr/download/'` (unchanged by this update) — the QR always points at this routing page, never directly at a store, so the destination can change without regenerating the QR.
+- **UA-detection script (inline `<script>` at the bottom of the page):** tests `/iPhone|iPad|iPod/i` against `navigator.userAgent` (with the `!window.MSStream` guard against legacy IE false positives) and `/Android/i` for Android. iOS → `window.location.replace('https://apps.apple.com/fr/app/yamatch/id6773454974')`. Android → `window.location.replace('https://play.google.com/store/apps/details?id=com.appyamatch.yamatch')`. Both fire immediately on page load.
+- **Desktop:** no redirect fires; the visitor stays on the page. Visible content: `<h1>` "Télécharge Yamatch", body copy stating the app is available on both the App Store and Google Play, a `.download-back` CTA linking to the App Store (`target="_blank" rel="noopener"`), a second `.download-back` CTA linking to Google Play (`target="_blank" rel="noopener"`), and a third `.download-back` link back to the homepage (`../`).
+- The page carries no JSON-LD block. Its `<meta name="description">` reads `"Yamatch — Télécharge l'app sur l'App Store et Google Play pour réserver tes tournois de volleyball amateur."` — flag drift if a future edit reintroduces "bientôt disponible" style copy for either store.
+
+### Smart deep-link bridge pages (`referee/`, `owner-transfer/`, `org-invite/`, `tournament/`, `invite/`)
+
+Five standalone pages under `website/`, each a bridge for a specific in-app action reached via a shared link (e.g. `/referee/<token>`, resolved through the 404-bounce + query-string pattern documented in Mobile deep-linking below). All five follow the same script recipe:
+
+1. Read a token from the query string or path.
+2. Attempt to open the app via a custom URL scheme (`com.appyamatch.yamatch://…`).
+3. Listen for `visibilitychange` / `pagehide` to detect whether the app actually intercepted the scheme.
+4. If, after 1.5s, the page is still visible (app not installed / scheme not intercepted), redirect to a **UA-dependent `fallbackUrl`**.
+
+**`fallbackUrl` resolution (updated 2026-07-27 — was hardcoded to `/download/` for everyone before the Android launch):**
+- iOS (`/iPhone|iPad|iPod/i` + `!window.MSStream`) → `https://apps.apple.com/fr/app/yamatch/id6773454974`
+- Android (`/Android/i`) → `https://play.google.com/store/apps/details?id=com.appyamatch.yamatch`
+- Desktop (no match) → `/download/` (the bi-store routing page above)
+
+This mirrors the `/download/` page's own UA-detection logic — same regexes, same two store URLs — so all six pages (`download/` + the five bridge pages) agree on which platform gets which link.
 
 ---
 
@@ -577,7 +596,7 @@ The four repeated inline `clamp(20px, 5vw, 40px)` literals in `.hero-card`'s mob
 `.screens-rail` `padding-inline` on mobile is now `var(--mobile-hero-card-margin)` (previously `var(--page-pad)`), and `--nbr-slide` is `1` (previously `1.08`/`1.1`). Each slide is exactly as wide as the lime hero card (viewport − 2×`--mobile-hero-card-margin`). Neighbouring slides peek into the padding area, providing natural swipe affordance without fractional-slide hacks.
 
 ### Carousel extracted to dedicated file (2026-05-10)
-The ~245-line carousel state machine was moved from `script.js` to a new standalone file `carousel.js`. Pure extraction — no behavior change. `index.html` loads `<script src="carousel.js" defer>` before `<script src="script.js" defer>`; sequential `defer` tags maintain execution order while keeping both scripts non-blocking. `script.js` now contains only non-carousel concerns: copyright year, toast, pending-CTA delegation, wordmark scroll-awareness, wave-SVG animation, page-scroll-progress.
+The ~245-line carousel state machine was moved from `script.js` to a new standalone file `carousel.js`. Pure extraction — no behavior change. `index.html` loads `<script src="carousel.js" defer>` before `<script src="script.js" defer>`; sequential `defer` tags maintain execution order while keeping both scripts non-blocking. `script.js` now contains only non-carousel concerns: copyright year, toast scaffolding, wordmark scroll-awareness, wave-SVG animation, page-scroll-progress (and, added since, how-quest persona editorial, QR widget, floating-card parallax). The pending-CTA delegation block mentioned here at the time of extraction was removed 2026-07-27 — see Hero section above.
 
 ### Hard cooldown (HARD_COOLDOWN_MS) → gesture-lock model (2026-05-10)
 The fixed 680ms hard cooldown (`HARD_COOLDOWN_MS = 680`, `lastFireTime`) was replaced with a silence-based gesture-lock model. After a snap or rubber-band, `lockGesture()` sets `gestureLocked = true` and `scheduleGestureUnlock()` begins polling: it releases the lock only after `GESTURE_RELEASE_SILENCE_MS = 30ms` of continuous wheel silence (verified via `lastWheelAt`). This is strictly responsive to the user's trackpad rhythm rather than a fixed timer — a fast intentional second gesture unlocks immediately once inertia dissipates, while a slow scroll scroll that produces residual wheel events stays locked until it truly stops. Constants removed: `HARD_COOLDOWN_MS`, `lastFireTime`. Constants added: `GESTURE_LOCK_MIN_MS = 0`, `GESTURE_RELEASE_SILENCE_MS = 30`. State added: `gestureLocked` (bool), `gestureUnlockTimer` (timeout id), `lastWheelAt` (float). Helpers added: `lockGesture()`, `unlockGesture()`, `scheduleGestureUnlock()`.
