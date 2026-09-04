@@ -10,7 +10,8 @@
           "/org-invite/*",
           "/owner-transfer/*",
           "/referee/*",
-          "/tournament/*"
+          "/tournament/*",
+          "/tournament-invite/*"
         ]
       }
     ]

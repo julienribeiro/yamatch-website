@@ -17,5 +17,9 @@ node_modules/
 # so live-server always sees a fresh build.
 website/styles.min.css
 
+# Android Digital Asset Links is generated at build time from the public
+# Play App Signing fingerprint configured in GitHub Actions.
+website/.well-known/assetlinks.json
+
 # Claude Code local settings (per-machine, not versioned)
 .claude/settings.local.json

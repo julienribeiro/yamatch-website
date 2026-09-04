@@ -28,8 +28,10 @@ jobs:
           cache: 'npm'
       - name: Install build dependencies
         run: npm ci
-      - name: Minify CSS (writes website/styles.min.css)
-        run: npm run build:css
+      - name: Build site and verified association files
+        env:
+          PLAY_APP_SIGNING_SHA256: ${{ vars.PLAY_APP_SIGNING_SHA256 }}
+        run: npm run build
       - uses: actions/configure-pages@v6
       - name: Tar artifact (preserve dotfiles for .well-known/)
         run: |

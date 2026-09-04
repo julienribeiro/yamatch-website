@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-07-27.
+Last sync: 2026-09-04.
 
 ---
 
@@ -30,7 +30,7 @@ Cibles de longueur des balises SEO clés :
 
 ## Tech stack
 
-Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. **One build step: CSS minification** (see Build CSS below). Four source files:
+Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production build minifies CSS, generates Android Digital Asset Links from a configured fingerprint, then validates both native association contracts. Four main source files:
 
 | File | Role | Approx. lines |
 |------|------|---------------|
@@ -41,13 +41,13 @@ Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. **One build step: C
 
 `carousel.js` is loaded first in HTML (`<script src="carousel.js" defer>` then `<script src="script.js" defer>`). Sequential `defer` tags guarantee execution order while keeping both scripts non-blocking.
 
-All 9 HTML files reference **`styles.min.css`** (the generated output), not `styles.css`.
+All HTML files reference **`styles.min.css`** (the generated output), not `styles.css`.
 
 `website/vendor/qrcode.min.js` (20,768 bytes) is a vendored third-party library — **not** one of the four source files above and not authored in-repo. It ships `qrcode-generator@1.4.4` (Kazuhiko Arase, MIT license), byte-identical to the former jsdelivr CDN build. Loaded via `<script src="vendor/qrcode.min.js" defer>` in `index.html`, **before** `script.js`, which calls the global `window.qrcode` factory to render the homepage QR widget. See SEO → Third-party scripts below for the CDN → self-host migration history.
 
 ---
 
-## Build CSS
+## Production build
 
 | Aspect | Detail |
 |--------|--------|
@@ -57,7 +57,9 @@ All 9 HTML files reference **`styles.min.css`** (the generated output), not `sty
 | Sizes | 224 KB source → 37 KB minified raw / 71 KB → 7 KB gzip (~90% gzip reduction) |
 | npm script | `npm run build:css` — `lightningcss --minify --bundle --targets '>= 0.5%' website/styles.css -o website/styles.min.css` |
 | Pre-hooks | `predev`, `prestart`, `prepreview` all run `build:css` automatically before `live-server` starts |
-| CI | `.github/workflows/deploy.yml` runs `npm ci` then `npm run build:css` before the custom tar + `upload-artifact` step |
+| CI | `.github/workflows/deploy.yml` injects the repository variable `PLAY_APP_SIGNING_SHA256`, then runs `npm run build` before the custom tar + `upload-artifact` step |
+
+`npm run build` is fail-closed: it generates `website/.well-known/assetlinks.json`, minifies CSS, then validates the AASA, Android package/fingerprint and the seven fallback routes. `assetlinks.json` is generated and gitignored; no static placeholder may be committed or deployed.
 
 **Rule:** always edit `website/styles.css`. The minified file is a build artifact — do not edit it and do not commit it.
 
@@ -185,6 +187,8 @@ All 7 carry `<meta name="robots" content="index, follow">` + `<meta name="google
 
 Each legal page footer includes a `<nav class="legal-page-nav" aria-label="Autres documents légaux">` with a `<ul class="legal-page-nav-list">` listing the other legal pages. Standard nav order: Mentions légales (omitted on its own page), CGU, Politique de confidentialité, Annulation & remboursement, Suppression de compte, Contact.
 
+Privacy contract for the mobile search centre: the approximate location (rounded to about 1 km) and radius are linked to the authenticated account and persisted by Supabase. The exact coordinates and label of an address chosen through manual search remain device-local and are never stored on Yamatch servers. Keep `politique-confidentialite/` aligned with the native store declarations whenever this contract changes.
+
 **Open placeholders (as of 2026-05-13):**
 - `mentions-legales/` § 6 (Domiciliation) — numéro d'agrément préfectoral de Vivienne Domiciliation (`[À COMPLÉTER]`).
 
@@ -278,9 +282,9 @@ Standalone utility page, `<main class="download-page">`, excluded from `sitemap.
 - **Desktop:** no redirect fires; the visitor stays on the page. Visible content: `<h1>` "Télécharge Yamatch", body copy stating the app is available on both the App Store and Google Play, a `.download-back` CTA linking to the App Store (`target="_blank" rel="noopener"`), a second `.download-back` CTA linking to Google Play (`target="_blank" rel="noopener"`), and a third `.download-back` link back to the homepage (`../`).
 - The page carries no JSON-LD block. Its `<meta name="description">` reads `"Yamatch — Télécharge l'app sur l'App Store et Google Play pour réserver tes tournois de volleyball amateur."` — flag drift if a future edit reintroduces "bientôt disponible" style copy for either store.
 
-### Smart deep-link bridge pages (`referee/`, `owner-transfer/`, `org-invite/`, `tournament/`, `invite/`)
+### Smart deep-link bridge pages (`auth/callback/`, `referee/`, `owner-transfer/`, `org-invite/`, `tournament/`, `tournament-invite/`, `invite/`)
 
-Five standalone pages under `website/`, each a bridge for a specific in-app action reached via a shared link (e.g. `/referee/<token>`, resolved through the 404-bounce + query-string pattern documented in Mobile deep-linking below). All five follow the same script recipe:
+Seven standalone pages under `website/`, each a bridge for a specific in-app action reached via a shared link (e.g. `/referee/<token>`, resolved through the 404-bounce + query-string pattern documented in Mobile deep-linking below). The six token/ID pages follow the same script recipe:
 
 1. Read a token from the query string or path.
 2. Attempt to open the app via a custom URL scheme (`com.appyamatch.yamatch://…`).
@@ -292,7 +296,9 @@ Five standalone pages under `website/`, each a bridge for a specific in-app acti
 - Android (`/Android/i`) → `https://play.google.com/store/apps/details?id=com.appyamatch.yamatch`
 - Desktop (no match) → `/download/` (the bi-store routing page above)
 
-This mirrors the `/download/` page's own UA-detection logic — same regexes, same two store URLs — so all six pages (`download/` + the five bridge pages) agree on which platform gets which link.
+The OAuth bridge `/auth/callback/` follows the same fallback logic but forwards the original query string and fragment directly to `com.appyamatch.yamatch://auth-callback`; it never renders or logs their values. This preserves the authentication callback if the HTTPS Universal Link was not intercepted.
+
+This mirrors the `/download/` page's own UA-detection logic — same regexes, same two store URLs — so the download and bridge pages agree on which platform gets which link.
 
 ---
 
@@ -899,7 +905,7 @@ Two static JSON manifests enable native deep-linking between the website and the
 
 ### Deployment pipeline
 
-The workflow `.github/workflows/deploy.yml` uploads `./website` as the Pages artifact via a custom tar step (see below). Because `website/.well-known/` is part of that tree, both files are deployed on every `git push main` (typically live within 1–3 minutes).
+The workflow `.github/workflows/deploy.yml` runs the fail-closed production build, then uploads `./website` as the Pages artifact via a custom tar step (see below). Because `website/.well-known/` is part of that tree, both association files are deployed on every `git push main` (typically live within 1–3 minutes).
 
 #### Custom tar workflow — required (do not revert)
 
@@ -940,14 +946,19 @@ Apple's CDN (APNs / CFNetwork) revalidates the AASA automatically every few hour
 | Field | Value |
 |-------|-------|
 | File | `website/.well-known/apple-app-site-association` (no extension — required by Apple spec) |
-| Format | Raw JSON, no build step |
+| Format | Raw JSON, validated during `npm run build` |
 | `applinks.details[0].appID` | `W8JKU3PMD9.com.appyamatch.yamatch` |
-| `applinks.details[0].paths` | `/auth/callback`, `/invite/*` |
+| `applinks.details[0].paths` | The seven exact routes listed below |
 | `webcredentials.apps[0]` | `W8JKU3PMD9.com.appyamatch.yamatch` |
 
 **URL patterns handled natively by the iOS app (opens in-app, not Safari):**
 - `https://appyamatch.fr/auth/callback` — OAuth / magic-link callback after login
-- `https://appyamatch.fr/invite/*` — any URL under `/invite/` (tournament or team invite links)
+- `https://appyamatch.fr/invite/*` — team invite
+- `https://appyamatch.fr/org-invite/*` — organization invite
+- `https://appyamatch.fr/owner-transfer/*` — organization owner transfer
+- `https://appyamatch.fr/referee/*` — referee request
+- `https://appyamatch.fr/tournament/*` — tournament detail
+- `https://appyamatch.fr/tournament-invite/*` — tournament invite
 
 Any URL not matching these paths falls through to the browser normally.
 
@@ -957,37 +968,16 @@ Any URL not matching these paths falls through to the browser normally.
 
 | Field | Value |
 |-------|-------|
-| File | `website/.well-known/assetlinks.json` |
-| Format | JSON array |
+| File | `website/.well-known/assetlinks.json` (generated, gitignored) |
+| Format | JSON array generated by `scripts/generate-assetlinks.mjs` |
 | `relation` | `["delegate_permission/common.handle_all_urls"]` |
 | `target.namespace` | `android_app` |
 | `target.package_name` | `com.appyamatch.yamatch` |
-| `target.sha256_cert_fingerprints` | **see TODO below** |
+| `target.sha256_cert_fingerprints` | Exact value of `PLAY_APP_SIGNING_SHA256` |
 
-**⚠️ TODO critique — SHA-256 fingerprint manquant**
+`PLAY_APP_SIGNING_SHA256` est une variable GitHub Actions obligatoire. Elle doit contenir les 32 octets hexadécimaux, séparés par `:`, du **certificat de signature de l'application** dans Play Console › Configuration › Intégrité de l'application. L'empreinte du certificat d'upload n'est pas équivalente. Une variable absente ou invalide arrête le déploiement avant la création de l'artefact.
 
-Le champ `sha256_cert_fingerprints` contient actuellement le placeholder :
-
-```
-PLACEHOLDER_SHA256_DEBUG_OR_RELEASE_HERE
-```
-
-**Sans un vrai SHA-256, Android refuse de prendre le verdict App Link et ouvre le navigateur au lieu de l'app.** Le founder doit remplacer ce placeholder avant que les Android App Links fonctionnent en production.
-
-Comment obtenir la valeur :
-
-```bash
-# Pour le keystore de release :
-keytool -list -v -keystore release.jks -alias <alias> | grep "SHA256"
-
-# Pour l'APK signé (si le keystore n'est pas disponible directement) :
-apksigner verify --print-certs app-release.apk | grep "SHA-256"  # (remplacer par le chemin réel de l'APK)
-
-# Format attendu dans assetlinks.json (exemple) :
-# "AB:CD:EF:12:34:56:78:90:..."  (64 caractères hex séparés par des ':'  )
-```
-
-Le même fichier peut lister plusieurs empreintes (debug + release) en les ajoutant comme entrées supplémentaires dans le tableau `sha256_cert_fingerprints`. Après modification, vérifier via [Google's Statement List Checker](https://developers.google.com/digital-asset-links/tools/generator) (après déploiement — attendre 1-3 min de propagation GitHub Pages avant de tester) ou :
+Après déploiement, vérifier le document servi via Google's Statement List Checker ou :
 
 ```bash
 curl https://appyamatch.fr/.well-known/assetlinks.json

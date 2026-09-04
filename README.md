@@ -1,6 +1,14 @@
 # Yamatch website
 
-Vanilla HTML / CSS / JS marketing one-pager. **No build step.**
+Vanilla HTML / CSS / JS marketing one-pager. Le build de production minifie le CSS et génère les associations natives vérifiées.
+
+## Production build
+
+```bash
+PLAY_APP_SIGNING_SHA256='AA:BB:…:FF' npm run build
+```
+
+`PLAY_APP_SIGNING_SHA256` doit être l'empreinte SHA-256 du **certificat de signature de l'application** affiché dans Play Console. Le build échoue si la variable est absente ou invalide, afin qu'aucun `assetlinks.json` vide ou placeholder ne soit déployé. Dans GitHub Actions, configurez-la comme variable de dépôt du même nom.
 
 ## Local development
 

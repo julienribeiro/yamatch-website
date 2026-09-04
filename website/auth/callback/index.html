@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#D7FF00">
+    <meta name="description" content="Finalisation de la connexion à Yamatch.">
+    <meta name="robots" content="noindex">
+    <meta name="referrer" content="no-referrer">
+
+    <title>Yamatch — Finaliser la connexion</title>
+
+    <link rel="icon" type="image/x-icon" sizes="48x48" href="../../favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="../../site.webmanifest">
+    <link rel="preload" as="font" type="font/woff2" href="../../fonts/Inter-Variable.woff2" crossorigin>
+    <link rel="stylesheet" href="../../styles.min.css">
+</head>
+<body>
+
+<main class="download-page">
+    <section class="download-hero" aria-labelledby="callbackTitle">
+        <p class="download-eyebrow">Connexion</p>
+        <h1 id="callbackTitle" class="download-title">Finalise ta connexion dans Yamatch</h1>
+        <p class="download-body">Reviens dans l'app pour terminer la connexion en toute sécurité.</p>
+        <a id="openInApp" class="download-back" href="#">Ouvrir dans Yamatch</a>
+        <a class="download-back" href="../../download/">Télécharger Yamatch</a>
+    </section>
+</main>
+
+<script>
+    (function () {
+        function fallbackUrl() {
+            var ua = navigator.userAgent || '';
+            if (/iPhone|iPad|iPod/i.test(ua) && !window.MSStream) {
+                return 'https://apps.apple.com/fr/app/yamatch/id6773454974';
+            }
+            if (/Android/i.test(ua)) {
+                return 'https://play.google.com/store/apps/details?id=com.appyamatch.yamatch';
+            }
+            return '/download/';
+        }
+
+        function openApp() {
+            var didLeavePage = false;
+            function markPageLeft() {
+                didLeavePage = true;
+            }
+            function handleVisibilityChange() {
+                if (document.visibilityState === 'hidden') markPageLeft();
+            }
+
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+            window.addEventListener('pagehide', markPageLeft);
+            window.location.href = 'com.appyamatch.yamatch://auth-callback' + window.location.search + window.location.hash;
+
+            window.setTimeout(function () {
+                document.removeEventListener('visibilitychange', handleVisibilityChange);
+                window.removeEventListener('pagehide', markPageLeft);
+                if (!didLeavePage && document.visibilityState === 'visible') {
+                    window.location.href = fallbackUrl();
+                }
+            }, 1500);
+        }
+
+        document.getElementById('openInApp').addEventListener('click', function (event) {
+            event.preventDefault();
+            openApp();
+        });
+    })();
+</script>
+
+</body>
+</html>
