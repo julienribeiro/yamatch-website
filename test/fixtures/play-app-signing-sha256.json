@@ -1,5 +1,6 @@
 {
   "sha256CertFingerprints": [
     "AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB"
-  ]
+  ],
+  "rejectedUploadFingerprints": []
 }

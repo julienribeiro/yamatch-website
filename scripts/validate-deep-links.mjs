@@ -7,6 +7,11 @@ const websiteRoot = resolve(repoRoot, 'website');
 const fingerprintPattern = /^(?:[0-9A-F]{2}:){31}[0-9A-F]{2}$/;
 const expectedFingerprint =
   process.env.PLAY_APP_SIGNING_SHA256?.trim().toUpperCase() ?? '';
+const productionPolicy = JSON.parse(
+  await readFile(resolve(repoRoot, 'config/play-app-signing-sha256.json'), 'utf8'),
+);
+const rejectedUploadFingerprints =
+  productionPolicy.rejectedUploadFingerprints;
 const expectedPaths = [
   '/auth/callback',
   '/invite/*',
@@ -17,9 +22,23 @@ const expectedPaths = [
   '/tournament-invite/*',
 ];
 
-if (!fingerprintPattern.test(expectedFingerprint)) {
+if (
+  !Array.isArray(rejectedUploadFingerprints) ||
+  rejectedUploadFingerprints.some(
+    (fingerprint) =>
+      typeof fingerprint !== 'string' || !fingerprintPattern.test(fingerprint),
+  )
+) {
+  throw new Error('La liste des clés d’upload rejetées est invalide.');
+}
+if (expectedFingerprint && !fingerprintPattern.test(expectedFingerprint)) {
   throw new Error(
-    'PLAY_APP_SIGNING_SHA256 valide est requis pour contrôler assetlinks.json.',
+    'PLAY_APP_SIGNING_SHA256 doit contenir exactement 32 octets pour contrôler assetlinks.json.',
+  );
+}
+if (rejectedUploadFingerprints.includes(expectedFingerprint)) {
+  throw new Error(
+    'PLAY_APP_SIGNING_SHA256 correspond à une clé d’upload explicitement rejetée.',
   );
 }
 
@@ -59,43 +78,54 @@ if (/placeholder/i.test(assetlinksRaw)) {
   throw new Error('assetlinks.json ne doit jamais contenir de placeholder.');
 }
 const assetlinks = JSON.parse(assetlinksRaw);
-if (!Array.isArray(assetlinks) || assetlinks.length !== 1) {
+if (!Array.isArray(assetlinks)) {
+  throw new Error('assetlinks.json doit être un tableau JSON.');
+}
+if (!expectedFingerprint) {
+  if (assetlinks.length !== 0) {
+    throw new Error(
+      'assetlinks.json doit rester vide tant que Play App Signing est en attente.',
+    );
+  }
+} else if (assetlinks.length !== 1) {
   throw new Error('assetlinks.json doit contenir exactement un statement Android.');
 }
-const statement = assetlinks[0];
-if (
-  !statement ||
-  typeof statement !== 'object' ||
-  Array.isArray(statement) ||
-  JSON.stringify(Object.keys(statement).sort()) !==
-  JSON.stringify(['relation', 'target'])
-) {
-  throw new Error('Le statement Android doit respecter la forme exacte attendue.');
-}
-if (
-  JSON.stringify(statement.relation) !==
-  JSON.stringify(['delegate_permission/common.handle_all_urls'])
-) {
-  throw new Error('assetlinks.json ne déclare pas la relation Android attendue.');
-}
-const target = statement.target;
-if (
-  !target ||
-  typeof target !== 'object' ||
-  Array.isArray(target) ||
-  JSON.stringify(Object.keys(target).sort()) !==
-    JSON.stringify(['namespace', 'package_name', 'sha256_cert_fingerprints'])
-) {
-  throw new Error('La cible Android doit respecter la forme exacte attendue.');
-}
-const fingerprints = target?.sha256_cert_fingerprints;
-if (
-  target?.namespace !== 'android_app' ||
-  target?.package_name !== 'com.appyamatch.yamatch' ||
-  !Array.isArray(fingerprints) ||
-  JSON.stringify(fingerprints) !== JSON.stringify([expectedFingerprint])
-) {
-  throw new Error('assetlinks.json ne respecte pas le contrat Android prod.');
+if (expectedFingerprint) {
+  const statement = assetlinks[0];
+  if (
+    !statement ||
+    typeof statement !== 'object' ||
+    Array.isArray(statement) ||
+    JSON.stringify(Object.keys(statement).sort()) !==
+      JSON.stringify(['relation', 'target'])
+  ) {
+    throw new Error('Le statement Android doit respecter la forme exacte attendue.');
+  }
+  if (
+    JSON.stringify(statement.relation) !==
+    JSON.stringify(['delegate_permission/common.handle_all_urls'])
+  ) {
+    throw new Error('assetlinks.json ne déclare pas la relation Android attendue.');
+  }
+  const target = statement.target;
+  if (
+    !target ||
+    typeof target !== 'object' ||
+    Array.isArray(target) ||
+    JSON.stringify(Object.keys(target).sort()) !==
+      JSON.stringify(['namespace', 'package_name', 'sha256_cert_fingerprints'])
+  ) {
+    throw new Error('La cible Android doit respecter la forme exacte attendue.');
+  }
+  const fingerprints = target.sha256_cert_fingerprints;
+  if (
+    target.namespace !== 'android_app' ||
+    target.package_name !== 'com.appyamatch.yamatch' ||
+    !Array.isArray(fingerprints) ||
+    JSON.stringify(fingerprints) !== JSON.stringify([expectedFingerprint])
+  ) {
+    throw new Error('assetlinks.json ne respecte pas le contrat Android prod.');
+  }
 }
 
 const fallbackContracts = new Map([

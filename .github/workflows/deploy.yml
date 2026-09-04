@@ -27,6 +27,10 @@ jobs:
         run: npm ci
       - name: Test deep-link contracts
         run: npm test
+      - name: Build production association state
+        env:
+          PLAY_APP_SIGNING_SHA256: ${{ vars.PLAY_APP_SIGNING_SHA256 }}
+        run: npm run build
       - name: Build with isolated test fixture
         env:
           NODE_ENV: test
