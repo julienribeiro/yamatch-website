@@ -3,6 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -15,7 +16,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  verify:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'npm'
+      - name: Install build dependencies
+        run: npm ci
+      - name: Test deep-link contracts
+        run: npm test
+      - name: Build with isolated test fixture
+        env:
+          NODE_ENV: test
+          PLAY_APP_SIGNING_SHA256: AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB:AB
+          ASSETLINKS_ALLOWLIST_PATH: test/fixtures/play-app-signing-sha256.json
+          ASSETLINKS_OUTPUT_PATH: ${{ runner.temp }}/assetlinks.json
+        run: npm run build
+
   deploy:
+    if: github.event_name != 'pull_request'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -51,3 +74,8 @@ jobs:
           retention-days: 1
       - id: deployment
         uses: actions/deploy-pages@v5
+      - name: Smoke test deployed native associations
+        env:
+          PLAY_APP_SIGNING_SHA256: ${{ vars.PLAY_APP_SIGNING_SHA256 }}
+          DEEP_LINK_SMOKE_BASE_URL: https://appyamatch.fr
+        run: npm run smoke:deep-links

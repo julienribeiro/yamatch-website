@@ -8,7 +8,9 @@ Vanilla HTML / CSS / JS marketing one-pager. Le build de production minifie le C
 PLAY_APP_SIGNING_SHA256='AA:BB:…:FF' npm run build
 ```
 
-`PLAY_APP_SIGNING_SHA256` doit être l'empreinte SHA-256 du **certificat de signature de l'application** affiché dans Play Console. Le build échoue si la variable est absente ou invalide, afin qu'aucun `assetlinks.json` vide ou placeholder ne soit déployé. Dans GitHub Actions, configurez-la comme variable de dépôt du même nom.
+`PLAY_APP_SIGNING_SHA256` doit être l'empreinte SHA-256 du **certificat de signature de l'application** affiché dans Play Console et doit aussi figurer dans `config/play-app-signing-sha256.json`. Cette allowlist de production est volontairement vide tant que l'empreinte réelle n'a pas été vérifiée. Le build échoue si la variable est absente, invalide ou non autorisée, afin qu'aucun `assetlinks.json` vide, factice ou placeholder ne soit déployé. Dans GitHub Actions, configurez-la comme variable de dépôt du même nom.
+
+Les PR utilisent exclusivement la fixture sous `test/fixtures/`, avec `NODE_ENV=test` et un output temporaire. Le générateur refuse cette surcharge en mode production.
 
 ## Local development
 

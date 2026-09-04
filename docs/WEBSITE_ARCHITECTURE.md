@@ -59,7 +59,9 @@ All HTML files reference **`styles.min.css`** (the generated output), not `style
 | Pre-hooks | `predev`, `prestart`, `prepreview` all run `build:css` automatically before `live-server` starts |
 | CI | `.github/workflows/deploy.yml` injects the repository variable `PLAY_APP_SIGNING_SHA256`, then runs `npm run build` before the custom tar + `upload-artifact` step |
 
-`npm run build` is fail-closed: it generates `website/.well-known/assetlinks.json`, minifies CSS, then validates the AASA, Android package/fingerprint and the seven fallback routes. `assetlinks.json` is generated and gitignored; no static placeholder may be committed or deployed.
+`npm run build` is fail-closed: it generates `website/.well-known/assetlinks.json`, minifies CSS, then validates the AASA, Android package/fingerprint and the seven fallback routes. `assetlinks.json` is generated and gitignored; no static placeholder may be committed or deployed. Production accepts only a fingerprint present in the versioned exact allowlist `config/play-app-signing-sha256.json`, intentionally empty until the real Play App Signing certificate has been independently verified.
+
+Pull requests run `npm ci`, `npm test`, then the complete build with `NODE_ENV=test`, the allowlist under `test/fixtures/`, and an output under the runner temporary directory. The generator rejects a fixture override outside test mode and rejects a test fixture targeting the production output. After Pages deployment, `npm run smoke:deep-links` retries the two canonical `/.well-known/` endpoints and verifies their complete native contracts against the deployed fingerprint.
 
 **Rule:** always edit `website/styles.css`. The minified file is a build artifact — do not edit it and do not commit it.
 
@@ -975,7 +977,7 @@ Any URL not matching these paths falls through to the browser normally.
 | `target.package_name` | `com.appyamatch.yamatch` |
 | `target.sha256_cert_fingerprints` | Exact value of `PLAY_APP_SIGNING_SHA256` |
 
-`PLAY_APP_SIGNING_SHA256` est une variable GitHub Actions obligatoire. Elle doit contenir les 32 octets hexadécimaux, séparés par `:`, du **certificat de signature de l'application** dans Play Console › Configuration › Intégrité de l'application. L'empreinte du certificat d'upload n'est pas équivalente. Une variable absente ou invalide arrête le déploiement avant la création de l'artefact.
+`PLAY_APP_SIGNING_SHA256` est une variable GitHub Actions obligatoire. Elle doit contenir les 32 octets hexadécimaux, séparés par `:`, du **certificat de signature de l'application** dans Play Console › Configuration › Intégrité de l'application, puis être ajoutée à `config/play-app-signing-sha256.json` dans une PR reviewée. L'empreinte du certificat d'upload n'est pas équivalente. Une variable absente, invalide ou différente de l'allowlist arrête le déploiement avant la création de l'artefact.
 
 Après déploiement, vérifier le document servi via Google's Statement List Checker ou :
 
