@@ -7,20 +7,27 @@
     <meta name="description" content="Page introuvable sur Yamatch.">
     <meta name="robots" content="noindex">
 
-    <!-- Universal Link bounce: /tournament/<id>, /invite/<token>,
-         /org-invite/<token>, /owner-transfer/<token> and /referee/<token> have
+    <!-- Universal Link bounce: /tournament/<id>, /tournament-invite/<token>,
+         /invite/<token>, /org-invite/<token>, /owner-transfer/<token> and /referee/<token> have
          no real file on GitHub Pages, so they land here (404.html). We redirect
          to the canonical /tournament/?id=<id>, /invite/?token=<token>,
-         /org-invite/?token=<token>, /owner-transfer/?token=<token> or
-         /referee/?token=<token> fallback page before any pixel is painted.
+         /org-invite/?token=<token>, /owner-transfer/?token=<token>,
+         /referee/?token=<token> or /tournament-invite/?token=<token>
+         fallback page before any pixel is painted.
          The redirect preserves the ID / token so the target index.html can
          resolve it from the query string. Mirrors the AASA paths
          /tournament/* + /invite/* + /org-invite/* + /owner-transfer/* +
-         /referee/* and the in-app deep link handler. Same-domain `replace` so
+         /referee/* + /tournament-invite/* and the in-app deep link handler. Same-domain `replace` so
          the 404 URL is not kept in history. -->
     <script>
         (function () {
             var path = window.location.pathname;
+            var tournamentInviteMatch = path.match(/^\/tournament-invite\/([^\/]+)\/?$/);
+            if (tournamentInviteMatch && tournamentInviteMatch[1]) {
+                var tournamentInviteToken = decodeURIComponent(tournamentInviteMatch[1]);
+                window.location.replace('/tournament-invite/?token=' + encodeURIComponent(tournamentInviteToken));
+                return;
+            }
             var tournamentMatch = path.match(/^\/tournament\/([^\/]+)\/?$/);
             if (tournamentMatch && tournamentMatch[1]) {
                 var id = decodeURIComponent(tournamentMatch[1]);
