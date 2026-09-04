@@ -4,6 +4,9 @@ import { fileURLToPath } from 'node:url';
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url));
 const websiteRoot = resolve(repoRoot, 'website');
+const fingerprintPattern = /^(?:[0-9A-F]{2}:){31}[0-9A-F]{2}$/;
+const expectedFingerprint =
+  process.env.PLAY_APP_SIGNING_SHA256?.trim().toUpperCase() ?? '';
 const expectedPaths = [
   '/auth/callback',
   '/invite/*',
@@ -13,6 +16,12 @@ const expectedPaths = [
   '/tournament/*',
   '/tournament-invite/*',
 ];
+
+if (!fingerprintPattern.test(expectedFingerprint)) {
+  throw new Error(
+    'PLAY_APP_SIGNING_SHA256 valide est requis pour contrôler assetlinks.json.',
+  );
+}
 
 const aasa = JSON.parse(
   await readFile(
@@ -84,8 +93,7 @@ if (
   target?.namespace !== 'android_app' ||
   target?.package_name !== 'com.appyamatch.yamatch' ||
   !Array.isArray(fingerprints) ||
-  fingerprints.length !== 1 ||
-  !/^(?:[0-9A-F]{2}:){31}[0-9A-F]{2}$/.test(fingerprints[0])
+  JSON.stringify(fingerprints) !== JSON.stringify([expectedFingerprint])
 ) {
   throw new Error('assetlinks.json ne respecte pas le contrat Android prod.');
 }

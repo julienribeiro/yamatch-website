@@ -13,6 +13,7 @@ const fixtureAllowlist = resolve(
   'test/fixtures/play-app-signing-sha256.json',
 );
 const fingerprint = Array(32).fill('AB').join(':');
+const differentValidFingerprint = Array(32).fill('CD').join(':');
 
 function environmentWithoutFingerprint(extra = {}) {
   const { PLAY_APP_SIGNING_SHA256: ignored, ...environment } = process.env;
@@ -141,6 +142,7 @@ test('les contrats natifs et les sept fallbacks sont validés', async (context) 
     ['package_name', 'com.example.other'],
     ['sha256_cert_fingerprints', ['invalid']],
     ['sha256_cert_fingerprints', [fingerprint, fingerprint]],
+    ['sha256_cert_fingerprints', [differentValidFingerprint]],
   ];
   for (const [field, value] of invalidTargets) {
     const invalidTarget = structuredClone(statements);
