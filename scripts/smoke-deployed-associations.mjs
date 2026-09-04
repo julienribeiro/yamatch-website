@@ -1,4 +1,16 @@
-const expectedFingerprint = process.env.PLAY_APP_SIGNING_SHA256?.trim().toUpperCase();
+import { readFile } from 'node:fs/promises';
+
+const fingerprintPattern = /^(?:[0-9A-F]{2}:){31}[0-9A-F]{2}$/;
+const expectedFingerprint =
+  process.env.PLAY_APP_SIGNING_SHA256?.trim().toUpperCase() ?? '';
+const productionPolicy = JSON.parse(
+  await readFile(
+    new URL('../config/play-app-signing-sha256.json', import.meta.url),
+    'utf8',
+  ),
+);
+const rejectedUploadFingerprints =
+  productionPolicy.rejectedUploadFingerprints;
 const baseUrl = process.env.DEEP_LINK_SMOKE_BASE_URL ?? 'https://appyamatch.fr';
 const expectedPaths = [
   '/auth/callback',
@@ -10,8 +22,22 @@ const expectedPaths = [
   '/tournament-invite/*',
 ];
 
-if (!expectedFingerprint) {
-  throw new Error('PLAY_APP_SIGNING_SHA256 est requis pour le smoke test.');
+if (
+  !Array.isArray(rejectedUploadFingerprints) ||
+  rejectedUploadFingerprints.some(
+    (fingerprint) =>
+      typeof fingerprint !== 'string' || !fingerprintPattern.test(fingerprint),
+  )
+) {
+  throw new Error('La liste des clés d’upload rejetées est invalide.');
+}
+if (expectedFingerprint && !fingerprintPattern.test(expectedFingerprint)) {
+  throw new Error('PLAY_APP_SIGNING_SHA256 est invalide pour le smoke test.');
+}
+if (rejectedUploadFingerprints.includes(expectedFingerprint)) {
+  throw new Error(
+    'PLAY_APP_SIGNING_SHA256 correspond à une clé d’upload explicitement rejetée.',
+  );
 }
 
 const delay = (milliseconds) =>
@@ -54,27 +80,35 @@ if (
 }
 
 const assetlinks = await fetchJsonWithRetry('/.well-known/assetlinks.json');
-const statement = assetlinks?.[0];
-const target = statement?.target;
-if (
-  !Array.isArray(assetlinks) ||
-  assetlinks.length !== 1 ||
-  !statement ||
-  JSON.stringify(Object.keys(statement).sort()) !==
-    JSON.stringify(['relation', 'target']) ||
-  JSON.stringify(statement.relation) !==
-    JSON.stringify(['delegate_permission/common.handle_all_urls']) ||
-  !target ||
-  typeof target !== 'object' ||
-  Array.isArray(target) ||
-  JSON.stringify(Object.keys(target).sort()) !==
-    JSON.stringify(['namespace', 'package_name', 'sha256_cert_fingerprints']) ||
-  target?.package_name !== 'com.appyamatch.yamatch' ||
-  target?.namespace !== 'android_app' ||
-  JSON.stringify(target.sha256_cert_fingerprints) !==
-    JSON.stringify([expectedFingerprint])
-) {
-  throw new Error('Le contrat Android publié ne correspond pas au build déployé.');
+if (!expectedFingerprint) {
+  if (!Array.isArray(assetlinks) || assetlinks.length !== 0) {
+    throw new Error(
+      'Le contrat Android publié doit rester vide en attente de Play App Signing.',
+    );
+  }
+} else {
+  const statement = assetlinks?.[0];
+  const target = statement?.target;
+  if (
+    !Array.isArray(assetlinks) ||
+    assetlinks.length !== 1 ||
+    !statement ||
+    JSON.stringify(Object.keys(statement).sort()) !==
+      JSON.stringify(['relation', 'target']) ||
+    JSON.stringify(statement.relation) !==
+      JSON.stringify(['delegate_permission/common.handle_all_urls']) ||
+    !target ||
+    typeof target !== 'object' ||
+    Array.isArray(target) ||
+    JSON.stringify(Object.keys(target).sort()) !==
+      JSON.stringify(['namespace', 'package_name', 'sha256_cert_fingerprints']) ||
+    target.package_name !== 'com.appyamatch.yamatch' ||
+    target.namespace !== 'android_app' ||
+    JSON.stringify(target.sha256_cert_fingerprints) !==
+      JSON.stringify([expectedFingerprint])
+  ) {
+    throw new Error('Le contrat Android publié ne correspond pas au build déployé.');
+  }
 }
 
 console.log('Smoke test post-déploiement des associations natives réussi.');

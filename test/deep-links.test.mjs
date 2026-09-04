@@ -14,21 +14,102 @@ const fixtureAllowlist = resolve(
 );
 const fingerprint = Array(32).fill('AB').join(':');
 const differentValidFingerprint = Array(32).fill('CD').join(':');
+const rejectedUploadFingerprint =
+  '00:78:DD:F9:7E:9F:FD:08:42:39:B3:8A:65:09:38:5B:47:6E:E3:FC:' +
+  'B0:C8:DC:B8:6E:C4:A1:6E:43:97:2F:C3';
 
 function environmentWithoutFingerprint(extra = {}) {
   const { PLAY_APP_SIGNING_SHA256: ignored, ...environment } = process.env;
   return { ...environment, ...extra };
 }
 
-test('la génération échoue sans empreinte Play App Signing', () => {
+test('le mode pending génère et valide un assetlinks vide', async (context) => {
+  const directory = await mkdtemp(resolve(tmpdir(), 'yamatch-deep-links-'));
+  context.after(async () => rm(directory, { recursive: true, force: true }));
+  const outputPath = resolve(directory, 'assetlinks.json');
+  const environment = environmentWithoutFingerprint({
+    ASSETLINKS_OUTPUT_PATH: outputPath,
+  });
   const result = spawnSync(process.execPath, [generator], {
     cwd: repoRoot,
-    env: environmentWithoutFingerprint(),
+    env: environment,
+    encoding: 'utf8',
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.deepEqual(JSON.parse(await readFile(outputPath, 'utf8')), []);
+
+  const validated = spawnSync(process.execPath, [validator], {
+    cwd: repoRoot,
+    env: environment,
+    encoding: 'utf8',
+  });
+  assert.equal(validated.status, 0, validated.stderr);
+
+  await writeFile(
+    outputPath,
+    `${JSON.stringify([
+      {
+        relation: ['delegate_permission/common.handle_all_urls'],
+        target: {
+          namespace: 'android_app',
+          package_name: 'com.appyamatch.yamatch',
+          sha256_cert_fingerprints: [rejectedUploadFingerprint],
+        },
+      },
+    ])}\n`,
+    'utf8',
+  );
+  const leakedUploadKey = spawnSync(process.execPath, [validator], {
+    cwd: repoRoot,
+    env: environment,
+    encoding: 'utf8',
+  });
+  assert.notEqual(leakedUploadKey.status, 0);
+  assert.match(leakedUploadKey.stderr, /doit rester vide/);
+});
+
+test('une allowlist active exige son empreinte Play App Signing', async (context) => {
+  const directory = await mkdtemp(resolve(tmpdir(), 'yamatch-deep-links-'));
+  context.after(async () => rm(directory, { recursive: true, force: true }));
+  const result = spawnSync(process.execPath, [generator], {
+    cwd: repoRoot,
+    env: environmentWithoutFingerprint({
+      NODE_ENV: 'test',
+      ASSETLINKS_ALLOWLIST_PATH: fixtureAllowlist,
+      ASSETLINKS_OUTPUT_PATH: resolve(directory, 'assetlinks.json'),
+    }),
     encoding: 'utf8',
   });
 
   assert.notEqual(result.status, 0);
-  assert.match(result.stderr, /PLAY_APP_SIGNING_SHA256 est requis/);
+  assert.match(result.stderr, /requis dès qu’une empreinte Play App Signing/);
+});
+
+test('la clé d’upload connue ne peut jamais être publiée', async (context) => {
+  const directory = await mkdtemp(resolve(tmpdir(), 'yamatch-deep-links-'));
+  context.after(async () => rm(directory, { recursive: true, force: true }));
+  const outputPath = resolve(directory, 'assetlinks.json');
+  const environment = environmentWithoutFingerprint({
+    PLAY_APP_SIGNING_SHA256: rejectedUploadFingerprint,
+    ASSETLINKS_OUTPUT_PATH: outputPath,
+  });
+  const result = spawnSync(process.execPath, [generator], {
+    cwd: repoRoot,
+    env: environment,
+    encoding: 'utf8',
+  });
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /clé d’upload explicitement rejetée/);
+
+  await writeFile(outputPath, '[]\n', 'utf8');
+  const validated = spawnSync(process.execPath, [validator], {
+    cwd: repoRoot,
+    env: environment,
+    encoding: 'utf8',
+  });
+  assert.notEqual(validated.status, 0);
+  assert.match(validated.stderr, /clé d’upload explicitement rejetée/);
 });
 
 test('la génération refuse une empreinte invalide', () => {

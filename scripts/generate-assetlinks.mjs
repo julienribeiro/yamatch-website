@@ -41,37 +41,73 @@ if (requestedAllowlistPath) {
   }
 }
 
-const rawFingerprint = process.env.PLAY_APP_SIGNING_SHA256?.trim() ?? '';
-
-if (!rawFingerprint) {
+const productionPolicy = JSON.parse(
+  await readFile(productionAllowlistPath, 'utf8'),
+);
+const allowlistDocument = requestedAllowlistPath
+  ? JSON.parse(await readFile(allowlistPath, 'utf8'))
+  : productionPolicy;
+const allowedFingerprints = allowlistDocument.sha256CertFingerprints;
+const policyRejectedFingerprints = allowlistDocument.rejectedUploadFingerprints;
+const productionRejectedFingerprints =
+  productionPolicy.rejectedUploadFingerprints;
+if (
+  !Array.isArray(allowedFingerprints) ||
+  !Array.isArray(policyRejectedFingerprints) ||
+  !Array.isArray(productionRejectedFingerprints)
+) {
+  throw new Error('La politique Play App Signing versionnée est invalide.');
+}
+const allPolicyFingerprints = [
+  ...allowedFingerprints,
+  ...policyRejectedFingerprints,
+  ...productionRejectedFingerprints,
+];
+if (
+  allPolicyFingerprints.some(
+    (policyFingerprint) =>
+      typeof policyFingerprint !== 'string' ||
+      !fingerprintPattern.test(policyFingerprint),
+  )
+) {
+  throw new Error('La politique Play App Signing versionnée est invalide.');
+}
+const rejectedFingerprints = new Set([
+  ...policyRejectedFingerprints,
+  ...productionRejectedFingerprints,
+]);
+if (
+  allowedFingerprints.some((fingerprint) =>
+    rejectedFingerprints.has(fingerprint),
+  )
+) {
   throw new Error(
-    'PLAY_APP_SIGNING_SHA256 est requis pour générer assetlinks.json. ' +
-      'Copiez l’empreinte SHA-256 depuis Play Console > Configuration > ' +
-      'Intégrité de l’application > Certificat de signature de l’application.',
+    'Une empreinte Play ne peut pas être autorisée et rejetée simultanément.',
+  );
+}
+
+const rawFingerprint = process.env.PLAY_APP_SIGNING_SHA256?.trim() ?? '';
+if (!rawFingerprint && allowedFingerprints.length > 0) {
+  throw new Error(
+    'PLAY_APP_SIGNING_SHA256 est requis dès qu’une empreinte Play App Signing ' +
+      'est autorisée dans la politique versionnée.',
   );
 }
 
 const fingerprint = rawFingerprint.toUpperCase();
-if (!fingerprintPattern.test(fingerprint)) {
+if (fingerprint && !fingerprintPattern.test(fingerprint)) {
   throw new Error(
     'PLAY_APP_SIGNING_SHA256 doit contenir exactement 32 octets ' +
       'hexadécimaux séparés par des deux-points.',
   );
 }
-
-const allowlistDocument = JSON.parse(await readFile(allowlistPath, 'utf8'));
-const allowedFingerprints = allowlistDocument.sha256CertFingerprints;
-if (
-  !Array.isArray(allowedFingerprints) ||
-  allowedFingerprints.some(
-    (allowedFingerprint) =>
-      typeof allowedFingerprint !== 'string' ||
-      !fingerprintPattern.test(allowedFingerprint),
-  )
-) {
-  throw new Error('La allowlist Play App Signing versionnée est invalide.');
+if (fingerprint && rejectedFingerprints.has(fingerprint)) {
+  throw new Error(
+    'PLAY_APP_SIGNING_SHA256 correspond à une clé d’upload explicitement ' +
+      'rejetée et ne peut pas être publiée dans assetlinks.json.',
+  );
 }
-if (!allowedFingerprints.includes(fingerprint)) {
+if (fingerprint && !allowedFingerprints.includes(fingerprint)) {
   throw new Error(
     'PLAY_APP_SIGNING_SHA256 ne figure pas dans la allowlist de production ' +
       'versionnée. Ajoutez uniquement l’empreinte du certificat de signature ' +
@@ -83,17 +119,19 @@ const outputPath = process.env.ASSETLINKS_OUTPUT_PATH
   ? resolve(process.env.ASSETLINKS_OUTPUT_PATH)
   : defaultOutput;
 
-const statement = [
-  {
-    relation: ['delegate_permission/common.handle_all_urls'],
-    target: {
-      namespace: 'android_app',
-      package_name: 'com.appyamatch.yamatch',
-      sha256_cert_fingerprints: [fingerprint],
-    },
-  },
-];
+const statements = fingerprint
+  ? [
+      {
+        relation: ['delegate_permission/common.handle_all_urls'],
+        target: {
+          namespace: 'android_app',
+          package_name: 'com.appyamatch.yamatch',
+          sha256_cert_fingerprints: [fingerprint],
+        },
+      },
+    ]
+  : [];
 
 await mkdir(dirname(outputPath), { recursive: true });
-await writeFile(outputPath, `${JSON.stringify(statement, null, 2)}\n`, 'utf8');
+await writeFile(outputPath, `${JSON.stringify(statements, null, 2)}\n`, 'utf8');
 console.log(`assetlinks.json généré : ${outputPath}`);
