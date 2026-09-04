@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { mkdtemp, readFile, rm } from 'node:fs/promises';
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -82,7 +82,76 @@ test('les contrats natifs et les sept fallbacks sont validés', async (context) 
   });
   assert.equal(validated.status, 0, validated.stderr);
 
-  const statement = JSON.parse(await readFile(outputPath, 'utf8'));
-  assert.equal(statement[0].target.package_name, 'com.appyamatch.yamatch');
-  assert.deepEqual(statement[0].target.sha256_cert_fingerprints, [fingerprint]);
+  const statements = JSON.parse(await readFile(outputPath, 'utf8'));
+  assert.equal(statements.length, 1);
+  assert.deepEqual(statements[0].relation, [
+    'delegate_permission/common.handle_all_urls',
+  ]);
+  assert.equal(statements[0].target.package_name, 'com.appyamatch.yamatch');
+  assert.deepEqual(statements[0].target.sha256_cert_fingerprints, [fingerprint]);
+
+  const wrongRelation = structuredClone(statements);
+  wrongRelation[0].relation = ['delegate_permission/common.get_login_creds'];
+  await writeFile(outputPath, `${JSON.stringify(wrongRelation)}\n`, 'utf8');
+  const invalidRelation = spawnSync(process.execPath, [validator], {
+    cwd: repoRoot,
+    env: environment,
+    encoding: 'utf8',
+  });
+  assert.notEqual(invalidRelation.status, 0);
+  assert.match(invalidRelation.stderr, /relation Android attendue/);
+
+  await writeFile(
+    outputPath,
+    `${JSON.stringify([statements[0], statements[0]])}\n`,
+    'utf8',
+  );
+  const duplicateStatement = spawnSync(process.execPath, [validator], {
+    cwd: repoRoot,
+    env: environment,
+    encoding: 'utf8',
+  });
+  assert.notEqual(duplicateStatement.status, 0);
+  assert.match(duplicateStatement.stderr, /exactement un statement Android/);
+
+  const extraStatementKey = structuredClone(statements);
+  extraStatementKey[0].unexpected = true;
+  await writeFile(outputPath, `${JSON.stringify(extraStatementKey)}\n`, 'utf8');
+  const invalidStatementShape = spawnSync(process.execPath, [validator], {
+    cwd: repoRoot,
+    env: environment,
+    encoding: 'utf8',
+  });
+  assert.notEqual(invalidStatementShape.status, 0);
+  assert.match(invalidStatementShape.stderr, /statement Android.*forme exacte/);
+
+  const extraTargetKey = structuredClone(statements);
+  extraTargetKey[0].target.unexpected = true;
+  await writeFile(outputPath, `${JSON.stringify(extraTargetKey)}\n`, 'utf8');
+  const invalidTargetShape = spawnSync(process.execPath, [validator], {
+    cwd: repoRoot,
+    env: environment,
+    encoding: 'utf8',
+  });
+  assert.notEqual(invalidTargetShape.status, 0);
+  assert.match(invalidTargetShape.stderr, /cible Android.*forme exacte/);
+
+  const invalidTargets = [
+    ['namespace', 'web'],
+    ['package_name', 'com.example.other'],
+    ['sha256_cert_fingerprints', ['invalid']],
+    ['sha256_cert_fingerprints', [fingerprint, fingerprint]],
+  ];
+  for (const [field, value] of invalidTargets) {
+    const invalidTarget = structuredClone(statements);
+    invalidTarget[0].target[field] = value;
+    await writeFile(outputPath, `${JSON.stringify(invalidTarget)}\n`, 'utf8');
+    const invalidTargetResult = spawnSync(process.execPath, [validator], {
+      cwd: repoRoot,
+      env: environment,
+      encoding: 'utf8',
+    });
+    assert.notEqual(invalidTargetResult.status, 0, `${field} doit être refusé`);
+    assert.match(invalidTargetResult.stderr, /contrat Android prod/);
+  }
 });

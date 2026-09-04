@@ -57,9 +57,9 @@ All HTML files reference **`styles.min.css`** (the generated output), not `style
 | Sizes | 224 KB source → 37 KB minified raw / 71 KB → 7 KB gzip (~90% gzip reduction) |
 | npm script | `npm run build:css` — `lightningcss --minify --bundle --targets '>= 0.5%' website/styles.css -o website/styles.min.css` |
 | Pre-hooks | `predev`, `prestart`, `prepreview` all run `build:css` automatically before `live-server` starts |
-| CI | `.github/workflows/deploy.yml` injects the repository variable `PLAY_APP_SIGNING_SHA256`, then runs `npm run build` before the custom tar + `upload-artifact` step |
+| CI | `.github/workflows/deploy.yml` leaves PR verification at `contents: read`; only the deploy job receives `pages: write` and `id-token: write`. It injects the repository variable `PLAY_APP_SIGNING_SHA256`, then runs `npm run build` before the custom tar + `upload-artifact` step |
 
-`npm run build` is fail-closed: it generates `website/.well-known/assetlinks.json`, minifies CSS, then validates the AASA, Android package/fingerprint and the seven fallback routes. `assetlinks.json` is generated and gitignored; no static placeholder may be committed or deployed. Production accepts only the independently verified Play App Signing fingerprint present in the versioned exact allowlist `config/play-app-signing-sha256.json`.
+`npm run build` is fail-closed: it generates `website/.well-known/assetlinks.json`, minifies CSS, then validates the exact AASA contract (one applinks detail, seven routes and webcredentials), the exact Android contract (one statement, `handle_all_urls`, package and fingerprint) and the seven fallback routes. `assetlinks.json` is generated and gitignored; no static placeholder may be committed or deployed. Production accepts only the independently verified Play App Signing fingerprint present in the versioned exact allowlist `config/play-app-signing-sha256.json`.
 
 Pull requests run `npm ci`, `npm test`, then the complete build with `NODE_ENV=test`, the allowlist under `test/fixtures/`, and an output under the runner temporary directory. The generator rejects a fixture override outside test mode and rejects a test fixture targeting the production output. After Pages deployment, `npm run smoke:deep-links` retries the two canonical `/.well-known/` endpoints and verifies their complete native contracts against the deployed fingerprint.
 

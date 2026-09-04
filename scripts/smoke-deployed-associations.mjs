@@ -38,17 +38,37 @@ async function fetchJsonWithRetry(path) {
 const aasa = await fetchJsonWithRetry(
   '/.well-known/apple-app-site-association',
 );
-const detail = aasa.applinks?.details?.[0];
+const details = aasa.applinks?.details;
+const detail = details?.[0];
 if (
+  !Array.isArray(aasa.applinks?.apps) ||
+  aasa.applinks.apps.length !== 0 ||
+  !Array.isArray(details) ||
+  details.length !== 1 ||
   detail?.appID !== 'W8JKU3PMD9.com.appyamatch.yamatch' ||
-  JSON.stringify(detail.paths) !== JSON.stringify(expectedPaths)
+  JSON.stringify(detail.paths) !== JSON.stringify(expectedPaths) ||
+  JSON.stringify(aasa.webcredentials?.apps) !==
+    JSON.stringify(['W8JKU3PMD9.com.appyamatch.yamatch'])
 ) {
   throw new Error('Le contrat AASA publié ne correspond pas au contrat mobile.');
 }
 
 const assetlinks = await fetchJsonWithRetry('/.well-known/assetlinks.json');
-const target = assetlinks[0]?.target;
+const statement = assetlinks?.[0];
+const target = statement?.target;
 if (
+  !Array.isArray(assetlinks) ||
+  assetlinks.length !== 1 ||
+  !statement ||
+  JSON.stringify(Object.keys(statement).sort()) !==
+    JSON.stringify(['relation', 'target']) ||
+  JSON.stringify(statement.relation) !==
+    JSON.stringify(['delegate_permission/common.handle_all_urls']) ||
+  !target ||
+  typeof target !== 'object' ||
+  Array.isArray(target) ||
+  JSON.stringify(Object.keys(target).sort()) !==
+    JSON.stringify(['namespace', 'package_name', 'sha256_cert_fingerprints']) ||
   target?.package_name !== 'com.appyamatch.yamatch' ||
   target?.namespace !== 'android_app' ||
   JSON.stringify(target.sha256_cert_fingerprints) !==

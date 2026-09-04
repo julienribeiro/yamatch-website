@@ -21,7 +21,12 @@ const aasa = JSON.parse(
   ),
 );
 const details = aasa.applinks?.details;
-if (!Array.isArray(details) || details.length !== 1) {
+if (
+  !Array.isArray(aasa.applinks?.apps) ||
+  aasa.applinks.apps.length !== 0 ||
+  !Array.isArray(details) ||
+  details.length !== 1
+) {
   throw new Error('AASA doit contenir exactement une déclaration applinks.');
 }
 if (details[0].appID !== 'W8JKU3PMD9.com.appyamatch.yamatch') {
@@ -29,6 +34,12 @@ if (details[0].appID !== 'W8JKU3PMD9.com.appyamatch.yamatch') {
 }
 if (JSON.stringify(details[0].paths) !== JSON.stringify(expectedPaths)) {
   throw new Error('AASA ne couvre pas exactement les sept routes mobiles.');
+}
+if (
+  JSON.stringify(aasa.webcredentials?.apps) !==
+  JSON.stringify(['W8JKU3PMD9.com.appyamatch.yamatch'])
+) {
+  throw new Error('AASA webcredentials ne correspond pas à Yamatch production.');
 }
 
 const assetlinksPath = process.env.ASSETLINKS_OUTPUT_PATH
@@ -39,7 +50,35 @@ if (/placeholder/i.test(assetlinksRaw)) {
   throw new Error('assetlinks.json ne doit jamais contenir de placeholder.');
 }
 const assetlinks = JSON.parse(assetlinksRaw);
-const target = assetlinks[0]?.target;
+if (!Array.isArray(assetlinks) || assetlinks.length !== 1) {
+  throw new Error('assetlinks.json doit contenir exactement un statement Android.');
+}
+const statement = assetlinks[0];
+if (
+  !statement ||
+  typeof statement !== 'object' ||
+  Array.isArray(statement) ||
+  JSON.stringify(Object.keys(statement).sort()) !==
+  JSON.stringify(['relation', 'target'])
+) {
+  throw new Error('Le statement Android doit respecter la forme exacte attendue.');
+}
+if (
+  JSON.stringify(statement.relation) !==
+  JSON.stringify(['delegate_permission/common.handle_all_urls'])
+) {
+  throw new Error('assetlinks.json ne déclare pas la relation Android attendue.');
+}
+const target = statement.target;
+if (
+  !target ||
+  typeof target !== 'object' ||
+  Array.isArray(target) ||
+  JSON.stringify(Object.keys(target).sort()) !==
+    JSON.stringify(['namespace', 'package_name', 'sha256_cert_fingerprints'])
+) {
+  throw new Error('La cible Android doit respecter la forme exacte attendue.');
+}
 const fingerprints = target?.sha256_cert_fingerprints;
 if (
   target?.namespace !== 'android_app' ||
