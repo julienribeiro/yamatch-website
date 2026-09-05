@@ -57,7 +57,7 @@ All HTML files reference **`styles.min.css`** (the generated output), not `style
 | Sizes | 224 KB source → 37 KB minified raw / 71 KB → 7 KB gzip (~90% gzip reduction) |
 | npm script | `npm run build:css` — `lightningcss --minify --bundle --targets '>= 0.5%' website/styles.css -o website/styles.min.css` |
 | Pre-hooks | `predev`, `prestart`, `prepreview` all run `build:css` automatically before `live-server` starts |
-| CI | `.github/workflows/deploy.yml` leaves PR verification at `contents: read`; only the deploy job receives `pages: write` and `id-token: write`. It passes the optional repository variable `PLAY_APP_SIGNING_SHA256`, then runs `npm run build` before the custom tar + `upload-artifact` step |
+| CI | `.github/workflows/deploy.yml` leaves PR verification at `contents: read`; only the deploy job receives `pages: write` and `id-token: write`. It passes the repository variable `PLAY_APP_SIGNING_SHA256`, then runs `npm run build` before the custom tar + `upload-artifact` step |
 
 `npm run build` is fail-closed: it generates `website/.well-known/assetlinks.json`, minifies CSS, then validates the exact AASA contract (one applinks detail, seven routes and webcredentials), the Android association state and the seven fallback routes. In pending mode (empty allowlist and absent variable), Android must be exactly `[]`, so no certificate is trusted. In active mode, Android must contain one exact statement (`handle_all_urls`, package and independently verified fingerprint). `assetlinks.json` is generated and gitignored; no static placeholder may be committed or deployed. A non-empty allowlist without its matching variable, an unallowlisted fingerprint or the explicitly rejected upload-key fingerprint stops the build.
 
@@ -978,9 +978,9 @@ Any URL not matching these paths falls through to the browser normally.
 | Active `target.package_name` | `com.appyamatch.yamatch` |
 | Active `target.sha256_cert_fingerprints` | Exact value of `PLAY_APP_SIGNING_SHA256` |
 
-**Statut Android App Links : en attente.** La valeur reçue le 2026-09-05 correspondait au certificat de clé d'upload et a été retirée de l'allowlist comme de la variable GitHub. Elle reste dans `rejectedUploadFingerprints` pour empêcher toute republication accidentelle. En attendant le vrai Play App Signing SHA-256, le déploiement sert volontairement `[]`; les Universal Links iOS restent actifs et validés.
+**Statut Android App Links : actif.** L'empreinte `07:5D:03:FF:1F:34:9D:72:4F:48:A9:62:5D:BB:8F:3F:53:D6:B8:80:56:6C:87:43:1C:4E:EB:7B:11:A3:9B:13` provient du fichier JSON Digital Asset Links officiel de Play Console pour `com.appyamatch.yamatch`. Elle est l'unique valeur de `sha256CertFingerprints` et de la variable GitHub. L'ancienne valeur `00:78:DD:F9:7E:9F:FD:08:42:39:B3:8A:65:09:38:5B:47:6E:E3:FC:B0:C8:DC:B8:6E:C4:A1:6E:43:97:2F:C3` reste uniquement dans `rejectedUploadFingerprints`, car elle correspond au certificat de clé d'upload.
 
-Pour activer Android, `PLAY_APP_SIGNING_SHA256` doit contenir les 32 octets hexadécimaux, séparés par `:`, du **certificat de signature de l'application** dans Play Console › Configuration › Intégrité de l'application, puis être ajouté à `sha256CertFingerprints` dans une PR reviewée. L'empreinte du certificat d'upload n'est pas équivalente. Une valeur invalide, différente de l'allowlist ou explicitement rejetée arrête le déploiement avant la création de l'artefact.
+Toute rotation future doit repartir du fichier JSON Digital Asset Links officiel de Play Console : ajouter la nouvelle empreinte à `sha256CertFingerprints` dans une PR reviewée, puis mettre à jour `PLAY_APP_SIGNING_SHA256`. L'empreinte du certificat d'upload n'est jamais équivalente. Une valeur absente avec une allowlist active, invalide, différente de l'allowlist ou explicitement rejetée arrête le déploiement avant la création de l'artefact.
 
 Après déploiement, vérifier le document servi via Google's Statement List Checker ou :
 

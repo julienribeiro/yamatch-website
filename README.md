@@ -5,12 +5,12 @@ Vanilla HTML / CSS / JS marketing one-pager. Le build de production minifie le C
 ## Production build
 
 ```bash
-npm run build
+PLAY_APP_SIGNING_SHA256='07:5D:03:FF:1F:34:9D:72:4F:48:A9:62:5D:BB:8F:3F:53:D6:B8:80:56:6C:87:43:1C:4E:EB:7B:11:A3:9B:13' npm run build
 ```
 
-Tant que l'empreinte du **certificat de signature de l'application** n'est pas vérifiée, l'allowlist reste vide, la variable GitHub `PLAY_APP_SIGNING_SHA256` reste absente et le build produit volontairement `assetlinks.json` sous la forme `[]` : aucun certificat Android n'est alors approuvé. La clé d'upload connue est explicitement rejetée.
+La production utilise l'empreinte SHA-256 du **certificat Play App Signing** fournie par le fichier JSON Digital Asset Links officiel de Play Console. Elle figure dans `config/play-app-signing-sha256.json` et dans la variable GitHub `PLAY_APP_SIGNING_SHA256`; le build exige leur égalité exacte. La clé d'upload connue reste explicitement rejetée.
 
-Une fois la vraie empreinte Play App Signing copiée depuis Play Console, ajoutez-la à `config/play-app-signing-sha256.json` puis configurez la variable GitHub du même nom. Le build exige alors exactement cette empreinte et refuse toute valeur absente, invalide ou non autorisée.
+Le mode pending fail-closed reste disponible pour une révocation : allowlist vide et variable absente produisent uniquement `assetlinks.json = []`. Une allowlist active sans variable, une empreinte invalide, non autorisée ou rejetée arrête le build.
 
 Les PR construisent d'abord l'état de production courant (pending ou actif), puis vérifient séparément le futur contrat actif avec la fixture sous `test/fixtures/`, `NODE_ENV=test` et un output temporaire. Le générateur refuse cette surcharge en mode production.
 
