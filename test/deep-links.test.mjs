@@ -12,8 +12,15 @@ const fixtureAllowlist = resolve(
   repoRoot,
   'test/fixtures/play-app-signing-sha256.json',
 );
+const pendingFixtureAllowlist = resolve(
+  repoRoot,
+  'test/fixtures/play-app-signing-pending.json',
+);
 const fingerprint = Array(32).fill('AB').join(':');
 const differentValidFingerprint = Array(32).fill('CD').join(':');
+const productionPlayAppSigningFingerprint =
+  '07:5D:03:FF:1F:34:9D:72:4F:48:A9:62:5D:BB:8F:3F:53:D6:B8:80:' +
+  '56:6C:87:43:1C:4E:EB:7B:11:A3:9B:13';
 const rejectedUploadFingerprint =
   '00:78:DD:F9:7E:9F:FD:08:42:39:B3:8A:65:09:38:5B:47:6E:E3:FC:' +
   'B0:C8:DC:B8:6E:C4:A1:6E:43:97:2F:C3';
@@ -28,6 +35,8 @@ test('le mode pending génère et valide un assetlinks vide', async (context) =>
   context.after(async () => rm(directory, { recursive: true, force: true }));
   const outputPath = resolve(directory, 'assetlinks.json');
   const environment = environmentWithoutFingerprint({
+    NODE_ENV: 'test',
+    ASSETLINKS_ALLOWLIST_PATH: pendingFixtureAllowlist,
     ASSETLINKS_OUTPUT_PATH: outputPath,
   });
   const result = spawnSync(process.execPath, [generator], {
@@ -66,6 +75,40 @@ test('le mode pending génère et valide un assetlinks vide', async (context) =>
   });
   assert.notEqual(leakedUploadKey.status, 0);
   assert.match(leakedUploadKey.stderr, /doit rester vide/);
+});
+
+test('la politique production génère la vraie association Play', async (context) => {
+  const directory = await mkdtemp(resolve(tmpdir(), 'yamatch-deep-links-'));
+  context.after(async () => rm(directory, { recursive: true, force: true }));
+  const outputPath = resolve(directory, 'assetlinks.json');
+  const environment = environmentWithoutFingerprint({
+    PLAY_APP_SIGNING_SHA256: productionPlayAppSigningFingerprint,
+    ASSETLINKS_OUTPUT_PATH: outputPath,
+  });
+
+  const generated = spawnSync(process.execPath, [generator], {
+    cwd: repoRoot,
+    env: environment,
+    encoding: 'utf8',
+  });
+  assert.equal(generated.status, 0, generated.stderr);
+
+  const validated = spawnSync(process.execPath, [validator], {
+    cwd: repoRoot,
+    env: environment,
+    encoding: 'utf8',
+  });
+  assert.equal(validated.status, 0, validated.stderr);
+
+  const statements = JSON.parse(await readFile(outputPath, 'utf8'));
+  assert.equal(statements.length, 1);
+  assert.deepEqual(statements[0].relation, [
+    'delegate_permission/common.handle_all_urls',
+  ]);
+  assert.equal(statements[0].target.package_name, 'com.appyamatch.yamatch');
+  assert.deepEqual(statements[0].target.sha256_cert_fingerprints, [
+    productionPlayAppSigningFingerprint,
+  ]);
 });
 
 test('une allowlist active exige son empreinte Play App Signing', async (context) => {
