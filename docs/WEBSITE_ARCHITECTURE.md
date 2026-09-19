@@ -129,10 +129,10 @@ No `<link rel="preconnect" href="https://fonts.googleapis.com">` or `fonts.gstat
 
 | URL | `<lastmod>` | `<changefreq>` | `<priority>` |
 |-----|-------------|----------------|--------------|
-| `https://appyamatch.fr/` | 2026-05-12 | weekly | 1.0 |
+| `https://appyamatch.fr/` | 2026-09-20 | weekly | 1.0 |
 | `https://appyamatch.fr/mentions-legales/` | 2026-05-13 | monthly | 0.4 |
-| `https://appyamatch.fr/cgu/` | 2026-05-13 | monthly | 0.4 |
-| `https://appyamatch.fr/politique-annulation-remboursement/` | 2026-05-13 | monthly | 0.4 |
+| `https://appyamatch.fr/cgu/` | 2026-09-20 | monthly | 0.4 |
+| `https://appyamatch.fr/politique-annulation-remboursement/` | 2026-09-20 | monthly | 0.4 |
 | `https://appyamatch.fr/politique-confidentialite/` | 2026-05-13 | monthly | 0.4 |
 | `https://appyamatch.fr/suppression-compte/` | 2026-05-13 | monthly | 0.4 |
 | `https://appyamatch.fr/contact/` | 2026-05-13 | monthly | 0.5 |
