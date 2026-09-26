@@ -45,7 +45,7 @@
         <header class="legal-page-header">
             <p class="legal-page-eyebrow">Données personnelles</p>
             <h1 class="legal-page-title">Politique de confidentialité</h1>
-            <p class="legal-page-updated">Dernière mise à jour : 4 septembre 2026</p>
+            <p class="legal-page-updated">Dernière mise à jour : 26 septembre 2026</p>
         </header>
 
         <div class="legal-page-body">
@@ -85,7 +85,9 @@
 
                 <h3 class="legal-page-subsection-title">2.3 Données collectées uniquement avec votre consentement explicite</h3>
                 <ul>
-                    <li><strong>Position géographique de votre appareil</strong> : utilisée pour vous afficher les Tournois proches de vous. Votre position <strong>précise n'est jamais transmise</strong> — le calcul des distances s'effectue localement sur votre appareil. Seule une position <strong>approximative (arrondie à environ 1 km)</strong> est transmise aux serveurs de Yamatch (hébergés dans l'Union européenne) afin de filtrer les Tournois situés dans votre zone. Cette <strong>zone de recherche approximative</strong> (position arrondie à environ 1 km et rayon de recherche) est <strong>liée à votre compte et conservée sur les serveurs de Yamatch</strong> — y compris lorsqu'elle résulte de l'utilisation de la recherche géolocalisée — afin de vous proposer des <strong>notifications de Tournois à proximité</strong>&nbsp;; elle n'est pas partagée avec des tiers et vous pouvez la modifier à tout moment via la zone de recherche de l'application. Lorsque vous recherchez manuellement une adresse, son libellé et ses coordonnées exactes restent uniquement sur votre appareil et ne sont jamais enregistrés sur les serveurs de Yamatch. Vous pouvez révoquer ce consentement à tout moment depuis les réglages de votre appareil (iOS : Réglages › Confidentialité › Service de localisation › Yamatch ; Android : Paramètres › Applications › Yamatch › Autorisations › Position).</li>
+                    <li><strong>Position géographique de votre appareil</strong> : avec l'autorisation de localisation déjà accordée dans iOS ou Android, Yamatch actualise votre position lorsque vous ouvrez l'application ou y revenez au premier plan, pour afficher les Tournois proches. Aucun suivi GPS en arrière-plan n'est effectué. Votre position GPS précise n'est jamais transmise : le calcul et l'affichage précis des distances restent sur l'appareil ; seules des coordonnées arrondies à deux décimales (environ 1 km) servent aux requêtes de proximité. Vous pouvez révoquer l'accès GPS dans les réglages du téléphone.</li>
+                    <li><strong>Dernière ville recherchée manuellement</strong> : pour éviter de vous la redemander, Yamatch conserve sur l'appareil la sélection et le rayon, séparément pour chaque compte. Les coordonnées exactes et le libellé complet de la sélection manuelle restent uniquement sur l’appareil. Si vous êtes connecté, une préférence privée de découverte peut aussi conserver des coordonnées approximatives, le rayon et le nom de la ville choisie. Ce nom provient uniquement de la ville de la suggestion d'adresse sélectionnée ; aucune adresse complète ni son contexte ne sont enregistrés dans cette préférence serveur. Aucun nom n'est déduit d'une position GPS par géocodage inverse. Cette mémoire permet de retrouver votre recherche si le GPS est refusé ou indisponible. La déconnexion retire la zone affichée mais conserve la mémoire locale du compte pour une prochaine connexion ; la suppression du compte purge cette mémoire.</li>
+                    <li><strong>Alertes de proximité</strong> : si vous êtes connecté et ne les avez pas désactivées, un centre approximatif et un rayon peuvent être conservés séparément afin de vous signaler un nouveau Tournoi proche. Cette préférence de ciblage ne contient pas de nom de ville ni d'adresse. Désactiver « Alertes de proximité » depuis le Profil retire le centre conservé pour ces alertes ; cela ne supprime pas votre dernière recherche, sa mémoire locale ou sa préférence de découverte et ne modifie pas l'autorisation GPS du téléphone.</li>
                     <li><strong>Notifications push</strong> : permission demandée lors de l'inscription, modifiable à tout moment dans les réglages de votre appareil. Le jeton de notification est enregistré sur les serveurs de Yamatch pour vous adresser des notifications liées à votre usage de l'application, et transite par le service Firebase Cloud Messaging de Google (sous-traitant) pour son acheminement&nbsp;; il n'est pas utilisé à des fins publicitaires.</li>
                 </ul>
 
@@ -116,7 +118,8 @@
                         <tr><td>Mise en relation entre Participants et Organisateurs</td><td>Exécution du contrat (art. 6.1.b RGPD)</td></tr>
                         <tr><td>Traitement des Inscriptions et paiements</td><td>Exécution du contrat (art. 6.1.b RGPD)</td></tr>
                         <tr><td>Vérification d'identité des Organisateurs (KYC)</td><td>Obligation légale et intérêt légitime de Yamatch (art. 6.1.c et 6.1.f RGPD)</td></tr>
-                        <tr><td>Affichage des Tournois proches via la localisation et conservation de la zone de recherche approximative (position arrondie à environ 1 km, rayon) pour proposer des notifications de Tournois à proximité</td><td>Consentement (art. 6.1.a RGPD)</td></tr>
+                        <tr><td>Affichage des Tournois proches et restauration de la dernière ville recherchée (mémoire de découverte : centre approximatif, rayon et ville facultative)</td><td>Consentement (art. 6.1.a RGPD)</td></tr>
+                        <tr><td>Alertes de proximité (centre approximatif de ciblage distinct, retiré à la désactivation des alertes)</td><td>Consentement (art. 6.1.a RGPD)</td></tr>
                         <tr><td>Envoi de notifications push</td><td>Consentement (art. 6.1.a RGPD)</td></tr>
                         <tr><td>Sécurité de la Plateforme, prévention de la fraude</td><td>Intérêt légitime de Yamatch (art. 6.1.f RGPD)</td></tr>
                         <tr><td>Modération des Tournois (restriction de participation d'un joueur par un Organisateur, avec motif)</td><td>Intérêt légitime de Yamatch et des Organisateurs à assurer le bon déroulement et la sécurité des Tournois (art. 6.1.f RGPD)</td></tr>
@@ -181,7 +184,9 @@
                     <tbody>
                         <tr><td>Compte utilisateur actif</td><td>Tant que le compte est actif</td></tr>
                         <tr><td>Compte utilisateur supprimé</td><td>Anonymisation immédiate, sauf obligations légales ci-après</td></tr>
-                        <tr><td>Zone de recherche approximative liée au compte</td><td>Jusqu'à son remplacement ou à la suppression du compte</td></tr>
+                        <tr><td>Centre approximatif de ciblage de proximité</td><td>Jusqu'au retrait du consentement depuis le Profil, à la suppression du compte ou au remplacement par une nouvelle zone</td></tr>
+                        <tr><td>Dernière recherche manuelle sur l'appareil (sélection et rayon, par compte)</td><td>Jusqu'au remplacement/effacement de la sélection ou à la suppression du compte ; conservée après déconnexion</td></tr>
+                        <tr><td>Mémoire privée de découverte sur le serveur (centre approximatif, rayon, nom de ville facultatif)</td><td>Jusqu'au remplacement par une nouvelle sélection enregistrée ou à la suppression du compte ; indépendante du retrait des alertes de proximité</td></tr>
                         <tr><td>Données comptables et de facturation (Inscriptions, commissions)</td><td>Dix (10) ans à compter de l'exercice comptable (art. L. 123-22 Code de commerce)</td></tr>
                         <tr><td>Données KYC organisateur</td><td>Cinq (5) ans après cessation de la relation contractuelle (obligations LCB-FT applicables)</td></tr>
                         <tr><td>Logs de connexion et de sécurité</td><td>Un (1) an (recommandations CNIL)</td></tr>
