@@ -2,20 +2,21 @@
   "name": "yamatch-website",
   "version": "0.1.0",
   "private": true,
-  "description": "Yamatch marketing one-pager — vanilla HTML/CSS/JS with a verified production build.",
+  "description": "Yamatch marketing one-pager \u2014 vanilla HTML/CSS/JS with a verified production build.",
   "scripts": {
     "generate:assetlinks": "node scripts/generate-assetlinks.mjs",
     "validate:deep-links": "node scripts/validate-deep-links.mjs",
     "smoke:deep-links": "node scripts/smoke-deployed-associations.mjs",
     "build:css": "lightningcss --minify --bundle --targets '>= 0.5%' website/styles.css -o website/styles.min.css",
-    "build": "npm run generate:assetlinks && npm run build:css && npm run validate:deep-links",
+    "build": "npm run validate:tournament && npm run generate:assetlinks && npm run build:css && npm run validate:deep-links",
     "test": "node --test test/*.test.mjs",
     "predev": "npm run build:css",
     "prestart": "npm run build:css",
     "prepreview": "npm run build:css",
     "dev": "npx --yes live-server@1.2.2 website --port=8000 --no-browser --ignore=fonts/OFL.txt",
     "start": "npx --yes live-server@1.2.2 website --port=8000 --ignore=fonts/OFL.txt",
-    "preview": "npx --yes live-server@1.2.2 website --port=8000"
+    "preview": "npx --yes live-server@1.2.2 website --port=8000",
+    "validate:tournament": "node scripts/validate-tournament-config.mjs"
   },
   "devDependencies": {
     "lightningcss-cli": "^1.32.0"

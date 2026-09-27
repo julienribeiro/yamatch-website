@@ -169,6 +169,10 @@
                 transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        .tournament-ctas [hidden] { display: none; }
+
+        button.tournament-cta-secondary { border: 0; cursor: pointer; }
+
         .tournament-cta-primary {
             background-color: var(--color-accent);
             color: var(--color-text-primary);
@@ -253,8 +257,11 @@
         </div>
 
         <div class="tournament-ctas">
-            <a id="openInApp" class="tournament-cta-primary" href="#" aria-disabled="true">Rejoindre le tournoi</a>
+            <a id="openInApp" class="tournament-cta-primary" href="#" aria-disabled="true" tabindex="-1">Ouvrir dans Yamatch</a>
+            <button id="retryTournament" class="tournament-cta-secondary" type="button" hidden>Réessayer</button>
+            <a class="tournament-cta-secondary" href="/download/">Télécharger Yamatch</a>
         </div>
+        <p class="download-body">Après installation, rouvre le lien reçu pour retrouver ce tournoi.</p>
     </section>
 
     <p class="tournament-footer">
@@ -269,11 +276,10 @@
     // La détection UA vit dans joinTournament() ; le desktop (aucun match) retombe
     // sur /download/, qui affiche les deux boutons store.
     (function () {
-        // Supabase staging — anon publishable key. Same key is shipped in
-        // the Flutter app for the same project (uqxjxkxcbsjcscrrlwae). RLS
-        // restricts SELECT on `tournaments` to published rows for anon.
-        var SUPABASE_URL = 'https://uqxjxkxcbsjcscrrlwae.supabase.co';
-        var SUPABASE_ANON_KEY = 'sb_publishable_QaQlQg5nQTLCl_tzQE5wtA_WJfhsj47';
+        // Public production configuration. RLS protects unpublished tournaments.
+        var SUPABASE_URL = 'https://kxwmjjgtnrhcpgopevzb.supabase.co';
+        var SUPABASE_ANON_KEY = 'sb_publishable_Y-UOHfc7Z5wVnKhTTlb7iA_umRJArOf';
+        var FETCH_TIMEOUT_MS = 10000;
 
         // Extrait l'ID du tournoi depuis la query string (?id=<id>, posé par
         // le bounce 404.html) ou depuis le path (cas d'un hit direct sur
@@ -308,10 +314,18 @@
         var priceWrapEl = document.getElementById('tournamentPriceWrap');
         var priceEl = document.getElementById('tournamentPrice');
         var openInAppLink = document.getElementById('openInApp');
+        var retryButton = document.getElementById('retryTournament');
+        var loading = false;
+        var activeTargetId = null;
+        openInAppLink.addEventListener('click', function (evt) {
+            evt.preventDefault();
+            if (activeTargetId) joinTournament(activeTargetId);
+        });
 
         // Disable the CTA (visual grey + a11y signal + no-op handler). Used
         // for every non-success state (no ID, fetch error, not found).
         function disableCta() {
+            activeTargetId = null;
             openInAppLink.setAttribute('href', '#');
             openInAppLink.setAttribute('aria-disabled', 'true');
             openInAppLink.setAttribute('role', 'link');
@@ -322,6 +336,7 @@
         }
 
         function enableCta(targetId) {
+            activeTargetId = targetId;
             var appUrl = 'com.appyamatch.yamatch://tournament/' + encodeURIComponent(targetId);
             openInAppLink.setAttribute('href', appUrl);
             openInAppLink.setAttribute('target', '_self');
@@ -330,10 +345,6 @@
             openInAppLink.style.opacity = '';
             openInAppLink.style.pointerEvents = '';
             openInAppLink.style.cursor = '';
-            openInAppLink.addEventListener('click', function (evt) {
-                evt.preventDefault();
-                joinTournament(targetId);
-            });
         }
 
         // Render helpers — always go through textContent for fetched data
@@ -389,13 +400,16 @@
 
         // GET /rest/v1/tournaments?id=eq.<id>&select=... — returns the
         // first row or null. Throws on network / HTTP error so the caller
-        // can render the "introuvable" state.
+        // can render a retryable technical error, distinct from an empty result.
         function fetchTournament(targetId) {
             var url = SUPABASE_URL
                 + '/rest/v1/tournaments'
                 + '?id=eq.' + encodeURIComponent(targetId)
                 + '&select=title,players_per_team,gender,location,price_per_team,status';
+            var controller = new AbortController();
+            var timeout = window.setTimeout(function () { controller.abort(); }, FETCH_TIMEOUT_MS);
             return fetch(url, {
+                signal: controller.signal,
                 method: 'GET',
                 headers: {
                     'apikey': SUPABASE_ANON_KEY,
@@ -408,9 +422,10 @@
                 }
                 return res.json();
             }).then(function (rows) {
-                if (!Array.isArray(rows) || rows.length === 0) return null;
+                if (!Array.isArray(rows)) throw new Error('Invalid response');
+                if (rows.length === 0) return null;
                 return rows[0];
-            });
+            }).finally(function () { window.clearTimeout(timeout); });
         }
 
         // ---------- Render states ----------
@@ -509,17 +524,26 @@
             return;
         }
 
-        // Loading state is already in the DOM (skeleton bars in
-        // #tournamentTitle + #tournamentBody, CTA aria-disabled).
-        fetchTournament(id).then(function (tournament) {
-            if (!tournament) {
-                renderNotFound();
-            } else {
-                renderSuccess(tournament, id);
-            }
-        }).catch(function (_err) {
-            renderNotFound();
-        });
+        function loadTournament() {
+            if (loading) return;
+            loading = true;
+            retryButton.hidden = true;
+            disableCta();
+            showCancelledNote(false);
+            setPricePill(null);
+            setTitleText('Chargement du tournoi…');
+            setBodyText('Un instant, nous récupérons les informations.');
+            fetchTournament(id).then(function (tournament) {
+                if (!tournament) renderNotFound();
+                else renderSuccess(tournament, id);
+            }).catch(function () {
+                setTitleText('Chargement impossible');
+                setBodyText('Les informations sont temporairement indisponibles. Vérifie ta connexion et réessaie.');
+                retryButton.hidden = false;
+            }).finally(function () { loading = false; });
+        }
+        retryButton.addEventListener('click', loadTournament);
+        loadTournament();
     })();
 </script>
 
