@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-09-04.
+Last sync: 2026-09-27 (public tournament share fallback).
 
 ---
 
@@ -30,7 +30,7 @@ Cibles de longueur des balises SEO clés :
 
 ## Tech stack
 
-Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production build minifies CSS, generates Android Digital Asset Links from a configured fingerprint, then validates both native association contracts. Four main source files:
+Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production build validates the public tournament PROD configuration, generates Android Digital Asset Links from a configured fingerprint, minifies CSS, then validates both native association contracts. Four main source files:
 
 | File | Role | Approx. lines |
 |------|------|---------------|
@@ -59,7 +59,7 @@ All HTML files reference **`styles.min.css`** (the generated output), not `style
 | Pre-hooks | `predev`, `prestart`, `prepreview` all run `build:css` automatically before `live-server` starts |
 | CI | `.github/workflows/deploy.yml` leaves PR verification at `contents: read`; only the deploy job receives `pages: write` and `id-token: write`. It passes the repository variable `PLAY_APP_SIGNING_SHA256`, then runs `npm run build` before the custom tar + `upload-artifact` step |
 
-`npm run build` is fail-closed: it generates `website/.well-known/assetlinks.json`, minifies CSS, then validates the exact AASA contract (one applinks detail, seven routes and webcredentials), the Android association state and the seven fallback routes. In pending mode (empty allowlist and absent variable), Android must be exactly `[]`, so no certificate is trusted. In active mode, Android must contain one exact statement (`handle_all_urls`, package and independently verified fingerprint). `assetlinks.json` is generated and gitignored; no static placeholder may be committed or deployed. A non-empty allowlist without its matching variable, an unallowlisted fingerprint or the explicitly rejected upload-key fingerprint stops the build.
+`npm run build` is fail-closed: it first runs `validate:tournament` (`scripts/validate-tournament-config.mjs`), which requires the exact PROD URL and publishable key in the tournament page (rejecting a changed URL or key independently), then generates `website/.well-known/assetlinks.json`, minifies CSS, then validates the exact AASA contract (one applinks detail, seven routes and webcredentials), the Android association state and the seven fallback routes. In pending mode (empty allowlist and absent variable), Android must be exactly `[]`, so no certificate is trusted. In active mode, Android must contain one exact statement (`handle_all_urls`, package and independently verified fingerprint). `assetlinks.json` is generated and gitignored; no static placeholder may be committed or deployed. A non-empty allowlist without its matching variable, an unallowlisted fingerprint or the explicitly rejected upload-key fingerprint stops the build.
 
 Pull requests run `npm ci`, `npm test`, build the current production association state with the optional repository variable, then build the future active state with `NODE_ENV=test`, the allowlist under `test/fixtures/`, and an output under the runner temporary directory. The generator rejects a fixture override outside test mode and rejects a test fixture targeting the production output. After Pages deployment, `npm run smoke:deep-links` retries the two canonical `/.well-known/` endpoints and verifies the exact AASA plus either the empty pending Android state or the active Android contract against the deployed fingerprint.
 
@@ -301,6 +301,16 @@ Seven standalone pages under `website/`, each a bridge for a specific in-app act
 The OAuth bridge `/auth/callback/` follows the same fallback logic but forwards the original query string and fragment directly to `com.appyamatch.yamatch://auth-callback`; it never renders or logs their values. This preserves the authentication callback if the HTTPS Universal Link was not intercepted.
 
 This mirrors the `/download/` page's own UA-detection logic — same regexes, same two store URLs — so the download and bridge pages agree on which platform gets which link.
+
+**Public tournament page (`tournament/index.html`, updated 2026-09-27):**
+
+- The page reads `?id=` (or the direct path) and fetches `title,players_per_team,gender,location,price_per_team,status` from **PROD** `https://kxwmjjgtnrhcpgopevzb.supabase.co/rest/v1/tournaments`, using the public publishable key matching the Flutter PROD configuration. No session or privileged key is required; existing RLS governs visibility.
+- Loading disables the app action. A successful non-cancelled tournament shows the name, format/gender/location and existing price pill, and enables **Ouvrir dans Yamatch**. A cancelled tournament retains its details and cancellation note with the app action disabled. Existing zero-price hiding and price rounding remain unchanged.
+- An empty response alone renders **Tournoi introuvable**. Invalid links are rejected before fetching. HTTP/network errors, a non-array response or an aborted request render **Chargement impossible** with **Réessayer**, rather than claiming that the tournament was removed.
+- `FETCH_TIMEOUT_MS = 10000` aborts the request via `AbortController`; its timer is cleared on settlement. A loading guard prevents concurrent retries. The app click handler is registered once, and only acts with an enabled target ID.
+- **Télécharger Yamatch** always links to `/download/`, independently of the fetch and app action. The page explains: « Après installation, rouvre le lien reçu pour retrouver ce tournoi. » The custom scheme and 1.5-second store fallback remain unchanged. There is no deferred deep linking or automatic return after installation.
+- `test/tournament-page.test.mjs` exercises the PROD configuration guard, success rendering, app/store navigation, actual absence versus technical failures, timeout/retry and duplicate taps, direct paths, cancellation, zero price and invalid links. Browser/device installation flows still require physical testing.
+
 
 ---
 
