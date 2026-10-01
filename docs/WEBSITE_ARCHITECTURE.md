@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-09-27 (public tournament share fallback).
+Last sync: 2026-10-01 (commission copy prepared for coordinated rollout).
 
 ---
 
@@ -25,6 +25,14 @@ Cibles de longueur des balises SEO clés :
 | `<title>` | 50–65 chars | mesurée en commentaire HTML |
 | `<meta name="description">` | 150–160 chars | mesurée en commentaire HTML |
 | `og:description` / `twitter:description` | 145–160 chars | mesurée en commentaire HTML |
+
+---
+
+## Conditions financières — préparation du 1er octobre 2026
+
+La FAQ visible et son miroir JSON-LD (`website/index.html`), ainsi que l’article 6.1 des CGU (`website/cgu/index.html`), présentent une commission **ajoutée** au prix de base : 8 % par défaut pour les inscriptions, goodies et restauration. Un taux personnalisé par tournoi prévaut sur celui de l’organisateur ; l’absence de taux personnalisé laisse le défaut s’appliquer. Le taux et le total sont affichés avant paiement, et les paiements déjà commencés conservent leur taux enregistré. L’exemple 10 € → 10,80 € préserve les 10 € de base organisateur.
+
+Cette copie est préparée dans la PR brouillon #32 et doit être publiée avec la mise en service coordonnée des commissions dans l’app, le backend et l’admin. Elle ne constitue pas une preuve d’activation : aucun déploiement ni publication n’a été effectué pendant cette modification. La politique de confidentialité goodies déjà revue reste inchangée par ce complément. Aucun changement de structure HTML, de CSS ou de JavaScript.
 
 ---
 
