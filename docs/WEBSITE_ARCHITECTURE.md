@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-09-27 (public tournament share fallback).
+Last sync: 2026-10-12 (phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -25,6 +25,14 @@ Cibles de longueur des balises SEO clés :
 | `<title>` | 50–65 chars | mesurée en commentaire HTML |
 | `<meta name="description">` | 150–160 chars | mesurée en commentaire HTML |
 | `og:description` / `twitter:description` | 145–160 chars | mesurée en commentaire HTML |
+
+---
+
+## Conditions financières — préparation du 1er octobre 2026
+
+La FAQ visible et son miroir JSON-LD (`website/index.html`), ainsi que l’article 6.1 des CGU (`website/cgu/index.html`), présentent une commission **ajoutée** au prix de base : 8 % par défaut pour les inscriptions, goodies et restauration. Un taux personnalisé par tournoi prévaut sur celui de l’organisateur ; l’absence de taux personnalisé laisse le défaut s’appliquer. Le taux et le total sont affichés avant paiement, et les paiements déjà commencés conservent leur taux enregistré. L’exemple 10 € → 10,80 € préserve les 10 € de base organisateur.
+
+Cette copie est préparée dans la PR brouillon #32 et doit être publiée avec la mise en service coordonnée des commissions dans l’app, le backend et l’admin. Elle ne constitue pas une preuve d’activation : aucun déploiement ni publication n’a été effectué pendant cette modification. La politique de confidentialité goodies déjà revue reste inchangée par ce complément. Aucun changement de structure HTML, de CSS ou de JavaScript.
 
 ---
 
@@ -1029,3 +1037,28 @@ Cette distinction est portée par `PERSONA_CONTENT` dans `script.js` — ne pas 
 ## Contact de participation — 12 octobre 2026
 
 La politique décrit le téléphone privé lié au compte : +33 vérifié via Twilio Verify, international déclaré, accès organisateur aux participants confirmés/roster jusqu’à J+30 inclus Europe/Paris. Cette borne limite l’accès, pas la conservation dans le compte. La page distingue les purges techniques Yamatch des durées fournisseur non attestées. Aucun changement CSS, JavaScript, permissions ou métadonnées console n’est implicite.
+
+### 12 October — combined privacy/commercial preparation
+
+The PR #32 candidate incorporates the published PR #33 phone policy without
+removing its Twilio, verification, organizer-access J+30 or notice paragraphs.
+Order data and phone data are combined in the Supabase recipient description.
+The public privacy date remains 12 October. Independent comparison of the phone
+paragraphs against main and 15 website tests PASS. This is preparation, not proof
+of publication or activation.
+
+The subsequent founder-approved CGU draft removes the universal fixed 15-day
+promise prospectively. Article 3 retains applicable legal notice/consent rules
+(explicitly including EU Regulation 2019/1150), prior notification and protection
+of rights/notice periods under previously accepted terms. It does not claim a
+small-platform exemption or retroactively erase obligations. Privacy article 10
+still retains its separate 15-day clause. Article 6.1 and both visible/JSON-LD FAQ
+state 8% by default, including possible reduced or zero partner rates, while
+preserving already consented payment prices. Preparing this PR is not legal
+certification or evidence that notices have been sent.
+
+Review references: [DGCCRF marketplace obligations](https://www.economie.gouv.fr/dgccrf/les-fiches-pratiques/pratiques-restrictives-de-concurrence-les-obligations-juridiques-specifiques-imposees-aux-places-de-marche-en-ligne)
+and [Regulation (EU) 2019/1150, articles 1–3](https://eur-lex.europa.eu/eli/reg/2019/1150/oj?locale=fr).
+Whether each organizer falls within the business-user scope must not be inferred
+from platform size alone. Publication and applicability timing remain separate
+from the technical build.
