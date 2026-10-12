@@ -1045,5 +1045,20 @@ removing its Twilio, verification, organizer-access J+30 or notice paragraphs.
 Order data and phone data are combined in the Supabase recipient description.
 The public privacy date remains 12 October. Independent comparison of the phone
 paragraphs against main and 15 website tests PASS. This is preparation, not proof
-of publication or activation. CGU article 3 and privacy article 10 retain their
-15-day notice clauses; commercial activation timing is coordinated separately.
+of publication or activation.
+
+The subsequent founder-approved CGU draft removes the universal fixed 15-day
+promise prospectively. Article 3 retains applicable legal notice/consent rules
+(explicitly including EU Regulation 2019/1150), prior notification and protection
+of rights/notice periods under previously accepted terms. It does not claim a
+small-platform exemption or retroactively erase obligations. Privacy article 10
+still retains its separate 15-day clause. Article 6.1 and both visible/JSON-LD FAQ
+state 8% by default, including possible reduced or zero partner rates, while
+preserving already consented payment prices. Preparing this PR is not legal
+certification or evidence that notices have been sent.
+
+Review references: [DGCCRF marketplace obligations](https://www.economie.gouv.fr/dgccrf/les-fiches-pratiques/pratiques-restrictives-de-concurrence-les-obligations-juridiques-specifiques-imposees-aux-places-de-marche-en-ligne)
+and [Regulation (EU) 2019/1150, articles 1–3](https://eur-lex.europa.eu/eli/reg/2019/1150/oj?locale=fr).
+Whether each organizer falls within the business-user scope must not be inferred
+from platform size alone. Publication and applicability timing remain separate
+from the technical build.
