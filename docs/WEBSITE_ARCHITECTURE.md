@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-10-01 (commission copy prepared for coordinated rollout).
+Last sync: 2026-10-12 (phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -1033,3 +1033,17 @@ Cette distinction est portée par `PERSONA_CONTENT` dans `script.js` — ne pas 
 
 - **Apostrophes typographiques** (U+2019 `'`) obligatoires dans toute la copy user-facing — jamais l'apostrophe droite ASCII (`'`).
 - **Espace insécable** (U+00A0) avant `%` et entre un nombre et son unité (`24 h`, `4,5 %`).
+
+## Contact de participation — 12 octobre 2026
+
+La politique décrit le téléphone privé lié au compte : +33 vérifié via Twilio Verify, international déclaré, accès organisateur aux participants confirmés/roster jusqu’à J+30 inclus Europe/Paris. Cette borne limite l’accès, pas la conservation dans le compte. La page distingue les purges techniques Yamatch des durées fournisseur non attestées. Aucun changement CSS, JavaScript, permissions ou métadonnées console n’est implicite.
+
+### 12 October — combined privacy/commercial preparation
+
+The PR #32 candidate incorporates the published PR #33 phone policy without
+removing its Twilio, verification, organizer-access J+30 or notice paragraphs.
+Order data and phone data are combined in the Supabase recipient description.
+The public privacy date remains 12 October. Independent comparison of the phone
+paragraphs against main and 15 website tests PASS. This is preparation, not proof
+of publication or activation. CGU article 3 and privacy article 10 retain their
+15-day notice clauses; commercial activation timing is coordinated separately.

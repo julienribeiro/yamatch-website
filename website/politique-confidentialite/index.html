@@ -45,7 +45,7 @@
         <header class="legal-page-header">
             <p class="legal-page-eyebrow">Données personnelles</p>
             <h1 class="legal-page-title">Politique de confidentialité</h1>
-            <p class="legal-page-updated">Dernière mise à jour : 1er octobre 2026</p>
+            <p class="legal-page-updated">Dernière mise à jour : 12 octobre 2026</p>
         </header>
 
         <div class="legal-page-body">
@@ -72,6 +72,8 @@
                 <h3 class="legal-page-subsection-title">2.1 Données fournies directement par vous</h3>
                 <ul>
                     <li><strong>Informations de compte</strong> : adresse électronique, pseudo, prénom, nom, date de naissance&nbsp;;</li>
+                    <li><strong>Téléphone de contact de participation</strong> : numéro renseigné, pays, état et date de vérification. Lorsque ce parcours est activé, un numéro français (+33) est vérifié par code SMS via Twilio Verify avant une nouvelle inscription ; un numéro international peut être déclaré sans être présenté comme vérifié. Le numéro reste distinct des données de connexion au compte&nbsp;;</li>
+                    <li><strong>Vérification du téléphone</strong> : identifiant technique de demande, empreinte protégée du code, dates d’envoi et d’expiration, compteurs d’envois et d’essais et état de vérification. Le code brut est transmis au prestataire pour l’envoi du SMS, mais n’est pas conservé dans les tables Yamatch&nbsp;;</li>
                     <li><strong>Composition d'équipe</strong> : prénom, nom et numéro de téléphone des coéquipiers que vous invitez (lesquels sont également des Utilisateurs Yamatch)&nbsp;;</li>
                     <li><strong>Pour les Organisateurs uniquement</strong> : photo de pièce d'identité (vérification KYC), numéro SIRET ou RNA (le cas échéant), coordonnées bancaires (IBAN)&nbsp;; ainsi que, lorsqu'un Organisateur restreint la participation d'un joueur à ses Tournois, le <strong>motif de cette restriction</strong> (donnée de modération saisie par l'Organisateur&nbsp;; ce motif n'est <strong>jamais affiché au joueur concerné</strong> et sert uniquement au suivi de la modération par la structure organisatrice)&nbsp;;</li>
                     <li><strong>Données de communication</strong> : contenu des messages que vous nous adressez par email ou via les formulaires de support.</li>
@@ -132,6 +134,7 @@
 
             <section class="legal-page-section">
                 <h2 class="legal-page-section-title">Article 4 — Destinataires des données</h2>
+                <p>Le téléphone de participation est accessible aux seuls organisateurs autorisés des tournois auxquels vous participez de façon confirmée. Les organisateurs peuvent également consulter les contacts des membres concernés des équipes inscrites. Cet accès organisateur est ouvert jusqu’à la fin du trentième jour suivant la date du tournoi, heure de Paris (J+30 inclus), puis cesse à J+31 à 00:00. Il n’est pas étendu aux seules demandes en attente, aux inscriptions remboursées ou aux achats d’articles sans participation.</p>
                 <p>Vos données personnelles sont accessibles aux membres habilités de l'équipe Yamatch dans le cadre de leurs missions.</p>
                 <p>Yamatch transmet certaines données à des sous-traitants strictement nécessaires au fonctionnement du service, dans le cadre de contrats de sous-traitance conformes à l'article 28 du RGPD :</p>
                 <table class="legal-page-table">
@@ -147,8 +150,14 @@
                         <tr>
                             <td><strong>Supabase Inc.</strong></td>
                             <td>Hébergement de la base de données utilisateur et infrastructure backend</td>
-                            <td>Compte, zone de recherche approximative liée au compte, équipes, tournois, inscriptions, commandes et suivi des paiements, remboursements et remises, IBAN organisateur</td>
+                            <td>Compte, téléphone de participation et demandes de vérification, zone de recherche approximative liée au compte, équipes, tournois, inscriptions, commandes et suivi des paiements, remboursements et remises, IBAN organisateur</td>
                             <td>États-Unis (clauses contractuelles types UE-US)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Twilio (Verify)</strong></td>
+                            <td>Envoi et vérification des SMS de contact de participation</td>
+                            <td>Numéro destinataire, code temporaire, identifiant technique de demande et état de vérification</td>
+                            <td>Traitement selon les conditions de protection des données de Twilio ; aucune résidence exclusivement européenne n’est garantie par Yamatch</td>
                         </tr>
                         <tr>
                             <td><strong>Stripe Inc.</strong></td>
@@ -185,6 +194,9 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr><td>Téléphone de contact et état de vérification</td><td>Jusqu’à son remplacement ou à la suppression effective du compte. La fin de l’accès organisateur à J+31 ne supprime pas le numéro du compte.</td></tr>
+                        <tr><td>Demandes de vérification SMS dans Yamatch</td><td>Code valable 10 minutes. Nettoyage quotidien des demandes expirées depuis plus de 24 heures et des limites d’envoi ou d’essai inactives depuis plus de 48 heures.</td></tr>
+                        <tr><td>Retours techniques de vérification SMS dans Yamatch</td><td>Nettoyage quotidien des tâches terminées depuis plus de 30 jours. Les durées appliquées par Twilio relèvent de ses conditions de traitement et ne sont pas assimilées à ces délais locaux.</td></tr>
                         <tr><td>Compte utilisateur actif</td><td>Tant que le compte est actif</td></tr>
                         <tr><td>Compte utilisateur supprimé</td><td>Anonymisation immédiate, sauf obligations légales ci-après</td></tr>
                         <tr><td>Centre approximatif de ciblage de proximité</td><td>Jusqu'au retrait du consentement depuis le Profil, à la suppression du compte ou au remplacement par une nouvelle zone</td></tr>
