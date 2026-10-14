@@ -416,60 +416,51 @@
          éditorial type Stripe / Linear : 3 numéraux 01/02/03, tags majuscules,
          séparateurs en filets verticaux (gérés en CSS). Pas de scroll-driven, pas
          de gamification.
-         Contrat partagé avec css-expert / js-expert :
-           - section[data-persona] : JS écrit "participant" | "organisateur" ici au switch.
-           - 2 tabs WAI-ARIA (.quest-persona-tab) : conservés strictement.
-           - 3 .quest-step en flux (.quest-steps) : .quest-step-tag-label /
-             .quest-step-title / .quest-step-body sont remplis par JS au load et au
-             switch persona. Les 3 articles restent visibles en permanence — le
-             `aria-live="polite"` sur .quest-steps annonce les changements de texte
-             quand on switch de persona. === -->
-    <section class="how-quest" id="how-it-works" data-persona="participant" aria-labelledby="howQuestTitle">
+         Les 3 étapes participant sont présentes dans le HTML ; le lien organisateur
+         ouvre directement la page dédiée. === -->
+    <section class="how-quest" id="how-it-works" aria-labelledby="howQuestTitle">
         <div class="how-quest-inner">
             <div class="how-quest-header">
                 <span class="how-quest-eyebrow">Parcours</span>
                 <h2 id="howQuestTitle" class="how-quest-title">Comment ça marche</h2>
-                <div class="quest-persona-tabs-wrap">
-                    <div class="quest-persona-tabs" role="tablist" aria-label="Choix du parcours">
-                        <button type="button" class="quest-persona-tab is-active" role="tab" data-persona="participant" aria-selected="true" tabindex="0">Participant</button>
-                        <button type="button" class="quest-persona-tab" role="tab" data-persona="organisateur" aria-selected="false" tabindex="-1">Organisateur</button>
-                    </div>
-                </div>
+                <p class="quest-organiser-link">
+                    <a href="organisateur/">T’es organisateur&nbsp;? C’est par ici <span aria-hidden="true">→</span></a>
+                </p>
             </div>
             <div class="quest-steps" aria-live="polite">
                 <article class="quest-step">
                     <span class="quest-step-numeral" aria-hidden="true">01</span>
                     <span class="quest-step-tag">
                         <span class="quest-step-tag-dot" aria-hidden="true"></span>
-                        <span class="quest-step-tag-label"></span>
+                        <span class="quest-step-tag-label">Recherche</span>
                     </span>
                     <h3 class="quest-step-title">Trouve un tournoi</h3>
-                    <p class="quest-step-body"></p>
+                    <p class="quest-step-body">On t’affiche les tournois les plus proches de ta position — ou autour de l’adresse de ton choix. Tu n’as plus qu’à choisir celui qui t’intéresse.</p>
                 </article>
                 <article class="quest-step">
                     <span class="quest-step-numeral" aria-hidden="true">02</span>
                     <span class="quest-step-tag">
                         <span class="quest-step-tag-dot" aria-hidden="true"></span>
-                        <span class="quest-step-tag-label"></span>
+                        <span class="quest-step-tag-label">Inscription</span>
                     </span>
                     <h3 class="quest-step-title">Inscris ton équipe</h3>
-                    <p class="quest-step-body"></p>
+                    <p class="quest-step-body">Réserve ta place en quelques secondes, puis associe une équipe existante ou crée ta dream team directement dans l’app.</p>
                 </article>
                 <article class="quest-step">
                     <span class="quest-step-numeral" aria-hidden="true">03</span>
                     <span class="quest-step-tag">
                         <span class="quest-step-tag-dot" aria-hidden="true"></span>
-                        <span class="quest-step-tag-label"></span>
+                        <span class="quest-step-tag-label">Le jour J</span>
                     </span>
                     <h3 class="quest-step-title">Place au jeu</h3>
-                    <p class="quest-step-body"></p>
+                    <p class="quest-step-body">Pointage à l’arrivée, matchs, arbitrage, classement, tableau final : tout se passe dans l’app. Tu n’as plus qu’à enfiler tes baskets.</p>
                 </article>
             </div>
         </div>
 
         <!-- Cartes décoratives flottantes (purement visuelles, aria-hidden). Positionnées
              en absolute au-dessus du contenu de la section via CSS, pointer-events: none
-             pour laisser passer les clics sur la pill bar et les colonnes. -->
+             pour laisser passer les clics sur le lien organisateur et les colonnes. -->
         <div class="floating-card-parallax" data-card-id="3" data-parallax-speed="0.08" aria-hidden="true">
             <div class="floating-card-inner">
                 <article class="floating-card floating-card--team">
@@ -727,6 +718,7 @@
             </a>
         </div>
         <ul class="footer-list" aria-label="Liens utiles">
+            <li><a href="organisateur/">Organisateur</a></li>
             <li><a href="mentions-legales/">Mentions légales</a></li>
             <li><a href="cgu/">CGU</a></li>
             <li><a href="politique-annulation-remboursement/">Politique d'annulation et de remboursement</a></li>

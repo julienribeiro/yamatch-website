@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-10-12 (phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
+Last sync: 2026-10-14 (organiser hero and homepage links; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -38,18 +38,18 @@ Cette copie est préparée dans la PR brouillon #32 et doit être publiée avec 
 
 ## Tech stack
 
-Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production build validates the public tournament PROD configuration, generates Android Digital Asset Links from a configured fingerprint, minifies CSS, then validates both native association contracts. Four main source files:
+Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production build validates the public tournament PROD configuration, generates Android Digital Asset Links from a configured fingerprint, minifies CSS, then validates both native association contracts. Four homepage source files (the organiser route has its own local CSS and JS, documented below):
 
 | File | Role | Approx. lines |
 |------|------|---------------|
 | `website/index.html` | Single page — hero + carousel + FAQ + footer | ~762 |
 | `website/styles.css` | All styles. Design tokens in `:root`. Heavy use of `clamp()`. **Source of truth — never minify by hand.** | ~4734 |
 | `website/carousel.js` | Standalone IIFE: complete carousel gesture state machine (wheel + touch + rubber-band). Loaded via `<script src="carousel.js" defer>` **before** `script.js`. | ~419 |
-| `website/script.js` | Standalone IIFE: copyright year, toast scaffolding (`window.yamatchToast`, exposed but currently zero in-repo callers since both hero CTAs became real links — see Hero below), wordmark scroll-aware behaviour, wave-SVG animation, page-scroll-progress block, how-quest persona editorial, QR widget rendering, floating-card parallax spring-chain, and more. | ~2103 |
+| `website/script.js` | Standalone IIFE: copyright year, toast scaffolding (`window.yamatchToast`, exposed but currently zero in-repo callers since both hero CTAs became real links — see Hero below), wordmark scroll-aware behaviour, wave-SVG animation, page-scroll-progress block, QR widget rendering, floating-card parallax spring-chain, and more. | ~2103 |
 
 `carousel.js` is loaded first in HTML (`<script src="carousel.js" defer>` then `<script src="script.js" defer>`). Sequential `defer` tags guarantee execution order while keeping both scripts non-blocking.
 
-All HTML files reference **`styles.min.css`** (the generated output), not `styles.css`.
+HTML pages reference **`styles.min.css`** (the generated shared output), not `styles.css`. `/organisateur/` additionally loads its local `hero-organisateur.css` after the shared stylesheet.
 
 `website/vendor/qrcode.min.js` (20,768 bytes) is a vendored third-party library — **not** one of the four source files above and not authored in-repo. It ships `qrcode-generator@1.4.4` (Kazuhiko Arase, MIT license), byte-identical to the former jsdelivr CDN build. Loaded via `<script src="vendor/qrcode.min.js" defer>` in `index.html`, **before** `script.js`, which calls the global `window.qrcode` factory to render the homepage QR widget. See SEO → Third-party scripts below for the CDN → self-host migration history.
 
@@ -71,7 +71,7 @@ All HTML files reference **`styles.min.css`** (the generated output), not `style
 
 Pull requests run `npm ci`, `npm test`, build the current production association state with the optional repository variable, then build the future active state with `NODE_ENV=test`, the allowlist under `test/fixtures/`, and an output under the runner temporary directory. The generator rejects a fixture override outside test mode and rejects a test fixture targeting the production output. After Pages deployment, `npm run smoke:deep-links` retries the two canonical `/.well-known/` endpoints and verifies the exact AASA plus either the empty pending Android state or the active Android contract against the deployed fingerprint.
 
-**Rule:** always edit `website/styles.css`. The minified file is a build artifact — do not edit it and do not commit it.
+**Rule:** edit `website/styles.css` for shared styling. The minified file is a build artifact — do not edit it and do not commit it. The organiser hero is isolated in `website/organisateur/hero-organisateur.css`, served directly after the shared output; this local stylesheet is not part of `build:css`.
 
 ---
 
@@ -121,7 +121,7 @@ No `<link rel="preconnect" href="https://fonts.googleapis.com">` or `fonts.gstat
 
 ### Robots / indexing
 
-- `<meta name="robots" content="index, follow">` **and** `<meta name="googlebot" content="index, follow">` are present on all 8 indexable pages (home + 7 utility sub-pages: mentions-legales, cgu, contact, download, politique-confidentialite, politique-annulation-remboursement, suppression-compte).
+- `<meta name="robots" content="index, follow">` **and** `<meta name="googlebot" content="index, follow">` are present on the home, organiser page and utility sub-pages (mentions-legales, cgu, contact, download, politique-confidentialite, politique-annulation-remboursement, suppression-compte).
 - `website/404.html` retains `<meta name="robots" content="noindex">` and does **not** carry a googlebot tag.
 
 ### Deep-link anchors
@@ -133,11 +133,12 @@ No `<link rel="preconnect" href="https://fonts.googleapis.com">` or `fonts.gstat
 
 ### Sitemap
 
-`website/sitemap.xml` lists 7 URLs. `/download/` remains excluded (UA redirect, not indexable).
+`website/sitemap.xml` lists 8 URLs. `/download/` remains excluded (UA redirect, not indexable).
 
 | URL | `<lastmod>` | `<changefreq>` | `<priority>` |
 |-----|-------------|----------------|--------------|
 | `https://appyamatch.fr/` | 2026-09-20 | weekly | 1.0 |
+| `https://appyamatch.fr/organisateur/` | 2026-10-14 | monthly | 0.8 |
 | `https://appyamatch.fr/mentions-legales/` | 2026-05-13 | monthly | 0.4 |
 | `https://appyamatch.fr/cgu/` | 2026-09-20 | monthly | 0.4 |
 | `https://appyamatch.fr/politique-annulation-remboursement/` | 2026-09-20 | monthly | 0.4 |
@@ -247,7 +248,7 @@ Sections under `<main id="top">`, in order:
 
 1. **`.hero`** — lime card with title, subtitle, App Store + Google Play buttons (both live links since 2026-07-27); wordmark above
 2. **`.screens-rail`** — horizontal carousel with 5 phone screenshots
-3. **`section.how-quest#how-it-works`** — 3-step PARCOURS section with persona tabs; deep-link anchor `id="how-it-works"`
+3. **`section.how-quest#how-it-works`** — static 3-step participant PARCOURS section with a direct organiser link; deep-link anchor `id="how-it-works"`
 4. **`section.faq#faq`** — accordion of 12 questions; deep-link anchor `id="faq"`
 5. **`<footer>`** — outside `<main>`, light-gray background (matches `.faq`), dark text, content centered
 
@@ -322,33 +323,59 @@ This mirrors the `/download/` page's own UA-detection logic — same regexes, sa
 
 ---
 
+### Organiser page (`website/organisateur/`) — hero variant B
+
+Implemented 2026-10-14 at **`https://appyamatch.fr/organisateur/`**. Scope is the handoff's hero only, with the shared footer; the prototype's statistics, four-screen journey, comparison, tickets and FAQ are not implemented. No prototype-only FAQ structured data is published.
+
+| File | Responsibility |
+|---|---|
+| `organisateur/index.html` | French hero, launch ticker, wordmark linking home, two store CTAs, three static phone images, shared footer and route-specific SEO |
+| `organisateur/hero-organisateur.css` | Local `org-` rules, `:root` tokens and keyframes; loaded after `../styles.min.css` |
+| `organisateur/hero-organisateur.js` | Standalone deferred IIFE: wordmark, phone lift, pointer parallax, magnetic CTAs and footer year |
+| `organisateur/assets/phone-{main-tournoi-test,left-poules,right-matchs}.webp` | Three handoff illustrations, converted to 600 × 1240 WebP, about 125 KB combined |
+
+The route does not load homepage `script.js`, `carousel.js` or QR vendor code. It shares the site's self-hosted fonts, hero typography, buttons, ticker, footer and `cardEntrance` keyframes. The phone illustrations are static, non-draggable images with French alt text; they do not contain interactive app screens. They are handoff recreations, not simulator captures.
+
+**Layout and tokens.** `.org-hero-card` has `z-index: 1`, a black background (`--org-color-card`), clipped overflow and `--org-radius-card: clamp(24px, 3vw, 40px)`. Local colors (`--org-color-*`), shadows (`--org-shadow-*`) and radii are declared only in `:root`; lime, white, black and typography reuse shared tokens. Decorative layers are a masked 72 px grid, lime/teal halos and a bottom fade. Content uses a centred column and a 20–32 px fluid gap. The central phone is `z-index: 2`; phones render at 300 × 620 px in a 380 px cropped container. Side phones sit at ±260 px, 60 px lower, rotated ±9°. At ≤760 px, offsets become ±150 px, side scale .78, centre scale .86 and container height 300 px. At ≤767 px, `.org-page .org-hero` preserves the separate shared inline and block mobile-margin tokens; the card's minimum height uses the block token.
+
+**Motion.** Card entrance remains 540 ms with a 120 ms delay. Words use `orgWordIn` (980 ms, `cubic-bezier(.16,1,.3,1)`) with delays 120/190/260/330/420/490/560 ms. `orgRise` takes 1200 ms with the same curve, moving from 72 px/scale .965/blur 6 px; eyebrow/subtitle/buttons/centre/left/right delays are 40/620/760/860/980/1100 ms. Halos loop over 16/19 seconds; the eyebrow dot breathes over 1.8 seconds. Entrance transforms belong to inner phone wrappers; outer wrappers use individual `translate`, `rotate` and `scale`, preventing scroll/pointer motion from overriding entrance animation.
+
+**Scroll and pointer safety.** `MAX_LIFT = 48`, `SCROLL_FACTOR = 0.12`, `SAFE_GAP = 28`. Lift is capped by the measured layout gap between buttons and phone container minus 28 px (12 px clearance plus pointer-motion and button-scale allowance), and never below zero. The central phone rises by the lift, sides by 60%. Measurement uses layout offsets, excluding animated transforms; resize, `ResizeObserver`, font readiness and `pageshow` remeasure. A passive scroll listener batches renders through one pending animation frame. The wordmark condenses after 40 px of scroll.
+
+Pointer parallax and magnetic buttons require `(hover: hover) and (pointer: fine)` and no reduced-motion preference. Card coordinates clamp `--mx`/`--my` to ±1: centre displacement is ±10/6 px, sides ±22/12 px, with a 700 ms translate transition. Button offsets use .22/.28 multipliers, capped at ±16/8 px, and scale 1.03 with 380 ms transitions. Pointer leave and media-query changes reset offsets. Reduced motion disables animations/transitions throughout `.org-page` and resets lift/parallax/magnets to zero. Content remains visible without JavaScript.
+
+**Navigation and SEO.** App Store and Google Play destinations match the homepage's live store URLs. Canonical, Open Graph and Twitter metadata use the production `.fr` domain; the route is indexable and appears in the sitemap. Homepage access is the editorial “T’es organisateur ? C’est par ici →” link below the parcours heading, plus “Organisateur” in the footer. The former participant/organiser selector has been replaced by this direct link. This hero intentionally keeps the handoff's informal “Ton tournoi…” voice.
+
 ### How-quest (`section.how-quest#how-it-works`)
 
 ```
-section.how-quest#how-it-works (aria-labelledby="howQuestTitle", data-persona="participant")
+section.how-quest#how-it-works (aria-labelledby="howQuestTitle")
 ├── .how-quest-eyebrow ("PARCOURS")
 ├── h2#howQuestTitle.how-quest-title
-├── .quest-persona-tabs
-│   ├── button.quest-tab (Participant)
-│   └── button.quest-tab (Organisateur)
+├── p.quest-organiser-link
+│   └── a[href="organisateur/"] ("T’es organisateur ? C’est par ici →")
 └── .quest-steps
     ├── .quest-step [index 0]
-    │   ├── h3.quest-step-title  ("Trouve un tournoi")       ← STATIC HTML (Participant default)
-    │   ├── .quest-step-tag-label                             ← JS-driven (persona switch)
-    │   └── p.quest-step-body                                 ← JS-driven (persona switch)
+    │   ├── h3.quest-step-title ("Trouve un tournoi")
+    │   ├── .quest-step-tag-label ("Recherche")
+    │   └── p.quest-step-body
     ├── .quest-step [index 1]
-    │   ├── h3.quest-step-title  ("Inscris ton équipe")      ← STATIC HTML (Participant default)
-    │   ├── .quest-step-tag-label                             ← JS-driven (persona switch)
-    │   └── p.quest-step-body                                 ← JS-driven (persona switch)
+    │   ├── h3.quest-step-title ("Inscris ton équipe")
+    │   ├── .quest-step-tag-label ("Inscription")
+    │   └── p.quest-step-body
     └── .quest-step [index 2]
-        ├── h3.quest-step-title  ("Place au jeu")             ← STATIC HTML (Participant default)
-        ├── .quest-step-tag-label                             ← JS-driven (persona switch)
-        └── p.quest-step-body                                 ← JS-driven (persona switch)
+        ├── h3.quest-step-title ("Place au jeu")
+        ├── .quest-step-tag-label ("Le jour J")
+        └── p.quest-step-body
 ```
+
+**Organiser route link:** `.quest-organiser-link a` navigates directly to `organisateur/`. CSS §10.3 presents it as a lime sticker with dark text, a 1 px border, 3 px hard shadow, bold type and −1° rotation. The decorative arrow remains hidden from assistive technology and sits in a dark 30 × 30 px tile with lime text. Both use the `:root` token `--radius-organiser-link: 4px`; colors and typography reuse shared tokens. The inline-flex link wraps text on narrow screens, has `max-width: 100%`, `min-height: 44px` and 10/12/10/16 px padding. The heading's bottom margin remains `clamp(16px, 2vw, 24px)`.
+
+Fine-pointer hover straightens the sticker, lifts it 2 px, expands the shadow to 4/5 px and moves the arrow 2 px right. Pressing shifts the link 2 px right/down with a 1 px shadow; keyboard focus straightens it and adds a 2 px outline with 6 px offset. Rotation, translation and shadow use shared `--transition` (200 ms, `cubic-bezier(.4,0,.2,1)`). Reduced motion explicitly resets rotation and translation for the link, its interaction states and arrow; the global reduced-motion rule also shortens transition durations. This styling adds no JavaScript or explicit z-index.
 
 **Heading hierarchy:** `<h1>` (hero) → `<h2>` (`how-quest-title`, `faq-title`) → `<h3>` (quest-step-titles).
 
-**`<h3>` titles — static default + JS swap:** the three `.quest-step-title` values ("Trouve un tournoi", "Inscris ton équipe", "Place au jeu") are hard-coded in HTML as the Participant default — ensuring Google receives non-empty `<h3>` on initial parse. `renderPersona()` in `script.js` writes `tag-label`, **`title`**, and `body` on every persona switch (`script.js:786–791`). On the first render (Participant), the title write is idempotent (textContent identical to the HTML default). On toggle to Organisateur, titles swap to `PERSONA_CONTENT.organisateur.steps[].title`: `"Créez votre tournoi"` / `"Automatisez les inscriptions"` / `"Gérez le jour J"` (`script.js:759–761`). SEO is preserved: crawlers always parse the Participant titles from static HTML.
+**Static participant content:** all three tags, titles and body paragraphs are authored directly in `index.html`, so the full journey is available before JavaScript and to crawlers. The previous persona buttons, panel state, sliding indicator and JavaScript content-switching controller have been removed. No script writes this section's text or handles selection/keyboard navigation for it.
 
 ---
 
@@ -624,7 +651,7 @@ The four repeated inline `clamp(20px, 5vw, 40px)` literals in `.hero-card`'s mob
 `.screens-rail` `padding-inline` on mobile is now `var(--mobile-hero-card-margin)` (previously `var(--page-pad)`), and `--nbr-slide` is `1` (previously `1.08`/`1.1`). Each slide is exactly as wide as the lime hero card (viewport − 2×`--mobile-hero-card-margin`). Neighbouring slides peek into the padding area, providing natural swipe affordance without fractional-slide hacks.
 
 ### Carousel extracted to dedicated file (2026-05-10)
-The ~245-line carousel state machine was moved from `script.js` to a new standalone file `carousel.js`. Pure extraction — no behavior change. `index.html` loads `<script src="carousel.js" defer>` before `<script src="script.js" defer>`; sequential `defer` tags maintain execution order while keeping both scripts non-blocking. `script.js` now contains only non-carousel concerns: copyright year, toast scaffolding, wordmark scroll-awareness, wave-SVG animation, page-scroll-progress (and, added since, how-quest persona editorial, QR widget, floating-card parallax). The pending-CTA delegation block mentioned here at the time of extraction was removed 2026-07-27 — see Hero section above.
+The ~245-line carousel state machine was moved from `script.js` to a new standalone file `carousel.js`. Pure extraction — no behavior change. `index.html` loads `<script src="carousel.js" defer>` before `<script src="script.js" defer>`; sequential `defer` tags maintain execution order while keeping both scripts non-blocking. `script.js` now contains only non-carousel concerns: copyright year, toast scaffolding, wordmark scroll-awareness, wave-SVG animation, page-scroll-progress (and, added since, QR widget, floating-card parallax). The pending-CTA delegation block mentioned here at the time of extraction was removed 2026-07-27 — see Hero section above.
 
 ### Hard cooldown (HARD_COOLDOWN_MS) → gesture-lock model (2026-05-10)
 The fixed 680ms hard cooldown (`HARD_COOLDOWN_MS = 680`, `lastFireTime`) was replaced with a silence-based gesture-lock model. After a snap or rubber-band, `lockGesture()` sets `gestureLocked = true` and `scheduleGestureUnlock()` begins polling: it releases the lock only after `GESTURE_RELEASE_SILENCE_MS = 30ms` of continuous wheel silence (verified via `lastWheelAt`). This is strictly responsive to the user's trackpad rhythm rather than a fixed timer — a fast intentional second gesture unlocks immediately once inertia dissipates, while a slow scroll scroll that produces residual wheel events stays locked until it truly stops. Constants removed: `HARD_COOLDOWN_MS`, `lastFireTime`. Constants added: `GESTURE_LOCK_MIN_MS = 0`, `GESTURE_RELEASE_SILENCE_MS = 30`. State added: `gestureLocked` (bool), `gestureUnlockTimer` (timeout id), `lastWheelAt` (float). Helpers added: `lockGesture()`, `unlockGesture()`, `scheduleGestureUnlock()`.
@@ -1016,7 +1043,7 @@ curl https://appyamatch.fr/.well-known/assetlinks.json
 - No third-party scripts — the site is 100% same-origin (qrcode-generator vendored at `website/vendor/qrcode.min.js`, migrated off the jsdelivr CDN 2026-07-05 — see SEO → Third-party scripts). Any CDN script reintroduced without explicit user approval must carry a `sha384` SRI hash + `crossorigin="anonymous"`.
 - All `<img>` carry meaningful French alt text (or empty alt for decorative).
 - `draggable="false"` on phone images; `aria-hidden="true"` + `focusable="false"` on decorative SVG.
-- One CSS source (`styles.css`) → one minified output (`styles.min.css`, gitignored). HTML always points to `styles.min.css`. Two JS files: `carousel.js` (state machine) + `script.js` (all other JS). No XHTML mirror.
+- Shared CSS source (`styles.css`) → generated `styles.min.css` (gitignored). Homepage JS: `carousel.js` (state machine) + `script.js` (other homepage behaviour). The organiser route additionally loads its own unminified `hero-organisateur.css` and standalone `hero-organisateur.js`; it does not load homepage JS. No XHTML mirror.
 - No Google Fonts `<link>` or `preconnect` tags. All fonts are self-hosted under `website/fonts/`.
 
 ### Copy — registre de voix
@@ -1024,10 +1051,10 @@ curl https://appyamatch.fr/.well-known/assetlinks.json
 | Destinataire | Registre | Exemples |
 |---|---|---|
 | Participant (joueur) | `tu` | "Trouve un tournoi", "Inscris ton équipe", "Place au jeu" |
-| Organisateur | `vous` (vouvoiement) | "Créez votre tournoi", "Automatisez les inscriptions", "Gérez le jour J" |
+| Organisateur (lien home et page dédiée) | `tu` | "T’es organisateur ?", "Ton tournoi de volley…" |
 | FAQ | mixte selon la réponse | `tu` si la réponse s'adresse à un joueur, `vous` si à un organisateur |
 
-Cette distinction est portée par `PERSONA_CONTENT` dans `script.js` — ne pas mélanger les registres au sein d'un même step ou d'une même réponse FAQ.
+La page `/organisateur/` conserve le tutoiement du handoff approuvé (« Ton tournoi de volley… »). Le parcours participant de la home est désormais statique dans `index.html`. Ne pas mélanger les registres au sein d’un même step ou d’une même réponse FAQ.
 
 ### Typographie — règles d'apostrophe et d'espacement
 

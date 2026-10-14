@@ -29,8 +29,8 @@
        9.7 .screen-card__phone / __caption / __caption-primary / __caption-secondary
    10. How-it-works quest (editorial 3-column static)
        10.1 .how-quest section + .how-quest-inner container
-       10.2 .how-quest-header (eyebrow + title + persona pill-bar)
-       10.3 .quest-persona-tabs (glass-morphism segmented pill-bar + sliding indicator)
+       10.2 .how-quest-header (eyebrow + title + organiser link)
+       10.3 .quest-organiser-link (direct editorial link)
        10.4 .quest-steps (3-column static grid + vertical separator filets)
        10.5 .quest-step + numeral / tag / title / body
    10.5 .floating-card-parallax (decorative scattered cards — distributed
@@ -137,7 +137,7 @@
        after a Lighthouse audit flagged 4 contrast violations on the home page
        (.how-quest-eyebrow, .quest-step-tag-label, .faq-eyebrow). Same cool-
        neutral hue family as before — only the lightness changes — so every
-       call site (13 selectors: .how-quest-eyebrow, .quest-persona-tabs button,
+       call site (13 selectors: .how-quest-eyebrow, .quest-organiser-link a,
        .quest-step-tag, .floating-card__notif-{sep,time}, .floating-card__team-
        eyebrow, .floating-card__team-caption, .faq-eyebrow, .qr-widget-caption,
        .download-eyebrow, .legal-page-{eyebrow,updated,nav-title}) keeps its
@@ -166,6 +166,7 @@
     --radius-card: 24px;
     --radius-input: 16px;
     --radius-pill: 100px;
+    --radius-organiser-link: 4px;
 
     --shadow-light: 0 10px 15px rgba(0, 0, 0, 0.10), 0 4px 6px rgba(0, 0, 0, 0.10);
     --shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.4);
@@ -1384,11 +1385,9 @@ p {
    Sectioned UX block inserted between the carousel (.screens-rail) and the
    FAQ. Three editorial step columns rendered statically as a Stripe /
    Linear-style "feature triplet": one numeral + tag + title + body per
-   column, separated by thin vertical filets. A persona pill-bar above the
-   triplet swaps the columns' content (Participant / Organisateur) via JS
-   — html-expert built the markup; js-expert handles the persona swap and
-   the sliding pill-bar indicator. This block is purely the visual
-   scaffolding.
+   column, separated by thin vertical filets. A direct organiser link above
+   the triplet leads to /organisateur/. The participant steps are static HTML;
+   this block supplies only the visual scaffolding.
 
    Refactor 2026-05-12: the previous "gamified" treatment is RETIRED.
    Removed in full: the sticky panel scaffold (`.how-quest-sticky`), the
@@ -1401,8 +1400,7 @@ p {
    (`.quest-completion-pill`), and the radial gradient ambient lighting.
    The defensive z-index stacking (.how-quest { z-index: 0 } +
    .faq { z-index: 1 }) is also removed — no sticky panel left to defend
-   against. JS owns the persona swap and the lime indicator on the tabs;
-   nothing scroll-driven remains in this section.
+   against. Nothing scroll-driven remains in the editorial content.
 
    Layout strategy:
    - The section is sized by its CONTENT (no min-height). Generous
@@ -1423,8 +1421,7 @@ p {
      the FAQ slot color; the visual break between sections is the type +
      padding rhythm rather than a background flip.
    - Accent: var(--color-accent) (lime) — kept exclusively on the eyebrow
-     dot (with halo) and on the active persona-tab indicator + per-step
-     `.quest-step-tag-dot`. No halo on the step-tag dot (the eyebrow
+     per-step `.quest-step-tag-dot`. No halo on the step-tag dot (the eyebrow
      already owns that affordance; repeating it three times under would
      dilute the accent).
    - Typography: Roboto 700 for the numeral + title; Inter 500 (uppercase,
@@ -1439,14 +1436,8 @@ p {
    the middle (the previous light-gray slot was carried by the retired
    gamified treatment).
 
-   Contract with JS: `.how-quest[data-persona]` is written by script.js on
-   persona swap (initial "participant", toggled to "organisateur" on tab
-   click). The attribute is currently only used by CSS for documentation /
-   future per-persona styling variants; the actual visual swap is owned by
-   JS overwriting the .quest-step-tag-label / .quest-step-title /
-   .quest-step-body textContent. Leaving the selector hook here so future
-   per-persona tweaks (e.g. accent shift, illustration) require no markup
-   changes. */
+   Participant content is static HTML; the organiser link navigates directly
+   to its dedicated page without a JavaScript state change. */
 .how-quest {
     position: relative;
     background-color: var(--color-light-bg);
@@ -1476,9 +1467,9 @@ p {
     margin-inline: auto;
 }
 
-/* --- 10.2 .how-quest-header (eyebrow + title + persona pill-bar) --------- */
+/* --- 10.2 .how-quest-header (eyebrow + title + organiser link) --------- */
 /* Centered column above the 3-col triplet. The internal vertical rhythm
-   (eyebrow → title → tabs) is controlled by per-item `margin-bottom`
+   (eyebrow → title → organiser link) is controlled by per-item `margin-bottom`
    declarations (mirrors the FAQ pattern where `.faq-eyebrow` and
    `.faq-title` each carry their own margin-bottom). The flex container
    stays in column mode purely for `align-items: center` — `gap` is
@@ -1524,7 +1515,7 @@ p {
        -0.02em to -0.025em for a slightly more sport-bold display feel
        at the title scale. Weight stays 700 (NOT 800) per the
        feedback_website_aesthetic memory: "weight 600–700 (NOT 900)".
-       `margin-bottom` controls the title→tabs spacing (see header rule
+       `margin-bottom` controls the title→link spacing (see header rule
        above for why we use per-item margins instead of a flex `gap`). */
     font-family: var(--font-heading);
     font-weight: 700;
@@ -1533,164 +1524,76 @@ p {
     letter-spacing: -0.025em;
     color: var(--color-text-primary);
     text-align: center;
-    /* 2026-05-12 (iteration 3) — bumped again from clamp(20px, 2.5vh, 32px).
-       The previous conservative bump (16→20 floor, 2→2.5vh mid, 28→32 ceiling)
-       was judged insufficient by the user; the title→pill-bar gap still read
-       as cramped. This iteration is a more marked move: floor 20→36, mid
-       2.5vh→4.5vh, ceiling 32→56, giving the H2 visibly more authority and
-       a clearer breath before the segmented control. Still no visible gap
-       (the title and tabs remain a single visual unit). */
-    margin: 0 0 clamp(36px, 4.5vh, 56px);
+    /* A text link needs less separation than the former segmented control. */
+    margin: 0 0 clamp(16px, 2vw, 24px);
 }
 
-/* --- 10.3 .quest-persona-tabs (segmented pill-bar) ----------------------- */
-/* Glass-morphism segmented control — translucent white pad with a soft drop
-   shadow, and a SLIDING lime indicator behind the active tab. The indicator
-   is a single ::before pseudo on the bar (NOT one per tab) so transitions
-   are continuous as the active tab swaps. JS writes two custom properties
-   on .quest-persona-tabs (--indicator-w, --indicator-x) on init / tab change
-   / resize; CSS interpolates them at 320ms ease-in-out-cubic. Active tab
-   text inverts to dark on lime (vs the previous light-on-dark). */
-.quest-persona-tabs-wrap {
-    display: flex;
-    justify-content: center;
-    width: 100%;
+/* --- 10.3 .quest-organiser-link (direct editorial link) ---------------- */
+.quest-organiser-link {
+    margin: 0;
+    max-width: 100%;
+    font-family: var(--font-body);
+    font-size: clamp(0.875rem, 1.1vw, 1rem);
+    line-height: 1.5;
+    color: var(--color-text-primary);
 }
 
-.quest-persona-tabs {
-    /* CRITICAL: the ::before indicator is positioned absolutely against this
-       container. Without `position: relative`, the pseudo would escape to
-       the nearest positioned ancestor (the sticky panel). */
-    position: relative;
+.quest-organiser-link a {
+    /* A small tilted sticker, with a separate arrow tile: one direct link.
+       The text may wrap naturally on narrow screens or with enlarged fonts. */
     display: inline-flex;
     align-items: center;
-    gap: 4px;
-    /* Outer "pad" — translucent white over the section's white bg, lifted by
-       a subtle premium shadow. Backdrop-filter is purely defensive against
-       any future translucent backgrounds behind the bar; on the current
-       white parent it's a no-op visually but costs nothing on idle.
-       PREMIUM UPGRADE 2026-05-11: shadow stack restructured into a 3-layer
-       stack — inset top highlight (premium "glassy edge"), tight mid-distance
-       shadow (depth), wider ambient shadow (groundedness). The overall feel
-       is closer to Apple's segmented control treatment without being heavy. */
-    padding: 4px;
-    /* Soft translucent surface (NOT pure white) so the bar reads as a
-       discreet floating chip on the gray section rather than a hard
-       white pad. 82 % alpha + the existing backdrop-filter (blur +
-       saturate) reproduces the macOS / iOS segmented control treatment.
-       Backdrop-filter is no-op on a pure white parent but kicks in over
-       the section's lime/dark radial washes — gives a subtle vibrant
-       refraction at the upper halo boundary. */
-    background-color: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    /* Slightly softer hairline border (matches the new card border
-       alpha 0.07) so the bar is unified with the cards below. */
-    border: 1px solid rgba(16, 24, 40, 0.07);
-    border-radius: var(--radius-pill);
-    /* PREMIUM UPGRADE 2026-05-11 (iteration 2): tightened the shadow
-       stack and shifted the ambient layer to a slightly cooler tone to
-       match the section's gray surface — less "heavy chip", more
-       "refined floating control". */
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.85),
-        0 1px 2px rgba(16, 24, 40, 0.04),
-        0 6px 20px rgba(16, 24, 40, 0.06);
+    gap: 12px;
+    max-width: 100%;
+    min-height: 44px;
+    padding: 10px 12px 10px 16px;
+    background: var(--color-accent);
+    color: var(--color-text-primary);
+    border: 1px solid var(--color-text-primary);
+    border-radius: var(--radius-organiser-link);
+    box-shadow: 3px 3px 0 var(--color-text-primary);
+    font-weight: 700;
+    text-align: left;
+    text-decoration: none;
+    rotate: -1deg;
+    transition: rotate var(--transition), translate var(--transition), box-shadow var(--transition);
 }
 
-/* Sliding lime indicator. Geometry is driven by JS via two custom
-   properties:
-     --indicator-w : width in px of the active tab (read from getBoundingClientRect)
-     --indicator-x : translate-x in px from the bar's content-box left edge
-   Defaults to 0/0 so the indicator is invisible before JS measures (avoids
-   a flash of full-bar lime). The 4px top/inset accounts for the bar's own
-   padding so the indicator sits flush around the active tab. */
-.quest-persona-tabs::before {
-    content: '';
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    height: calc(100% - 8px);
-    width: var(--indicator-w, 0px);
-    transform: translateX(var(--indicator-x, 0px));
-    /* PREMIUM UPGRADE 2026-05-11: subtle vertical gradient on the lime
-       indicator (lighter at top, brand-lime at bottom) + tight inset
-       highlight + soft drop-shadow halo. The halo uses the lime token
-       at low alpha so the active state reads as an "energised" pill
-       rather than a flat colour fill. */
-    background: linear-gradient(180deg, #E8FF4D 0%, var(--color-accent) 100%);
-    border-radius: var(--radius-pill);
-    /* PREMIUM UPGRADE 2026-05-11 (iteration 2): trimmed the lime halo
-       from 8 px @ 28 % alpha to 4 px @ 18 % alpha — keeps the active
-       indicator feeling "lit" without the previous bordering-on-glow
-       intensity (anti-pattern listed in the brief). The inner highlight
-       + bottom inset darkening still give the pill a refined 3D feel. */
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.5),
-        inset 0 -1px 0 rgba(16, 24, 40, 0.07),
-        0 2px 4px rgba(215, 255, 0, 0.18);
-    transition:
-        transform 320ms cubic-bezier(0.65, 0, 0.35, 1),
-        width 320ms cubic-bezier(0.65, 0, 0.35, 1);
-    z-index: 0;
-    pointer-events: none;
-}
-
-.quest-persona-tab {
-    /* Sit ABOVE the sliding indicator so the text reads on top of the
-       lime fill (z-index 1 > pseudo's z-index 0). */
-    position: relative;
-    z-index: 1;
-
-    /* Reset native button chrome. */
-    appearance: none;
-    -webkit-appearance: none;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-
-    font-family: var(--font-body);
-    font-size: clamp(0.875rem, 1.05vw, 0.9375rem);
-    font-weight: 500;
+.quest-organiser-link a > span {
+    display: inline-grid;
+    place-items: center;
+    flex: none;
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radius-organiser-link);
+    background: var(--color-text-primary);
+    color: var(--color-accent);
+    font-size: 22px;
     line-height: 1;
-    color: var(--color-medium-gray);
-
-    padding: 10px 18px;
-    border-radius: var(--radius-pill);
-
-    /* Animate ONLY color + font-weight on the tab itself — the bg is owned
-       by the sliding ::before indicator now, so no background transition is
-       needed here. Keeping the transition on color preserves the muted →
-       primary fade for hover and the inactive → active text colour swap. */
-    transition:
-        color 220ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: translate var(--transition);
 }
 
-/* Hover affordance on pointer-fine devices only — desktop hover should not
-   leak onto touch where it sticks after tap. Skips both touch (coarse) and
-   the active tab (no need to dim its own text). */
+.quest-organiser-link a:focus-visible {
+    outline: 2px solid var(--color-text-primary);
+    outline-offset: 6px;
+    rotate: 0deg;
+}
+
 @media (hover: hover) and (pointer: fine) {
-    .quest-persona-tab:not(.is-active):hover {
-        color: var(--color-text-primary);
+    .quest-organiser-link a:hover {
+        rotate: 0deg;
+        translate: 0 -2px;
+        box-shadow: 4px 5px 0 var(--color-text-primary);
+    }
+
+    .quest-organiser-link a:hover > span {
+        translate: 2px 0;
     }
 }
 
-.quest-persona-tab.is-active {
-    /* Inverted from the old design: the active tab is now DARK TEXT on a
-       LIME indicator (was: light text on dark fill). The indicator owns the
-       lime fill via ::before above; this rule only adjusts the typography. */
-    color: var(--color-text-primary);
-    font-weight: 600;
-}
-
-.quest-persona-tab:focus-visible {
-    /* Accent outline keeps the focus ring on-brand without colliding with
-       the lime active fill or the white bar. Matches focus rings used on
-       .btn-glass but with the accent token for visual lift in a gamified
-       context. */
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
+.quest-organiser-link a:active {
+    translate: 2px 2px;
+    box-shadow: 1px 1px 0 var(--color-text-primary);
 }
 
 /* --- 10.4 .quest-steps (editorial 3-column static grid) ------------------ */
@@ -1834,8 +1737,7 @@ p {
      vp 1134 → 17px floor   (1.5vw = 17.01 — crossover)
      vp 1333 → 20px ceiling reached (1.5vw = 19.995)
      vp 1440 → 20px ceiling
-   `line-height: 1.25` gives the title room when it wraps (some persona
-   variants run two lines in the narrower triplet columns). */
+   `line-height: 1.25` gives the title room when it wraps (titles can run two lines in the narrower triplet columns). */
 .quest-step-title {
     font-family: var(--font-heading);
     font-weight: 700;
@@ -1857,17 +1759,9 @@ p {
      vp 1454 → 16px ceiling reached (1.1vw ≈ 15.99)
      vp 1440 → 15.84px (still inside the band; ceiling at vp ≈ 1454)
 
-   `min-height: calc(1.6em * 3)` (= 4.8em, exactly 3 lines at the body's
-   own line-height) locks every body cell to a 3-line floor. Rationale:
-   the Participant vs Organisateur copy for step 3 differs in length —
-   Participant E3 = 143 chars (wraps to 3 lines on mobile / edge col on
-   desktop), Organisateur E3 = 93 chars (would wrap to only 2 lines).
-   Without this floor, the section's total height would shrink by one
-   line-height (~24px) on persona toggle, making the floating cards /
-   FAQ below "jump" up. With the floor in place: all 6 bodies (3 steps
-   × 2 personas) reserve a 3-line slot; shorter copy leaves whitespace
-   below itself inside its own cell, which is visually invisible — the
-   column box stays the same regardless of persona.
+   `min-height: calc(1.6em * 3)` reserves a balanced three-line slot for
+   the participant copy. Preserved from the previous switching layout so
+   the triplet keeps its established editorial rhythm.
    `em` (not `rem`) keeps the floor fluid with the body's own clamp:
    at 15px → 72px floor, at 16px → 76.8px floor. No magic px constant.
    This is a FLOOR only; if a body grows to 4 lines on a narrower
@@ -1894,12 +1788,12 @@ p {
    dedicated `.floating-cards` host section. They are now distributed
    DIRECTLY inside `.how-quest` (cards 1 / 3 / 5) and `.faq` (cards 2 /
    4 / 6) as decorative overlays, sitting ABOVE the host's editorial
-   content (titles, persona pills, accordion items). The cards use
+   content (titles, organiser link, accordion items). The cards use
    reinforced glassmorphism (heavy `backdrop-filter: blur(20-28px)
    saturate(180-200%)`) so the host content remains readable through
    them. `pointer-events: none` on `.floating-card-parallax` guarantees
-   clicks always reach the underlying interactive elements (persona
-   tabs, FAQ toggles) regardless of overlap.
+   clicks always reach the underlying interactive elements (organiser
+   link, FAQ toggles) regardless of overlap.
 
    Host contracts (positioning + clipping):
      - `.how-quest` (§10.1) already declared `position: relative` +
@@ -2008,8 +1902,7 @@ p {
 .floating-card-parallax {
     position: absolute;
     /* `pointer-events: none` is load-bearing: cards are decorative and
-       sit ABOVE interactive content (FAQ accordion toggles, persona pill
-       tabs, the wordmark link). Without this, the absolutely-positioned
+       sit ABOVE interactive content (FAQ accordion toggles, organiser link, the wordmark link). Without this, the absolutely-positioned
        cards would intercept clicks on the underlying triggers wherever
        they overlap. `pointer-events: none` lets clicks pass straight
        through to the elements beneath. */
@@ -2022,7 +1915,7 @@ p {
        `.toast` / `.skip-link` (z=1000), `.cursor-trail`/`.cursor-emoji`
        (z=9998/9999). 5 is intentionally a low value — leaves headroom
        for any future in-section UI element that needs to sit above the
-       cards (e.g. a future sticky persona-tabs bar). */
+       cards (e.g. a future sticky section navigation). */
     z-index: 5;
     translate: 0 var(--parallax-y, 0px);
     transform: translateZ(0);
@@ -2103,7 +1996,7 @@ p {
    is `.how-quest`; user spec: "à gauche du texte Comment ça marche, juste
    au-dessus de 01 sans que ça recouvre le texte".
    Geometry inside `.how-quest`:
-     - `.how-quest-header` (eyebrow + centered H2 + persona pills) occupies
+     - `.how-quest-header` (eyebrow + centered H2 + organiser link) occupies
        the top slab, followed by a `margin-bottom: clamp(48px, 7vh, 80px)`
        gap, then the `.quest-steps` 3-column grid (which begins with each
        column's `.quest-step-numeral`).
@@ -2113,7 +2006,7 @@ p {
        overlapped the step's title/body copy, hurting legibility. At `12%`
        the card's vertical centre sits in the eyebrow/H2 row and its
        bottom edge (~150–180px later) lands in the header-margin gap
-       (`clamp(48px, 7vh, 80px)` below the persona pills) — well above
+       (`clamp(48px, 7vh, 80px)` below the organiser link) — well above
        the `.quest-step-numeral` "01" baseline.
      - `left: 4%` parks the card on the LEFT side of the section, well
        clear of the centered H2 (whose container caps at
@@ -2249,7 +2142,7 @@ p {
 
 /* ---- Card 1 : iOS-style notification ------------------------------------ */
 /* Reinforced glassmorphism (2026-05-12): the cards now sit OVER `.how-quest`
-   editorial content (titles, persona pills, body copy) instead of an empty
+   editorial content (titles, organiser link, body copy) instead of an empty
    white canvas — the underlying text must remain readable through the card,
    so we lean harder on the frosted-glass treatment. Changes vs. the
    previous opaque-white card:
@@ -4358,20 +4251,13 @@ p {
        carried entirely by per-item `margin-bottom` on `.how-quest-eyebrow`
        and `.how-quest-title`, mirroring the FAQ pattern). Mobile inherits
        those margins from the base rules — eyebrow→title = 16px (matches
-       .faq-eyebrow exactly), title→tabs = clamp(16px, 2vh, 28px). */
+       .faq-eyebrow exactly), title→link = clamp(16px, 2vw, 24px). */
 
     .how-quest-title {
         /* Match the mobile .faq-title clamp (declared below this block)
            so both H2s read at the same scale on mobile — coherent in-page
            heading hierarchy. */
         font-size: clamp(1.25rem, 5.5vw, 2rem);
-    }
-
-    .quest-persona-tab {
-        /* Slightly tighter padding on small screens so the two-tab bar fits
-           comfortably without wrapping. Font size unchanged from desktop
-           (the desktop clamp's floor of 0.875rem already targets mobile). */
-        padding: 9px 14px;
     }
 
     /* MOBILE triplet → vertical stack. `gap` replaces the desktop
@@ -4667,6 +4553,17 @@ p {
    19. REDUCED MOTION
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
+    /* Keep the sticker and its arrow stationary, including hover/press. */
+    .quest-organiser-link a,
+    .quest-organiser-link a:hover,
+    .quest-organiser-link a:focus-visible,
+    .quest-organiser-link a:active,
+    .quest-organiser-link a > span,
+    .quest-organiser-link a:hover > span {
+        rotate: 0deg;
+        translate: 0 0;
+    }
+
     *, *::before, *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
@@ -4680,18 +4577,6 @@ p {
         --scroll: 0;
         --active-scale: 1;
     }
-
-    /* Quest section under reduced-motion:
-       The persona pill-bar's sliding indicator (320ms ease-in-out-cubic
-       on `.quest-persona-tabs::before`) is automatically collapsed to
-       ~0ms by the universal `*::before, *::after { transition-duration:
-       0.01ms !important }` rule above, so persona swaps snap instantly
-       without the smooth slide. No `.quest-step` / `.quest-completion-pill`
-       overrides remain here — the editorial 3-column layout (§10) is
-       fully static (no scroll-driven opacity/scale ramps, no reveal
-       transitions), so there is nothing to neutralise. The previous
-       rules pinning `opacity:1; scale:1` on those selectors were
-       removed 2026-05-12 along with the gamified scaffolding. */
 
     /* Cursor trail (§18) — fully hidden under reduced-motion. The comet
        fade and the constantly-moving emoji are non-essential decorations;

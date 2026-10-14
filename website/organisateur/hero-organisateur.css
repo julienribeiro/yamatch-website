@@ -1,0 +1,182 @@
+ :root {
+  --org-color-card: #0A0A0A;
+  --org-color-grid: rgba(255,255,255,.045);
+  --org-color-glow: rgba(215,255,0,.26);
+  --org-color-glow-soft: rgba(215,255,0,.08);
+  --org-color-glow-clear: rgba(215,255,0,0);
+  --org-color-teal: rgba(54,183,170,.20);
+  --org-color-teal-clear: rgba(54,183,170,0);
+  --org-color-card-clear: rgba(10,10,10,0);
+  --org-color-fade: rgba(10,10,10,.9);
+  --org-color-eyebrow: rgba(255,255,255,.7);
+  --org-color-border: rgba(0,0,0,.1);
+  --org-shadow-button: 0 6px 18px rgba(215,255,0,.18);
+  --org-shadow-button-hover: 0 14px 34px rgba(215,255,0,.35);
+  --org-shadow-phone: 0 40px 60px rgba(215,255,0,.18);
+  --org-shadow-dot: 0 0 0 0 rgba(215,255,0,.55);
+  --org-shadow-dot-out: 0 0 0 8px rgba(215,255,0,0);
+  --org-radius-card: clamp(24px, 3vw, 40px);
+  --org-radius-circle: 50%;
+}
+/* ==========================================================================
+   Hero Organisateur (variante B) — à charger APRÈS styles.css
+   Réutilise : .hero, .wordmark, .hero-title, .hero-title-slant, .hero-subtitle,
+   .hero-buttons, .btn-glass, .glass-*, .launch-ticker, @keyframes cardEntrance
+   ========================================================================== */
+
+/* ---- Carte noire ---- */
+.org-hero-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  min-height: calc(100svh - 2 * var(--page-pad));
+  background: var(--org-color-card);
+  border-radius: var(--org-radius-card);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  animation: cardEntrance 540ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms backwards;
+  --mx: 0;
+  --my: 0;
+}
+
+/* Calques décoratifs */
+.org-hero-grid {
+  position: absolute; inset: 0; pointer-events: none;
+  background-image:
+    linear-gradient(var(--org-color-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--org-color-grid) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, var(--color-text-black) 20%, transparent 80%);
+          mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, var(--color-text-black) 20%, transparent 80%);
+}
+.org-hero-glow-lime {
+  position: absolute; pointer-events: none; border-radius: var(--org-radius-circle);
+  width: 62vw; height: 62vw; max-width: 900px; max-height: 900px; left: 40%; top: 25%;
+  background: radial-gradient(circle, var(--org-color-glow) 0%, var(--org-color-glow-soft) 35%, var(--org-color-glow-clear) 62%);
+  animation: orgGlow 16s ease-in-out infinite;
+  will-change: transform;
+}
+.org-hero-glow-teal {
+  position: absolute; pointer-events: none; border-radius: var(--org-radius-circle);
+  width: 40vw; height: 40vw; max-width: 620px; max-height: 620px; left: -12%; top: -20%;
+  background: radial-gradient(circle, var(--org-color-teal) 0%, var(--org-color-teal-clear) 60%);
+  animation: orgGlow2 19s ease-in-out infinite;
+  will-change: transform;
+}
+.org-hero-fade {
+  position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, var(--org-color-card-clear) 55%, var(--org-color-fade) 100%);
+}
+
+/* ---- Contenu ---- */
+.org-hero-content {
+  position: relative; z-index: 1; width: 100%;
+  display: flex; flex-direction: column; align-items: center;
+  gap: clamp(20px, 2.5vw, 32px);
+  padding: clamp(48px, 6vw, 88px) clamp(20px, 3.2vw, 48px) 0;
+}
+.org-hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--org-color-eyebrow);
+}
+.org-hero-eyebrow__dot {
+  width: 6px; height: 6px; border-radius: var(--org-radius-circle); background: var(--color-accent); display: block;
+  animation: orgDotBreath 1.8s ease-in-out infinite;
+}
+.org-hero-title { color: var(--color-accent); animation: none; max-width: 24ch; }
+.org-hero-title .is-white { color: var(--color-text-white); }
+.org-hero-subtitle { color: var(--color-text-white); }
+
+/* Boutons lime (surcharge locale de .btn-glass) */
+.org-hero-btn {
+  background: var(--color-accent); color: var(--color-text-black);
+  border-color: var(--org-color-border);
+  box-shadow: var(--org-shadow-button);
+  transition: translate 380ms cubic-bezier(0.2, 0.8, 0.2, 1), scale 380ms, box-shadow 380ms;
+}
+
+/* ---- Éventail de 3 téléphones ---- */
+.org-hero-phones {
+  position: relative; width: 100%; height: 380px;
+  margin-top: clamp(40px, 5vw, 64px);
+  display: flex; justify-content: center; align-items: flex-start;
+  --lift: 0px;          /* piloté par JS au scroll */
+}
+.org-hero-phone {
+  width: 300px; flex: none;
+  will-change: translate;
+  transition: translate 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.org-hero-phone img { display: block; width: 300px; height: 620px; }
+.org-hero-phone--left,
+.org-hero-phone--right {
+  position: absolute; top: 60px; left: 50%;
+  transform-origin: bottom center; opacity: 0.92;
+}
+.org-hero-phone--left {
+  translate: calc(-50% - 260px + var(--mx) * -22px) calc(var(--lift) * -0.6 + var(--my) * -12px);
+  rotate: -9deg;
+}
+.org-hero-phone--right {
+  translate: calc(-50% + 260px + var(--mx) * -22px) calc(var(--lift) * -0.6 + var(--my) * -12px);
+  rotate: 9deg;
+}
+.org-hero-phone--main {
+  position: relative; z-index: 2;
+  translate: calc(var(--mx) * -10px) calc(var(--lift) * -1 + var(--my) * -6px);
+}
+.org-hero-phone--main { filter: drop-shadow(var(--org-shadow-phone)); }
+
+/* ---- Animations d'entrée ---- */
+.org-word-mask { display: inline-block; overflow: hidden; vertical-align: bottom; padding: 0.04em 0.02em 0.06em; margin: -0.04em -0.02em -0.06em; }
+.org-word { display: inline-block; animation: orgWordIn 980ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.org-rise { animation: orgRise 1200ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+@keyframes orgWordIn { from { transform: translateY(112%) rotate(4deg); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes orgRise   { from { opacity: 0; transform: translateY(72px) scale(0.965); filter: blur(6px); } to { opacity: 1; transform: none; filter: blur(0); } }
+@keyframes orgGlow   { 0% { transform: translate(-8%, -4%) scale(1); } 50% { transform: translate(10%, 8%) scale(1.18); } 100% { transform: translate(-8%, -4%) scale(1); } }
+@keyframes orgGlow2  { 0% { transform: translate(6%, 10%) scale(1.1); } 50% { transform: translate(-12%, -6%) scale(0.9); } 100% { transform: translate(6%, 10%) scale(1.1); } }
+@keyframes orgDotBreath { 0%, 100% { box-shadow: var(--org-shadow-dot); } 50% { box-shadow: var(--org-shadow-dot-out); } }
+
+/* ---- Responsive ---- */
+@media (max-width: 760px) {
+  .org-hero-phones { height: 300px; }
+  .org-hero-phone--left  { translate: calc(-50% - 150px) calc(var(--lift) * -0.6); scale: 0.78; }
+  .org-hero-phone--right { translate: calc(-50% + 150px) calc(var(--lift) * -0.6); scale: 0.78; }
+  .org-hero-phone--main  { translate: 0 calc(var(--lift) * -1); scale: 0.86; transform-origin: top center; }
+}
+
+/* ---- Accessibilité ---- */
+@media (prefers-reduced-motion: reduce) {
+  .org-word, .org-rise, .org-hero-glow-lime, .org-hero-glow-teal, .org-hero-eyebrow__dot { animation: none; }
+  .org-word, .org-rise { opacity: 1; transform: none; filter: none; }
+  .org-hero-phone { transition: none; }
+}
+
+/* Local shell keeps the homepage's independent mobile spacing axes. */
+.org-page .org-hero { padding: var(--page-pad); margin-bottom: 0; }
+.org-page .wordmark { min-height: 44px; }
+.org-page .hero-buttons { flex-wrap: wrap; }
+.org-hero-eyebrow { text-align: center; }
+.org-hero-eyebrow__dot { flex: none; }
+.org-page .org-hero-btn { min-height: 44px; animation: none; }
+.org-page .org-hero-btn:hover {
+  color: var(--color-text-black);
+  background: var(--color-accent);
+  box-shadow: var(--org-shadow-button-hover);
+  transform: none;
+}
+.org-page .org-hero-btn:focus-visible { outline-color: var(--color-accent); outline-offset: 5px; }
+.org-hero-phone { pointer-events: none; }
+.org-hero-phone img { user-select: none; }
+.org-page .launch-ticker:hover .launch-ticker__track { animation-play-state: paused; }
+@media (max-width: 767px) {
+  .org-page .org-hero { padding-block: var(--mobile-hero-card-margin-block); padding-inline: var(--mobile-hero-card-margin); }
+  .org-hero-card { min-height: calc(100svh - 2 * var(--mobile-hero-card-margin-block)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .org-page *, .org-page *::before, .org-page *::after { animation: none !important; transition: none !important; }
+}
