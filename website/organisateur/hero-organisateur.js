@@ -5,6 +5,35 @@
   const card = document.querySelector('[data-org-hero]');
   if (!card) return;
   const phones = card.querySelector('.org-hero-phones');
+  // These screenshots share a fixed status-bar position; the overlay follows
+  // their existing entrance, rotation and responsive scale as a child.
+  const phoneClocks = Array.from(card.querySelectorAll('.org-hero-phone > .org-rise'), (phone) => {
+    const clock = document.createElement('span');
+    clock.className = 'org-hero-phone-clock';
+    clock.setAttribute('aria-hidden', 'true');
+    phone.appendChild(clock);
+    return clock;
+  });
+  if (phoneClocks.length) {
+    const parisTime = new Intl.DateTimeFormat('fr-FR', {
+      timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+    });
+    const MINUTE_MS = 60000;
+    let clockTimer;
+    function updatePhoneClocks() {
+      clearTimeout(clockTimer);
+      const now = new Date();
+      const time = parisTime.format(now);
+      phoneClocks.forEach((clock) => { clock.textContent = time; });
+      if (!document.hidden) {
+        clockTimer = setTimeout(updatePhoneClocks, MINUTE_MS - now.getTime() % MINUTE_MS);
+      }
+    }
+    document.addEventListener('visibilitychange', updatePhoneClocks);
+    window.addEventListener('pageshow', updatePhoneClocks);
+    window.addEventListener('pagehide', () => clearTimeout(clockTimer));
+    updatePhoneClocks();
+  }
   const buttons = card.querySelector('.hero-buttons');
   const wordmark = document.querySelector('.wordmark');
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');

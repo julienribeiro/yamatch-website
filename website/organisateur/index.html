@@ -27,7 +27,7 @@
 <link rel="manifest" href="../site.webmanifest">
 <link rel="preload" as="font" type="font/woff2" href="../fonts/Inter-Variable.woff2" crossorigin>
 <link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="hero-organisateur.css">
+<link rel="stylesheet" href="hero-organisateur.css?v=paris-clock-1">
 
 </head>
 <body class="org-page">
@@ -101,6 +101,133 @@
       </div>
     </div>
   </section>
+
+    <section class="ym-orga-band" id="organisateurs" aria-labelledby="ym-orga-t">
+     <div class="ym-orga-wrap">
+      <div class="ym-orga-head">
+        <div>
+          <h2 id="ym-orga-t">Organiser un tournoi, <em>c’est simple comme bonjour</em></h2>
+        </div>
+        <div class="ym-orga-nav">
+          <button type="button" id="ym-orga-prev" aria-label="Fonctionnalité organisateur précédente" aria-controls="ym-orga-track"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" id="ym-orga-next" aria-label="Fonctionnalité organisateur suivante" aria-controls="ym-orga-track"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+
+      <div class="ym-orga-track" id="ym-orga-track" tabindex="0" role="group" aria-label="Fonctionnalités pour organiser ton tournoi">
+        <!-- 1. Format à ta sauce -->
+        <article aria-labelledby="ym-orga-title-1" class="ym-orga-card">
+          <img aria-hidden="true" class="ym-orga-bg ym-orga-g5" src="../assets/organisateurs/01-format-v2.webp" alt="" width="1086" height="1448" loading="lazy" decoding="async" draggable="false">
+          <h3 id="ym-orga-title-1"><span class="ym-orga-title-line">Le tournoi</span> <span class="ym-orga-title-line">à ta sauce</span></h3>
+          <div class="ym-orga-placement-1 ym-orga-mega">18&nbsp;PTS</div>
+          <div class="ym-orga-placement-2 ym-orga-mega ym-orga-out">15&nbsp;MIN</div>
+          <span class="ym-orga-placement-3 ym-orga-st ym-orga-dark ym-orga-fl">ou</span>
+          <span class="ym-orga-placement-4 ym-orga-st ym-orga-dark ym-orga-fl2">C’est toi le chef</span>
+          <div class="ym-orga-placement-5 ym-orga-chip ym-orga-tab"><span class="ym-orga-k">Terrains</span> <b>4</b> &nbsp;·&nbsp; <span class="ym-orga-k">Finales</span> <b>¼ → finale</b></div>
+          <button type="button" class="ym-orga-plus" aria-expanded="false" aria-label="En savoir plus : Le tournoi à ta sauce" aria-controls="ym-orga-detail-1">+</button>
+          <div class="ym-orga-detail" id="ym-orga-detail-1" hidden><p>Matchs en 18 points ou en 15 minutes, nombre de terrains, format des phases finales : c’est toi le chef.</p><p>Pas besoin de passer devant le jury de Top Chef.</p></div>
+        </article>
+        <!-- 2. Partage + paiement -->
+        <article aria-labelledby="ym-orga-title-2" class="ym-orga-card">
+          <img aria-hidden="true" class="ym-orga-bg ym-orga-g2" src="../assets/organisateurs/02-partage-paiement-v2.webp" alt="" width="1086" height="1448" loading="lazy" decoding="async" draggable="false">
+          <h3 id="ym-orga-title-2"><span class="ym-orga-title-line">Un lien, et</span> <span class="ym-orga-title-line">tout le monde a payé</span></h3>
+          <span class="ym-orga-placement-6 ym-orga-st ym-orga-fl">Story Insta ↗</span>
+          <span class="ym-orga-placement-7 ym-orga-st ym-orga-ghostst ym-orga-fl2">WhatsApp</span>
+          <span class="ym-orga-placement-8 ym-orga-st ym-orga-ghostst">Copier le lien</span>
+          <div class="ym-orga-placement-9 ym-orga-mega ym-orga-tab">18<small>/20</small></div>
+          <div class="ym-orga-placement-10 ym-orga-chip ym-orga-tab">
+            <span class="ym-orga-k">Équipes inscrites</span>
+            <div class="ym-orga-placement-11"><b>Payé ✓</b> · 720&nbsp;€</div>
+          </div>
+          <button type="button" class="ym-orga-plus" aria-expanded="false" aria-label="En savoir plus : Un lien, et tout le monde a payé" aria-controls="ym-orga-detail-2">+</button>
+          <div class="ym-orga-detail" id="ym-orga-detail-2" hidden><p>Tu partages ton tournoi en story ou par lien. Les équipes s’inscrivent et paient au même endroit, l’argent arrive chez toi.</p><p>Fini de relancer les virements comme un huissier.</p></div>
+        </article>
+
+        <!-- 3. Goodies & buvette -->
+        <article aria-labelledby="ym-orga-title-3" class="ym-orga-card">
+          <img aria-hidden="true" class="ym-orga-bg ym-orga-g6" src="../assets/organisateurs/03-goodies-buvette-v2.webp" alt="" width="1086" height="1448" loading="lazy" decoding="async" draggable="false">
+          <h3 id="ym-orga-title-3"><span class="ym-orga-title-line">Tee-shirts et</span> <span class="ym-orga-title-line">crêpes, déjà payés</span></h3>
+          <span class="ym-orga-placement-12 ym-orga-st ym-orga-fl">Tee-shirt · 15&nbsp;€</span>
+          <span class="ym-orga-placement-13 ym-orga-st ym-orga-lime ym-orga-fl2">Crêpe · 2,50&nbsp;€</span>
+          <span class="ym-orga-placement-14 ym-orga-st ym-orga-ghostst">Gourde · 8&nbsp;€</span>
+          <div class="ym-orga-placement-15 ym-orga-mega ym-orga-tab">+340<small>&nbsp;€</small></div>
+          <span class="ym-orga-placement-16 ym-orga-st ym-orga-strike">Caisse en fer</span>
+          <div class="ym-orga-placement-17 ym-orga-chip ym-orga-tab"><span class="ym-orga-k">Commandes</span> <b>42</b> &nbsp;·&nbsp; <span class="ym-orga-k">À retirer</span> <b>stand 1</b></div>
+          <button type="button" class="ym-orga-plus" aria-expanded="false" aria-label="En savoir plus : Tee-shirts et crêpes, déjà payés" aria-controls="ym-orga-detail-3">+</button>
+          <div class="ym-orga-detail" id="ym-orga-detail-3" hidden><p>Tu ajoutes tes goodies et la restauration au tournoi. Les joueurs les paient avec l’inscription, tu prépares les commandes à l’avance.</p><p>Fini la caisse en fer et les pièces de 2&nbsp;€ qui manquent.</p></div>
+        </article>
+
+        <!-- 4. Poules -->
+        <article aria-labelledby="ym-orga-title-4" class="ym-orga-card">
+          <img aria-hidden="true" class="ym-orga-bg ym-orga-g4" src="../assets/organisateurs/04-poules-v2.webp" alt="" width="1086" height="1448" loading="lazy" decoding="async" draggable="false">
+          <h3 id="ym-orga-title-4"><span class="ym-orga-title-line">Les poules se font</span> <span class="ym-orga-title-line">en un clic</span></h3>
+          <span class="ym-orga-placement-18 ym-orga-ball ym-orga-lime ym-orga-fl">A</span>
+          <span class="ym-orga-placement-19 ym-orga-ball ym-orga-fl2">B</span>
+          <span class="ym-orga-placement-20 ym-orga-ball ym-orga-lime">C</span>
+          <span class="ym-orga-placement-21 ym-orga-st ym-orga-ghostst">Les Smashers</span>
+          <span class="ym-orga-placement-22 ym-orga-st ym-orga-ghostst">Net Flix</span>
+          <span class="ym-orga-placement-23 ym-orga-st ym-orga-ghostst">Ace Ventura</span>
+          <span class="ym-orga-placement-24 ym-orga-st ym-orga-ghostst">Sable Chaud</span>
+          <span class="ym-orga-placement-25 ym-orga-st ym-orga-ghostst">Volley Ball-Trap</span>
+          <span class="ym-orga-placement-26 ym-orga-st ym-orga-ghostst">Les Toucans</span>
+          <svg class="ym-orga-placement-27 ym-orga-swoosh" viewBox="0 0 200 120" aria-hidden="true" focusable="false"><path d="M8 100 C 50 10, 140 0, 190 40" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="6 7" stroke-linecap="round"/><path d="M178 26 L192 41 L172 46" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="ym-orga-placement-28 ym-orga-st ym-orga-lime">18 équipes · tirage ✓</span>
+          <button type="button" class="ym-orga-plus" aria-expanded="false" aria-label="En savoir plus : Les poules se font en un clic" aria-controls="ym-orga-detail-4">+</button>
+          <div class="ym-orga-detail" id="ym-orga-detail-4" hidden><p>Yamatch répartit les équipes et génère le planning des matchs. Tu peux encore tout réajuster à la main.</p><p>Pas de boules chaudes. Juste un tirage propre.</p></div>
+        </article>
+
+        <!-- 5. Communication -->
+        <article aria-labelledby="ym-orga-title-5" class="ym-orga-card">
+          <img aria-hidden="true" class="ym-orga-bg ym-orga-g3" src="../assets/organisateurs/05-communication-v2.webp" alt="" width="1086" height="1448" loading="lazy" decoding="async" draggable="false">
+          <h3 id="ym-orga-title-5"><span class="ym-orga-title-line">Un message,</span> <span class="ym-orga-title-line">tout le monde suit</span></h3>
+          <div class="ym-orga-placement-29 ym-orga-chip ym-orga-notif ym-orga-fl"><span class="ym-orga-ic"></span><div><b>Changement de terrain</b><div class="ym-orga-placement-30">La poule B passe sur le terrain 3.</div></div></div>
+          <div class="ym-orga-placement-31 ym-orga-chip ym-orga-notif ym-orga-fl2"><span class="ym-orga-placement-32 ym-orga-ic"></span><div><b>Buvette ouverte</b><div class="ym-orga-placement-33">Les crêpes n’attendront pas la finale.</div></div></div>
+          <div class="ym-orga-placement-34 ym-orga-chip ym-orga-notif"><span class="ym-orga-placement-35 ym-orga-ic"></span><div><b>Remise des prix</b><div class="ym-orga-placement-36">Dans 10 min, terrain central.</div></div></div>
+          <span class="ym-orga-placement-37 ym-orga-st ym-orga-strike">248 non lus</span>
+          <button type="button" class="ym-orga-plus" aria-expanded="false" aria-label="En savoir plus : Un message, tout le monde suit" aria-controls="ym-orga-detail-5">+</button>
+          <div class="ym-orga-detail" id="ym-orga-detail-5" hidden><p>Retard, changement de terrain, remise des prix : un message et toutes les équipes reçoivent la notif.</p><p>Le groupe WhatsApp à 248 non lus peut prendre sa retraite.</p></div>
+        </article>
+
+        <!-- 6. Arbitrage -->
+        <article aria-labelledby="ym-orga-title-6" class="ym-orga-card">
+          <img aria-hidden="true" class="ym-orga-bg ym-orga-g1" src="../assets/organisateurs/06-arbitrage-v2.webp" alt="" width="1086" height="1448" loading="lazy" decoding="async" draggable="false">
+          <h3 id="ym-orga-title-6"><span class="ym-orga-title-line">L’arbitre tient</span> <span class="ym-orga-title-line">dans ta poche</span></h3>
+          <div class="ym-orga-placement-38 ym-orga-mega ym-orga-tab">16</div>
+          <div class="ym-orga-placement-39 ym-orga-mega ym-orga-tab ym-orga-out">13</div>
+          <span class="ym-orga-placement-40 ym-orga-st ym-orga-lime ym-orga-fl">+1</span>
+          <span class="ym-orga-placement-41 ym-orga-st ym-orga-fl2">Point&nbsp;!</span>
+          <span class="ym-orga-placement-42 ym-orga-ring-pt"></span>
+          <div class="ym-orga-placement-43 ym-orga-chip ym-orga-tab">
+            <span class="ym-orga-k">Terrain 2 · Poule A</span>
+            <div class="ym-orga-placement-44"><b>Les Smashers</b> <span class="ym-orga-placement-45">vs</span> <b>Bloc Party</b></div>
+          </div>
+          <span class="ym-orga-placement-46 ym-orga-live">● EN DIRECT</span>
+          <button type="button" class="ym-orga-plus" aria-expanded="false" aria-label="En savoir plus : L’arbitre tient dans ta poche" aria-controls="ym-orga-detail-6">+</button>
+          <div class="ym-orga-detail" id="ym-orga-detail-6" hidden><p>Un joueur ou un bénévole tient le score point par point depuis l’app. Le classement se met à jour tout seul.</p><p>Pas de VAR, pas de débat. Enfin presque.</p></div>
+        </article>
+
+        <!-- 7. Classement -->
+        <article aria-labelledby="ym-orga-title-7" class="ym-orga-card">
+          <img aria-hidden="true" class="ym-orga-bg ym-orga-g7" src="../assets/organisateurs/07-classement-v2.webp" alt="" width="1086" height="1448" loading="lazy" decoding="async" draggable="false">
+          <h3 id="ym-orga-title-7"><span class="ym-orga-title-line">Le classement</span> <span class="ym-orga-title-line">se fait tout seul</span></h3>
+          <div class="ym-orga-placement-47 ym-orga-mega">1<small>er</small></div>
+          <div class="ym-orga-placement-48 ym-orga-chip ym-orga-tab">
+            <span class="ym-orga-k">Poule A · en direct</span>
+            <div class="ym-orga-row"><b>1 · Les Smashers</b><span>9 pts</span></div>
+            <div class="ym-orga-placement-49 ym-orga-row"><span>2 · Bloc Party</span><span>6 pts</span></div>
+            <div class="ym-orga-placement-50 ym-orga-row"><span>3 · Net Flix</span><span>3 pts</span></div>
+          </div>
+          <span class="ym-orga-placement-51 ym-orga-st ym-orga-strike ym-orga-fl2">Excel</span>
+          <span class="ym-orga-placement-52 ym-orga-st ym-orga-lime ym-orga-fl">Finale · 16h00</span>
+          <span class="ym-orga-placement-53 ym-orga-ball">1</span>
+          <button type="button" class="ym-orga-plus" aria-expanded="false" aria-label="En savoir plus : Le classement se fait tout seul" aria-controls="ym-orga-detail-7">+</button>
+          <div class="ym-orga-detail" id="ym-orga-detail-7" hidden><p>Chaque score saisi met à jour les poules et le tableau final. Les joueurs suivent tout en direct dans l’app.</p><p>Range ta calculatrice, Excel peut dormir.</p></div>
+        </article>
+
+      </div>
+     </div>
+    </section>
+
 </main>
 
 <footer class="footer" id="siteFooter">
@@ -137,6 +264,7 @@
     </div>
 </footer>
 
-<script src="hero-organisateur.js" defer></script>
+<script src="hero-organisateur.js?v=paris-clock-1" defer></script>
+<script src="organisateur-cards.js" defer></script>
 </body>
 </html>

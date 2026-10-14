@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-10-14 (organiser hero and homepage links; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
+Last sync: 2026-10-14 (homepage organiser feature cards, organiser hero and homepage links; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -42,10 +42,10 @@ Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production buil
 
 | File | Role | Approx. lines |
 |------|------|---------------|
-| `website/index.html` | Single page — hero + carousel + FAQ + footer | ~762 |
+| `website/index.html` | Single page — hero + phone carousel + participant journey + FAQ + footer | ~754 |
 | `website/styles.css` | All styles. Design tokens in `:root`. Heavy use of `clamp()`. **Source of truth — never minify by hand.** | ~4734 |
 | `website/carousel.js` | Standalone IIFE: complete carousel gesture state machine (wheel + touch + rubber-band). Loaded via `<script src="carousel.js" defer>` **before** `script.js`. | ~419 |
-| `website/script.js` | Standalone IIFE: copyright year, toast scaffolding (`window.yamatchToast`, exposed but currently zero in-repo callers since both hero CTAs became real links — see Hero below), wordmark scroll-aware behaviour, wave-SVG animation, page-scroll-progress block, QR widget rendering, floating-card parallax spring-chain, and more. | ~2103 |
+| `website/script.js` | Standalone IIFE: copyright year, toast scaffolding (`window.yamatchToast`, exposed but currently zero in-repo callers since both hero CTAs became real links — see Hero below), wordmark scroll-aware behaviour, wave-SVG animation, page-scroll-progress block, QR widget rendering, floating-card parallax spring-chain, and more. | ~1944 |
 
 `carousel.js` is loaded first in HTML (`<script src="carousel.js" defer>` then `<script src="script.js" defer>`). Sequential `defer` tags guarantee execution order while keeping both scripts non-blocking.
 
@@ -129,6 +129,7 @@ No `<link rel="preconnect" href="https://fonts.googleapis.com">` or `fonts.gstat
 | Section | Anchor |
 |---------|--------|
 | `.how-quest` | `id="how-it-works"` |
+| `/organisateur/` → `.ym-orga-band` | `id="organisateurs"` (route-specific; no homepage anchor) |
 | `.faq` | `id="faq"` |
 
 ### Sitemap
@@ -244,7 +245,7 @@ The 512×512 icon's `purpose` was changed from `"any"` to `"any maskable"` as pa
 
 ## DOM structure
 
-Sections under `<main id="top">`, in order:
+Homepage sections under `<main id="top">`, in order:
 
 1. **`.hero`** — lime card with title, subtitle, App Store + Google Play buttons (both live links since 2026-07-27); wordmark above
 2. **`.screens-rail`** — horizontal carousel with 5 phone screenshots
@@ -325,16 +326,20 @@ This mirrors the `/download/` page's own UA-detection logic — same regexes, sa
 
 ### Organiser page (`website/organisateur/`) — hero variant B
 
-Implemented 2026-10-14 at **`https://appyamatch.fr/organisateur/`**. Scope is the handoff's hero only, with the shared footer; the prototype's statistics, four-screen journey, comparison, tickets and FAQ are not implemented. No prototype-only FAQ structured data is published.
+Implemented 2026-10-14 at **`https://appyamatch.fr/organisateur/`**. The page contains the handoff's hero, then the seven organiser feature cards moved from the homepage, followed by the shared footer; the prototype's statistics, four-screen journey, comparison, tickets and FAQ are not implemented. No prototype-only FAQ structured data is published.
 
 | File | Responsibility |
 |---|---|
-| `organisateur/index.html` | French hero, launch ticker, wordmark linking home, two store CTAs, three static phone images, shared footer and route-specific SEO |
+| `organisateur/index.html` | French hero, launch ticker, wordmark linking home, two store CTAs, three static phone images, seven feature cards directly below the hero, shared footer and route-specific SEO |
 | `organisateur/hero-organisateur.css` | Local `org-` rules, `:root` tokens and keyframes; loaded after `../styles.min.css` |
-| `organisateur/hero-organisateur.js` | Standalone deferred IIFE: wordmark, phone lift, pointer parallax, magnetic CTAs and footer year |
+| `organisateur/hero-organisateur.js` | Standalone deferred IIFE: live Paris phone clocks, wordmark, phone lift, pointer parallax, magnetic CTAs and footer year |
+| `organisateur/organisateur-cards.js` | Standalone deferred IIFE: native card navigation, disabled button states and expandable details; loaded after the hero script |
+| `assets/organisateurs/*-v2.webp` | Seven revised feature-card photographs, referenced through `../assets/organisateurs/` on this route; original PNG/WebP assets are preserved |
 | `organisateur/assets/phone-{main-tournoi-test,left-poules,right-matchs}.webp` | Three handoff illustrations, converted to 600 × 1240 WebP, about 125 KB combined |
 
 The route does not load homepage `script.js`, `carousel.js` or QR vendor code. It shares the site's self-hosted fonts, hero typography, buttons, ticker, footer and `cardEntrance` keyframes. The phone illustrations are static, non-draggable images with French alt text; they do not contain interactive app screens. They are handoff recreations, not simulator captures.
+
+**Phone status-bar clocks.** The hero script adds an `aria-hidden="true"` `.org-hero-phone-clock` span inside each of the three `.org-hero-phone > .org-rise` wrappers. Each displays the visitor device's current time converted with `Intl.DateTimeFormat('fr-FR', { timeZone: 'Europe/Paris', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' })`, including Paris daylight-saving changes. A shared timeout updates immediately and then at each minute boundary (`MINUTE_MS = 60000`); `visibilitychange` pauses scheduling while hidden and refreshes on return, `pageshow` refreshes after restoration, and `pagehide` clears the timer. These decorative updates remain active with reduced motion. At the native 300 × 620 px phone size, a 50 × 22 px overlay at top/left 32 px masks the baked-in `09:16`; shared white/text tokens, 16 px semibold Roboto and tabular numerals reproduce the status bar. The overlay ignores pointer events and inherits its wrapper's entrance, rotation and responsive scaling. Without JavaScript, the original image time remains visible.
 
 **Layout and tokens.** `.org-hero-card` has `z-index: 1`, a black background (`--org-color-card`), clipped overflow and `--org-radius-card: clamp(24px, 3vw, 40px)`. Local colors (`--org-color-*`), shadows (`--org-shadow-*`) and radii are declared only in `:root`; lime, white, black and typography reuse shared tokens. Decorative layers are a masked 72 px grid, lime/teal halos and a bottom fade. Content uses a centred column and a 20–32 px fluid gap. The central phone is `z-index: 2`; phones render at 300 × 620 px in a 380 px cropped container. Side phones sit at ±260 px, 60 px lower, rotated ±9°. At ≤760 px, offsets become ±150 px, side scale .78, centre scale .86 and container height 300 px. At ≤767 px, `.org-page .org-hero` preserves the separate shared inline and block mobile-margin tokens; the card's minimum height uses the block token.
 
@@ -373,9 +378,31 @@ section.how-quest#how-it-works (aria-labelledby="howQuestTitle")
 
 Fine-pointer hover straightens the sticker, lifts it 2 px, expands the shadow to 4/5 px and moves the arrow 2 px right. Pressing shifts the link 2 px right/down with a 1 px shadow; keyboard focus straightens it and adds a 2 px outline with 6 px offset. Rotation, translation and shadow use shared `--transition` (200 ms, `cubic-bezier(.4,0,.2,1)`). Reduced motion explicitly resets rotation and translation for the link, its interaction states and arrow; the global reduced-motion rule also shortens transition durations. This styling adds no JavaScript or explicit z-index.
 
-**Heading hierarchy:** `<h1>` (hero) → `<h2>` (`how-quest-title`, `faq-title`) → `<h3>` (quest-step-titles).
+**Heading hierarchy:** homepage `<h1>` (hero) → `<h2>` (`how-quest-title`, `faq-title`) → `<h3>` (quest-step titles). The organiser route separately uses its hero `<h1>` → `<h2 id="ym-orga-t">` → card `<h3>` headings.
 
 **Static participant content:** all three tags, titles and body paragraphs are authored directly in `index.html`, so the full journey is available before JavaScript and to crawlers. The previous persona buttons, panel state, sliding indicator and JavaScript content-switching controller have been removed. No script writes this section's text or handles selection/keyboard navigation for it.
+
+---
+
+### Organiser page feature cards (`section.ym-orga-band#organisateurs`) — added 2026-10-14
+
+This section is visible only on `/organisateur/`, directly after `.org-hero` and before the footer. Its deep link is `/organisateur/#organisateurs`; the homepage no longer contains the section or its JavaScript. It remains independent of the phone carousel state machine. All classes, keyframes and section-specific custom properties use the `ym-orga-` prefix; shared fonts and colors reuse the site's existing tokens. No external fonts or dependencies are loaded.
+
+`h2#ym-orga-t` (« Organiser un tournoi, c’est simple comme bonjour ») labels the section through `aria-labelledby`. The former « Côté organisateur » eyebrow and « Tu t’occupes de l’ambiance et de la buvette. Yamatch gère le reste. » subtitle are removed; the heading and navigation remain. `#ym-orga-track` is a focusable, labelled group containing seven `<article>` cards, each labelled by its own `<h3>`. Cards present format settings, sharing/payment, goodies/food, pools, announcements, refereeing and rankings. Team names, scores and monetary figures are illustrative examples, not live app data. Seven AI-generated, realistic volleyball-club photographs now illustrate the cards; they do not depict an actual Yamatch event. Their revised reportage style uses neutral available light, ordinary municipal-club surroundings, practical mismatched clothing and spontaneous expressions, reducing the original coordinated teal/coral palette and polished staging. Decorative `<img class="ym-orga-bg …">` elements carry `alt=""`, `aria-hidden="true"`, `loading="lazy"`, `decoding="async"`, `draggable="false"` and explicit 1086 × 1448 dimensions. `object-fit: cover` fills the existing 3:4 cards, with `.ym-orga-g1` through `.ym-orga-g7` gradients retained underneath. Assets live in `website/assets/organisateurs/` (`01-format` through `07-classement`); the page serves the seven `*-v2.webp` revisions encoded at quality 85, preserving the original dimensions. Both the original PNG/WebP files and the revised PNG sources remain available. Exact generation prompts and encoding details are recorded in [ORGANIZER_IMAGE_PROMPTS.md](ORGANIZER_IMAGE_PROMPTS.md).
+
+**Layout and tokens (CSS §10.6):** the band uses `--color-light-bg` and 56px top / 120px bottom padding. The wrapper and scrolling track span the viewport: `--ym-orga-gutter: max(var(--page-pad), calc((100% - var(--container-max)) / 2))` supplies the track's internal inline padding and `scroll-padding-inline`, and aligns the heading/navigation margins. Thus cards clip only at the viewport edges, with no fixed white side bands covering neighbouring cards. The gutters preserve the former centred content width (maximum 1200px) as the percentage-sizing basis. The grid track uses `grid-auto-columns: var(--ym-orga-card-width)`, with the `:root` token set to `clamp(338px, 40.3%, 494px)`: width and height remain 30% larger than the former `clamp(260px, 31%, 380px)` sizing while preserving the 3:4 aspect ratio. Gaps remain 20px, with mandatory horizontal scroll snap and no visible scrollbar; the card radius remains `--ym-orga-radius-card: 28px`. At ≤767px, `--ym-orga-gutter` becomes `--mobile-hero-card-margin`, the root width token becomes `100%` of the track's content width, gaps become 14px and bottom padding becomes 64px. This mobile cap keeps a complete card visible: growth from the former 84% width is approximately 19%, since a full 30% increase would require 109.2% of the content width. Decoration sizes and motion remain unchanged. Decorative positions live in `.ym-orga-placement-*` CSS rules rather than inline HTML. `--ym-orga-r` rotations are independent of the bobbing `translate` animation.
+
+**Two-line card headings:** each card `<h3>` contains two `.ym-orga-title-line` spans (`display: block; white-space: nowrap`), separated by a literal space for accessible text. Explicit breaks retain the original wording: “Le tournoi / à ta sauce”, “Un lien, et / tout le monde a payé”, “Tee-shirts et / crêpes, déjà payés”, “Les poules se font / en un clic”, “Un message, / tout le monde suit”, “L’arbitre tient / dans ta poche” and “Le classement / se fait tout seul”. Each card establishes `container-type: inline-size`; headings use `font-size: clamp(20px, 7cqi, 34px)` so type follows card width, with 26px top/inline insets (20px on mobile).
+
+All new palette, gradient, overlay, border, shadow and radius values are declared under `:root` as `--ym-orga-*` tokens. The palette adds `--ym-orga-teal: #164540`, `--ym-orga-teal-deep: #0c2a27` and uses shared `--color-accent` for chartreuse. Detail entry uses `--ym-orga-detail-motion: 350ms cubic-bezier(.2,.8,.2,1)`; the plus control rotates 45° using `--ym-orga-plus-motion: 300ms ease`. Stickers bob vertically by 6px over 4s (`.ym-orga-fl`) or 5s with a −2s delay (`.ym-orga-fl2`).
+
+**Photograph readability:** `--ym-orga-overlay` shades the image with dark teal at opacity .78 from 0–28%, .12 at 50%, .08 at 70% and .55 at the bottom. This protects the headline while keeping the central scene visible. All card headings inherit white, including the first card; keyboard focus uses the shared lime outline, and the first card's large “18 PTS” decoration also uses lime. Photo integration does not change card geometry, stacking or animation durations.
+
+**Navigation (`organisateur/organisateur-cards.js`, standalone IIFE):** previous/next buttons scroll by the first card's measured width plus computed column gap, using smooth native `scrollBy` (auto under reduced motion). Disabled states derive from `scrollLeft` and `scrollWidth - clientWidth`, with a 1px rounding tolerance. Scroll, resize, pageshow and a guarded `ResizeObserver` schedule updates through one pending animation frame. Native swipe, trackpad and focused-track keyboard scrolling remain browser-controlled; there are no wheel/touch interceptors or connections to `carousel.js`.
+
+**Details and accessibility:** each 48px plus button controls a unique `#ym-orga-detail-N` panel through `aria-controls` and `aria-expanded`. Panels initially carry `hidden`; opening removes it and adds `.ym-orga-open`, while closing restores it immediately. The accessible button label changes from « En savoir plus » to « Fermer les détails ». Escape closes the card's open panel and returns focus to its button without scrolling. Panels open independently, scroll internally when needed, and reserve 84px bottom padding for the close control. Navigation buttons are 46px targets; buttons and the track have visible keyboard outlines. Reduced motion explicitly disables sticker/detail animation and plus transitions; the JavaScript media-query object is checked on each navigation click. On `/organisateur/`, the local `.org-page *` reduced-motion override additionally disables all animations and transitions across the hero and cards.
+
+**Stacking and overflow:** each card creates an isolated context and clips its own decoration. Backgrounds sit at z=−2, shading at −1, headings at 2, detail panels at 4 and plus controls at 5. The track deliberately uses `overflow-x: auto; overflow-y: hidden` with `overscroll-behavior-x: contain`; this local containment does not change the phone rail's lift/overflow rules.
 
 ---
 
@@ -597,6 +624,7 @@ html, body { overflow-x: clip; }
 | `.btn-glass svg` | transform | 240ms | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
 | `.screen-card.active .phone-image` | transform | 80ms | linear |
 | `.hero-carousel-embla--container` | transform | 440ms | `cubic-bezier(0.65, 0, 0.35, 1)` |
+| `.ym-orga-plus` | rotate | 300ms | `ease` (`--ym-orga-plus-motion`) |
 | `.faq-toggle` | color | 200ms | `var(--transition)` |
 | `.faq-icon` | rotate | 300ms | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
 | `.faq-answer` | grid-template-rows | 300ms | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
@@ -609,6 +637,8 @@ html, body { overflow-x: clip; }
 |----------|----------|---------------------|-------|
 | `.hero-card` | `cardEntrance` | `opacity` (0 → 1), `filter: blur` (8px → 0) | No scale. Applied to the lime hero card on page load. |
 | `.hero-title`, `.hero-subtitle` | `titleEntrance` | `opacity`, `translate` (vertical), `filter: blur` | Scale 1.04 → 1 for the title. Staggered delay. |
+| `.ym-orga-detail:not([hidden])` | `ym-orga-detail-in` | transform: translateY(101% → 0) | 350ms entry; closing restores `hidden` immediately. |
+| `.ym-orga-fl`, `.ym-orga-fl2` | `ym-orga-bob` | translate: 0 → −6px → 0 | 4s / 5s infinite; second variant has −2s delay. |
 | `.hero-card-waves path` | `waveDraw` | `stroke-dashoffset` | SVG stroke-drawing entrance; driven by JS-controlled animation iteration. |
 
 > `titleEntrance` and `cardEntrance` are distinct keyframes. `.hero-card` uses `cardEntrance` (opacity + blur only — no scale). `.hero-title` / `.hero-subtitle` use `titleEntrance` (which includes scale). Do not conflate them.
@@ -621,6 +651,7 @@ html, body { overflow-x: clip; }
 - All `*` `animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important`.
 - `.hero-card-waves { animation: none; opacity: 1 }` (skip wave entrance).
 - `.hero-carousel-embla { --scroll: 0 }` (phone flat in row, no lift).
+- Organiser stickers/detail entry use `animation: none`; plus controls use `transition: none`; navigation uses native auto scrolling.
 - JS: page-scroll-progress and wave animation loops check `matchMedia('(prefers-reduced-motion: reduce)').matches` and skip.
 
 ### `@media (max-width: 767px)`
@@ -759,7 +790,7 @@ Rationale: at `-13%`, the card is lifted ~90–115 px above `.how-quest`'s top e
 
 Desktop host: `.faq` — `top: -8%; right: 8%; left: auto; bottom: auto; translate: 0 var(--parallax-y, 0px); rotate: 12deg`. Desktop size: `143px × 143px`.
 
-The badge is lifted above `.faq`'s top edge (via `top: -8%`) and appears visually in the lower-right area beneath step 3 of `.how-quest` (PARCOURS). This works because `.faq { overflow-x: clip }` — per CSS spec, `overflow-x: clip` does **not** promote `overflow-y` to `auto`, so the negative-top bleed remains visible. `right: 8%` resolves against `.faq`'s full-bleed padding-box width (≈ viewport width): 8% of 1440 px ≈ 115 px, placing the badge's left edge ~180–215 px from the right viewport edge — naturally under the rightmost `.quest-step` column (step 3). `translate: 0 var(--parallax-y, 0px)` preserves JS-driven Y parallax without the former `-50% X` centering shift (which was only needed when the badge was `left: 50%`-anchored).
+The badge is lifted above `.faq`'s top edge (via `top: -8%`) and now appears at the lower-right organiser/FAQ seam, following insertion of the organiser cards on 2026-10-14. This works because `.faq { overflow-x: clip }` — per CSS spec, `overflow-x: clip` does **not** promote `overflow-y` to `auto`, so the negative-top bleed remains visible. `right: 8%` resolves against `.faq`'s full-bleed padding-box width (≈ viewport width): 8% of 1440 px ≈ 115 px, placing the badge's left edge ~180–215 px from the right viewport edge — near the right edge of the preceding organiser section. `translate: 0 var(--parallax-y, 0px)` preserves JS-driven Y parallax without the former `-50% X` centering shift (which was only needed when the badge was `left: 50%`-anchored).
 
 **+10% size bump (2026-05-12):** disc bumped from `130px → 143px` (`styles.css:2447`). The central arrow SVG (`index.html` line 547 carries HTML attrs `width="28" height="28"`) is bumped to `31px` via CSS override (`styles.css:2510` — `28 × 1.10 ≈ 30.8 → 31`; CSS wins over presentational HTML attrs per spec). `.floating-badge__rotor-text` stays at `font-size: 11px; letter-spacing: 0.18em` — the text arc scales automatically because `.floating-badge__rotor-svg` fills the disc with `width: 100%; height: 100%`, so the SVG viewBox (`0 0 130 130`) is physically stretched to 143px, enlarging the text-on-path proportionally.
 
@@ -1043,7 +1074,7 @@ curl https://appyamatch.fr/.well-known/assetlinks.json
 - No third-party scripts — the site is 100% same-origin (qrcode-generator vendored at `website/vendor/qrcode.min.js`, migrated off the jsdelivr CDN 2026-07-05 — see SEO → Third-party scripts). Any CDN script reintroduced without explicit user approval must carry a `sha384` SRI hash + `crossorigin="anonymous"`.
 - All `<img>` carry meaningful French alt text (or empty alt for decorative).
 - `draggable="false"` on phone images; `aria-hidden="true"` + `focusable="false"` on decorative SVG.
-- Shared CSS source (`styles.css`) → generated `styles.min.css` (gitignored). Homepage JS: `carousel.js` (state machine) + `script.js` (other homepage behaviour). The organiser route additionally loads its own unminified `hero-organisateur.css` and standalone `hero-organisateur.js`; it does not load homepage JS. No XHTML mirror.
+- Shared CSS source (`styles.css`) → generated `styles.min.css` (gitignored). Homepage JS: `carousel.js` (state machine) + `script.js` (other homepage behaviour). The organiser route additionally loads its own unminified `hero-organisateur.css`, standalone `hero-organisateur.js` and `organisateur-cards.js`; it does not load homepage JS. No XHTML mirror.
 - No Google Fonts `<link>` or `preconnect` tags. All fonts are self-hosted under `website/fonts/`.
 
 ### Copy — registre de voix
@@ -1051,7 +1082,7 @@ curl https://appyamatch.fr/.well-known/assetlinks.json
 | Destinataire | Registre | Exemples |
 |---|---|---|
 | Participant (joueur) | `tu` | "Trouve un tournoi", "Inscris ton équipe", "Place au jeu" |
-| Organisateur (lien home et page dédiée) | `tu` | "T’es organisateur ?", "Ton tournoi de volley…" |
+| Organisateur (lien home, cartes et page dédiée) | `tu` | "T’es organisateur ?", "Ton tournoi de volley…" |
 | FAQ | mixte selon la réponse | `tu` si la réponse s'adresse à un joueur, `vous` si à un organisateur |
 
 La page `/organisateur/` conserve le tutoiement du handoff approuvé (« Ton tournoi de volley… »). Le parcours participant de la home est désormais statique dans `index.html`. Ne pas mélanger les registres au sein d’un même step ou d’une même réponse FAQ.
