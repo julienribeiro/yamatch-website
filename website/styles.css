@@ -12,9 +12,9 @@
     6. Wordmark (sticky pill, scroll states, entrance keyframe)
     7. Hero section
        7.1 .hero outer canvas
-       7.2 .hero-card (lime block) + cardEntrance
+       7.2 .hero-card (shared frame) + cardEntrance
        7.3 .hero-card-inner
-       7.4 .hero-card-waves SVG + wavesEntrance
+       7.4 .hero-card--photo (homepage photograph)
        7.5 .hero-title / .hero-title-slant / .hero-subtitle + titleEntrance
        7.6 .hero-buttons + .btn-glass (variants, hover, shine, fallback)
        7.7 .glass-stack / .glass-eyebrow / .glass-label
@@ -37,6 +37,7 @@
         directly inside .how-quest and .faq; no dedicated wrapper section
         since 2026-05-12)
    10.6 Organiser cards (native scroll-snap, scoped ym-orga- rules)
+   10.7 Public tournament rail (participant / organiser tickets)
    11. FAQ accordion
    12. Footer
    13. Toast
@@ -45,9 +46,8 @@
    16. Mobile media queries (consolidated — overrides hero + carousel + quest)
    17. Reduced motion (NB: this label is the historical TOC slot — actual
        Reduced motion section is now §19; §17 in the body is the consolidated
-       Mobile media queries block, §18 the Cursor trail. Pre-existing TOC
+       Mobile media queries block. Pre-existing TOC
        drift kept here for reference; canonical numbering is in the body.)
-   18. Cursor trail (volleyball emoji + canvas comet — desktop only)
    19. Reduced motion
    ==========================================================================
 */
@@ -138,8 +138,8 @@
        after a Lighthouse audit flagged 4 contrast violations on the home page
        (.how-quest-eyebrow, .quest-step-tag-label, .faq-eyebrow). Same cool-
        neutral hue family as before — only the lightness changes — so every
-       call site (13 selectors: .how-quest-eyebrow, .quest-organiser-link a,
-       .quest-step-tag, .floating-card__notif-{sep,time}, .floating-card__team-
+       call site (.how-quest-eyebrow, .quest-organiser-link a,
+       .quest-step-tag, .floating-card__team-
        eyebrow, .floating-card__team-caption, .faq-eyebrow, .qr-widget-caption,
        .download-eyebrow, .legal-page-{eyebrow,updated,nav-title}) keeps its
        muted-label hierarchy while clearing the AA bar. The token is never
@@ -161,6 +161,12 @@
        change without breaking the dark palette. */
     --color-button-glass-hover: #1F2A3D;
 
+    /* Homepage photo only; shared hero typography and 404 keep their palette. */
+    --hero-photo-surface: #0c100b;
+    --hero-photo-ink: var(--color-text-white);
+    --hero-photo-shade: linear-gradient(180deg, rgba(5,9,5,.46), rgba(5,9,5,.2) 42%, rgba(5,9,5,.04) 70%, rgba(5,9,5,.2));
+    --hero-photo-button-border: rgba(255,255,255,.32);
+
     --font-heading: 'Roboto', system-ui, -apple-system, sans-serif;
     --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 
@@ -178,57 +184,36 @@
 
     --page-pad: clamp(24px, 4.5vw, 60px);
 
+    /* Public tournament tickets: isolated rail palette and geometry. */
+    --showcase-gutter: max(var(--page-pad), calc((100% - var(--container-max)) / 2));
+    --showcase-card-width: clamp(268px, 24vw, 312px);
+    --showcase-ticket-bg: linear-gradient(160deg, #2A2A2A 0%, var(--color-dark-bg) 42%, var(--color-dark-surface) 100%);
+    --showcase-ticket-glow: radial-gradient(120% 70% at 100% 0%, rgba(215,255,0,.09) 0%, rgba(215,255,0,0) 60%);
+    --showcase-ticket-glow-strong: radial-gradient(120% 70% at 100% 0%, rgba(215,255,0,.16) 0%, rgba(215,255,0,0) 62%);
+    --showcase-ticket-stub: 64px;
+    --showcase-ticket-notch: 11px;
+    --showcase-on-dark-muted: rgba(255,255,255,.72);
+    --showcase-on-dark-line: rgba(255,255,255,.14);
+    --showcase-on-dark-chip: rgba(255,255,255,.12);
+
     /* Vertical gap between the active phone's top edge and the .hero-buttons'
        bottom edge at scroll = 0. Read by script.js (computeBaseLift) which
        writes the resulting --scroll value (in px) on .hero-carousel-embla.
        clamp(24px, 4vh, 56px): 24px floor on tiny viewports, 56px ceiling on 4K. */
     --desired-button-gap: clamp(24px, 4vh, 56px);
 
-    /* Vertical lift applied to the fixed wordmark as the user scrolls into the
-       carousel zone. Magnitude is negative because the CSS positive y-axis points
-       DOWN — a negative `translate` y-component moves the element UP toward the
-       viewport top. Composed with the base `translate: -50% -50%` (section 6)
-       via `var(--wordmark-scroll-progress, 0) * var(--wordmark-scroll-lift)`, so
-       at progress 0 the wordmark stays at its anchored centre, and at progress 1
-       it has risen by exactly this many px. The progress variable is written by
-       script.js (page-scroll-progress block) on every rAF tick and is already
-       clamped to [0, 1] in JS — no CSS clamp needed. The `var(...)` fallback of
-       0 keeps the wordmark at its rest position when JS is absent / not yet run
-       / reduced-motion path skips the writer. -32px chosen (2026-05-12, user
-       request to "réduire l'espace entre le logo et la bordure de l'écran"):
-       larger magnitude reads as more intentional and brings the glyphs closer
-       to the viewport top edge once the user is in the carousel zone. No ticker
-       overlap risk: the ticker (`position: relative`, 30px tall, §4.5) lives in
-       the document flow at viewport y = 0..30px AT scroll = 0, but by the time
-       --wordmark-scroll-progress climbs above ~0 the user has already scrolled
-       far enough (scrollY ≈ vh at progress = 0, ≈ 0.4vh at progress = 1) that
-       the ticker is no longer in the viewport. The fixed wordmark only moves
-       UP via this lift; since the lift in px is always << current scrollY along
-       the entire progress curve, the wordmark cannot reach the (now off-screen)
-       ticker plane. */
-    --wordmark-scroll-lift: -32px;
-
-    /* Height of the launch announcement ticker that runs across the very top of
-       the document (.launch-ticker, section 4.5 below). Consumed by:
-         - .launch-ticker { height }                  → the ticker's own box height
-         - .wordmark { top }                          → pushes the fixed wordmark BELOW
-                                                        the ticker AT scroll = 0 (desktop:
-                                                        line 367; mobile: section 17)
-       Since 2026-05-12 the ticker is `position: relative` (in document flow), so
-       `.hero { padding-block-start }` no longer compensates for it (the ticker
-       pushes `.hero` down naturally by its own height — no reservation needed).
-       Kept as a fixed 30 px (no clamp) for predictable layout maths in the two
-       remaining calc() consumers above. The token must remain defined even on
-       pages where the .launch-ticker DOM node is absent (legal / download / 404)
-       — the wordmark `top` calc reads it unconditionally. On those utility pages
-       the wordmark is overridden to `position: static` (sections 15 / 16 /
-       §error-page), so the (now larger) `top` value is dead-code. */
-    --launch-ticker-height: 30px;
+    /* Keep the wordmark centred in the top gutter while scrolling. The
+       removed announcement bar no longer leaves a gap to compensate for;
+       an upward lift would clip the logo against the viewport edge. */
+    --wordmark-scroll-lift: 0px;
 
     /* Organiser feature cards: isolated palette, geometry and motion tokens. */
-    /* 30% larger than the original clamp(260px, 31%, 380px). */
-    --ym-orga-card-width: clamp(338px, 40.3%, 494px);
-    --ym-orga-gutter: max(var(--page-pad), calc((100% - var(--container-max)) / 2));
+    /* Preserve the enlarged cards' former 1200px percentage-sizing basis
+       while the track gutters now align with the hero's outer edges. */
+    --ym-orga-card-width: clamp(338px, min(40.3%, calc(var(--container-max) * .403)), 494px);
+    /* 10% taller than 3 / 4 at the same width: (4 / 3) × 1.1 = 22 / 15. */
+    --ym-orga-card-aspect-ratio: 15 / 22;
+    --ym-orga-gutter: var(--page-pad);
     --ym-orga-teal: #164540;
     --ym-orga-teal-deep: #0c2a27;
     --ym-orga-radius-card: 28px;
@@ -353,174 +338,6 @@ p {
 
 
 /* ==========================================================================
-   4.5 LAUNCH TICKER (in-flow announcement bar, top of document)
-   --------------------------------------------------------------------------
-   Lime announcement strip at the top of the document, in normal flow (NOT
-   `position: fixed` — see history note below). A duplicated set of 4 spans
-   inside .launch-ticker__track is translated horizontally (-50%) by the
-   `launchTickerScroll` keyframe so the row appears to scroll continuously
-   without visible seams (the second half is identical to the first, so the
-   loop wraps invisibly).
-
-   Stacking: z-index 80 sits ABOVE the wordmark (z-index 50, §6) so the
-   wordmark slides in BELOW the ticker at scroll=0, and BELOW .skip-link /
-   .toast (z-index 1000, §4 / §13) and the cursor trail / emoji
-   (z-index 9998 / 9999, §18) — the cursor companion intentionally floats
-   over the ticker. The z-index is preserved (even though the ticker is no
-   longer fixed) so that the entrance animation of the wordmark — which
-   briefly translates downward through the ticker's plane — never paints
-   above the ticker.
-
-   The .launch-ticker__sr <p> is visually hidden but exposed to assistive tech
-   (the .launch-ticker__track itself is aria-hidden because the duplicated
-   spans would be read 4× by a screen reader).
-
-   Reduced motion override lives in §19 — the animation is killed and a single
-   centred copy of the message is shown statically.
-
-   _2026-05-12: `position: fixed; top: 0` → `position: relative` (in flow).
-   The ticker now scrolls AWAY with the page rather than staying pinned at the
-   viewport top forever. `.hero { padding-block-start: var(--page-pad) }` no
-   longer adds `--launch-ticker-height` because the ticker's in-flow height
-   already pushes `.hero` down naturally; mobile `.wordmark { top }` was
-   bumped by `--launch-ticker-height` so the wordmark sits in the white strip
-   BELOW the ticker at scroll=0 with balanced top/bottom gap._
-   ========================================================================== */
-.launch-ticker {
-    /* `position: relative` (in normal flow, NOT `fixed`): the ticker sits at the
-       top of the document and scrolls AWAY with the page — once the user has
-       scrolled past it, it is gone for the rest of the session. The wordmark
-       (still `position: fixed`, §6) takes over as the only permanent top-of-
-       viewport UI after the ticker scrolls out. Previous `position: fixed; top: 0`
-       kept the ticker permanently pinned, which was retired 2026-05-12 on user
-       request: the announcement should be a one-time discovery, not a perpetual
-       banner. `--launch-ticker-height` is still consumed by `.wordmark { top }`
-       (§6) to offset the wordmark below the ticker AT scroll=0 — once the user
-       scrolls past, the fixed wordmark naturally appears to rise toward the
-       viewport top because the ticker is no longer underneath. Width is no
-       longer 100% (it's a block in flow and defaults to full width of its
-       container, here `<body>`). */
-    position: relative;
-    z-index: 80;
-    width: 100%;
-    height: var(--launch-ticker-height);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    background: var(--color-accent);
-    color: var(--color-text-black);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
-.launch-ticker__track {
-    display: flex;
-    align-items: center;
-    /* `width: max-content` lets the row size to its 8 spans + 7 inter-gaps
-       (+ 1 trailing `padding-right` gap, see below) intrinsic width — the
-       track is therefore exactly as wide as its content, with no trailing
-       empty space.
-
-       Seamless-loop math: N spans (S) with `gap` (G) yield N-1 internal
-       gaps and a track width of `N·S + (N-1)·G`. The `-50%` keyframe
-       translates by half that width. The natural repetition period of
-       the pattern is `S + G` (one span + its bracketing gap), so for
-       `-50%` to land exactly on a repetition boundary we need the total
-       track width to equal an even integer multiple of `S + G`. Closing
-       the loop with `padding-right: var(--ticker-gap)` makes the track
-       width `N·S + N·G = N·(S+G)`. With N = 8 (current HTML), `-50% =
-       4·(S+G)` = 4 repetitions — fully seamless, no micro-jump on loop.
-       The gap value is hoisted into a local custom property so the
-       `padding-right` always matches the `gap` precisely.
-
-       2026-05-13: `min-width: 200%` removed. It was a guard-rail intended
-       to cover the viewport when the message was very short, but on wide
-       viewports (≥1920px) the natural content width 8·(S+G) ≈ 3120px is
-       LESS than 200vw ≈ 3840px, so the track grew to 3840px and exposed
-       ~720px of trailing emptiness past the last span. During the scroll,
-       that emptiness drifted into view as a visible gap in the lime bar
-       just before the keyframe wrapped — the very "cut" the rule was
-       meant to prevent. With `width: max-content` only, the track is
-       exactly 8·(S+G) wide and no trailing void exists. Viewport coverage
-       on very wide displays is then guaranteed by the span count alone:
-       on a 4K+ viewport where 8·(S+G) is still narrower than the screen,
-       a small trailing void could reappear briefly each cycle; if that
-       ever ships, increase the span count in the HTML rather than
-       reintroducing `min-width: 200%`. */
-    --ticker-gap: clamp(56px, 8vw, 96px);
-    width: max-content;
-    gap: var(--ticker-gap);
-    padding-right: var(--ticker-gap);
-    white-space: nowrap;
-    will-change: transform;
-    /* `backface-visibility: hidden` is a compositor-stability hint:
-       promotes the element onto its own GPU layer with no back-face
-       culling cost, which on high-DPR displays smooths sub-pixel
-       interpolation of `translate3d` under a `linear` timing function
-       (the most demanding case — no easing to mask jitter). */
-    backface-visibility: hidden;
-    /* Slowed from 18s → 36s (×2) per user request: a more contemplative,
-       premium pace. Combined with the seamless-loop fix above and the
-       lighter typography below, the bar reads as calm rather than urgent. */
-    animation: launchTickerScroll 36s linear infinite;
-}
-
-.launch-ticker__track span {
-    flex: 0 0 auto;
-    font-family: var(--font-body);
-    /* Fixed 14 px (was clamp(9.5px, 1.1vw, 11px)) — the previous clamp
-       read as too timid on every viewport. A fixed 14 px keeps the bar
-       discreet but legible at arm's length on desktop and on a held phone.
-       Vertical fit: 14 px line-height-1 in a 30 px box (--launch-ticker-height)
-       leaves ~8 px of lime above and below the glyphs — comfortable, no
-       clipping. Holding `--launch-ticker-height: 30px` keeps the wordmark
-       vertical-centring calc untouched on desktop (.wordmark top, §6) and
-       on mobile (§17). */
-    font-size: 14px;
-    /* Regular weight (was 800) — the mixed-case typography (only the Y
-       of Yamatch and the L of Les capitalised, per HTML) already reads
-       as restrained; 400 keeps the bar quiet above the hero. */
-    font-weight: 400;
-    line-height: 1;
-    /* Reduced from 0.04em → 0.01em: the wider tracking was tuned for
-       all-caps legibility. In mixed case, 0.04em reads as awkwardly
-       spaced; 0.01em respects the natural Inter metrics while still
-       giving a hair of breathing room for small sizes on the lime bar. */
-    letter-spacing: 0.01em;
-    /* text-transform removed (was `uppercase`) — the HTML now carries
-       the intended casing (only Y of "Yamatch" and L of "Les" capitalised);
-       forcing uppercase here would override that typographic intent. */
-}
-
-/* Visually-hidden accessible copy — single readable sentence for screen
-   readers. Same recipe as the standard sr-only pattern (1×1 px box clipped
-   with `clip-path: inset(50%)`, taken out of flow with `position: absolute`,
-   nowrap to avoid synthetic line breaks). */
-.launch-ticker__sr {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-}
-
-@keyframes launchTickerScroll {
-    /* `--ticker-start-offset` (px) is set on `.launch-ticker__track` by an
-       IIFE in script.js to visually centre the first span on page load
-       (mobile primarily — desktop receives a larger offset by virtue of
-       wider viewports relative to the span width). Adding the same offset
-       to BOTH `from` and `to` shifts the whole animation timeline without
-       changing the translation distance: it remains exactly `-50%` of the
-       track width = `4(S+G)` with 8 spans = an integer multiple of the
-       repetition period `S+G`, so the seamless-loop math is preserved.
-       The `0px` fallback ensures pages where the IIFE does not run (or
-       where `.launch-ticker` is absent) still animate correctly from 0. */
-    from { transform: translate3d(var(--ticker-start-offset, 0px), 0, 0); }
-    to   { transform: translate3d(calc(var(--ticker-start-offset, 0px) - 50%), 0, 0); }
-}
-
-
-/* ==========================================================================
    5. FOCUS VISIBILITY (generic — feature overrides live with their feature)
    ========================================================================== */
 :focus-visible {
@@ -544,43 +361,12 @@ p {
     /* `fixed` instead of `absolute` so the logo stays at the top of the viewport for the entire scroll,
        not just the hero section. Top/left now resolve against the viewport, not against `.hero`. */
     position: fixed;
-    /* Anchor the wordmark in the white strip BELOW the launch ticker (§4.5) AT
-       scroll = 0. The ticker sits in the document flow at viewport y = 0..
-       --launch-ticker-height (since 2026-05-12 it is `position: relative`),
-       and `.hero { padding-block: var(--page-pad) }` reserves another
-       `--page-pad` of white space before the lime card — so the lime card's top
-       edge is at viewport y = `--launch-ticker-height + --page-pad`. The
-       wordmark's vertical centre at `--launch-ticker-height + --page-pad/2`
-       therefore lands exactly halfway between the ticker's bottom edge and the
-       lime card's top edge — equal optical gap above and below the wordmark
-       glyphs at rest. Once the user scrolls past the ticker, the fixed wordmark
-       stays where the viewport says (it does NOT track the now-gone ticker);
-       the JS-driven `.is-condensed` / `.is-hidden` classes (§6 below) take over
-       its scroll-aware behaviour.
-       Inert on the legal/download/error utility pages: those override
-       `.wordmark { position: static; top: auto }` (sections 15 / 16 / §error),
-       so this `top` value is ignored when the ticker isn't in the DOM. */
-    top: calc(var(--launch-ticker-height) + var(--page-pad) / 2);
+    /* Centre the fixed logo in the hero’s top margin. */
+    top: calc(var(--page-pad) / 2);
     left: 50%;
-    /* Compose the centring translate (`-50% -50%`) with a scroll-driven vertical
-       lift. `--wordmark-scroll-progress` (0..1, written by script.js per rAF
-       tick on `documentElement`, inherited here) multiplies `--wordmark-scroll-lift`
-       (negative px magnitude declared in `:root`, section 2) so the wordmark
-       rises by up to `|--wordmark-scroll-lift|` px as the user scrolls into the
-       carousel zone. `min(progress * 3, 1)` accelerates completion 3× and clamps
-       to 1 (2026-05-12, user request: "le logo doit trouver sa place finale plus
-       rapidement au scroll"): the wordmark reaches its full lift at progress =
-       0.33 — i.e. after roughly the first third of the hero-→carousel scroll
-       zone — then stays pinned at the max for the remaining two-thirds. Effect:
-       the logo settles quickly into its scrolled position and stays there,
-       rather than crawling toward it across the entire hero zone. `min()` is
-       CSS-native, no JS branching needed. Fallback `0` on the progress var
-       keeps the wordmark at rest position (translate: -50% -50%) when JS hasn't
-       run yet, the writer is skipped (reduced-motion / mobile paths), or the
-       variable is otherwise undefined. The Y component is a single `calc` so
-       the individual `translate` property still composes cleanly with the
-       entrance keyframe's `transform: translateY(...)` (transforms apply on top
-       of `translate`). */
+    /* The zero lift token keeps the logo in its top gutter at every scroll
+       position. Preserve the individual translate property so entrance
+       transforms and the existing condensed scale compose independently. */
     translate: -50% calc(-50% + min(var(--wordmark-scroll-progress, 0) * 3, 1) * var(--wordmark-scroll-lift));
     z-index: 50;
     display: inline-flex;
@@ -745,8 +531,8 @@ p {
 
 /* --- 7.1 .hero outer canvas ------------------------------------------------
    Outer hero is a clean white canvas — the wordmark sits on this white area at the top,
-   and the lime/wave background lives INSIDE the card below. The hero is content-sized:
-   the lime card fills the viewport, the iPhone peeks below the buttons, and the next
+   and the photograph lives INSIDE the card below. The hero is content-sized:
+   the card fills the viewport, the iPhone peeks below the buttons, and the next
    section (.screens-rail) starts naturally underneath. */
 .hero {
     position: relative;
@@ -758,17 +544,7 @@ p {
     /* Equal margin between the viewport edge and the lime card, on every side (top/right/bottom/left).
        Horizontal value (`--page-pad`) is the shared gutter applied to every top-level section, so all
        sections align to the same left/right edge. Vertical padding mirrors it so the hero keeps its
-       symmetric breathing room around the card.
-       Since 2026-05-12 the launch ticker is no longer `position: fixed` (§4.5):
-       it sits in the document flow ABOVE `.hero`, so its height already pushes
-       the hero down by `--launch-ticker-height` naturally. The previous extra
-       `+ var(--launch-ticker-height)` in this calc was a compensation for the
-       fixed ticker overlaying the viewport top; that compensation would now
-       double-count the offset (ticker pushes hero down AND hero adds its own
-       reservation = `2 × ticker_height` of unwanted whitespace above the lime
-       card). Reverted to the original symmetric `--page-pad` on both block
-       edges. The "equal margins on all four sides" hero invariant
-       (memory feedback_website_hero_pattern.md) is restored 1:1. */
+       symmetric breathing room around the card. */
     padding-block: var(--page-pad);
     padding-inline: var(--page-pad);
     background-color: var(--color-light-bg);
@@ -822,8 +598,8 @@ p {
     overflow-anchor: none;
 }
 
-/* --- 7.2 .hero-card (lime block) + cardEntrance ----------------------------
-   Solid lime block with animated wave lines etched on top.
+/* --- 7.2 .hero-card (shared frame) + cardEntrance -------------------------
+   Shared card geometry; homepage photo and 404 lime use the same paint layer.
    Sits in the upper portion of the hero only (content-sized, doesn't grow to fill) so the
    iPhone mockup that follows can extend BELOW the card's bottom edge into the white area. */
 .hero-card {
@@ -854,9 +630,9 @@ p {
        in flow) → moved `carousel.getBoundingClientRect().top` → the JS scroll
        writer recomputed `progress` against a moving target → feedback loop →
        jittery scroll. The shrink is now applied as a pure `clip-path` on
-       `.hero-card::before` (the lime fill, see rule below) and on
-       `.hero-card-waves` (so the waves clip in sync). The element's `background`
-       is therefore `transparent` here — the lime colour lives on the pseudo-element. */
+       `.hero-card::before` (the background fill, see rule below). The element's
+       `background` is transparent here; the photograph or fallback colour
+       lives on that pseudo-element. */
     min-height: calc(100vh - 2 * var(--page-pad));   /* fallback older Safari */
     min-height: calc(100svh - 2 * var(--page-pad));  /* iOS 15.4+ : stable face URL bar */
     background: transparent;
@@ -886,7 +662,7 @@ p {
     }
 }
 
-/* Lime fill of the hero card. Promoted from the `.hero-card` background
+/* Background fill of the hero card. Promoted from the `.hero-card` background
    to a pseudo-element so we can clip the fill from the bottom (via
    `clip-path: inset(... round ...)`) without altering the parent's layout
    box. Why: the JS `--card-shrink` writer ticks every rAF; touching the
@@ -894,9 +670,8 @@ p {
    reflowed the in-flow sibling `.screens-rail`, which moved the carousel's
    bounding rect, which fed back into the scroll writer → jitter. With the
    shrink expressed as `clip-path` on this absolutely-positioned ::before,
-   the layout is untouched and only the painted pixels of the lime change.
-   z-index: 0 keeps it BEHIND the wave SVG (z-index: 0 too but later in
-   the painting order — see note below) and the inner content
+   the layout is untouched and only the painted background pixels change.
+   z-index: 0 keeps the background BEHIND the inner content
    (`.hero-card-inner` z-index: 1, declared in section 7.3).
    Note on the round value: CSS `inset()` does NOT accept the `inherit`
    keyword for the corner radius — it must be a length / percentage /
@@ -921,7 +696,7 @@ p {
 /* --- 7.3 .hero-card-inner --------------------------------------------------
    Inner flex container for the hero card content (title, subtitle, buttons).
    `position: relative; z-index: 1` puts the title/subtitle/buttons above the
-   absolutely-positioned .hero-card-waves SVG (z-index 0) that lives in the card. */
+   absolutely-positioned background ::before layer (z-index 0). */
 .hero-card-inner {
     position: relative;
     z-index: 1;
@@ -938,35 +713,34 @@ p {
     width: 100%;
 }
 
-/* --- 7.4 .hero-card-waves SVG + wavesEntrance ------------------------------
-   Animated wave lines — vertical SVG paths whose points drift via 2D pseudo-noise.
-   Replaces the prior static diagonal-net etched on top of the lime. JS injects the
-   <svg class="hero-card-waves"> element and drives the per-frame path data; this rule
-   only positions/scales it. The SVG fills the card and clips to its rounded corners
-   via inherited overflow:hidden on .hero-card. z-index 0 keeps it behind the inner
-   content (.hero-card-inner is bumped to z-index 1). */
-.hero-card-waves {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    border-radius: inherit;
-    /* Same fade-in feel the prior net had, so the entrance choreography reads identically. */
-    animation: wavesEntrance 240ms ease-out backwards;
-    /* Same visual shrink as `.hero-card::before` (the lime fill) — the waves
-       must clip in lockstep with the lime bottom edge, otherwise the wave
-       paths would visibly extend past the lime and float on the white
-       background. `inset()` does not accept `inherit` for the corner radius,
-       so we repeat the literal clamp from `.hero-card { border-radius }`
-       (mobile override redefines it inside the @media block below). */
-    clip-path: inset(0 0 var(--card-shrink, 0px) 0 round clamp(24px, 3vw, 40px));
+/* --- 7.4 Homepage photograph ---------------------------------------------
+   Paint on the existing ::before layer so the scroll-driven clip-path still
+   shortens the visible card without changing layout or phone-lift geometry.
+   The modifier is absent from the 404 and organiser hero. */
+.hero-card--photo::before {
+    background-color: var(--hero-photo-surface);
+    background-image: var(--hero-photo-shade), url('assets/hero-volley/hero-volley-mixed.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
-@keyframes wavesEntrance {
-    from { opacity: 0; }
-    to { opacity: 1; }
+.hero-card--photo .hero-title,
+.hero-card--photo .hero-subtitle {
+    color: var(--hero-photo-ink);
+}
+
+.hero-card--photo .btn-glass {
+    border-color: var(--hero-photo-button-border);
+    background-color: var(--color-text-primary);
+}
+
+.hero-card--photo .btn-glass:hover {
+    background-color: var(--color-button-glass-hover);
+}
+
+.hero-card--photo .btn-glass:focus-visible {
+    outline-color: var(--color-accent);
 }
 
 /* --- 7.5 .hero-title / .hero-title-slant / .hero-subtitle + titleEntrance --- */
@@ -1814,15 +1588,14 @@ p {
 /* ==========================================================================
    10.5 FLOATING CARDS — decorative "bordel ordonné" dispersed across §10 + §11
    --------------------------------------------------------------------------
-   Five scattered "trompe-l'oeil" UI cards + one circular rotating CTA badge.
+   Two scattered "trompe-l'oeil" UI cards + one circular rotating CTA badge.
    Each card is rotated, levitates gently in place (independent CSS keyframe
    per card), and translates vertically via a scroll-linked parallax variable
    written by script.js (see the contract notes below).
 
    Architectural change (2026-05-12): the cards no longer live in a
    dedicated `.floating-cards` host section. They are now distributed
-   DIRECTLY inside `.how-quest` (cards 1 / 3 / 5) and `.faq` (cards 2 /
-   4 / 6) as decorative overlays, sitting ABOVE the host's editorial
+   DIRECTLY inside `.how-quest` (cards 2 / 3) and `.faq` (card 6) as decorative overlays, sitting ABOVE the host's editorial
    content (titles, organiser link, accordion items). The cards use
    reinforced glassmorphism (heavy `backdrop-filter: blur(20-28px)
    saturate(180-200%)`) so the host content remains readable through
@@ -1833,9 +1606,9 @@ p {
    Host contracts (positioning + clipping):
      - `.how-quest` (§10.1) already declared `position: relative` +
        `overflow-x: clip` — those properties now do double duty as the
-       containing-block + horizontal-clip for cards 1 / 3 / 5.
+       containing-block + horizontal-clip for cards 2 / 3.
      - `.faq` (§11) gets `position: relative` + `overflow-x: clip`
-       (2026-05-12) — same role for cards 2 / 4 / 6. Card 6's
+       (2026-05-12) — same role for card 6. Card 6's
        `bottom: -40px` deliberately hangs across the FAQ→footer seam;
        `overflow-x: clip` does NOT promote overflow-y per CSS spec, so
        the badge stays visible.
@@ -1946,9 +1719,8 @@ p {
        in-flow content (`.quest-step` / `.faq-item` have no z-index, so
        their stacking is `auto` and they paint at index 0 within the host's
        stacking context). Sits below all permanent / overlay chrome:
-       `.wordmark` (z=50), `.launch-ticker` (z=80), `.qr-widget` (z=100),
-       `.toast` / `.skip-link` (z=1000), `.cursor-trail`/`.cursor-emoji`
-       (z=9998/9999). 5 is intentionally a low value — leaves headroom
+       `.wordmark` (z=50), `.qr-widget` (z=100),
+       `.toast` / `.skip-link` (z=1000). 5 is intentionally a low value — leaves headroom
        for any future in-section UI element that needs to sit above the
        cards (e.g. a future sticky section navigation). */
     z-index: 5;
@@ -1975,11 +1747,9 @@ p {
 }
 
 /* Per-card placement + rotation.
-   Cards 1 / 3 / 5 are hosted in `.how-quest` (3-column editorial section).
-   Cards 2 / 4 / 6 are hosted in `.faq` (taller — 6 accordion items).
-   Within each host the trio is dispersed across the height (top / middle
-   / bottom) and across the inline axis (left / right alternation) so
-   neither cluster reads as gridded. Negative left/right values push some
+   Cards 2 / 3 are hosted in `.how-quest` (3-column editorial section).
+   Card 6 is hosted in `.faq`. Positions alternate across the inline axis
+   so the decorations do not read as gridded. Negative left/right values push some
    cards just past the host's content box, clipped horizontally by the
    host's `overflow-x: clip` — the partial reveal reinforces the
    "bordel ordonné" feel. Card 6 (rotating CTA badge) intentionally hangs
@@ -1990,27 +1760,6 @@ p {
    Rotation values are `data-card-id`-keyed so JS doesn't need to mirror
    them — the design tilt is purely CSS, JS only authors the parallax Y. */
 
-/* Card 1 — hosted by `.hero` (moved 2026-05-12). Sits on the LEFT side
-   of the hero, vertically aligned with the App Store / Google Play CTAs
-   row (= just under the "Compose ton équipe, il y a match" subtitle).
-   `.hero` is `position: relative` (line 630) so it serves as the
-   containing block.
-   - `left: 2%` keeps the bleed minimal (the card stays mostly inside
-     the viewport, only its left edge peeks past the `--page-pad`
-     gutter — mirror of the previous `right: 2%`).
-   - `bottom: 14%` raises the card from the previous `8%` so its
-     vertical centre lines up with the CTAs row rather than sitting
-     below it. Geometry: `.hero` total height ≈ `100svh`; lime card
-     fills `100svh - 2*--page-pad`; `.hero-card-inner` has
-     `padding-block: clamp(48px, 6vw, 88px)`, so the CTAs (last in-flow
-     child) sit roughly `--page-pad + 88px` above the hero's bottom
-     edge — that's ~10–13% of `100svh` at most viewport heights. `14%`
-     centres the card on that row (the card has its own height, so the
-     anchor is offset slightly upward from the buttons' bottom).
-   The rotate `-8deg` is preserved from the previous placement so the
-   card keeps its identity tilt. Repositioned 2026-05-12 (user request:
-   move from bottom-right to left-of-CTAs). */
-.floating-card-parallax[data-card-id="1"] { top: auto; bottom: 30%; right: auto; left: 2%; rotate: -8deg; }
 /* Cards inside `.how-quest` (host: position: relative + overflow-x: clip via §10.1) */
 /* Card 3 — anchor switched right → left (2026-05-12). Previous history:
    `top: 35%; right: -5%` → `top: 2%; right: 3%` → `right: -4%` → `right:
@@ -2066,7 +1815,7 @@ p {
    visually UP and OUT of `.faq`'s top edge using a negative `top`, into the
    bottom slice of the `.how-quest` block above. Per CSS spec, `.faq`'s
    `overflow-x: clip` does NOT promote overflow-y to `auto` (same guarantee
-   that lets cards 1 / 3 bleed vertically across section seams — see lines
+   that lets card 3 bleed vertically across section seams — see lines
    1939–1941, 4076–4082), so the negative `top` renders correctly above
    `.faq`'s top edge.
 
@@ -2116,12 +1865,12 @@ p {
 }
 
 /* Inner wrapper — continuous levitation. Each card gets its OWN keyframe
-   (1–6) with a unique amplitude AND its own duration. We avoid
+   (2, 3, 6) with a unique amplitude AND its own duration. We avoid
    `animation-delay: -Xs` (which is the common phase-offset trick) because
    negative delays make the cards "snap into" mid-cycle on first paint
    (Safari is particularly prone to a one-frame flash at the snap point).
    Distinct durations let the cards drift naturally out of phase over
-   time, with no visible startup artefact — within ~10s the six cards
+   time, with no visible startup artefact — within ~10s the three decorations
    form a fully-decorrelated bobbing pattern. ease-in-out keeps each
    half-cycle gentle at the extremes (the cards seem to hover and "decide"
    to come back rather than mechanically bouncing).
@@ -2130,7 +1879,8 @@ p {
    scoreboard (2) bobs the most (-18px) to read as energetic; the
    badge (6) bobs the least (-10px) to keep the CTA readable. */
 .floating-card-inner {
-    animation: floating-levitate-1 4.5s ease-in-out infinite;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
     /* GPU layer promotion (2026-05-12, jitter fix v2) — without these
        hints the levitation keyframe `transform: translate3d(0, Yp, 0)`
        runs on the SAME GPU layer as the parent `.floating-card-parallax`
@@ -2149,8 +1899,8 @@ p {
        directly on the compositor thread.
        Cost: one extra GPU layer per card (≈ card box size × 4 bytes/px).
        Cards are 230–400 px wide × 80–180 px tall, so each layer is at
-       most ~290 KB of VRAM. With 4 cards visible on desktop (1, 2, 3, 6)
-       the total overhead is ~1.2 MB — trivial on any modern integrated
+       most ~290 KB of VRAM. With 3 decorations visible on desktop (2, 3, 6)
+       the total overhead is under 1 MB — trivial on any modern integrated
        GPU. Mobile (≤ 767px) is unaffected: the entire
        `.floating-card-parallax` element is `display: none !important`
        (§17, line ~4216), so the inner never paints — no layer is
@@ -2158,7 +1908,6 @@ p {
     will-change: transform;
     backface-visibility: hidden;
 }
-.floating-card-parallax[data-card-id="1"] .floating-card-inner { animation-name: floating-levitate-1; animation-duration: 4.5s; }
 .floating-card-parallax[data-card-id="2"] .floating-card-inner { animation-name: floating-levitate-2; animation-duration: 5.2s; }
 .floating-card-parallax[data-card-id="3"] .floating-card-inner { animation-name: floating-levitate-3; animation-duration: 6.0s; }
 .floating-card-parallax[data-card-id="6"] .floating-card-inner { animation-name: floating-levitate-6; animation-duration: 5.0s; }
@@ -2169,143 +1918,9 @@ p {
    guarantees the animation is composited on the GPU thread, never
    re-rasterised on main during the parent's scroll-driven parallax
    translate writes. Visual result is identical to translateY (Z = 0). */
-@keyframes floating-levitate-1 { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -14px, 0); } }
 @keyframes floating-levitate-2 { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -18px, 0); } }
 @keyframes floating-levitate-3 { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -12px, 0); } }
 @keyframes floating-levitate-6 { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -10px, 0); } }
-
-
-/* ---- Card 1 : iOS-style notification ------------------------------------ */
-/* Reinforced glassmorphism (2026-05-12): the cards now sit OVER `.how-quest`
-   editorial content (titles, organiser link, body copy) instead of an empty
-   white canvas — the underlying text must remain readable through the card,
-   so we lean harder on the frosted-glass treatment. Changes vs. the
-   previous opaque-white card:
-     - background opacity dropped from 100% to 55% so the content behind
-       the card is faintly visible (suggests depth without becoming a
-       transparent ghost).
-     - `backdrop-filter: blur(24px) saturate(180%)` — much heavier blur
-       than the cosmetic 8px we had before; combined with 180% saturation
-       it produces the Apple-style "frosted vitré" look (the underlying
-       colours bleed through softly, with vibrant pops).
-     - `border: 1px solid rgba(255,255,255,0.6)` — a quiet rim-light at
-       the edge of the glass plate; helps the card "lift" off the
-       background without a heavy drop shadow.
-     - `inset 0 1px 0 0 rgba(255,255,255,0.5)` highlight in the box-shadow
-       stack — a 1px sheen along the top edge that mimics how real glass
-       catches ambient light, sells the "vitré" effect.
-   The `-webkit-backdrop-filter` duplicate is required for Safari ≤ 17.
-   The `@supports not (backdrop-filter)` fallback further down (lines
-   ~1018 / ~2580) already covers browsers without backdrop-filter support
-   by bumping opacity — same defensive pattern applied universally to the
-   project's glass surfaces. */
-/* Card 1 default layout: modern iOS notification.
-   Shell is a 2-column flex row:
-     - [icon 36×36 with the actual favicon] -- gap 12px --
-     - [content column: header (brand title + timestamp right-aligned) + body]
-   Card 1 is the only consumer of the `.floating-card--notif` variant. */
-.floating-card--notif {
-    display: flex;
-    flex-direction: row;
-    align-items: center; /* icon vertically centred on the 2 text rows */
-    gap: 12px;
-    /* Width bumped 2026-05-12 (was `clamp(280px, 22vw, 340px)`): the brand
-       row "Nouveau tournoi dispo" was being ellipsized on the previous
-       width because the available text column (width − icon 36px − gap 12px
-       − padding 32px − time stamp ≈ 50px) was too tight to fit the 600-weight
-       Inter title at 14px. Bumping to `clamp(320px, 26vw, 400px)` adds ~40–60px
-       of room across the responsive range, which clears the ellipsis without
-       touching `.floating-card__notif-brand`'s `text-overflow: ellipsis`
-       safety net (kept defensively for any future copy that might still
-       overflow). Mobile override (line ~4091) is unaffected: card 1 is
-       centred via `left: 50%` + `translate: -50%` and its width follows
-       this same `clamp` (the `vw` middle term yields larger values on
-       larger screens anyway). */
-    width: clamp(320px, 26vw, 400px);
-    padding: 14px 16px;
-    background: rgba(255, 255, 255, 0.70);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 22px;
-    box-shadow:
-        0 8px 32px rgba(16, 24, 40, 0.08),
-        0 2px 6px rgba(16, 24, 40, 0.04),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.5);
-    -webkit-backdrop-filter: blur(32px) saturate(180%);
-    backdrop-filter: blur(32px) saturate(180%);
-}
-/* iOS-style 36×36 app-icon tile. The inner <img> (favicon) fills the tile
-   via object-fit: cover — no lime background bleeds through so the favicon
-   reads as the actual app icon. */
-.floating-card__notif-icon {
-    flex: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 9px; /* iOS app icon radius approx */
-    overflow: hidden;
-    display: block;
-    line-height: 1;
-}
-.floating-card__notif-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-}
-/* Right-hand column: stacks the header row (title + time) over the body. */
-.floating-card__notif-content {
-    flex: 1;
-    min-width: 0; /* allow text ellipsis inside */
-}
-.floating-card__notif-head {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    gap: 8px;
-    margin-bottom: 2px;
-}
-.floating-card__notif-brand {
-    flex: 1;
-    min-width: 0;
-    font-family: var(--font-body);
-    font-size: 14px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    text-transform: none;
-    color: var(--color-text-primary);
-    line-height: 1.3;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-.floating-card__notif-sep,
-.floating-card__notif-time {
-    margin-left: auto;
-    flex: none;
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--color-medium-gray);
-}
-.floating-card__notif-title {
-    font-family: var(--font-body);
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--color-text-primary);
-    margin: 0 0 4px;
-    line-height: 1.3;
-}
-.floating-card__notif-body {
-    font-family: var(--font-body);
-    font-size: 13px;
-    color: var(--color-text-primary);
-    line-height: 1.35;
-    margin: 0;
-    /* Clamp to 2 lines max so the card stays compact regardless of copy. */
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
 
 
 /* ---- Card 2 : scoreboard (solid noir, lime accent on winning row) ------ */
@@ -2412,14 +2027,13 @@ p {
 
 
 /* ---- Card 3 : team grid (2×2 avatars) ----------------------------------- */
-/* Reinforced glassmorphism — white variant (2026-05-12). Mirrors Card 1's
-   spec for visual consistency across the white-glass family (Card 1 and
-   Card 3 both share the same translucent-white frosted plate look).
+/* Reinforced glassmorphism — white variant (2026-05-12).
+   The team card uses a translucent-white frosted plate.
    Changes vs. the previous opaque-white-with-grey-border card:
      - background 100% white → `rgba(255,255,255,0.55)`.
      - border switches from grey (#101828 @ 8%) to white-rim (`rgba(255,
        255,255,0.6)`) — the rim-light reads as glass-edge rather than
-       outline; aligns with Card 1.
+       outline.
      - backdrop-filter blur 0 → 24px saturate(180%) — primary glass effect.
      - inset highlight 1px @ rgba(255,255,255,0.5) added — sheen along top
        edge.
@@ -2600,7 +2214,6 @@ p {
    (§7.7) / `.qr-widget` (§14) `@supports not` fallbacks elsewhere in
    the file. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .floating-card--notif,
     .floating-card--team {
         background: rgba(255, 255, 255, 0.96);
     }
@@ -2679,15 +2292,15 @@ p {
     scroll-snap-type: x mandatory;
     overscroll-behavior-x: contain;
     scrollbar-width: none;
-    /* Gutters scroll with the cards; clipping stays at the viewport edge.
-       Their content-box width preserves the original card percentage basis. */
+    /* Hero-aligned gutters scroll with the cards; clipping stays at the
+       viewport edge. The width token independently preserves card sizing. */
     padding: 0 var(--ym-orga-gutter) 4px;
     scroll-padding-inline: var(--ym-orga-gutter);
 }
 .ym-orga-track::-webkit-scrollbar { display: none; }
 .ym-orga-card {
     position: relative;
-    aspect-ratio: 3 / 4;
+    aspect-ratio: var(--ym-orga-card-aspect-ratio);
     min-width: 0;
     max-width: 100%;
     border-radius: var(--ym-orga-radius-card);
@@ -2841,6 +2454,10 @@ p {
 .ym-orga-card .ym-orga-placement-51 { right:24px;top:52%;--ym-orga-r:8deg; }
 .ym-orga-card .ym-orga-placement-52 { right:22%;bottom:22%;--ym-orga-r:-6deg;font-size:15px; }
 .ym-orga-card .ym-orga-placement-53 { left:24px;bottom:28px;width:52px;height:52px;font-size:24px; }
+/* Mobile and tablet retain native swiping; arrows are desktop-only. */
+@media (max-width: 1024px) {
+    .ym-orga-nav { display: none; }
+}
 @media (max-width: 767px) {
     :root {
         /* Cap the enlarged 84% cards at the available track width so each
@@ -2854,6 +2471,329 @@ p {
     .ym-orga-card h3 { top: 20px; left: 20px; right: 20px; }
     .ym-orga-detail { padding-inline: 20px; }
 }
+
+/* ==========================================================================
+   10.7 PUBLIC TOURNAMENT RAIL — native scroll-snap, ticket-only showcase
+   ========================================================================== */
+/* --- Section ----------------------------------------------------------- */
+.showcase {
+    position: relative;
+    background-color: var(--color-light-bg);
+    color: var(--color-text-primary);
+    padding-block: clamp(64px, 9vw, 120px);
+    overflow-x: clip;
+    scroll-margin-top: 80px;
+}
+.showcase[hidden],
+.showcase [hidden] { display: none; }
+
+.showcase-sentinel { height: 0; }
+
+.showcase-block-head,
+.showcase-demo-note {
+    margin-inline: var(--showcase-gutter);
+}
+
+.showcase-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Pastille « Aperçu démo — données fictives, non publiées » (?showcase=demo). */
+.showcase-demo-note {
+    display: block;
+    width: fit-content;
+    margin-block-end: 24px;
+    margin-inline: auto;
+    max-width: calc(100% - 2 * var(--showcase-gutter));
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-text-black);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+/* --- Bloc : titre + navigation ---------------------------------------- */
+.showcase-block { margin-block-end: clamp(32px, 5vw, 56px); }
+/* Le rail est désormais le seul contenu de la section : pas de marge
+   finale qui s'ajouterait au padding-block de la section. */
+.showcase-block:last-child { margin-block-end: 0; }
+.showcase-block-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-block-end: 18px;
+}
+.showcase-block-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+    line-height: 1.2;
+    letter-spacing: -.01em;
+    margin: 0;
+}
+.showcase-nav { display: flex; gap: 8px; flex: none; }
+.showcase-nav button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-divider);
+    background: var(--color-light-bg);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background-color var(--transition), border-color var(--transition), opacity var(--transition);
+}
+.showcase-nav button svg { display: block; }
+.showcase-nav button:hover:not([aria-disabled="true"]) {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+}
+.showcase-nav button[aria-disabled="true"] { opacity: .35; cursor: default; }
+.showcase-nav button:focus-visible,
+.showcase-rail:focus-visible,
+.showcase-ticket-cta:focus-visible {
+    outline: 2px solid var(--color-text-primary);
+    outline-offset: 3px;
+}
+
+/* --- Rail de tickets --------------------------------------------------- */
+.showcase-rail {
+    list-style: none;
+    margin: 0;
+    padding: 4px var(--showcase-gutter) 12px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: var(--showcase-card-width);
+    gap: 16px;
+    /* Native scrolling contains both axes; no phone-lift content lives here. */
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--showcase-gutter);
+    scrollbar-width: none;
+}
+.showcase-rail::-webkit-scrollbar { display: none; }
+.showcase-rail-item {
+    display: flex;
+    min-width: 0;
+    scroll-snap-align: start;
+}
+
+/* Ticket : deux encoches découpées sur la ligne du talon par un masque à deux couches. */
+.showcase-ticket {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+    border-radius: var(--radius-card);
+    background: var(--showcase-ticket-bg);
+    color: var(--color-text-white);
+    overflow: hidden;
+    -webkit-mask:
+        radial-gradient(circle var(--showcase-ticket-notch) at 0 var(--showcase-ticket-stub), transparent 96%, var(--color-text-black)) left / 51% 100% no-repeat,
+        radial-gradient(circle var(--showcase-ticket-notch) at 100% var(--showcase-ticket-stub), transparent 96%, var(--color-text-black)) right / 51% 100% no-repeat;
+    mask:
+        radial-gradient(circle var(--showcase-ticket-notch) at 0 var(--showcase-ticket-stub), transparent 96%, var(--color-text-black)) left / 51% 100% no-repeat,
+        radial-gradient(circle var(--showcase-ticket-notch) at 100% var(--showcase-ticket-stub), transparent 96%, var(--color-text-black)) right / 51% 100% no-repeat;
+}
+.showcase-ticket::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* Behind ticket content, above its background within isolation: isolate. */
+    z-index: -1;
+    background: var(--showcase-ticket-glow);
+    pointer-events: none;
+}
+.showcase-ticket--upcoming::before { background: var(--showcase-ticket-glow-strong); }
+
+.showcase-ticket-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-sizing: border-box;
+    height: var(--showcase-ticket-stub);
+    padding: 0 20px;
+    border-bottom: 1px dashed var(--showcase-on-dark-line);
+}
+.showcase-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.showcase-badge--upcoming { background: var(--color-accent); color: var(--color-text-black); }
+.showcase-badge--played { background: var(--showcase-on-dark-chip); color: var(--color-text-white); }
+.showcase-ticket-date {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--showcase-on-dark-muted);
+    white-space: nowrap;
+}
+
+.showcase-ticket-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 20px 20px;
+}
+.showcase-ticket-title {
+    margin: 0;
+    color: var(--color-text-white);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: -.01em;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+.showcase-ticket-meta,
+.showcase-ticket-teams {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--showcase-on-dark-muted);
+}
+.showcase-pin { flex: none; color: var(--color-accent); }
+
+/* Jauge de remplissage (tickets « À venir »). */
+.showcase-gauge { display: flex; flex-direction: column; gap: 8px; }
+.showcase-gauge-label {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 12px;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+.showcase-gauge-status { color: var(--color-accent); }
+.showcase-gauge-status.is-closed { color: var(--showcase-on-dark-muted); }
+.showcase-gauge-track {
+    display: block;
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background: var(--showcase-on-dark-line);
+    overflow: hidden;
+}
+.showcase-gauge-fill {
+    display: block;
+    height: 100%;
+    width: calc(var(--showcase-fill, 0) * 100%);
+    border-radius: inherit;
+    background: var(--color-accent);
+}
+
+/* Ligne organisateur (avatar + nom). */
+.showcase-ticket-org {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: auto 0 0;
+    padding-top: 4px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 0;
+}
+.showcase-ticket-org-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.showcase-ticket-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 44px;
+    margin-top: auto;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-text-black);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color var(--transition), color var(--transition);
+}
+.showcase-ticket-cta:hover { background: var(--color-text-white); }
+.showcase-ticket-cta:focus-visible { outline-color: var(--color-accent); }
+/* La ligne organisateur est déjà poussée en bas (margin-top: auto) ;
+   sans elle, c'est le CTA qui prend ce rôle. */
+.showcase-ticket-org + .showcase-ticket-cta { margin-top: 0; }
+
+/* --- Avatar (logo https ou initiales lime) ----------------------------- */
+.showcase-avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-pill);
+    object-fit: cover;
+    background: var(--color-light-bg);
+    overflow: hidden;
+}
+.showcase-avatar--sm { width: 32px; height: 32px; font-size: 12px; }
+.showcase-avatar--initials {
+    background: var(--color-accent);
+    color: var(--color-text-black);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1;
+}
+
+/* --- Mobile ------------------------------------------------------------ */
+@media (max-width: 767px) {
+    :root {
+        --showcase-gutter: var(--mobile-hero-card-margin);
+        --showcase-card-width: min(82%, 300px);
+    }
+    .showcase-rail { gap: 12px; }
+    /* Sur mobile, le swipe natif remplace les flèches. */
+    .showcase-nav { display: none; }
+}
+
 
 /* ==========================================================================
    11. FAQ ACCORDION
@@ -2874,7 +2814,7 @@ p {
 
        `position: relative` re-introduced (2026-05-12, separate rationale):
        `.faq` now HOSTS decorative `.floating-card-parallax` elements
-       directly (cards 2, 4, 6 — moved out of the retired `.floating-cards`
+       directly (card 6 — moved out of the retired `.floating-cards`
        wrapper). The cards are `position: absolute` and rely on `.faq`
        being their containing block. Without `position: relative` they
        would anchor to the next positioned ancestor (`<body>` /
@@ -3182,7 +3122,7 @@ p {
 /* Instagram pastille — lime brand square, black icon.
    Token choice (lime): `var(--color-accent)` (#D7FF00) is the canonical
    brand lime — the SAME token used by .hero-card (§7.2 line 849), the
-   .launch-ticker (§4.5 line 361), .floating-badge (§10), and every other
+   .floating-badge (§10), and every other
    "lime accent" surface in the file. No `-light` / `-shade` derivative
    exists; --color-accent IS the brand lime.
    Token choice (icon colour): `var(--color-text-primary)` (#101828, near-
@@ -4032,7 +3972,7 @@ p {
 /* Wordmark override — same recipe as `.download-page .wordmark`
    (section 15) and `.legal-page .wordmark` (section 16). The default
    wordmark (section 6) is `position: fixed; translate: -50% calc(-50% + …);
-   top: calc(--launch-ticker-height + --page-pad / 2); left: 50%` so it
+   top: calc(--page-pad / 2); left: 50%` so it
    floats over the lime hero card. On the 404 utility page we want the
    wordmark to flow ABOVE the centred hero block as a normal logo;
    resetting position / top / left / translate makes it a plain inline-flex
@@ -4272,43 +4212,30 @@ p {
            support: Safari 15.4+, Chrome 108+, Firefox 101+. */
         /* `--card-shrink` does NOT affect this min-height — see the desktop
            rule's comment for the full rationale. Layout box stays fixed; the
-           visual shrink is applied via clip-path on `.hero-card::before` and
-           `.hero-card-waves` (overridden just below to use the mobile
-           border-radius literal). */
+           visual shrink is applied via clip-path on `.hero-card::before`
+           (overridden just below to use the mobile border-radius literal). */
         min-height: calc(100svh - 2 * var(--mobile-hero-card-margin-block));
         border-radius: clamp(24px, 7vw, 32px);
     }
 
-    /* Mobile override for the lime fill and the wave SVG: same `inset()`
+    /* Mobile override for the background fill: same `inset()`
        shrink contract as desktop, but the corner radius literal must match
        the mobile `.hero-card { border-radius }` value above (`inset()`'s
        round value cannot use `inherit`). */
-    .hero-card::before,
-    .hero-card-waves {
+    .hero-card::before {
         clip-path: inset(0 0 var(--card-shrink, 0px) 0 round clamp(24px, 7vw, 32px));
     }
 
-    /* Vertically centre the wordmark in the white strip between the ticker's
-       bottom edge and the lime card's top edge. Since 2026-05-12 the launch
-       ticker (§4.5) lives in the document flow at viewport y = 0..--launch-ticker-height
-       and `.hero { padding: 0 }` on mobile means the lime card's top edge sits
-       exactly at `viewport y = --launch-ticker-height + --mobile-hero-card-margin-block`.
-       The wordmark is `position: fixed`, so its `top` is measured from the
-       viewport. To land its centre at the midpoint between the ticker bottom
-       (`--launch-ticker-height`) and the lime card top, the centre must sit at
-       `--launch-ticker-height + --mobile-hero-card-margin-block / 2`.
-       `translate: -50% -50%` (already declared in the desktop rule, section 6)
-       keeps the element's centre locked to this `top` value regardless of its
-       own height — so equal gap above (between ticker bottom and wordmark top
-       edge) and below (between wordmark bottom edge and lime card top edge) by
-       construction. Sourcing the block token (NOT the inline one) is critical:
-       the strip the wordmark lives in is vertical, so the wordmark's vertical
-       position must track the vertical margin. Default desktop value
-       (`var(--launch-ticker-height) + var(--page-pad) / 2`) is too small here
-       because mobile overrides --page-pad to a much smaller clamp than the
-       card's block margin. */
+    /* Portrait composition keeps the ball and the mixed block in the crop.
+       Match this breakpoint with the homepage's responsive image preloads. */
+    .hero-card--photo::before {
+        background-image: var(--hero-photo-shade), url('assets/hero-volley/hero-volley-mixed-mobile.webp');
+        background-position: center, 60% center;
+    }
+
+    /* The vertical logo position follows the independent block margin. */
     .wordmark {
-        top: calc(var(--launch-ticker-height) + var(--mobile-hero-card-margin-block) / 2);
+        top: calc(var(--mobile-hero-card-margin-block) / 2);
     }
 
     .hero-card-inner {
@@ -4650,8 +4577,8 @@ p {
 
     /* ---- Floating cards (section 10.5) — mobile = fully hidden -----------
        2026-05-12 (decision lock): on `max-width: 767px`, ALL decorative
-       `.floating-card-parallax` elements (cards 1, 2, 3, 6 — see index.html
-       lines 226 / 400 / 426 / 533) are hidden via a single blanket rule.
+       `.floating-card-parallax` elements (cards 2, 3, 6) are hidden via
+       a single blanket rule.
        The previous mobile-specific positions / dimensions (cards 1 & 3
        repositioning, card 2 already hidden, card 6 centred at the FAQ
        footer seam, plus the `.floating-card--team` width / internals
@@ -4659,7 +4586,7 @@ p {
        resize) have been removed — dead code on a hidden element.
 
        Why blanket-hide:
-         - The four cards are aria-hidden decorations: removing them on
+         - The three cards are aria-hidden decorations: removing them on
            mobile has zero a11y / SEO impact.
          - Each card was a one-off bespoke override per host (different
            top/bottom/left/right per id, different dimension shrinks for
@@ -4700,137 +4627,12 @@ p {
 
 
 /* ==========================================================================
-   18. CURSOR TRAIL (volleyball emoji + canvas comet — desktop only)
-   --------------------------------------------------------------------------
-   Custom cursor decoration: a rigid volleyball emoji (.cursor-emoji) follows
-   the system pointer in real time, with a tapered lime "comet" trail painted
-   behind it on a full-viewport <canvas class="cursor-trail">. Both DOM nodes
-   live at the end of <body> (see index.html ~line 384–385) and are driven
-   by script.js (mousemove handler + rAF canvas-draw loop + element position
-   write).
-
-   Hard product constraints we enforce in CSS:
-     1. The system cursor MUST stay visible (we never set `cursor: none`
-        anywhere in the codebase — see grep audit on `cursor:` declarations,
-        all five existing usages set `pointer` or `grab`, none set `none`).
-        The emoji is a decorative *companion* to the OS cursor, not a
-        replacement for it.
-     2. Neither node may intercept clicks: `pointer-events: none` on both.
-        The canvas covers the entire viewport (100vw × 100vh) so without
-        this guard every click on the page would land on the canvas.
-     3. The emoji must NOT have a `transition` on `transform` / `translate`.
-        The user explicitly rejected any easing on the cursor follow — JS
-        writes the new `translate3d(x, y, 0)` on every `mousemove` and the
-        emoji must paint at the new position on the next frame with zero
-        interpolation. The only transitioned property is `opacity` (120ms),
-        used for show/hide on `mouseenter`/`mouseleave` of the document.
-     4. Hidden on devices with no cursor concept (`pointer: coarse`) and
-        on small viewports (`max-width: 767px`) — same breakpoint family
-        used for the QR widget and other desktop-only UI.
-     5. Hidden under `prefers-reduced-motion: reduce` — the comet trail is
-        a non-essential animation; users who opted out of motion get a
-        clean, undecorated pointer.
-
-   Stacking: trail at z-index 9998, emoji at 9999. The pair sits ABOVE
-   permanent UI (`.qr-widget` z=100, `.wordmark` z=50, `.screens-rail` z=2,
-   `.hero-card` z=1) and ABOVE ephemeral overlays (`.toast`, `.skip-link`
-   both at z=1000). Justification: the cursor decoration must follow the
-   pointer no matter what is currently on screen — including when a toast is
-   visible or the skip-link is focused. Because both nodes are
-   `pointer-events: none`, sitting above interactive overlays is purely
-   visual: clicks still reach the underlying skip-link/toast normally. The
-   trail is faint (lime fade rendered by the canvas) and the emoji is small
-   (20 px), so they never visually obscure the overlays in any meaningful
-   way. Emoji at 9999 (one above the trail) so the volleyball always paints
-   in front of its own comet tail.
-   ========================================================================== */
-.cursor-trail {
-    /* Full-viewport canvas pinned to the viewport edges. JS sets
-       `canvas.width = innerWidth * dpr` and `canvas.height = innerHeight * dpr`
-       (DPR scaling for sharp lines on retina), then resets the CSS box back
-       to 100vw × 100vh via these declarations so the bitmap upscales
-       exactly to the viewport. */
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    /* Never intercept clicks — the canvas covers the full viewport. */
-    pointer-events: none;
-    /* Below the emoji (9999), above all permanent UI and overlays. See
-       header comment for stacking rationale. */
-    z-index: 9998;
-}
-
-.cursor-emoji {
-    /* Rigidly anchored to the viewport top-left; JS writes the live
-       position via `translate3d(x + offsetX, y + offsetY, 0)` on every
-       `mousemove`. The initial off-screen translate prevents a flash at
-       (0, 0) before the first pointer event arrives. */
-    position: fixed;
-    top: 0;
-    left: 0;
-    /* Initial off-screen position so the emoji doesn't paint at (0, 0)
-       on first paint. JS overrides this on the first `mousemove`. NOTE:
-       we use `translate` (the individual property) NOT `transform: translate(...)`
-       so JS can write either property without conflicting with this initial
-       value — modern JS uses the shortcut `style.transform = ...` per the
-       spec, so we use `transform` here as the initial too. Critically, we
-       do NOT add `transform` to the transition list below — the emoji must
-       follow the cursor with zero lag. */
-    transform: translate3d(-100px, -100px, 0);
-    /* Decorative — never intercept clicks. */
-    pointer-events: none;
-    /* Above the canvas trail (9998). See header for stacking justification. */
-    z-index: 9999;
-    /* Discrete sizing — clamp inside a tight 18–22 px range. The emoji is a
-       companion to the OS cursor, not a feature in itself; it must read as
-       playful but never compete with content typography. line-height: 1
-       collapses the line box so the emoji glyph's bounding box matches the
-       font-size exactly, keeping the JS offset math (centering the emoji
-       on the cursor tip) trivial. */
-    font-size: clamp(18px, 1.4vw, 22px);
-    line-height: 1;
-    /* Prevent text-selection caret from appearing if the user happens to
-       click-drag through the emoji's box (defensive — pointer-events: none
-       already prevents this in modern browsers, but the CSS is cheap). */
-    user-select: none;
-    -webkit-user-select: none;
-    /* GPU compositor hint — the emoji is repositioned every mousemove
-       (~120 Hz on modern trackpads). will-change: transform promotes it to
-       its own compositor layer so the position writes never trigger a
-       paint, only a composite. Same pattern used on .phone-image
-       (line ~931) and .wordmark (line ~259, with `opacity` instead of
-       `transform`). */
-    will-change: transform;
-    /* ONLY opacity is transitioned — used by JS to fade the emoji in/out
-       on document `mouseenter` / `mouseleave` (window blur, cursor leaves
-       to a system menu, etc.). 120 ms ease keeps the fade snappy. NEVER
-       add `transform`/`translate` to this list — it would create the lag
-       the user explicitly rejected. */
-    transition: opacity 120ms ease;
-    opacity: 1;
-}
-
-/* Hide on coarse-pointer devices (touch/stylus) and small viewports.
-   Same breakpoint pair used at line 346 (.wordmark mobile pill safety
-   net): `(max-width: 767px), (pointer: coarse)`. Both conditions hide
-   the cursor decoration: there is no "cursor" on touch devices, and the
-   small-viewport check covers non-touch laptops with narrow windows
-   that we want to treat as mobile. `display: none` removes both nodes
-   from the layout tree entirely — JS still attaches mousemove listeners
-   harmlessly (the writes are no-ops on display:none nodes). */
-@media (max-width: 767px), (pointer: coarse) {
-    .cursor-trail,
-    .cursor-emoji {
-        display: none;
-    }
-}
-
-
-/* ==========================================================================
    19. REDUCED MOTION
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
+    .showcase-nav button,
+    .showcase-ticket-cta { transition: none; }
+
     .ym-orga-fl, .ym-orga-fl2, .ym-orga-detail:not([hidden]) { animation: none; }
     .ym-orga-plus { transition: none; }
 
@@ -4850,7 +4652,6 @@ p {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
-    .hero-card-waves { animation: none; opacity: 1; }
     /* Active slide's phone image sits flat in the row — no lift. The JS
        page-scroll-progress block early-returns under prefers-reduced-motion,
        so it never overwrites these values. */
@@ -4859,42 +4660,5 @@ p {
         --active-scale: 1;
     }
 
-    /* Cursor trail (§18) — fully hidden under reduced-motion. The comet
-       fade and the constantly-moving emoji are non-essential decorations;
-       users who opted out of motion get a clean OS cursor with no
-       companion. `display: none` also lets the JS mousemove handler
-       short-circuit cheaply (writes to a display:none element are
-       no-ops), though the JS side is also expected to early-return on
-       `matchMedia('(prefers-reduced-motion: reduce)').matches` — same
-       pattern as the page-scroll-progress block. */
-    .cursor-trail,
-    .cursor-emoji {
-        display: none;
-    }
 
-    /* Launch ticker (§4.5) — kill the horizontal scroll animation and
-       collapse the duplicated track to a single, statically-centred copy
-       of the message. Hides the 2nd/3rd/4th spans (would otherwise queue
-       horizontally with the gap and look like a static repetition). The
-       blanket `* { animation-duration: 0.01ms }` rule above already
-       reduces the keyframe to a near-instant snap; the explicit
-       `animation: none` here removes it entirely (cleaner — no risk of a
-       residual frame at -50% before the 0.01ms shortcut takes effect),
-       and `transform: none + min-width: 0` lets the row sit naturally.
-       `justify-content: center` re-centres the surviving first span. */
-    .launch-ticker {
-        justify-content: center;
-    }
-    .launch-ticker__track {
-        animation: none;
-        transform: none;
-        min-width: 0;
-        /* Reset the seamless-loop padding (only meaningful when the
-           animation runs); leaving it would shift the lone surviving
-           span off-centre under `justify-content: center`. */
-        padding-right: 0;
-    }
-    .launch-ticker__track span:not(:first-child) {
-        display: none;
-    }
 }

@@ -44,6 +44,8 @@
     <link rel="manifest" href="/site.webmanifest">
 
     <link rel="preload" as="font" type="font/woff2" href="fonts/Inter-Variable.woff2" crossorigin>
+    <link rel="preload" as="image" type="image/webp" href="assets/hero-volley/hero-volley-mixed.webp" media="(min-width: 768px)" fetchpriority="high">
+    <link rel="preload" as="image" type="image/webp" href="assets/hero-volley/hero-volley-mixed-mobile.webp" media="(max-width: 767px)" fetchpriority="high">
 
     <link rel="stylesheet" href="styles.min.css">
     <!-- qrcode-generator@1.4.4 (Kazuhiko Arase, MIT) — AUTO-HÉBERGÉ dans le repo
@@ -236,20 +238,6 @@
 </head>
 <body>
 
-<div class="launch-ticker" aria-label="Annonce de lancement Yamatch">
-    <div class="launch-ticker__track" aria-hidden="true">
-        <span>Ne rate aucun tournoi | Télécharge l'app Yamatch</span>
-        <span>Ne rate aucun tournoi | Télécharge l'app Yamatch</span>
-        <span>Ne rate aucun tournoi | Télécharge l'app Yamatch</span>
-        <span>Ne rate aucun tournoi | Télécharge l'app Yamatch</span>
-        <span>Ne rate aucun tournoi | Télécharge l'app Yamatch</span>
-        <span>Ne rate aucun tournoi | Télécharge l'app Yamatch</span>
-        <span>Ne rate aucun tournoi | Télécharge l'app Yamatch</span>
-        <span>Ne rate aucun tournoi | Télécharge l'app Yamatch</span>
-    </div>
-    <p class="launch-ticker__sr">Ne rate aucun tournoi | Télécharge l'app Yamatch</p>
-</div>
-
 <a class="skip-link" href="#top">Aller au contenu</a>
 
 <main id="top">
@@ -265,7 +253,7 @@
                 <path d="M31.91,115.55L4.49,3.96h62.06l12.66,57.5h3.42L137.15,3.96h62.06l-108.66,111.59-31.91,87.68H0l31.91-87.68Z"/>
             </svg>
         </button>
-        <div class="hero-card">
+        <div class="hero-card hero-card--photo">
         <div class="hero-card-inner">
         <!-- NOTE COPYWRITING : H1 baseline sport-agnostique (revert 2026-05-12 du LOT 1 audit SEO). Règle produit : la baseline/slogan reste agnostique pour s'adapter à n'importe quel sport futur ; le positionnement volley vit dans <title>/meta description/JSON-LD/body copy. Le sous-titre garde une formulation neutre (équipe / match). -->
         <h1 class="hero-title"><span class="hero-title-slant">Ton prochain<br class="br-mobile-only"> tournoi t'attend</span></h1>
@@ -293,25 +281,6 @@
         </div><!-- /.hero-card-inner -->
         </div><!-- /.hero-card -->
 
-        <!-- Carte décorative flottante (purement visuelle, aria-hidden). Positionnée
-             en absolute via CSS, côté droit, juste sous les boutons App Store / Google Play.
-             pointer-events: none pour laisser passer les clics sur les CTAs. -->
-        <div class="floating-card-parallax" data-card-id="1" data-parallax-speed="0.07" aria-hidden="true">
-            <div class="floating-card-inner">
-                <article class="floating-card floating-card--notif">
-                    <span class="floating-card__notif-icon" aria-hidden="true">
-                        <img src="assets/icons/apple-touch-icon.png" alt="" width="32" height="32" loading="lazy" decoding="async">
-                    </span>
-                    <div class="floating-card__notif-content">
-                        <header class="floating-card__notif-head">
-                            <span class="floating-card__notif-brand">Nouveau tournoi dispo</span>
-                            <span class="floating-card__notif-time">il y a 2 min</span>
-                        </header>
-                        <p class="floating-card__notif-body">Volley 4×4 · Gymnase Hidalgo · 4,2 km</p>
-                    </div>
-                </article>
-            </div>
-        </div>
     </section>
 
     <!-- === Carrousel d'écrans — pattern hero-carousel (Spendesk-inspired).
@@ -502,6 +471,24 @@
                     <span class="floating-card__score-badge">VICTOIRE 🏆</span>
                 </article>
             </div>
+        </div>
+    </section>
+
+    <!-- Rail alimenté par script.js, masqué jusqu’à réception de données valides. -->
+    <section class="showcase" id="derniers-tournois" data-showcase data-showcase-variant="participant" aria-labelledby="showcaseRailTitle" hidden>
+        <div class="showcase-block" data-showcase-rail-block>
+            <div class="showcase-block-head">
+                <h2 class="showcase-block-title" id="showcaseRailTitle">À l’affiche et déjà joués</h2>
+                <div class="showcase-nav">
+                    <button type="button" data-showcase-prev aria-controls="showcaseRail" aria-label="Tournois précédents">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>
+                    </button>
+                    <button type="button" data-showcase-next aria-controls="showcaseRail" aria-label="Tournois suivants">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+            <ul class="showcase-rail" id="showcaseRail" role="list" tabindex="0" aria-labelledby="showcaseRailTitle" data-showcase-rail></ul>
         </div>
     </section>
 
@@ -743,12 +730,6 @@
 </aside>
 
 <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
-
-<!-- Cursor trail : volleyball emoji rigidly following the mouse + canvas-rendered
-     lime comet behind. Desktop only (CSS hide on coarse pointer / reduced-motion).
-     System cursor stays visible. JS in script.js handles mousemove + rAF rendering. -->
-<canvas class="cursor-trail" aria-hidden="true"></canvas>
-<span class="cursor-emoji" aria-hidden="true">🏐</span>
 
 </body>
 </html>

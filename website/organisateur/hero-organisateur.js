@@ -41,7 +41,7 @@
   const links = Array.from(card.querySelectorAll('.org-hero-btn'));
   const MAX_LIFT = 48;
   const SCROLL_FACTOR = 0.12;
-  // Reserve 12px plus pointer displacements and the button’s 1.03 scale.
+  // Preserve clearance for the magnetic buttons and their 1.03 scale.
   const SAFE_GAP = 28;
   let maxLift = 0;
   let frame = 0;
@@ -58,15 +58,13 @@
   }
   function measure() {
     if (phones && buttons) {
-      // Layout offsets exclude entrance animations and the parallax transition.
+      // Layout offsets exclude entrance animations and the scroll-lift transition.
       const gap = phones.offsetTop - buttons.offsetTop - buttons.offsetHeight;
       maxLift = Math.max(0, Math.min(MAX_LIFT, gap - SAFE_GAP));
     }
     schedule();
   }
   function resetPointer() {
-    card.style.setProperty('--mx', '0');
-    card.style.setProperty('--my', '0');
     links.forEach((link) => {
       link.style.translate = '';
       link.style.scale = '';
@@ -87,14 +85,6 @@
   }
   if (document.fonts) document.fonts.ready.then(measure);
 
-  card.addEventListener('pointermove', (event) => {
-    if (!pointerEnabled()) return;
-    const rect = card.getBoundingClientRect();
-    const unit = (position, start, size) => Math.max(-1, Math.min(1, (position - start) / size * 2 - 1));
-    card.style.setProperty('--mx', unit(event.clientX, rect.left, rect.width).toFixed(3));
-    card.style.setProperty('--my', unit(event.clientY, rect.top, rect.height).toFixed(3));
-  });
-  card.addEventListener('pointerleave', resetPointer);
   links.forEach((link) => {
     let restRect;
     link.addEventListener('pointerenter', () => {

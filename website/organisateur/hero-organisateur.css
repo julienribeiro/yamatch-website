@@ -21,7 +21,7 @@
 /* ==========================================================================
    Hero Organisateur (variante B) — à charger APRÈS styles.css
    Réutilise : .hero, .wordmark, .hero-title, .hero-title-slant, .hero-subtitle,
-   .hero-buttons, .btn-glass, .glass-*, .launch-ticker, @keyframes cardEntrance
+   .hero-buttons, .btn-glass, .glass-*, @keyframes cardEntrance
    ========================================================================== */
 
 /* ---- Carte noire ---- */
@@ -36,8 +36,6 @@
   display: flex;
   align-items: center;
   animation: cardEntrance 540ms cubic-bezier(0.2, 0.8, 0.2, 1) 120ms backwards;
-  --mx: 0;
-  --my: 0;
 }
 
 /* Calques décoratifs */
@@ -135,16 +133,16 @@
   transform-origin: bottom center; opacity: 0.92;
 }
 .org-hero-phone--left {
-  translate: calc(-50% - 260px + var(--mx) * -22px) calc(var(--lift) * -0.6 + var(--my) * -12px);
+  translate: calc(-50% - 260px) calc(var(--lift) * -0.6);
   rotate: -9deg;
 }
 .org-hero-phone--right {
-  translate: calc(-50% + 260px + var(--mx) * -22px) calc(var(--lift) * -0.6 + var(--my) * -12px);
+  translate: calc(-50% + 260px) calc(var(--lift) * -0.6);
   rotate: 9deg;
 }
 .org-hero-phone--main {
   position: relative; z-index: 2;
-  translate: calc(var(--mx) * -10px) calc(var(--lift) * -1 + var(--my) * -6px);
+  translate: 0 calc(var(--lift) * -1);
 }
 .org-hero-phone--main { filter: drop-shadow(var(--org-shadow-phone)); }
 
@@ -190,7 +188,6 @@
 .org-page .org-hero-btn:focus-visible { outline-color: var(--color-accent); outline-offset: 5px; }
 .org-hero-phone { pointer-events: none; }
 .org-hero-phone img { user-select: none; }
-.org-page .launch-ticker:hover .launch-ticker__track { animation-play-state: paused; }
 @media (max-width: 767px) {
   .org-page .org-hero { padding-block: var(--mobile-hero-card-margin-block); padding-inline: var(--mobile-hero-card-margin); }
   .org-hero-card { min-height: calc(100svh - 2 * var(--mobile-hero-card-margin-block)); }

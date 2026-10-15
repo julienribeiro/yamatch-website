@@ -1,6 +1,9 @@
 (function () {
     'use strict';
 
+    // The organiser route owns its wordmark, FAQ and footer controllers.
+    if (document.body.classList.contains('org-page')) return;
+
     // Dynamic copyright year
     const yearEl = document.getElementById('copyrightYear');
     if (yearEl) yearEl.textContent = String(new Date().getFullYear());
@@ -74,11 +77,6 @@
         const hero = document.querySelector('.hero');
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         const mobileQuery = window.matchMedia('(max-width: 767px)');
-        // Declared for cohesion with the waves block below (which gates its rAF loop on
-        // coarse pointer). The page-scroll writer does NOT branch on this — its iOS
-        // jank fix is to drop ALL layout reads from the per-frame path on every device,
-        // not just touch ones, so the savings apply uniformly.
-        const coarsePointerQuery = window.matchMedia('(pointer: coarse)');
 
         // Reduced-motion path: the page-scroll writer below early-returns on the
         // `!reduceMotion` guard, so `--scroll` stays at its CSS default (0px) and
@@ -289,7 +287,7 @@
 
                 // `cachedLiftMagnitude` is `Math.max(0, -cachedBaseLift)` (positive px,
                 // see comment on the cache declaration). `cardShrink` is consumed by the
-                // VISUAL-ONLY `clip-path` on `.hero-card::before` and `.hero-card-waves`,
+                // VISUAL-ONLY `clip-path` on `.hero-card::before`,
                 // and mirrored 1:1 by `--hero-flow-collapse` so the carousel rises in
                 // lockstep with the lime fill. 0.8 factor: shrink stays slightly below
                 // lift travel so the card never visually collapses past the buttons.
@@ -352,361 +350,6 @@
             // are populated for the very first `updateScroll` tick scheduled below.
             measureScrollAnimationGeometry();
             requestAnimationFrame(updateScroll);
-        }
-    }
-
-    // === Ambient wave lines on the lime hero card ===
-    // Two crossing sets of diagonal SVG <path>s (+45° and -45°) whose vertex (x, y)
-    // coordinates drift via 2D pseudo-noise (ambient "wave" displacement) AND react to
-    // the cursor (per-point spring "cursor" displacement, ported from the source
-    // wave-background React component). Tuned subtler than the source so the ripple
-    // stays editorial — small influence radius, gentle push factor, low clamp.
-    //
-    // Pseudo-noise: a sin/cos mix, NOT true simplex. At our motion scale (a few pixels of
-    // displacement per vertex over multi-second cycles) the visual difference is imperceptible
-    // and we save an external dependency / build step.
-    //
-    // Performance: paused via IntersectionObserver when the hero card is off-screen, since
-    // the hero unsticks into the FAQ ~270vh down and the user spends most of their session
-    // outside the card after that point. Mouse listeners stay live (cheap) but their state
-    // simply isn't read while the loop is paused.
-    //
-    // Coarse-pointer (touch) devices: the rAF loop, the `touchmove` listener (whose
-    // per-event `card.getBoundingClientRect()` was a confirmed iOS jank cause during
-    // vertical scroll), and the IntersectionObserver are ALL skipped. The waves render
-    // exactly once, then become a static decorative pattern — the cursor reactivity
-    // wouldn't apply on touch anyway (no hover), so the trade is pure UX-positive on
-    // mobile: no jank, identical visual appearance at rest.
-    {
-        const card = document.querySelector('.hero-card');
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
-        // Animation runs only when (a) the user hasn't asked for reduced motion AND
-        // (b) the device has a fine pointer (mouse / trackpad). On touch devices the
-        // animation collapses to a single one-shot render of the wavy frame — the
-        // visuals stay editorial, but no per-frame work runs and no listeners are
-        // attached, eliminating the iOS Safari jank surface.
-        const shouldAnimateWaves = !reduceMotion && !coarsePointer;
-
-        if (card) {
-            const SVG_NS = 'http://www.w3.org/2000/svg';
-            const svg = document.createElementNS(SVG_NS, 'svg');
-            svg.setAttribute('class', 'hero-card-waves');
-            svg.setAttribute('preserveAspectRatio', 'none');
-            svg.setAttribute('aria-hidden', 'true');
-            svg.setAttribute('focusable', 'false');
-            // Insert as the FIRST child so .hero-card-inner remains in normal flow above it.
-            card.insertBefore(svg, card.firstChild);
-
-            // Tunables — see commit message for rationale.
-            const LINE_GAP = 28;       // perpendicular spacing between adjacent diagonal lines (px)
-            const POINT_GAP = 32;      // along-line spacing between adjacent vertices on a line (px)
-            const AMP_X = 6;           // horizontal noise amplitude (px)
-            const AMP_Y = 3;           // vertical noise amplitude (px)
-            const FREQ_X = 0.004;      // time × FREQ_X feeds the x-noise phase (half of source's 0.008)
-            const FREQ_Y = 0.0015;     // time × FREQ_Y feeds the y-noise phase (half of source's 0.003)
-            const SPATIAL_X = 0.012;   // spatial frequency along x — adjacent lines share similar phase
-            const SPATIAL_Y = 0.018;   // spatial frequency along y
-
-            // Cursor-reactivity tunables — dialed below the source's defaults to keep the
-            // ripple subtle / editorial. Source defaults shown in comments for reference.
-            const CURSOR_RADIUS_MIN = 120;  // source: 175 — smaller circle of effect
-            const CURSOR_PUSH = 0.00020;    // source: 0.00035 — gentler displacement
-            const CURSOR_CLAMP = 25;        // source: 50 — half the maximum displacement
-            const CURSOR_DAMPING = 0.95;    // source: 0.95 — keep
-            const CURSOR_RESTORE = 0.01;    // source: 0.01 — keep
-            const CURSOR_SMOOTH = 0.1;      // source: 0.1 — mouse position smoothing
-
-            const SQRT2 = Math.SQRT2;
-            const INV_SQRT2 = Math.SQRT1_2;
-
-            // Mouse state, in card-local coordinates.
-            //   x, y    — raw mouse position (latest event)
-            //   sx, sy  — smoothed mouse position (eases toward x/y at CURSOR_SMOOTH)
-            //   lx, ly  — last-frame x/y, used to compute per-frame velocity
-            //   vs      — smoothed velocity magnitude (clamped to 100), feeds push strength
-            //   a       — angle of motion (atan2 of last delta), feeds push direction
-            const mouse = { x: 0, y: 0, sx: 0, sy: 0, lx: 0, ly: 0, vs: 0, a: 0, hasMoved: false };
-
-            /** lines: Array<Array<{ x, y, wave: { x, y }, cursor: { x, y, vx, vy } }>>
-             *  Per-point state persists across frames so the cursor spring can integrate. */
-            let lines = [];
-            let paths = [];           // SVG <path> nodes, one per line, parallel to `lines`
-            let width = 0;
-            let height = 0;
-
-            function rebuildLines() {
-                const rect = card.getBoundingClientRect();
-                width = rect.width;
-                height = rect.height;
-                if (width <= 0 || height <= 0) {
-                    return;
-                }
-                svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
-                svg.setAttribute('width', String(width));
-                svg.setAttribute('height', String(height));
-
-                // Wipe and re-build the grids. Re-using the existing <path> nodes when count
-                // matches would save a few allocations on resize, but resize is rare and the
-                // simpler approach avoids subtle bugs around stale node count.
-                while (svg.firstChild) svg.removeChild(svg.firstChild);
-                lines = [];
-                paths = [];
-
-                // Factory: every fresh point starts with zeroed wave + cursor displacement.
-                const makePoint = (x, y) => ({
-                    x, y,
-                    wave: { x: 0, y: 0 },
-                    cursor: { x: 0, y: 0, vx: 0, vy: 0 },
-                });
-
-                // Perpendicular distance between adjacent lines = LINE_GAP. For +45° lines
-                // parameterized by k = y − x (constant along the line), the perpendicular
-                // distance between k and k+Δk is |Δk|/√2. So Δk = LINE_GAP × √2 keeps adjacent
-                // lines exactly LINE_GAP apart in screen space. Same Δk applies to the −45°
-                // family parameterized by k = y + x.
-                const dK = LINE_GAP * SQRT2;
-                // Along-line step in x (or in distance from line start). For (x, x+k) the
-                // arc-length per unit x is √2, so dx = POINT_GAP/√2 yields POINT_GAP along-line.
-                const dX = POINT_GAP * INV_SQRT2;
-
-                // --- Set A: +45° lines (top-left to bottom-right direction). y = x + k.
-                // k ∈ [−width, height]. Start k at the smallest multiple of dK that ≥ −width
-                // so all lines are aligned to a consistent grid offset.
-                const kAStart = Math.ceil(-width / dK) * dK;
-                for (let k = kAStart; k <= height; k += dK) {
-                    // Line clipped to card: y = x + k, with x ∈ [max(0, −k), min(width, height − k)].
-                    const xStart = Math.max(0, -k);
-                    const xEnd = Math.min(width, height - k);
-                    if (xEnd <= xStart) continue;
-
-                    const points = [];
-                    for (let x = xStart; x < xEnd; x += dX) {
-                        points.push(makePoint(x, x + k));
-                    }
-                    // Always pin the final point to the exact line-end so coverage reaches
-                    // the card edge regardless of dX rounding.
-                    points.push(makePoint(xEnd, xEnd + k));
-                    lines.push(points);
-                }
-
-                // --- Set B: −45° lines (top-right to bottom-left direction). y = −x + k, i.e. x + y = k.
-                // k ∈ [0, width + height].
-                const kBStart = Math.ceil(0 / dK) * dK; // 0
-                for (let k = kBStart; k <= width + height; k += dK) {
-                    // Line clipped: y = k − x, with x ∈ [max(0, k − height), min(width, k)].
-                    const xStart = Math.max(0, k - height);
-                    const xEnd = Math.min(width, k);
-                    if (xEnd <= xStart) continue;
-
-                    const points = [];
-                    for (let x = xStart; x < xEnd; x += dX) {
-                        points.push(makePoint(x, k - x));
-                    }
-                    points.push(makePoint(xEnd, k - xEnd));
-                    lines.push(points);
-                }
-
-                // One <path> per line (both sets share the same styling).
-                for (let i = 0; i < lines.length; i++) {
-                    const path = document.createElementNS(SVG_NS, 'path');
-                    path.setAttribute('stroke', 'rgba(16, 24, 40, 0.10)');
-                    path.setAttribute('stroke-width', '1');
-                    path.setAttribute('fill', 'none');
-                    svg.appendChild(path);
-                    paths.push(path);
-                }
-            }
-
-            // 2D pseudo-noise in the range ~[-1, 1]. Combining three trig terms with mutually
-            // incommensurate frequencies suppresses the visible periodicity that a single sine
-            // would have. Cheap (3 sins per call) and smooth (C∞).
-            function noise2D(x, y, t) {
-                const a = Math.sin(x * SPATIAL_X + t * FREQ_X);
-                const b = Math.cos(y * SPATIAL_Y - t * FREQ_Y);
-                const c = Math.sin((x + y) * 0.006 + t * (FREQ_X + FREQ_Y) * 0.5);
-                return (a + b + c) / 3;
-            }
-
-            function buildPathD(points, useDisplacement) {
-                if (points.length === 0) return '';
-                const first = points[0];
-                const fx = useDisplacement ? first.x + first.wave.x + first.cursor.x : first.x;
-                const fy = useDisplacement ? first.y + first.wave.y + first.cursor.y : first.y;
-                let d = `M ${fx.toFixed(2)} ${fy.toFixed(2)}`;
-                for (let i = 1; i < points.length; i++) {
-                    const p = points[i];
-                    const px = useDisplacement ? p.x + p.wave.x + p.cursor.x : p.x;
-                    const py = useDisplacement ? p.y + p.wave.y + p.cursor.y : p.y;
-                    d += ` L ${px.toFixed(2)} ${py.toFixed(2)}`;
-                }
-                return d;
-            }
-
-            function renderFrame(time) {
-                // Once-per-frame mouse smoothing + velocity computation. Mirrors the source's
-                // useMouse hook: smoothed position eases toward raw, velocity magnitude is the
-                // exponentially-smoothed hypot of the per-frame delta, and `a` is the angle of
-                // the latest delta. `vs` is clamped to 100 so a fast flick doesn't blow out
-                // the per-point push.
-                mouse.sx += (mouse.x - mouse.sx) * CURSOR_SMOOTH;
-                mouse.sy += (mouse.y - mouse.sy) * CURSOR_SMOOTH;
-                const mdx = mouse.x - mouse.lx;
-                const mdy = mouse.y - mouse.ly;
-                mouse.vs += (Math.hypot(mdx, mdy) - mouse.vs) * CURSOR_SMOOTH;
-                if (mouse.vs > 100) mouse.vs = 100;
-                mouse.lx = mouse.x;
-                mouse.ly = mouse.y;
-                if (mdx !== 0 || mdy !== 0) {
-                    mouse.a = Math.atan2(mdy, mdx);
-                }
-
-                for (let i = 0; i < lines.length; i++) {
-                    const points = lines[i];
-                    for (let j = 0; j < points.length; j++) {
-                        const p = points[j];
-
-                        // Wave (ambient noise) — two independent samples so points sweep in 2D.
-                        const nx = noise2D(p.x, p.y, time);
-                        const ny = noise2D(p.x + 1000, p.y + 1000, time);
-                        p.wave.x = nx * AMP_X;
-                        p.wave.y = ny * AMP_Y;
-
-                        // Cursor spring — only push if the user has moved at least once
-                        // (otherwise mouse.sx/sy are 0,0 and every point near the top-left
-                        // corner gets a phantom push on page load).
-                        if (mouse.hasMoved) {
-                            const dx = p.x - mouse.sx;
-                            const dy = p.y - mouse.sy;
-                            const d = Math.hypot(dx, dy);
-                            const l = Math.max(CURSOR_RADIUS_MIN, mouse.vs);
-                            if (d < l) {
-                                const s = 1 - d / l;
-                                const f = Math.cos(d * 0.001) * s;
-                                p.cursor.vx += Math.cos(mouse.a) * f * l * mouse.vs * CURSOR_PUSH;
-                                p.cursor.vy += Math.sin(mouse.a) * f * l * mouse.vs * CURSOR_PUSH;
-                            }
-                        }
-                        // Restoration toward 0 + damping — the spring feel.
-                        p.cursor.vx += (0 - p.cursor.x) * CURSOR_RESTORE;
-                        p.cursor.vy += (0 - p.cursor.y) * CURSOR_RESTORE;
-                        p.cursor.vx *= CURSOR_DAMPING;
-                        p.cursor.vy *= CURSOR_DAMPING;
-                        p.cursor.x += p.cursor.vx;
-                        p.cursor.y += p.cursor.vy;
-                        if (p.cursor.x > CURSOR_CLAMP) p.cursor.x = CURSOR_CLAMP;
-                        else if (p.cursor.x < -CURSOR_CLAMP) p.cursor.x = -CURSOR_CLAMP;
-                        if (p.cursor.y > CURSOR_CLAMP) p.cursor.y = CURSOR_CLAMP;
-                        else if (p.cursor.y < -CURSOR_CLAMP) p.cursor.y = -CURSOR_CLAMP;
-                    }
-                    paths[i].setAttribute('d', buildPathD(points, true));
-                }
-            }
-
-            // Initial build + initial frame. Under reduced-motion we render straight diagonals
-            // directly from each point's untransformed (x, y) — `noise2D(x, y, 0)` still has
-            // spatial-only terms that displace by up to ~5.5 px, which would render a "frozen
-            // wavy moment" rather than the spec's straight-line fallback.
-            rebuildLines();
-            if (reduceMotion) {
-                for (let i = 0; i < paths.length; i++) {
-                    paths[i].setAttribute('d', buildPathD(lines[i], false));
-                }
-            } else {
-                renderFrame(0);
-            }
-
-            // Resize: rebuild the grid against the new card dimensions. Throttled with rAF
-            // so a drag-resize doesn't trigger N rebuilds per second. Active in all modes.
-            //  - Reduced-motion: redraw with `useDisplacement: false` (straight lines).
-            //  - Coarse-pointer (no animation loop): redraw the frozen wavy frame
-            //    (`renderFrame(0)`) so the new grid actually shows pixels — without
-            //    this, `rebuildLines` would create empty `<path>` nodes after resize.
-            //  - Animated: the rAF tick will paint the new grid on its next iteration,
-            //    so no explicit redraw is needed here.
-            let resizePending = false;
-            window.addEventListener('resize', () => {
-                if (resizePending) return;
-                resizePending = true;
-                requestAnimationFrame(() => {
-                    rebuildLines();
-                    if (reduceMotion) {
-                        for (let i = 0; i < paths.length; i++) {
-                            paths[i].setAttribute('d', buildPathD(lines[i], false));
-                        }
-                    } else if (!shouldAnimateWaves) {
-                        // Coarse-pointer (touch) — no animation loop is running, so we
-                        // need to repaint the static wavy frame ourselves after the
-                        // grid is rebuilt against the new card dimensions.
-                        renderFrame(0);
-                    }
-                    resizePending = false;
-                });
-            }, { passive: true });
-
-            if (shouldAnimateWaves) {
-                // Mouse + touch tracking — convert page/viewport coordinates into card-local
-                // coordinates each event. The card sits in normal flow, so getBoundingClientRect
-                // is the safe one-shot conversion as the user scrolls. Cost is negligible at
-                // mousemove rate. Listeners on `window` so tracking continues over child elements.
-                //
-                // Note: `shouldAnimateWaves` is gated on `!coarsePointer`, so this entire block
-                // (including the `touchmove` listener whose per-event `getBoundingClientRect`
-                // was the iOS jank source) is skipped on touch-primary devices. The `touchmove`
-                // listener below is therefore reachable only on hybrid devices that report a
-                // fine pointer AND fire touch events (e.g. Surface Pro with stylus + touch).
-                const updateMouseFromEvent = (clientX, clientY) => {
-                    const rect = card.getBoundingClientRect();
-                    mouse.x = clientX - rect.left;
-                    mouse.y = clientY - rect.top;
-                    if (!mouse.hasMoved) {
-                        // Seed the smoothed/last positions on first move so the spring doesn't
-                        // see a giant initial delta from (0,0).
-                        mouse.sx = mouse.x;
-                        mouse.sy = mouse.y;
-                        mouse.lx = mouse.x;
-                        mouse.ly = mouse.y;
-                        mouse.hasMoved = true;
-                    }
-                };
-
-                window.addEventListener('mousemove', (e) => {
-                    updateMouseFromEvent(e.clientX, e.clientY);
-                }, { passive: true });
-
-                window.addEventListener('touchmove', (e) => {
-                    if (e.touches.length === 0) return;
-                    const t = e.touches[0];
-                    updateMouseFromEvent(t.clientX, t.clientY);
-                }, { passive: true });
-
-                // Animation loop, gated by visibility via IntersectionObserver.
-                let rafId = null;
-                let isVisible = true;
-                const startTime = performance.now();
-
-                const tick = (now) => {
-                    renderFrame(now - startTime);
-                    rafId = isVisible ? requestAnimationFrame(tick) : null;
-                };
-
-                const observer = new IntersectionObserver((entries) => {
-                    for (const entry of entries) {
-                        isVisible = entry.isIntersecting;
-                        if (isVisible && rafId === null) {
-                            rafId = requestAnimationFrame(tick);
-                        } else if (!isVisible && rafId !== null) {
-                            cancelAnimationFrame(rafId);
-                            rafId = null;
-                        }
-                    }
-                }, { threshold: 0 });
-                observer.observe(card);
-
-                // Kick off the loop. IntersectionObserver also fires once on observe with the
-                // initial visibility, but it's async — starting now avoids one rAF of blank frame.
-                rafId = requestAnimationFrame(tick);
-            }
         }
     }
 
@@ -981,318 +624,11 @@
 })();
 
 /* ==========================================================================
-   CURSOR TRAIL — volleyball emoji rigid-follow + canvas spring-chain trails
-   --------------------------------------------------------------------------
-   Self-contained IIFE (kept outside the main script.js IIFE above so it can
-   early-return cheaply on touch / mobile / reduced-motion without affecting
-   any other block). Pairs with index.html ~line 731–732:
-     <canvas class="cursor-trail" aria-hidden="true"></canvas>
-     <span class="cursor-emoji" aria-hidden="true">🏐</span>
-   and styles.css §18 (.cursor-trail, .cursor-emoji — full-viewport canvas
-   pinned via position:fixed/inset:0; emoji pinned at top:0/left:0 with an
-   initial off-screen translate3d(-100px, -100px, 0)).
-
-   Behavior:
-     1. Emoji rigid-follow (UNCHANGED from the prior comet implementation):
-        every `mousemove`, write `transform: translate3d(x, y, 0)
-        translate(-50%, -50%)` directly. The first translate3d is in
-        absolute px (top-left lands at the cursor); the second translate is
-        in % of the emoji's own size (recenters by half its width/height) —
-        the emoji is thus centered exactly on the cursor hot-spot. NO lerp,
-        NO easing — CSS guarantees no `transform` transition on .cursor-emoji
-        (only `opacity` is transitioned, 120ms ease, used for show/hide
-        on document mouseenter/mouseleave).
-     2. Spring-chain trails (NEW, replaces the previous polyline comet):
-        TRAILS_COUNT independent chains chase the cursor. Each chain is a
-        sequence of CHAIN_SIZE mass-spring nodes — the first node is
-        attracted to the cursor `pos`, and each subsequent node is attracted
-        to its predecessor. Per-tick, the spring constant decays along the
-        chain (`spring *= TENSION`), and node velocities receive both a
-        DAMPENING coupling from the predecessor and a per-node FRICTION
-        multiplier. The result is a soft, calligraphic tendril that lags
-        behind cursor motion and oscillates on stops. Each chain has small
-        jitter on `spring` (±0.05) and `friction` (±0.005) so the 50 chains
-        don't move in lockstep — they fan out into a brush-like cloud.
-        Rendering: smooth quadratic curves through the node positions
-        (mid-point trick) so segment junctions are continuous, with a single
-        `beginPath` / `stroke` per chain.
-
-   Tuning (chosen 2026-05-13 for the Yamatch épuré aesthetic on a near-white
-   background — see memory/feedback_website_aesthetic.md):
-     - TRAILS_COUNT = 50 (vs 80 in the original designali.in component).
-       Dropped from 80 because Yamatch already runs concurrent rAF loops
-       (page-scroll writer, waves, floating-cards parallax) — 50×30 = 1500
-       spring-node updates per frame leaves headroom on integrated GPUs.
-     - CHAIN_SIZE = 30 (tuned 2026-05-13 after user test, down from 50).
-       Reducing node count visibly shortens each tendril — the previous 50
-       value produced trails that read as too long / too obtrusive; 30
-       lands at a more contained, calligraphic look while still oscillating
-       legibly on cursor stops.
-     - LINE_WIDTH = 2 (vs 10 in the original). Subtle on light bg — at
-       LINE_WIDTH = 3 the trails read as "obtrusive". 50 overlapping chains
-       at LINE_WIDTH = 2 still produce a clear dense head near the cursor.
-     - STROKE_ALPHA = 0.04 over `rgba(16, 24, 40, …)` (Yamatch
-       `--color-text-primary` #101828, same RGB as the prior comet). The
-       original used additive `lighter` blend with `hsla(rainbow,…,0.025)`
-       on a black bg — useless on Yamatch's near-white bg. We use
-       `source-over` with a slightly elevated alpha (0.04 vs 0.025) to
-       stay perceptible without dominating. The éepuré aesthetic memory
-       calls for "subtle decoration" — 0.04 is at the upper edge of that.
-     - SPRING base = 0.4, FRICTION = 0.5, DAMPENING = 0.025, TENSION = 0.99.
-       All copied verbatim from the designali.in source — these are the
-       values that define the recognizable "look" of the effect.
-
-   Init strategy: LAZY. The chains are NOT created until the first
-   `mousemove` event. This avoids a one-shot "explosion" from the centre of
-   the viewport at page load (which would happen if we anchored all 50
-   chains at innerWidth/2, innerHeight/2 and started the rAF loop
-   immediately — the first cursor position arriving on a corner would yank
-   1500 nodes from the centre in one frame). With lazy init, the page is
-   visually quiet until the user moves the cursor, and the chains seed
-   directly at the cursor's first known position.
-
-   Performance notes:
-     - rAF loop runs continuously once seeded. Per-frame cost is dominated
-       by TRAILS_COUNT × CHAIN_SIZE spring updates + TRAILS_COUNT canvas
-       strokes. With current tuning, ~1500 arithmetic updates + 50 strokes
-       per 16.6ms frame, well within budget on modern desktop hardware.
-     - mousemove listener registered { passive: true } — NO preventDefault
-       (the original component's preventDefault was removed: it would
-       suppress text selection across the entire page).
-     - DPR scaling: canvas backing store is innerWidth*dpr × innerHeight*dpr
-       and ctx.setTransform(dpr, 0, 0, dpr, 0, 0) is RESET (not multiplied)
-       on every resize so consecutive resizes don't stack scale factors.
-     - No `visibilitychange` pause — the original component had a buggy
-       handler (sic, it set `running = true` on blur). We omit it; the
-       browser will throttle rAF on hidden tabs natively.
-
-   Defensive early-return: matches the CSS hide rules in styles.css §18
-   (max-width: 767px, pointer: coarse, prefers-reduced-motion: reduce) so
-   we don't attach listeners or schedule rAF on devices where the
-   decoration is hidden anyway. These guards also let us drop all
-   `touchstart` / `touchmove` handling from the source component: they
-   would never fire under the desktop-only gate.
-   ========================================================================== */
-(function () {
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
-    const narrowViewport = window.matchMedia('(max-width: 767px)').matches;
-    if (reduceMotion || coarsePointer || narrowViewport) return;
-
-    const canvas = document.querySelector('.cursor-trail');
-    const emoji = document.querySelector('.cursor-emoji');
-    if (!canvas || !emoji) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // === Tunable constants ===
-    // See header comment for the rationale behind each value.
-    const TRAILS_COUNT = 50;       // number of independent spring chains
-    const CHAIN_SIZE = 30;         // nodes per chain — tuned 2026-05-13 (down from 50) after user test for shorter, more contained tendrils
-    const SPRING_BASE = 0.4;       // base spring stiffness (per-chain jitter ±0.05)
-    const FRICTION_BASE = 0.5;     // per-node velocity damping (per-chain jitter ±0.005)
-    const DAMPENING = 0.025;       // intra-chain velocity coupling (predecessor → node)
-    const TENSION = 0.99;          // spring decay along the chain (multiplied each node)
-    const LINE_WIDTH = 2;          // px stroke width — subtle on light bg
-    const STROKE_ALPHA = 0.04;     // alpha for the monochrome stroke colour
-    const STROKE_R = 16;           // Yamatch black RGB — matches --color-text-primary #101828
-    const STROKE_G = 24;
-    const STROKE_B = 40;
-    const STROKE_STYLE = 'rgba(' + STROKE_R + ', ' + STROKE_G + ', ' + STROKE_B + ', ' + STROKE_ALPHA + ')';
-
-    // === Canvas DPR-aware sizing ===
-    // NOTE: assigning to `canvas.width` / `canvas.height` not only resizes
-    // the backing store but ALSO resets the 2D context state to defaults
-    // (strokeStyle → black, lineWidth → 1, globalCompositeOperation →
-    // source-over, transform → identity). We therefore re-apply our style
-    // setup AFTER each resize, not just once at IIFE init.
-    let dpr = window.devicePixelRatio || 1;
-    const resize = () => {
-        dpr = window.devicePixelRatio || 1;
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        canvas.width = Math.round(w * dpr);
-        canvas.height = Math.round(h * dpr);
-        canvas.style.width = w + 'px';
-        canvas.style.height = h + 'px';
-        // setTransform RESETS the matrix (vs scale() which multiplies). Critical:
-        // a second resize without this would stack dpr × dpr scales on the
-        // existing transform, blowing up coordinates exponentially.
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        // Re-apply stable style state after the implicit context reset above.
-        // These never change during the loop's lifetime, so we set them here
-        // (on resize) rather than per-frame inside render().
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.strokeStyle = STROKE_STYLE;
-        ctx.lineWidth = LINE_WIDTH;
-    };
-    resize();
-    window.addEventListener('resize', resize, { passive: true });
-
-    // === Spring-chain primitives ===
-    // `pos` is the SHARED target every Line.update reads. It is mutated on
-    // each mousemove (no buffering — instantaneous read). All Node positions
-    // are viewport-relative px (matches `e.clientX` / `e.clientY` directly).
-    const pos = { x: 0, y: 0 };
-
-    function Node() {
-        this.x = 0;
-        this.y = 0;
-        this.vx = 0;
-        this.vy = 0;
-    }
-
-    // A Line is one spring chain. `init(spring)` clones the requested base
-    // stiffness with a small per-chain randomisation so the TRAILS_COUNT
-    // chains don't move in lockstep. All nodes start at the current `pos`
-    // (i.e. at the cursor's first-known position) — the chain visibly
-    // unspools from that point on first cursor movement.
-    function Line(opts) {
-        this.spring = opts.spring + 0.1 * Math.random() - 0.05;   // ±0.05 jitter
-        this.friction = FRICTION_BASE + 0.01 * Math.random() - 0.005; // ±0.005 jitter
-        this.nodes = [];
-        for (let i = 0; i < CHAIN_SIZE; i++) {
-            const n = new Node();
-            n.x = pos.x;
-            n.y = pos.y;
-            this.nodes.push(n);
-        }
-    }
-
-    Line.prototype.update = function () {
-        // First node tracks the cursor directly via spring force.
-        let spring = this.spring;
-        const first = this.nodes[0];
-        first.vx += (pos.x - first.x) * spring;
-        first.vy += (pos.y - first.y) * spring;
-
-        // Subsequent nodes track their predecessor, with the spring decaying
-        // along the chain (so the tail feels looser than the head). Each node
-        // also picks up a fraction of its predecessor's velocity (DAMPENING)
-        // for smoother propagation. Friction applies uniformly per node.
-        let prev;
-        for (let i = 0, n; i < this.nodes.length; i++) {
-            n = this.nodes[i];
-            if (i > 0) {
-                prev = this.nodes[i - 1];
-                n.vx += (prev.x - n.x) * spring;
-                n.vy += (prev.y - n.y) * spring;
-                n.vx += prev.vx * DAMPENING;
-                n.vy += prev.vy * DAMPENING;
-            }
-            n.vx *= this.friction;
-            n.vy *= this.friction;
-            n.x += n.vx;
-            n.y += n.vy;
-            spring *= TENSION;
-        }
-    };
-
-    Line.prototype.draw = function () {
-        // Smooth quadratic curve through the node positions using the
-        // mid-point technique: control point = node i, end point = midpoint
-        // of nodes i and i+1. This guarantees C¹-continuous junctions
-        // between segments with only one quadraticCurveTo per node.
-        const nodes = this.nodes;
-        let x = nodes[0].x;
-        let y = nodes[0].y;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        let i;
-        const last = nodes.length - 2;
-        for (i = 1; i < last; i++) {
-            const a = nodes[i];
-            const b = nodes[i + 1];
-            x = 0.5 * (a.x + b.x);
-            y = 0.5 * (a.y + b.y);
-            ctx.quadraticCurveTo(a.x, a.y, x, y);
-        }
-        // Final segment: terminate at the actual last node position rather
-        // than the midpoint, so the tail tip doesn't get clipped short.
-        const a = nodes[i];
-        const b = nodes[i + 1];
-        ctx.quadraticCurveTo(a.x, a.y, b.x, b.y);
-        ctx.stroke();
-    };
-
-    // === Lazy-init state ===
-    // `lines` is created on first mousemove (see comment in header for the
-    // rationale — avoids a centre-of-viewport explosion at page load).
-    let lines = null;
-
-    const initLines = () => {
-        lines = [];
-        for (let i = 0; i < TRAILS_COUNT; i++) {
-            lines.push(new Line({ spring: SPRING_BASE }));
-        }
-    };
-
-    // === Mouse handlers ===
-    window.addEventListener('mousemove', (e) => {
-        const x = e.clientX;
-        const y = e.clientY;
-        // Update the shared cursor target — every Line.update reads this
-        // on its next tick. No buffering, no FIFO drain.
-        pos.x = x;
-        pos.y = y;
-        // Lazy seed: create the 50 chains anchored at the current cursor
-        // position the first time we hear from the cursor.
-        if (lines === null) initLines();
-        // Rigid emoji follow — direct write, zero interpolation. CSS .cursor-emoji
-        // does NOT transition `transform` (only `opacity`), so this lands on
-        // the next compositor frame with no easing.
-        // Centrer l'emoji sur la position EXACTE du curseur (hot-spot).
-        // translate3d positionne le top-left de l'emoji à (x, y), puis translate(-50%, -50%)
-        // le décale en arrière de la moitié de sa propre taille → emoji centré pile sur (x, y).
-        emoji.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0) translate(-50%, -50%)';
-    }, { passive: true });
-
-    // Hide emoji when the cursor leaves the document (window blur, system
-    // menu, switch tab via keyboard, etc.). Re-show on mouseenter. Unlike
-    // the previous comet implementation, we do NOT reset the spring state
-    // here — the chains just continue to oscillate in place and settle
-    // naturally (which reads as a pleasant lingering breath rather than
-    // an abrupt cut).
-    document.addEventListener('mouseleave', () => {
-        emoji.style.opacity = '0';
-    });
-    document.addEventListener('mouseenter', () => {
-        emoji.style.opacity = '1';
-    });
-
-    // === rAF render loop ===
-    // Style state (globalCompositeOperation, strokeStyle, lineWidth) is set
-    // inside `resize()` — see comment there for why it has to live there
-    // and not be a one-shot at IIFE init. The only per-frame ctx state
-    // change is the `clearRect` and the path construction inside each
-    // Line.draw.
-
-    function render() {
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        // If we haven't seen a cursor yet, just keep the frame loop alive —
-        // there's nothing to draw and no springs to integrate. This is also
-        // the steady-state when the user has not moved the mouse since
-        // page load.
-        if (lines !== null) {
-            for (let i = 0; i < lines.length; i++) {
-                lines[i].update();
-                lines[i].draw();
-            }
-        }
-        requestAnimationFrame(render);
-    }
-    requestAnimationFrame(render);
-})();
-
-
-/* ==========================================================================
    FLOATING CARDS PARALLAX — depth-of-field scroll effect
    --------------------------------------------------------------------------
-   Self-contained IIFE (mirrors the cursor-trail + launch-ticker structure
-   above: top-level, NOT nested inside the main IIFE). Pairs with the
+   Self-contained top-level IIFE, not nested inside the main IIFE. Pairs with the
    `.floating-card-parallax` decorative wrappers **dispersed** across
-   `.how-quest` (cards 1, 3, 5) and `.faq` (cards 2, 4, 6) in index.html,
+   `.how-quest` (cards 2, 3) and `.faq` (card 6) in index.html,
    and with the CSS rule `translate: 0 var(--parallax-y, 0px)` on
    `.floating-card-parallax` in styles.css.
 
@@ -1344,8 +680,7 @@
      listener — no wasted CPU during long footer reads. The 20% top and
      bottom rootMargin pre-arm the parallax before any parent section
      visibly enters / after the last one visibly leaves, so a fast scroll
-     never snaps from stale `--parallax-y` to a fresh one. Same pattern as
-     the waves block IntersectionObserver around line 691. Deduplication
+     never snaps from stale `--parallax-y` to a fresh one. Deduplication
      via Set: if multiple cards share a parent, we observe each parent
      section exactly once.
 
@@ -1360,10 +695,8 @@
      INTENTIONALLY ABSENT. Parallax on scroll is a desirable enhancement on
      touch — finger-driven scroll is smoother on iOS Safari than trackpad
      scroll, and the compositor hints applied CSS-side make the per-card
-     translate update sub-frame on modern iPhones. Contrast with the
-     cursor trail (mouse-only by design) and the waves animation (skipped
-     on touch because of a separate per-event `getBoundingClientRect` jank
-     surface — irrelevant here since this IIFE never reads layout per scroll).
+     translate update sub-frame on modern iPhones. This IIFE never reads
+     layout per scroll.
 
    Narrow-viewport (mobile, <=767px) gate:
      ACTIVE — every `.floating-card-parallax` is hidden via `display: none`
@@ -1375,8 +708,7 @@
      observer + scroll-listener setup on `mobileQuery.matches`: skip setup
      on mobile, and watch the MediaQueryList for breakpoint crossings to
      teardown / re-init symmetrically on resize / orientationchange that
-     crosses the 767px boundary. Pattern mirrors the launch-ticker MQL
-     `change` listener around line ~1748. Reduced-motion guard is still
+     crosses the 767px boundary. Reduced-motion guard is still
      evaluated first and short-circuits before the mobile gate — both
      conditions stack additively, neither subsumes the other.
 
@@ -1412,8 +744,7 @@
     // `--parallax-y` write is silently ignored by the renderer; we skip
     // the work entirely rather than burn an rAF tick per scroll event +
     // N setProperty calls + an IntersectionObserver. Same MQL family as
-    // the page-scroll-progress block (line 74) and the launch-ticker
-    // (line 1678).
+    // the page-scroll-progress block.
     const mobileQuery = window.matchMedia('(max-width: 767px)');
 
     // === Per-card data, snapshotted at setup ===
@@ -1473,7 +804,7 @@
     // `latestScrollY - sectionTopAtRest` per card.
     //
     // Why per-card (not per-section) cache: cards may share a parent (e.g.
-    // cards 1, 3, 5 all live in `.how-quest`), and reading per-section
+    // cards 2 and 3 both live in `.how-quest`), and reading per-section
     // here would force a second-level map lookup in the hot path. By
     // storing the resolved `sectionTopAtRest` directly on each card's
     // record, the tick() loop is a flat per-card pass with zero
@@ -1717,6 +1048,8 @@
             }
         };
         window.addEventListener('load', loadListener, { passive: true });
+        // The asynchronous rail changes the FAQ's page position after load.
+        window.addEventListener('yamatch:showcase-layout', loadListener);
 
         // === Initial sync ===
         // Run the first geometry measure synchronously (defer-script timing
@@ -1767,6 +1100,7 @@
         window.removeEventListener('orientationchange', onLayoutChange, { passive: true });
         if (loadListener !== null) {
             window.removeEventListener('load', loadListener, { passive: true });
+            window.removeEventListener('yamatch:showcase-layout', loadListener);
             loadListener = null;
         }
         if (resizeTimer !== null) {
@@ -1785,7 +1119,6 @@
     // On mobile load (or anchor-link to mobile viewport) we skip the entire
     // setup. The MQL `change` listener handles the desktop↔mobile crossing
     // for window-resize drags and orientation changes that cross 767px.
-    // Pattern mirrors the launch-ticker MQL block (line ~1747).
     if (!mobileQuery.matches) {
         setup();
     }
@@ -1805,140 +1138,535 @@
     }
 })();
 
-
-/* ==========================================================================
-   LAUNCH-TICKER START OFFSET — center first span at t=0
-   --------------------------------------------------------------------------
-   Contract with css-expert:
-     @keyframes launchTickerScroll {
-         from { transform: translate3d(var(--ticker-start-offset, 0px), 0, 0); }
-         to   { transform: translate3d(calc(var(--ticker-start-offset, 0px) - 50%), 0, 0); }
-     }
-   The keyframe still translates by exactly 50% of the track width over its
-   period, so the seamless-loop math (see styles.css §4.5: 4S + 4G width with
-   `padding-right: var(--ticker-gap)` closing the loop) is preserved — the
-   start offset is a constant additive shift on both endpoints, NOT a change
-   to the translation distance. The loop remains seamless.
-
-   What this IIFE does:
-     1. Measures the first span width (S) and the viewport width (V).
-     2. Computes offset = max(0, (V - S) / 2). Capped at 0 to avoid pushing
-        the span off-screen LEFT when S > V (very narrow viewport with long
-        message — falls back to the current left-aligned behaviour).
-     3. Writes `--ticker-start-offset` (in px) on `.launch-ticker__track`
-        — scoped to the element, NOT on `:root`, to avoid polluting the
-        global cascade.
-     4. Recomputes on `window.resize` (debounced ~150ms) AND once
-        `document.fonts.ready` resolves (re-measure after custom font load,
-        which can shift `S`).
-
-   Early-returns:
-     - `.launch-ticker__track` absent (legal / utility pages don't render it).
-     - `prefers-reduced-motion: reduce` — the CSS `@media` block already
-       disables the animation, so the offset is irrelevant.
-
-   Timing note:
-     With `<script defer>`, this IIFE runs AFTER DOM parsing but BEFORE the
-     first paint of the ticker animation in the typical case — so the var
-     is set before the keyframe's `from` keyframe is sampled, no flash.
-     The fonts-ready re-measure handles the post-FOUT case where Inter
-     loads late and the span width changes.
-   ========================================================================== */
+/* PUBLIC TOURNAMENT RAIL — participant and organiser variants.
+   Adapted from the approved rail-only handoff (2026-10-15).
+   The public RPC must be deployed separately; failures keep the section hidden.
+   Demo data is only rendered with the explicit ?showcase=demo parameter. */
 (function () {
     'use strict';
 
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var sections = document.querySelectorAll('[data-showcase]');
+    if (!sections.length) return;
 
-    const track = document.querySelector('.launch-ticker__track');
-    if (!track) return;
+    // Public production configuration (same publishable key as /tournament/).
+    var SUPABASE_URL = 'https://kxwmjjgtnrhcpgopevzb.supabase.co';
+    var SUPABASE_ANON_KEY = 'sb_publishable_Y-UOHfc7Z5wVnKhTTlb7iA_umRJArOf';
+    var RPC_PATH = '/rest/v1/rpc/get_public_showcase';
+    var FETCH_TIMEOUT_MS = 10000;
 
-    const firstSpan = track.querySelector('span');
-    if (!firstSpan) return;
+    var CACHE_KEY = 'yamatch.showcase.v1';
+    var CACHE_TTL_MS = 10 * 60 * 1000;
 
-    // Mobile/tablet gate — the centering offset is a mobile-only feature.
-    // On desktop the ticker keeps its standard left-aligned start (span 1 at
-    // the viewport's left edge, the natural ticker behaviour). Same media
-    // query family used elsewhere in this file (cursor trail line 1529-1531,
-    // waves animation line 379-380) — `(max-width: 767px)` covers narrow
-    // viewports and `(pointer: coarse)` covers touch tablets that may have
-    // a viewport wider than 767px (iPad portrait = 768px). Stored as a
-    // MediaQueryList so we can attach `change` listeners below — those fire
-    // exactly once at the breakpoint crossing, with no debounce, while the
-    // resize listener catches in-bucket dimension changes.
-    const mobileTabletMQL = window.matchMedia('(max-width: 767px), (pointer: coarse)');
+    var MAX_RECENT = 9;
+    var MAX_UPCOMING = 6;
+    var MAX_ORGANIZER_RAIL = 6;
+    var MAX_STAT_VALUE = 10000000;
+    var MAX_TEXT_LENGTH = 120;
 
-    // Measure → compute → write. Pure function: read DOM, write one CSS var,
-    // no internal state, no rAF loop. Idempotent — calling it twice in a row
-    // with no layout change writes the same value.
-    //
-    // Re-checks the media query on every call so a window-resize drag that
-    // crosses the 767px boundary mid-session toggles the offset on/off
-    // correctly. The desktop branch writes `0px` explicitly (rather than
-    // leaving a stale value) so a mobile→desktop transition resets cleanly.
-    const updateOffset = () => {
-        if (!mobileTabletMQL.matches) {
-            // Desktop / fine-pointer path: explicit reset to 0 so a
-            // tablet→desktop resize doesn't leave a stale offset on the
-            // element. The keyframe then runs `0 → -50%` — the standard
-            // left-aligned ticker behaviour.
-            track.style.setProperty('--ticker-start-offset', '0px');
+    var PREFETCH_ROOT_MARGIN = '600px 0px';
+
+    var ID_PATTERN = /^[A-Za-z0-9_-]{1,128}$/;
+    var DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
+    var SVG_NS = 'http://www.w3.org/2000/svg';
+    var PIN_PATH = 'M12 21s-7-6.1-7-11.5A7 7 0 0 1 19 9.5C19 14.9 12 21 12 21zm0-9a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z';
+
+    var reduceMotionQuery = window.matchMedia
+        ? window.matchMedia('(prefers-reduced-motion: reduce)')
+        : null;
+    var numberFormatter = new Intl.NumberFormat('fr-FR');
+    var dateFormatter = new Intl.DateTimeFormat('fr-FR', {
+        day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC'
+    });
+
+    var isDemo = (function () {
+        try {
+            return new URLSearchParams(window.location.search).get('showcase') === 'demo';
+        } catch (e) {
+            return false;
+        }
+    })();
+
+    var payloadPromise = null;
+
+    function prefersReducedMotion() {
+        return !!(reduceMotionQuery && reduceMotionQuery.matches);
+    }
+
+    /* ---------- Formatting ---------- */
+
+    var NBSP = ' ';
+
+    // fr-FR groups with U+202F; NBSP has wider font coverage and is the house style.
+    function formatNumber(value) {
+        return numberFormatter.format(value).replace(/[  ]/g, NBSP);
+    }
+
+    // « 15 oct. 2026 » must never break between the day, month and year.
+    function formatDate(isoDate) {
+        var m = DATE_PATTERN.exec(isoDate);
+        if (!m) return '';
+        return dateFormatter.format(new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]))).replace(/[  ]/g, NBSP);
+    }
+
+    function countLabel(count, singular, pluralForm) {
+        return formatNumber(count) + NBSP + (count >= 2 ? pluralForm : singular);
+    }
+
+    function initials(name) {
+        var words = String(name).split(/[\s\-–—'’]+/).filter(function (w) {
+            return /[A-Za-zÀ-ÿ0-9]/.test(w);
+        });
+        var letters = words.slice(0, 2).map(function (w) {
+            return Array.from(w)[0];
+        }).join('');
+        return (letters || '?').toLocaleUpperCase('fr-FR');
+    }
+
+    /* ---------- Validation ---------- */
+
+    function cleanText(value) {
+        if (typeof value !== 'string') return null;
+        var text = value.replace(/\s+/g, ' ').trim();
+        if (!text) return null;
+        if (text.length > MAX_TEXT_LENGTH) text = text.slice(0, MAX_TEXT_LENGTH - 1).trim() + '…';
+        return text;
+    }
+
+    function toCount(value) {
+        return (typeof value === 'number' && Number.isInteger(value) && value >= 0 && value <= MAX_STAT_VALUE)
+            ? value : null;
+    }
+
+    function toPositiveInt(value, max) {
+        return (typeof value === 'number' && Number.isInteger(value) && value > 0 && value <= max)
+            ? value : null;
+    }
+
+    function safeHttpsUrl(value) {
+        if (typeof value !== 'string' || value.length > 2048) return null;
+        try {
+            var url = new URL(value);
+            return url.protocol === 'https:' ? url.href : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function validDate(value) {
+        if (typeof value !== 'string') return null;
+        var m = DATE_PATTERN.exec(value);
+        if (!m) return null;
+        var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
+        return d.getUTCMonth() === +m[2] - 1 && d.getUTCDate() === +m[3] ? value : null;
+    }
+
+    function normalizeTournament(raw, withRegistration) {
+        if (!raw || typeof raw !== 'object') return null;
+        var id = typeof raw.id === 'string' && ID_PATTERN.test(raw.id) ? raw.id : null;
+        var title = cleanText(raw.title);
+        var date = validDate(raw.date);
+        if (!id || !title || !date) return null;
+        var tournament = {
+            id: id,
+            title: title,
+            date: date,
+            city: cleanText(raw.city),
+            organizerName: cleanText(raw.organizer_name),
+            organizerLogoUrl: safeHttpsUrl(raw.organizer_logo_url),
+            teamsCount: toCount(raw.teams_count) || 0,
+            maxTeams: toPositiveInt(raw.max_teams, 10000),
+            playersPerTeam: toPositiveInt(raw.players_per_team, 30)
+        };
+        if (withRegistration) tournament.registrationsOpen = raw.registrations_open === true;
+        return tournament;
+    }
+
+    function normalizeList(list, mapper, max) {
+        var out = [];
+        for (var i = 0; i < list.length && out.length < max; i++) {
+            var item = mapper(list[i]);
+            if (item) out.push(item);
+        }
+        return out;
+    }
+
+    // Returns a render model, or null when the payload breaks the contract.
+    // All six stats stay mandatory for the contract; none gate visibility.
+    function normalizePayload(data) {
+        if (Array.isArray(data) && data.length === 1) data = data[0];
+        if (data && typeof data === 'object' && data.get_public_showcase) data = data.get_public_showcase;
+        if (!data || typeof data !== 'object' || !data.stats || typeof data.stats !== 'object') return null;
+        if (!Array.isArray(data.recent) || !Array.isArray(data.upcoming)) return null;
+
+        var keys = ['tournaments_played', 'tournaments_upcoming', 'teams_registered',
+            'players_estimated', 'organizers', 'cities'];
+        for (var i = 0; i < keys.length; i++) {
+            if (toCount(data.stats[keys[i]]) === null) return null;
+        }
+
+        return {
+            recent: normalizeList(data.recent, function (t) { return normalizeTournament(t, false); }, MAX_RECENT),
+            upcoming: normalizeList(data.upcoming, function (t) { return normalizeTournament(t, true); }, MAX_UPCOMING)
+        };
+    }
+
+    function hasTickets(model) {
+        return !!model && (model.recent.length > 0 || model.upcoming.length > 0);
+    }
+
+    /* ---------- Data loading ---------- */
+
+    function readCache() {
+        try {
+            var raw = window.sessionStorage.getItem(CACHE_KEY);
+            if (!raw) return null;
+            var entry = JSON.parse(raw);
+            if (!entry || typeof entry.savedAt !== 'number') return null;
+            var age = Date.now() - entry.savedAt;
+            if (age < 0 || age > CACHE_TTL_MS) return null;
+            return entry.payload;
+        } catch (e) {
+            return null;
+        }
+    }
+
+    function writeCache(payload) {
+        try {
+            window.sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), payload: payload }));
+        } catch (e) { /* storage disabled or full: caching is optional */ }
+    }
+
+    function fetchShowcase() {
+        var controller = typeof AbortController === 'function' ? new AbortController() : null;
+        var timeout = window.setTimeout(function () {
+            if (controller) controller.abort();
+        }, FETCH_TIMEOUT_MS);
+        return fetch(SUPABASE_URL + RPC_PATH, {
+            signal: controller ? controller.signal : undefined,
+            method: 'POST',
+            credentials: 'omit',
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: '{}'
+        }).then(function (res) {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        }).then(function (data) {
+            window.clearTimeout(timeout);
+            return data;
+        }, function (err) {
+            window.clearTimeout(timeout);
+            throw err;
+        });
+    }
+
+    // Resolves to a valid render model with tickets or rejects. Shared across sections.
+    function loadModel() {
+        if (payloadPromise) return payloadPromise;
+        payloadPromise = fetchShowcase().then(function (data) {
+            var model = normalizePayload(data);
+            if (!hasTickets(model)) throw new Error('showcase_unavailable');
+            writeCache(data);
+            return model;
+        });
+        return payloadPromise;
+    }
+
+    // Explicitly fictive payload (« Démo · … », « Démoville »), only ever used
+    // behind ?showcase=demo. Stats exist solely to pass the contract check.
+    function demoPayload() {
+        function shift(days) {
+            var d = new Date();
+            d.setUTCDate(d.getUTCDate() + days);
+            return d.toISOString().slice(0, 10);
+        }
+        return {
+            generated_at: new Date().toISOString(),
+            stats: {
+                tournaments_played: 42, tournaments_upcoming: 6, teams_registered: 512,
+                players_estimated: 2140, organizers: 14, cities: 9
+            },
+            upcoming: [
+                { id: 'demo-u1', title: 'Démo · Open d’automne 4×4', city: 'Démoville', date: shift(9), organizer_name: 'Association Démo Volley', organizer_logo_url: null, teams_count: 14, max_teams: 16, players_per_team: 4, registrations_open: true },
+                { id: 'demo-u2', title: 'Démo · Tournoi mixte du dimanche', city: 'Exempleville', date: shift(16), organizer_name: 'Club Fictif Beach', organizer_logo_url: null, teams_count: 6, max_teams: 24, players_per_team: 3, registrations_open: true },
+                { id: 'demo-u3', title: 'Démo · Nuit du volley', city: 'Démoville', date: shift(23), organizer_name: 'Association Démo Volley', organizer_logo_url: null, teams_count: 20, max_teams: 20, players_per_team: 6, registrations_open: false }
+            ],
+            recent: [
+                { id: 'demo-r1', title: 'Démo · Challenge de rentrée', city: 'Fictifbourg', date: shift(-6), organizer_name: 'Volley Club Exemple', organizer_logo_url: null, teams_count: 18, max_teams: 18, players_per_team: 4 },
+                { id: 'demo-r2', title: 'Démo · Green Volley Cup', city: 'Exempleville', date: shift(-13), organizer_name: 'Club Fictif Beach', organizer_logo_url: null, teams_count: 24, max_teams: 24, players_per_team: 2 },
+                { id: 'demo-r3', title: 'Démo · Tournoi des entreprises', city: null, date: shift(-20), organizer_name: null, organizer_logo_url: null, teams_count: 12, max_teams: 16, players_per_team: 6 },
+                { id: 'demo-r4', title: 'Démo · Open de fin d’été avec un titre volontairement très long', city: 'Démoville', date: shift(-34), organizer_name: 'Association Démo Volley', organizer_logo_url: null, teams_count: 16, max_teams: 16, players_per_team: 4 }
+            ]
+        };
+    }
+
+    /* ---------- DOM helpers ---------- */
+
+    function el(tag, className, text) {
+        var node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text !== undefined && text !== null) node.textContent = text;
+        return node;
+    }
+
+    function srText(text) {
+        return el('span', 'showcase-sr', text);
+    }
+
+    function clear(node) {
+        while (node && node.firstChild) node.removeChild(node.firstChild);
+    }
+
+    function pinIcon() {
+        var svg = document.createElementNS(SVG_NS, 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('width', '14');
+        svg.setAttribute('height', '14');
+        svg.setAttribute('aria-hidden', 'true');
+        svg.setAttribute('focusable', 'false');
+        svg.setAttribute('class', 'showcase-pin');
+        var path = document.createElementNS(SVG_NS, 'path');
+        path.setAttribute('d', PIN_PATH);
+        path.setAttribute('fill', 'currentColor');
+        path.setAttribute('fill-rule', 'evenodd');
+        svg.appendChild(path);
+        return svg;
+    }
+
+    function initialsBadge(name) {
+        var span = el('span', 'showcase-avatar showcase-avatar--initials showcase-avatar--sm', initials(name));
+        span.setAttribute('aria-hidden', 'true');
+        return span;
+    }
+
+    function avatar(name, logoUrl) {
+        if (!logoUrl) return initialsBadge(name);
+        var img = document.createElement('img');
+        img.className = 'showcase-avatar showcase-avatar--sm';
+        img.alt = 'Logo de ' + name;
+        img.width = 32;
+        img.height = 32;
+        img.loading = 'lazy';
+        img.decoding = 'async';
+        img.referrerPolicy = 'no-referrer';
+        img.addEventListener('error', function () {
+            if (img.parentNode) img.parentNode.replaceChild(initialsBadge(name), img);
+        }, { once: true });
+        img.src = logoUrl;
+        return img;
+    }
+
+    /* ---------- Components ---------- */
+
+    // The rail title is the section's h2, so ticket titles are h3.
+    function ticket(t, kind, demo) {
+        var upcoming = kind === 'upcoming';
+        var item = el('li', 'showcase-rail-item');
+        var card = el('article', 'showcase-ticket showcase-ticket--' + kind);
+
+        var top = el('div', 'showcase-ticket-top');
+        top.appendChild(el('span', 'showcase-badge showcase-badge--' + kind, upcoming ? 'À venir' : 'Terminé'));
+        var time = el('time', 'showcase-ticket-date', formatDate(t.date));
+        time.setAttribute('datetime', t.date);
+        top.appendChild(time);
+        card.appendChild(top);
+
+        var body = el('div', 'showcase-ticket-body');
+        body.appendChild(el('h3', 'showcase-ticket-title', t.title));
+
+        var metaParts = [];
+        if (t.city) metaParts.push(t.city);
+        if (t.playersPerTeam) metaParts.push('Équipes de' + NBSP + t.playersPerTeam);
+        if (metaParts.length) {
+            var meta = el('p', 'showcase-ticket-meta');
+            if (t.city) meta.appendChild(pinIcon());
+            meta.appendChild(el('span', null, metaParts.join(' · ')));
+            body.appendChild(meta);
+        }
+
+        if (upcoming) {
+            body.appendChild(gauge(t));
+        } else if (t.teamsCount > 0) {
+            body.appendChild(el('p', 'showcase-ticket-teams',
+                countLabel(t.teamsCount, 'équipe a joué', 'équipes ont joué')));
+        }
+
+        if (t.organizerName) {
+            var org = el('p', 'showcase-ticket-org');
+            org.appendChild(avatar(t.organizerName, t.organizerLogoUrl));
+            var orgName = el('span', 'showcase-ticket-org-name');
+            orgName.appendChild(srText('Organisé par '));
+            orgName.appendChild(document.createTextNode(t.organizerName));
+            org.appendChild(orgName);
+            body.appendChild(org);
+        }
+
+        // Demo ids do not exist in /tournament/: no dead link in the preview.
+        if (upcoming && !demo) {
+            var link = el('a', 'showcase-ticket-cta');
+            link.href = '/tournament/?id=' + encodeURIComponent(t.id);
+            link.appendChild(document.createTextNode('Voir le tournoi'));
+            link.appendChild(srText(NBSP + ': ' + t.title));
+            var arrow = el('span', null, ' →');
+            arrow.setAttribute('aria-hidden', 'true');
+            link.appendChild(arrow);
+            body.appendChild(link);
+        }
+
+        card.appendChild(body);
+        item.appendChild(card);
+        return item;
+    }
+
+    function gauge(t) {
+        var wrap = el('div', 'showcase-gauge');
+        var full = t.maxTeams !== null && t.teamsCount >= t.maxTeams;
+        var label;
+        if (t.maxTeams !== null) {
+            label = formatNumber(t.teamsCount) + '/' + countLabel(t.maxTeams, 'équipe', 'équipes');
+        } else {
+            label = countLabel(t.teamsCount, 'équipe inscrite', 'équipes inscrites');
+        }
+        var row = el('p', 'showcase-gauge-label');
+        row.appendChild(el('span', null, label));
+        var status = full ? 'Complet' : (t.registrationsOpen ? 'Inscriptions ouvertes' : 'Inscriptions closes');
+        row.appendChild(el('span', 'showcase-gauge-status' + (full || !t.registrationsOpen ? ' is-closed' : ''), status));
+        wrap.appendChild(row);
+        if (t.maxTeams !== null) {
+            var track = el('span', 'showcase-gauge-track');
+            track.setAttribute('aria-hidden', 'true');
+            var fill = el('span', 'showcase-gauge-fill');
+            fill.style.setProperty('--showcase-fill', String(Math.min(1, t.teamsCount / t.maxTeams)));
+            track.appendChild(fill);
+            wrap.appendChild(track);
+        }
+        return wrap;
+    }
+
+    function wireRailNav(block, rail) {
+        var prev = block.querySelector('[data-showcase-prev]');
+        var next = block.querySelector('[data-showcase-next]');
+        if (!prev || !next || rail.dataset.showcaseNav === 'ready') return;
+        rail.dataset.showcaseNav = 'ready';
+        var pending = false;
+
+        function step() {
+            var first = rail.firstElementChild;
+            if (!first) return rail.clientWidth;
+            var gap = parseFloat(window.getComputedStyle(rail).columnGap) || 0;
+            return first.getBoundingClientRect().width + gap;
+        }
+        function update() {
+            pending = false;
+            var max = rail.scrollWidth - rail.clientWidth;
+            // aria-disabled (not `disabled`) keeps focus on the button at the rail ends.
+            prev.setAttribute('aria-disabled', String(rail.scrollLeft <= 1));
+            next.setAttribute('aria-disabled', String(rail.scrollLeft >= max - 1));
+        }
+        function schedule() {
+            if (pending) return;
+            pending = true;
+            window.requestAnimationFrame(update);
+        }
+        function go(direction, button) {
+            if (button.getAttribute('aria-disabled') === 'true') return;
+            rail.scrollBy({ left: direction * step(), behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+        }
+        prev.addEventListener('click', function () { go(-1, prev); });
+        next.addEventListener('click', function () { go(1, next); });
+        rail.addEventListener('scroll', schedule, { passive: true });
+        window.addEventListener('resize', schedule);
+        schedule();
+    }
+
+    /* ---------- Section lifecycle ---------- */
+
+    function hideSection(section) {
+        var wasVisible = !section.hidden;
+        section.hidden = true;
+        clear(section.querySelector('[data-showcase-rail]'));
+        if (wasVisible) window.dispatchEvent(new Event('yamatch:showcase-layout'));
+    }
+
+    function render(section, model, demo) {
+        var variant = section.getAttribute('data-showcase-variant') === 'organizer' ? 'organizer' : 'participant';
+        var block = section.querySelector('[data-showcase-rail-block]');
+        var rail = section.querySelector('[data-showcase-rail]');
+        if (!block || !rail) throw new Error('showcase_markup_missing');
+
+        var items = variant === 'organizer'
+            ? model.recent.slice(0, MAX_ORGANIZER_RAIL).map(function (t) { return ticket(t, 'played', demo); })
+            : model.upcoming.map(function (t) { return ticket(t, 'upcoming', demo); })
+                .concat(model.recent.map(function (t) { return ticket(t, 'played', demo); }));
+
+        // The rail is the section's only content: nothing to show, no section.
+        if (!items.length) {
+            hideSection(section);
             return;
         }
 
-        // `getBoundingClientRect().width` returns the rendered (post-layout)
-        // sub-pixel width of the span — accurate to whatever the browser
-        // actually painted, which is what we need to centre visually. Reading
-        // `offsetWidth` would round to integer px and could miss the centre
-        // by up to 0.5px on HiDPI displays.
-        const spanWidth = firstSpan.getBoundingClientRect().width;
-        const viewportWidth = window.innerWidth;
-        // If the span is wider than the viewport (very small mobile + long
-        // message), Math.max clamps to 0 — a positive offset would push the
-        // span PAST the right edge at t=0, hiding its left half off-screen
-        // left. Better to fall back to the natural left-aligned start.
-        const offset = Math.max(0, (viewportWidth - spanWidth) / 2);
-        track.style.setProperty('--ticker-start-offset', offset + 'px');
-    };
+        if (demo && !section.querySelector('.showcase-demo-note')) {
+            var note = el('p', 'showcase-demo-note', 'Aperçu démo — données fictives, non publiées');
+            section.insertBefore(note, section.firstElementChild);
+        }
 
-    // Initial write — runs before first paint thanks to `<script defer>`.
-    // Note: at this point custom fonts (Inter via Google Fonts) may not be
-    // loaded yet, so `spanWidth` is measured against the fallback stack.
-    // The `document.fonts.ready` re-measure below corrects this once the
-    // real font lands.
-    updateOffset();
-
-    // Re-measure once custom fonts have loaded — Inter shipped via Google
-    // Fonts can land 100-500ms after first paint, and the resulting glyph
-    // metrics shift the span width. Without this, the initial offset would
-    // be off by however much the fallback font's width differs from Inter's.
-    if (document.fonts && typeof document.fonts.ready?.then === 'function') {
-        document.fonts.ready.then(updateOffset).catch(() => { /* swallow */ });
+        clear(rail);
+        items.forEach(function (node) { rail.appendChild(node); });
+        section.hidden = false;
+        wireRailNav(block, rail);
+        window.dispatchEvent(new Event('yamatch:showcase-layout'));
     }
 
-    // Debounced resize handler — 150ms is fast enough to feel responsive on
-    // a window-resize drag, slow enough to coalesce the burst of events the
-    // browser fires during the drag. The visual jump from re-writing the
-    // var mid-animation is acceptable (resize is rare; user accepts the
-    // compromise per task spec).
-    let resizeTimer = null;
-    window.addEventListener('resize', () => {
-        if (resizeTimer !== null) clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(() => {
-            resizeTimer = null;
-            updateOffset();
-        }, 150);
-    }, { passive: true });
-
-    // MediaQueryList change listener — fires exactly once at each breakpoint
-    // crossing (mobile↔desktop). Complements the resize listener: covers
-    // pointer-type changes that don't necessarily produce a resize event
-    // (e.g. plugging in a mouse on a tablet), and reacts immediately at the
-    // 767px boundary without waiting for the 150ms resize debounce.
-    if (typeof mobileTabletMQL.addEventListener === 'function') {
-        mobileTabletMQL.addEventListener('change', updateOffset);
-    } else if (typeof mobileTabletMQL.addListener === 'function') {
-        // Safari < 14 fallback (deprecated API, still ships in older iOS).
-        mobileTabletMQL.addListener(updateOffset);
+    // Any throw while building the DOM must not leave a half-rendered section.
+    function safeRender(section, model, demo) {
+        try {
+            render(section, model, demo);
+        } catch (e) {
+            hideSection(section);
+        }
     }
+
+    // The section stays `hidden` until a valid model is fully rendered:
+    // no placeholder, so a missing or failing RPC never shifts the layout.
+    function start(section) {
+        if (isDemo) {
+            safeRender(section, normalizePayload(demoPayload()), true);
+            return;
+        }
+        var cachedModel = normalizePayload(readCache());
+        if (hasTickets(cachedModel)) {
+            safeRender(section, cachedModel, false);
+            return;
+        }
+        loadModel().then(function (model) {
+            safeRender(section, model, false);
+        }).catch(function () {
+            hideSection(section);
+        });
+    }
+
+    function init(section) {
+        if (!('IntersectionObserver' in window)) {
+            start(section);
+            return;
+        }
+        // A hidden section has no box to observe, so a zero-height sentinel
+        // placed just before it triggers the fetch ahead of the viewport.
+        var sentinel = el('div', 'showcase-sentinel');
+        sentinel.setAttribute('aria-hidden', 'true');
+        section.parentNode.insertBefore(sentinel, section);
+        var observer = new IntersectionObserver(function (entries) {
+            if (!entries.some(function (e) { return e.isIntersecting; })) return;
+            observer.disconnect();
+            sentinel.parentNode.removeChild(sentinel);
+            start(section);
+        }, { rootMargin: PREFETCH_ROOT_MARGIN });
+        observer.observe(sentinel);
+    }
+
+    Array.prototype.forEach.call(sections, init);
 })();
-

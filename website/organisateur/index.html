@@ -27,23 +27,12 @@
 <link rel="manifest" href="../site.webmanifest">
 <link rel="preload" as="font" type="font/woff2" href="../fonts/Inter-Variable.woff2" crossorigin>
 <link rel="stylesheet" href="../styles.min.css">
-<link rel="stylesheet" href="hero-organisateur.css?v=paris-clock-1">
+<link rel="stylesheet" href="hero-organisateur.css?v=static-phones-1">
+<link rel="stylesheet" href="gestion-organisateur.css">
 
 </head>
 <body class="org-page">
 <a class="skip-link" href="#top">Aller au contenu</a>
-
-<div class="launch-ticker" aria-label="Organise ton tournoi en 1 min — Télécharge l’app Yamatch">
-  <p class="launch-ticker__sr">Organise ton tournoi en 1 min — Télécharge l’app Yamatch</p>
-  <div class="launch-ticker__track" aria-hidden="true">
-    <span>Organise ton tournoi en 1 min | Télécharge l’app Yamatch</span>
-    <span>Organise ton tournoi en 1 min | Télécharge l’app Yamatch</span>
-    <span>Organise ton tournoi en 1 min | Télécharge l’app Yamatch</span>
-    <span>Organise ton tournoi en 1 min | Télécharge l’app Yamatch</span>
-    <span>Organise ton tournoi en 1 min | Télécharge l’app Yamatch</span>
-    <span>Organise ton tournoi en 1 min | Télécharge l’app Yamatch</span>
-  </div>
-</div>
 
 <main id="top" tabindex="-1">
   <section class="hero org-hero" aria-labelledby="org-title">
@@ -106,7 +95,7 @@
      <div class="ym-orga-wrap">
       <div class="ym-orga-head">
         <div>
-          <h2 id="ym-orga-t">Organiser un tournoi, <em>c’est simple comme bonjour</em></h2>
+          <h2 id="ym-orga-t">Organiser un tournoi,<br> <em>c’est simple comme bonjour</em></h2>
         </div>
         <div class="ym-orga-nav">
           <button type="button" id="ym-orga-prev" aria-label="Fonctionnalité organisateur précédente" aria-controls="ym-orga-track"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg></button>
@@ -228,6 +217,1336 @@
      </div>
     </section>
 
+    <section class="showcase" id="derniers-tournois" data-showcase data-showcase-variant="organizer" aria-labelledby="showcaseOrgRailTitle" hidden>
+      <div class="showcase-block" data-showcase-rail-block>
+        <div class="showcase-block-head">
+          <h2 class="showcase-block-title" id="showcaseOrgRailTitle">Les derniers tournois</h2>
+          <div class="showcase-nav">
+            <button type="button" data-showcase-prev aria-controls="showcaseOrgRail" aria-label="Tournois précédents"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg></button>
+            <button type="button" data-showcase-next aria-controls="showcaseOrgRail" aria-label="Tournois suivants"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></button>
+          </div>
+        </div>
+        <ul class="showcase-rail" id="showcaseOrgRail" role="list" tabindex="0" aria-labelledby="showcaseOrgRailTitle" data-showcase-rail></ul>
+      </div>
+    </section>
+
+    <section class="ym-gest" id="gestion-tournoi" aria-labelledby="ym-gest-title">
+      <div class="ym-gest-wrap">
+        <header class="ym-gest-head">
+          <span class="ym-gest-eyebrow">L’app en action</span>
+          <h2 class="ym-gest-title" id="ym-gest-title">Tout ton tournoi dans ta poche</h2>
+          <p class="ym-gest-lead">De la création au classement, découvre comment tu gères ton tournoi sur Yamatch. Choisis une étape et regarde l’app prendre vie.</p>
+        </header>
+        <div class="ym-gest-grid">
+      <nav class="ym-gest-steps" aria-label="Étapes de gestion d’un tournoi">
+        <div class="ym-gest-group">
+          <span class="ym-gest-group-label">Avant le tournoi</span>
+          <button class="ym-gest-step is-on" type="button" data-i="0" aria-pressed="true" aria-controls="ym-gest-screen" aria-describedby="ym-gest-desc-0">
+            <span class="ym-gest-num">01</span><span class="ym-gest-name">Crée ton tournoi</span>
+            <span class="ym-gest-desc" id="ym-gest-desc-0"><span>Nom, niveau, terrain, lieu, prix, goodies : <b>six étapes</b> et ton tournoi est en ligne. Tu peux aussi l’enregistrer en brouillon.</span></span>
+            <span class="ym-gest-bar" aria-hidden="true"></span>
+          </button>
+          <button class="ym-gest-step" type="button" data-i="1" aria-pressed="false" aria-controls="ym-gest-screen" aria-describedby="ym-gest-desc-1">
+            <span class="ym-gest-num">02</span><span class="ym-gest-name">Inscriptions et pointage</span>
+            <span class="ym-gest-desc" id="ym-gest-desc-1"><span>Places restantes, liste d’attente, paiements : tout est à jour. Le jour J, tu <b>pointes les équipes</b> présentes, en retard ou absentes.</span></span>
+            <span class="ym-gest-bar" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ym-gest-group">
+          <span class="ym-gest-group-label">Le jour J</span>
+          <button class="ym-gest-step" type="button" data-i="2" aria-pressed="false" aria-controls="ym-gest-screen" aria-describedby="ym-gest-desc-2">
+            <span class="ym-gest-num">03</span><span class="ym-gest-name">Poules en un clic</span>
+            <span class="ym-gest-desc" id="ym-gest-desc-2"><span>Les poules et les matchs se génèrent tout seuls. Une équipe à déplacer ? Tu la <b>glisses</b> dans une autre poule.</span></span>
+            <span class="ym-gest-bar" aria-hidden="true"></span>
+          </button>
+          <button class="ym-gest-step" type="button" data-i="3" aria-pressed="false" aria-controls="ym-gest-screen" aria-describedby="ym-gest-desc-3">
+            <span class="ym-gest-num">04</span><span class="ym-gest-name">Pilotage des matchs</span>
+            <span class="ym-gest-desc" id="ym-gest-desc-3"><span>Les <b>actions à réaliser</b> remontent en haut : score à valider, arbitre manquant, match à lancer.</span></span>
+            <span class="ym-gest-bar" aria-hidden="true"></span>
+          </button>
+          <button class="ym-gest-step" type="button" data-i="4" aria-pressed="false" aria-controls="ym-gest-screen" aria-describedby="ym-gest-desc-4">
+            <span class="ym-gest-num">05</span><span class="ym-gest-name">Score en direct</span>
+            <span class="ym-gest-desc" id="ym-gest-desc-4"><span>L’arbitre compte les points depuis son téléphone, set par set. Joueurs et public suivent <b>en direct</b>.</span></span>
+            <span class="ym-gest-bar" aria-hidden="true"></span>
+          </button>
+          <button class="ym-gest-step" type="button" data-i="5" aria-pressed="false" aria-controls="ym-gest-screen" aria-describedby="ym-gest-desc-5">
+            <span class="ym-gest-num">06</span><span class="ym-gest-name">Arbitrage automatique</span>
+            <span class="ym-gest-desc" id="ym-gest-desc-5"><span>Active-le une fois : une <b>équipe au repos</b> reçoit la demande d’arbitrage du match suivant, sans que tu interviennes.</span></span>
+            <span class="ym-gest-bar" aria-hidden="true"></span>
+          </button>
+          <button class="ym-gest-step" type="button" data-i="6" aria-pressed="false" aria-controls="ym-gest-screen" aria-describedby="ym-gest-desc-6">
+            <span class="ym-gest-num">07</span><span class="ym-gest-name">Phase finale</span>
+            <span class="ym-gest-desc" id="ym-gest-desc-6"><span>Dès qu’une poule est terminée, <b>l’arbre se remplit</b>. Consolante et petite finale en option.</span></span>
+            <span class="ym-gest-bar" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="ym-gest-group">
+          <span class="ym-gest-group-label">Après</span>
+          <button class="ym-gest-step" type="button" data-i="7" aria-pressed="false" aria-controls="ym-gest-screen" aria-describedby="ym-gest-desc-7">
+            <span class="ym-gest-num">08</span><span class="ym-gest-name">Classement et résultats</span>
+            <span class="ym-gest-desc" id="ym-gest-desc-7"><span>Le classement se calcule tout seul, du premier au dernier. Tu <b>partages les résultats</b> sur les réseaux.</span></span>
+            <span class="ym-gest-bar" aria-hidden="true"></span>
+          </button>
+        </div>
+      </nav>
+
+          <div class="ym-gest-stage">
+            <svg class="ym-gest-court" viewBox="0 0 560 640" fill="none" aria-hidden="true" focusable="false">
+              <rect x="70" y="40" width="420" height="560" rx="4"/>
+              <path d="M70 226h420M70 414h420"/>
+              <path class="ym-gest-net" d="M70 320h420"/>
+            </svg>
+            <div class="ym-gest-glow" aria-hidden="true"></div>
+            <div class="ym-gest-sticker" aria-hidden="true">6 étapes, c’est parti</div>
+            <div class="ym-gest-phone">
+              <div class="ym-gest-viewport" id="ym-gest-screen" role="group" aria-label="Crée ton tournoi">
+                <div class="ym-gest-screen is-on" data-step="0" aria-hidden="false" aria-label="Création du tournoi">
+                  <div class="ym-demo-app">
+                    <div class="ym-demo-status" aria-hidden="true">
+                      <b>09:41</b>
+                      <i>
+                      </i>
+                      <span>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 19v-3M8 19v-7M13 19V8M18 19V4"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M2 8c6-5 14-5 20 0M6 12c3-3 9-3 12 0M10 16c1-1 3-1 4 0M12 20h.01"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 7h16v10H3zM22 10v4"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-header">
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                      </span>
+                      <div>
+                        <strong>Nouveau tournoi</strong>
+                        <small>Créer mon tournoi</small>
+                      </div>
+                    </div>
+                    <div class="ym-demo-step-header">
+                      <div class="ym-demo-segments" aria-hidden="true">
+                        <i>
+                        </i>
+                        <i>
+                        </i>
+                        <i>
+                        </i>
+                        <i>
+                        </i>
+                        <i>
+                        </i>
+                        <i>
+                        </i>
+                      </div>
+                      <small>ÉTAPE 1 SUR 6</small>
+                    </div>
+                    <div class="ym-demo-scroll ym-demo-create-scroll" tabindex="0" role="region" aria-label="Formulaire de création du tournoi, fais défiler pour voir tous les champs">
+                      <div class="ym-demo-body ym-demo-creation">
+                        <h3>Identité du tournoi</h3>
+                        <p class="ym-demo-intro">Renseigne les informations de base de ton tournoi</p>
+                        <div class="ym-demo-field">
+                          <b>Nom du tournoi <em>*</em>
+                          </b>
+                          <div class="ym-demo-input">
+                            <span class="ym-demo-typing">Tournoi de la rentrée</span>
+                          </div>
+                        </div>
+                        <div class="ym-demo-field">
+                          <b>Nombre de joueurs par équipe <em>*</em>
+                          </b>
+                          <div class="ym-demo-input">4</div>
+                        </div>
+                        <div class="ym-demo-field ym-demo-picker">
+                          <b>Genre <em>*</em>
+                          </b>
+                          <div class="ym-demo-input ym-demo-line">
+                            <span>Mixte</span>
+                            <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                              <path d="M9 5l7 7-7 7"/>
+                            </svg>
+                          </div>
+                        </div>
+                        <div class="ym-demo-field">
+                          <b>Minimum de filles par équipe</b>
+                          <div class="ym-demo-input">1</div>
+                          <small>Nombre minimum de filles devant être présentes dans chaque équipe</small>
+                        </div>
+                        <div class="ym-demo-choice">
+                          <b>Niveau <em>*</em>
+                          </b>
+                          <small>Sélectionne un ou plusieurs niveaux</small>
+                          <div>
+                            <span>Loisir</span>
+                            <span class="ym-demo-choice-on">✓ Départemental</span>
+                            <span>Pré-National</span>
+                              <span>Régional</span>
+                            <span>National</span>
+                          </div>
+                        </div>
+                        <div class="ym-demo-field ym-demo-picker">
+                          <b>Terrain <em>*</em>
+                          </b>
+                          <div class="ym-demo-input ym-demo-line">
+                            <span>Indoor</span>
+                            <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                              <path d="M9 5l7 7-7 7"/>
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ym-demo-bottom">
+                      <span class="ym-demo-bottom-label">Continuer</span>
+                    </div>
+                    <span class="ym-demo-home" aria-hidden="true">
+                    </span>
+                  </div>
+                </div>
+                <div class="ym-gest-screen" data-step="1" aria-hidden="true" aria-label="Inscriptions et pointage" inert>
+                  <div class="ym-demo-app">
+                    <div class="ym-demo-status" aria-hidden="true">
+                      <b>09:41</b>
+                      <i>
+                      </i>
+                      <span>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 19v-3M8 19v-7M13 19V8M18 19V4"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M2 8c6-5 14-5 20 0M6 12c3-3 9-3 12 0M10 16c1-1 3-1 4 0M12 20h.01"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 7h16v10H3zM22 10v4"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-header">
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                      </span>
+                      <div>
+                        <strong>Tournoi de la rentrée</strong>
+                      </div>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M12 3v6M5 15V9h14v6M3 15h4v5H3zM10 15h4v5h-4zM17 15h4v5h-4z"/>
+                        </svg>
+                      </span>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M5 12h.01M12 12h.01M19 12h.01"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-tabs ym-demo-tabs--before" aria-hidden="true">
+                      <span class="is-selected">Équipes</span>
+                      <span>Configure ton tournoi</span>
+                    </div>
+                    <div class="ym-demo-scroll">
+                      <div class="ym-demo-body">
+                        <div class="ym-demo-dark">
+                          <div class="ym-demo-line">
+                            <b class="ym-demo-count">8<span>/8</span>
+                            </b>
+                            <span class="ym-demo-remaining">Complet</span>
+                          </div>
+                          <small>Équipes inscrites</small>
+                          <div class="ym-demo-meter">
+                            <i>
+                            </i>
+                          </div>
+                        </div>
+                        <div class="ym-demo-checkin">
+                          <b class="ym-demo-pointage-heading">
+                            <i>
+                            </i>
+                            <span data-demo-pending-label>2 équipes à pointer</span>
+                          </b>
+                          <div class="ym-demo-gauge" aria-hidden="true">
+                            <i>
+                            </i>
+                            <i>
+                            </i>
+                            <i>
+                            </i>
+                          </div>
+                          <div class="ym-demo-checkin-counts">
+                            <span>
+                              <i>
+                              </i>
+                              <b data-demo-present>5</b> présentes</span>
+                            <span>
+                              <i>
+                              </i>1 en retard</span>
+                            <span>
+                              <i>
+                              </i>0 absentes</span>
+                          </div>
+                          <button class="ym-demo-action" type="button" data-demo-action="checkin" aria-label="Pointer Les Smashers">
+                            <span data-demo-checkin-label>2 équipes à pointer</span>
+                            <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                              <path d="M9 5l7 7-7 7"/>
+                            </svg>
+                          </button>
+                        </div>
+                        <div class="ym-demo-line">
+                          <h3>Équipes inscrites</h3>
+                          <small>8 équipes</small>
+                        </div>
+                        <div class="ym-demo-team ym-demo-checkin-team">
+                          <span class="ym-demo-avatar" aria-hidden="true">L</span>
+                          <div>
+                            <b>Les Smashers</b>
+                            <div class="ym-demo-pills">
+                              <small class="ym-demo-status-pill is-pending">À pointer</small>
+                              <small class="ym-demo-level">Départemental</small>
+                            </div>
+                          </div>
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </div>
+                        <div class="ym-demo-team ">
+                          <span class="ym-demo-avatar" aria-hidden="true">N</span>
+                          <div>
+                            <b>Net Flix</b>
+                            <div class="ym-demo-pills">
+                              <small class="ym-demo-status-pill is-present">Présente</small>
+                              <small class="ym-demo-level">Départemental</small>
+                            </div>
+                          </div>
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </div>
+                        <div class="ym-demo-team ">
+                          <span class="ym-demo-avatar" aria-hidden="true">A</span>
+                          <div>
+                            <b>Ace Ventura</b>
+                            <div class="ym-demo-pills">
+                              <small class="ym-demo-status-pill is-late">En retard</small>
+                              <small class="ym-demo-level">Départemental</small>
+                            </div>
+                          </div>
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </div>
+                        <div class="ym-demo-team ">
+                          <span class="ym-demo-avatar" aria-hidden="true">L</span>
+                          <div>
+                            <b>Les Toucans</b>
+                            <div class="ym-demo-pills">
+                              <small class="ym-demo-status-pill is-present">Présente</small>
+                              <small class="ym-demo-level">Départemental</small>
+                            </div>
+                          </div>
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="ym-demo-home" aria-hidden="true">
+                    </span>
+                  </div>
+                </div>
+                <div class="ym-gest-screen" data-step="2" aria-hidden="true" aria-label="Répartition des poules" inert>
+                  <div class="ym-demo-app">
+                    <div class="ym-demo-status" aria-hidden="true">
+                      <b>09:41</b>
+                      <i>
+                      </i>
+                      <span>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 19v-3M8 19v-7M13 19V8M18 19V4"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M2 8c6-5 14-5 20 0M6 12c3-3 9-3 12 0M10 16c1-1 3-1 4 0M12 20h.01"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 7h16v10H3zM22 10v4"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-header">
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                      </span>
+                      <div>
+                        <strong>Tournoi de la rentrée</strong>
+                        <small>Suivre mon tournoi</small>
+                      </div>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M12 3v6M5 15V9h14v6M3 15h4v5H3zM10 15h4v5h-4zM17 15h4v5h-4z"/>
+                        </svg>
+                      </span>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M5 12h.01M12 12h.01M19 12h.01"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-tabs" aria-hidden="true">
+                      <span class="">Équipes</span>
+                      <span class="is-selected">Poules</span>
+                      <span class="">Matchs</span>
+                      <span class="">Classement</span>
+                    </div>
+                    <div class="ym-demo-scroll">
+                      <div class="ym-demo-body">
+                        <p class="ym-demo-hint">Glisse une équipe pour la changer de poule</p>
+                        <div class="ym-demo-pool">
+                          <div class="ym-demo-line">
+                            <h3>Poule A</h3>
+                            <small>4 inscrits</small>
+                          </div>
+                          <div class="ym-demo-team ">
+                            <span class="ym-demo-drag">
+                              <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                <path d="M8 5h.01M16 5h.01M8 12h.01M16 12h.01M8 19h.01M16 19h.01"/>
+                              </svg>
+                            </span>
+                            <span class="ym-demo-avatar" aria-hidden="true">L</span>
+                            <div>
+                              <b>Les Smashers</b>
+                              <div class="ym-demo-pills">
+                                <small class="ym-demo-status-pill is-present">Présente</small>
+                                <small class="ym-demo-level">Départemental</small>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="ym-demo-team ym-demo-moving-team">
+                            <span class="ym-demo-drag">
+                              <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                <path d="M8 5h.01M16 5h.01M8 12h.01M16 12h.01M8 19h.01M16 19h.01"/>
+                              </svg>
+                            </span>
+                            <span class="ym-demo-avatar" aria-hidden="true">N</span>
+                            <div>
+                              <b>Net Flix</b>
+                              <div class="ym-demo-pills">
+                                <small class="ym-demo-status-pill is-present">Présente</small>
+                                <small class="ym-demo-level">Départemental</small>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ym-demo-pool ym-demo-pool-target">
+                          <div class="ym-demo-line">
+                            <h3>Poule B</h3>
+                            <small>4 inscrits</small>
+                          </div>
+                          <div class="ym-demo-team ">
+                            <span class="ym-demo-drag">
+                              <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                <path d="M8 5h.01M16 5h.01M8 12h.01M16 12h.01M8 19h.01M16 19h.01"/>
+                              </svg>
+                            </span>
+                            <span class="ym-demo-avatar" aria-hidden="true">A</span>
+                            <div>
+                              <b>Ace Ventura</b>
+                              <div class="ym-demo-pills">
+                                <small class="ym-demo-status-pill is-present">Présente</small>
+                                <small class="ym-demo-level">Départemental</small>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="ym-demo-drop" aria-hidden="true">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="ym-demo-pool-trigger" data-demo-action="pools" aria-label="Déplacer Net Flix vers la poule B">
+                      <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M8 5h.01M16 5h.01M8 12h.01M16 12h.01M8 19h.01M16 19h.01"/>
+                      </svg>
+                    </button>
+                    <span class="ym-demo-home" aria-hidden="true">
+                    </span>
+                  </div>
+                </div>
+                <div class="ym-gest-screen" data-step="3" aria-hidden="true" aria-label="Pilotage des matchs" inert>
+                  <div class="ym-demo-app">
+                    <div class="ym-demo-status" aria-hidden="true">
+                      <b>09:41</b>
+                      <i>
+                      </i>
+                      <span>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 19v-3M8 19v-7M13 19V8M18 19V4"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M2 8c6-5 14-5 20 0M6 12c3-3 9-3 12 0M10 16c1-1 3-1 4 0M12 20h.01"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 7h16v10H3zM22 10v4"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-header">
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                      </span>
+                      <div>
+                        <strong>Tournoi de la rentrée</strong>
+                        <small>Suivre mon tournoi</small>
+                      </div>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M12 3v6M5 15V9h14v6M3 15h4v5H3zM10 15h4v5h-4zM17 15h4v5h-4z"/>
+                        </svg>
+                      </span>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M5 12h.01M12 12h.01M19 12h.01"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-tabs" aria-hidden="true">
+                      <span class="">Équipes</span>
+                      <span class="">Poules</span>
+                      <span class="is-selected">Matchs</span>
+                      <span class="">Classement</span>
+                    </div>
+                    <div class="ym-demo-scroll">
+                      <div class="ym-demo-body">
+                        <div class="ym-demo-dark ym-demo-actions">
+                          <h3>
+                            <i>
+                            </i>
+                            <span data-demo-actions>2</span> ACTIONS À RÉALISER</h3>
+                          <button type="button" class="ym-demo-task ym-demo-task-resolved" data-demo-action="validate">
+                            <span class="ym-demo-task-icon">
+                              <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                <path d="M5 12l4 4L19 6"/>
+                              </svg>
+                            </span>
+                            <span>Score à valider<small>Les Toucans · Ace Ventura</small>
+                            </span>
+                            <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                              <path d="M9 5l7 7-7 7"/>
+                            </svg>
+                          </button>
+                          <div class="ym-demo-task">
+                            <span class="ym-demo-task-icon">
+                              <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                <path d="M5 21V3M5 4c5-4 9 4 14 0v9c-5 4-9-4-14 0"/>
+                              </svg>
+                            </span>
+                            <span>Match à lancer<small>Terrain 2 · Match 4</small>
+                            </span>
+                            <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                              <path d="M9 5l7 7-7 7"/>
+                            </svg>
+                          </div>
+                        </div>
+                        <h3>En ce moment</h3>
+                        <div class="ym-demo-match">
+                          <div class="ym-demo-match-top">
+                            <span class="ym-demo-badge">Terrain 1</span>
+                            <span class="ym-demo-match-number">Match 3</span>
+                            <span class="ym-demo-live">En cours</span>
+                          </div>
+                          <div>
+                            <span class="ym-demo-avatar" aria-hidden="true">L</span>
+                            <b>Les Smashers</b>
+                            <strong>16</strong>
+                          </div>
+                          <div>
+                            <span class="ym-demo-avatar" aria-hidden="true">N</span>
+                            <b>Net Flix</b>
+                            <strong>13</strong>
+                          </div>
+                        </div>
+                        <h3>À venir</h3>
+                        <div class="ym-demo-match">
+                          <div class="ym-demo-match-top">
+                            <span class="ym-demo-badge">Terrain 1</span>
+                            <span class="ym-demo-match-number">Match 4</span>
+                            <span class="ym-demo-live">À venir</span>
+                          </div>
+                          <div>
+                            <span class="ym-demo-avatar" aria-hidden="true">A</span>
+                            <b>Ace Ventura</b>
+                            <strong>—</strong>
+                          </div>
+                          <div>
+                            <span class="ym-demo-avatar" aria-hidden="true">L</span>
+                            <b>Les Toucans</b>
+                            <strong>—</strong>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="ym-demo-message" aria-hidden="true">
+                      <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M4 4h16v12H9l-5 4z"/>
+                      </svg>
+                    </span>
+                    <span class="ym-demo-home" aria-hidden="true">
+                    </span>
+                  </div>
+                </div>
+                <div class="ym-gest-screen" data-step="4" aria-hidden="true" aria-label="Score en direct" inert>
+                  <div class="ym-demo-app">
+                    <div class="ym-demo-status" aria-hidden="true">
+                      <b>09:41</b>
+                      <i>
+                      </i>
+                      <span>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 19v-3M8 19v-7M13 19V8M18 19V4"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M2 8c6-5 14-5 20 0M6 12c3-3 9-3 12 0M10 16c1-1 3-1 4 0M12 20h.01"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 7h16v10H3zM22 10v4"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-header">
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                      </span>
+                      <div>
+                        <strong>Match 3</strong>
+                        <small>Les Smashers vs Net Flix</small>
+                      </div>
+                    </div>
+                    <div class="ym-demo-scroll">
+                      <div class="ym-demo-body">
+                        <div class="ym-demo-score-banner">
+                          <div class="ym-demo-banner-label">Terrain 1 <span>Match 3</span>
+                          </div>
+                          <div class="ym-demo-score">
+                            <div class="ym-demo-score-dark">
+                              <div class="ym-demo-score-top">
+                                <span class="ym-demo-live">En cours</span>
+                              </div>
+                              <div class="ym-demo-score-grid">
+                                <div>
+                                  <span class="ym-demo-avatar" aria-hidden="true">L</span>
+                                  <b>Les Smashers</b>
+                                  <strong data-demo-score="a">16</strong>
+                                </div>
+                                <span class="ym-demo-vs">VS</span>
+                                <div>
+                                  <span class="ym-demo-avatar" aria-hidden="true">N</span>
+                                  <b>Net Flix</b>
+                                  <strong data-demo-score="b">13</strong>
+                                </div>
+                              </div>
+                              <div class="ym-demo-score-meter">
+                                <i>
+                                </i>
+                              </div>
+                            </div>
+                            <div class="ym-demo-score-controls">
+                              <button type="button" data-demo-score-change="a:-1" aria-label="Retirer un point aux Smashers">−</button>
+                              <button type="button" data-demo-score-change="a:1" aria-label="Ajouter un point aux Smashers">+</button>
+                              <button type="button" data-demo-score-change="b:-1" aria-label="Retirer un point à Net Flix">−</button>
+                              <button type="button" data-demo-score-change="b:1" aria-label="Ajouter un point à Net Flix">+</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ym-demo-format">Voir le format <span>›</span>
+                        </div>
+                        <div class="ym-demo-set">
+                          <span>Set 1</span>
+                          <b data-demo-set>16 – 13</b>
+                        </div>
+                        <div class="ym-demo-referee">
+                          <small>ARBITRAGE</small>
+                          <div>
+                            <span class="ym-demo-avatar" aria-hidden="true">A</span>
+                            <b>Ace Ventura</b>
+                            <span class="ym-demo-level">Équipe arbitre</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ym-demo-bottom">
+                      <span class="ym-demo-bottom-label ym-demo-bottom-dark">Terminer le match</span>
+                    </div>
+                    <span class="ym-demo-home" aria-hidden="true">
+                    </span>
+                  </div>
+                </div>
+                <div class="ym-gest-screen" data-step="5" aria-hidden="true" aria-label="Arbitrage automatique" inert>
+                  <div class="ym-demo-app">
+                    <div class="ym-demo-status" aria-hidden="true">
+                      <b>09:41</b>
+                      <i>
+                      </i>
+                      <span>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 19v-3M8 19v-7M13 19V8M18 19V4"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M2 8c6-5 14-5 20 0M6 12c3-3 9-3 12 0M10 16c1-1 3-1 4 0M12 20h.01"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 7h16v10H3zM22 10v4"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-header">
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                      </span>
+                      <div>
+                        <strong>Tournoi de la rentrée</strong>
+                        <small>Suivre mon tournoi</small>
+                      </div>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M12 3v6M5 15V9h14v6M3 15h4v5H3zM10 15h4v5h-4zM17 15h4v5h-4z"/>
+                        </svg>
+                      </span>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M5 12h.01M12 12h.01M19 12h.01"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-tabs" aria-hidden="true">
+                      <span class="">Équipes</span>
+                      <span class="">Poules</span>
+                      <span class="is-selected">Matchs</span>
+                      <span class="">Classement</span>
+                    </div>
+                    <div class="ym-demo-body">
+                      <div class="ym-demo-match">
+                        <div class="ym-demo-match-top">
+                          <span class="ym-demo-badge">Terrain 1</span>
+                          <span class="ym-demo-match-number">Match 4</span>
+                          <span class="ym-demo-live">À venir</span>
+                        </div>
+                        <div>
+                          <span class="ym-demo-avatar" aria-hidden="true">A</span>
+                          <b>Ace Ventura</b>
+                          <strong>—</strong>
+                        </div>
+                        <div>
+                          <span class="ym-demo-avatar" aria-hidden="true">L</span>
+                          <b>Les Toucans</b>
+                          <strong>—</strong>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="ym-demo-scrim" aria-hidden="true">
+                    </div>
+                    <div class="ym-demo-sheet">
+                      <span class="ym-demo-sheet-handle" aria-hidden="true">
+                      </span>
+                      <div class="ym-demo-sheet-heading">
+                        <div>
+                          <h3>Actions</h3>
+                          <p>Choisis une action</p>
+                        </div>
+                        <span class="ym-demo-back" aria-hidden="true">
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M6 6l12 12M18 6L6 18"/>
+                          </svg>
+                        </span>
+                      </div>
+                      <div class="ym-demo-sheet-body">
+                        <button class="ym-demo-toggle-row" type="button" role="switch" aria-checked="false" data-demo-action="referee">
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M3 10h10V6h7v7a7 7 0 1 1-14 0M9 13h.01"/>
+                          </svg>
+                          <b>Arbitrage automatique</b>
+                          <span class="ym-demo-switch" aria-hidden="true">
+                          </span>
+                        </button>
+                        <div class="ym-demo-menu-row">
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M4 20l4-1L20 7l-3-3L5 16z"/>
+                          </svg>
+                          <b>Modifier le tournoi</b>
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </div>
+                        <div class="ym-demo-menu-row">
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M12 16V3M7 8l5-5 5 5M5 13v7h14v-7"/>
+                          </svg>
+                          <b>Partager le tournoi</b>
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </div>
+                        <div class="ym-demo-menu-row">
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8M2 21v-2a6 6 0 0 1 12 0v2M17 4a4 4 0 0 1 0 8M17 15a5 5 0 0 1 5 5v1"/>
+                          </svg>
+                          <b>Contacter les participants</b>
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </div>
+                        <div class="ym-demo-menu-row">
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M6 6l12 12M18 6L6 18"/>
+                          </svg>
+                          <b>Annuler le tournoi</b>
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </div>
+                        <div class="ym-demo-menu-row">
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M5 21V3M5 4c5-4 9 4 14 0v9c-5 4-9-4-14 0"/>
+                          </svg>
+                          <b>Mettre fin au tournoi</b>
+                          <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M9 5l7 7-7 7"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="ym-demo-sheet-footer">
+                        <span class="ym-demo-bottom-label">Fermer</span>
+                      </div>
+                    </div>
+                    <div class="ym-demo-confirmation" role="status">Arbitrage automatique activé</div>
+                    <span class="ym-demo-home" aria-hidden="true">
+                    </span>
+                  </div>
+                </div>
+                <div class="ym-gest-screen" data-step="6" aria-hidden="true" aria-label="Arbre de phase finale" inert>
+                  <div class="ym-demo-app">
+                    <div class="ym-demo-status" aria-hidden="true">
+                      <b>09:41</b>
+                      <i>
+                      </i>
+                      <span>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 19v-3M8 19v-7M13 19V8M18 19V4"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M2 8c6-5 14-5 20 0M6 12c3-3 9-3 12 0M10 16c1-1 3-1 4 0M12 20h.01"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 7h16v10H3zM22 10v4"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-header">
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                      </span>
+                      <div>
+                        <strong>Tournoi de la rentrée</strong>
+                        <small>Arbre</small>
+                      </div>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M12 3v6M5 15V9h14v6M3 15h4v5H3zM10 15h4v5h-4zM17 15h4v5h-4z"/>
+                        </svg>
+                      </span>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M5 12h.01M12 12h.01M19 12h.01"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-phase-tabs">
+                      <span class="is-selected">Phase finale</span>
+                      <span>Consolante</span>
+                      <span>Petite finale</span>
+                    </div>
+                    <div class="ym-demo-round-tabs">
+                      <span class="is-selected">Demi-finales</span>
+                      <span>Finale</span>
+                    </div>
+                    <div class="ym-demo-bracket-scroll" tabindex="0" role="region" aria-label="Arbre de phase finale, fais défiler vers la droite pour voir la finale">
+                      <div class="ym-demo-bracket-tree">
+                        <div class="ym-demo-bracket-column">
+                          <div class="ym-demo-bracket-card">
+                            <div class="ym-demo-bracket-meta">Match 13<span>S1</span>
+                            </div>
+                            <div class="ym-demo-bracket-winner">
+                              <span class="ym-demo-avatar" aria-hidden="true">L</span>
+                              <b>Les Smashers</b>
+                              <strong>18</strong>
+                              <i>◀</i>
+                            </div>
+                            <div>
+                              <span class="ym-demo-avatar" aria-hidden="true">A</span>
+                              <b>Ace Ventura</b>
+                              <strong>12</strong>
+                              <i>
+                              </i>
+                            </div>
+                          </div>
+                          <div class="ym-demo-bracket-card">
+                            <div class="ym-demo-bracket-meta">Match 14<span>S1</span>
+                            </div>
+                            <div class="ym-demo-bracket-winner">
+                              <span class="ym-demo-avatar" aria-hidden="true">N</span>
+                              <b>Net Flix</b>
+                              <strong>18</strong>
+                              <i>◀</i>
+                            </div>
+                            <div>
+                              <span class="ym-demo-avatar" aria-hidden="true">L</span>
+                              <b>Les Toucans</b>
+                              <strong>15</strong>
+                              <i>
+                              </i>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="ym-demo-connector" aria-hidden="true">
+                        </div>
+                        <div class="ym-demo-bracket-column ym-demo-final">
+                          <div class="ym-demo-bracket-card">
+                            <div class="ym-demo-bracket-meta">Match 15<span>S1</span>
+                            </div>
+                            <div class="ym-demo-bracket-pending">
+                              <span class="ym-demo-avatar" aria-hidden="true">L</span>
+                              <b>Les Smashers</b>
+                              <strong>—</strong>
+                              <i></i>
+                            </div>
+                            <div>
+                              <span class="ym-demo-avatar" aria-hidden="true">N</span>
+                              <b>Net Flix</b>
+                              <strong>—</strong>
+                              <i>
+                              </i>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="ym-demo-home" aria-hidden="true">
+                    </span>
+                  </div>
+                </div>
+                <div class="ym-gest-screen" data-step="7" aria-hidden="true" aria-label="Classement final" inert>
+                  <div class="ym-demo-app">
+                    <div class="ym-demo-status" aria-hidden="true">
+                      <b>09:41</b>
+                      <i>
+                      </i>
+                      <span>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 19v-3M8 19v-7M13 19V8M18 19V4"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M2 8c6-5 14-5 20 0M6 12c3-3 9-3 12 0M10 16c1-1 3-1 4 0M12 20h.01"/>
+                        </svg>
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M3 7h16v10H3zM22 10v4"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-header">
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M15 18l-6-6 6-6"/>
+                        </svg>
+                      </span>
+                      <div>
+                        <strong>Tournoi de la rentrée</strong>
+                        <small>Suivre mon tournoi</small>
+                      </div>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M12 3v6M5 15V9h14v6M3 15h4v5H3zM10 15h4v5h-4zM17 15h4v5h-4z"/>
+                        </svg>
+                      </span>
+                      <span class="ym-demo-back">
+                        <svg class="ym-demo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                          <path d="M5 12h.01M12 12h.01M19 12h.01"/>
+                        </svg>
+                      </span>
+                    </div>
+                    <div class="ym-demo-tabs" aria-hidden="true">
+                      <span class="">Équipes</span>
+                      <span class="">Poules</span>
+                      <span class="">Matchs</span>
+                      <span class="is-selected">Classement</span>
+                    </div>
+                    <div class="ym-demo-scroll">
+                      <div class="ym-demo-body">
+                        <div class="ym-demo-ranking-select">
+                          <b>Tableau général</b>
+                          <span>Par poule</span>
+                        </div>
+                        <p class="ym-demo-hint">Classement général</p>
+                        <div class="ym-demo-table-scroll" tabindex="0" role="region" aria-label="Classement général, fais défiler pour voir toutes les statistiques">
+                          <table class="ym-demo-ranking">
+                            <thead>
+                              <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Équipe</th>
+                                <th scope="col">MJ</th>
+                                <th scope="col">V</th>
+                                <th scope="col">D</th>
+                                <th scope="col">N</th>
+                                <th scope="col">Pts</th>
+                                <th scope="col">5 derniers matchs</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>1</td>
+                                <th scope="row">Les Smashers</th>
+                                <td>5</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>0</td>
+                                <td>
+                                  <b>15</b>
+                                </td>
+                                <td>
+                                  <span class="ym-demo-form-dots" aria-label="5 victoires, 0 défaites">
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>2</td>
+                                <th scope="row">Net Flix</th>
+                                <td>5</td>
+                                <td>4</td>
+                                <td>1</td>
+                                <td>0</td>
+                                <td>
+                                  <b>12</b>
+                                </td>
+                                <td>
+                                  <span class="ym-demo-form-dots" aria-label="4 victoires, 1 défaite">
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>3</td>
+                                <th scope="row">Ace Ventura</th>
+                                <td>5</td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td>0</td>
+                                <td>
+                                  <b>9</b>
+                                </td>
+                                <td>
+                                  <span class="ym-demo-form-dots" aria-label="3 victoires, 2 défaites">
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>4</td>
+                                <th scope="row">Les Toucans</th>
+                                <td>5</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>0</td>
+                                <td>
+                                  <b>6</b>
+                                </td>
+                                <td>
+                                  <span class="ym-demo-form-dots" aria-label="2 victoires, 3 défaites">
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>5</td>
+                                <th scope="row">Block Party</th>
+                                <td>5</td>
+                                <td>2</td>
+                                <td>3</td>
+                                <td>0</td>
+                                <td>
+                                  <b>6</b>
+                                </td>
+                                <td>
+                                  <span class="ym-demo-form-dots" aria-label="2 victoires, 3 défaites">
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>6</td>
+                                <th scope="row">Les Aigles</th>
+                                <td>5</td>
+                                <td>1</td>
+                                <td>4</td>
+                                <td>0</td>
+                                <td>
+                                  <b>3</b>
+                                </td>
+                                <td>
+                                  <span class="ym-demo-form-dots" aria-label="1 victoire, 4 défaites">
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>7</td>
+                                <th scope="row">Balle de match</th>
+                                <td>5</td>
+                                <td>1</td>
+                                <td>4</td>
+                                <td>0</td>
+                                <td>
+                                  <b>3</b>
+                                </td>
+                                <td>
+                                  <span class="ym-demo-form-dots" aria-label="1 victoire, 4 défaites">
+                                    <i class="is-win">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                  </span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>8</td>
+                                <th scope="row">Les Volleyeurs</th>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>5</td>
+                                <td>0</td>
+                                <td>
+                                  <b>0</b>
+                                </td>
+                                <td>
+                                  <span class="ym-demo-form-dots" aria-label="0 victoires, 5 défaites">
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                    <i class="is-loss">
+                                    </i>
+                                  </span>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                        <div class="ym-demo-legend">
+                          <b>Légende — 5 derniers matchs</b>
+                          <div>
+                            <span>
+                              <i class="is-win">
+                              </i>Victoire</span>
+                            <span>
+                              <i class="is-loss">
+                              </i>Défaite</span>
+                            <span>
+                              <i>
+                              </i>Nul</span>
+                            <span>
+                              <i class="is-unplayed">
+                              </i>Non joué</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <span class="ym-demo-home" aria-hidden="true">
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="ym-gest-mobile-description" aria-live="polite" aria-atomic="true"></p>
+      </div>
+    </section>
+
+    <section class="faq" id="faq" aria-labelledby="orgFaqTitle">
+        <div class="faq-inner">
+            <p class="faq-eyebrow">FAQ</p>
+            <h2 class="faq-title" id="orgFaqTitle">Questions d’organisateurs</h2>
+            <ul class="faq-list">
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" id="orgFaqToggle-1" aria-expanded="false" aria-controls="orgFaqAnswer-1">
+                        <span class="faq-question">Puis-je choisir le format de mon tournoi ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="orgFaqAnswer-1" role="region" aria-labelledby="orgFaqToggle-1" aria-hidden="true" inert>
+                        <div class="faq-answer-inner">
+                            <p>Oui. Tu définis le format des matchs, en points ou en minutes, le nombre de terrains et le déroulement des phases finales. Tu adaptes ainsi le tournoi à ton organisation.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" id="orgFaqToggle-2" aria-expanded="false" aria-controls="orgFaqAnswer-2">
+                        <span class="faq-question">Comment les équipes s’inscrivent-elles et paient-elles ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="orgFaqAnswer-2" role="region" aria-labelledby="orgFaqToggle-2" aria-hidden="true" inert>
+                        <div class="faq-answer-inner">
+                            <p>Tu partages le lien de ton tournoi, par exemple en story ou dans une conversation. Les équipes retrouvent les informations, s’inscrivent et paient au même endroit dans Yamatch.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" id="orgFaqToggle-3" aria-expanded="false" aria-controls="orgFaqAnswer-3">
+                        <span class="faq-question">Puis-je proposer des goodies et de la restauration ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="orgFaqAnswer-3" role="region" aria-labelledby="orgFaqToggle-3" aria-hidden="true" inert>
+                        <div class="faq-answer-inner">
+                            <p>Oui. Tu ajoutes tes goodies et la restauration à ton tournoi. Les joueurs peuvent les payer avec leur inscription, ce qui te permet de préparer les commandes à l’avance.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" id="orgFaqToggle-4" aria-expanded="false" aria-controls="orgFaqAnswer-4">
+                        <span class="faq-question">Comment sont créés les poules et le planning ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="orgFaqAnswer-4" role="region" aria-labelledby="orgFaqToggle-4" aria-hidden="true" inert>
+                        <div class="faq-answer-inner">
+                            <p>Yamatch répartit les équipes en poules et génère le planning des matchs. Tu peux ensuite réajuster la répartition et le planning à la main.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" id="orgFaqToggle-5" aria-expanded="false" aria-controls="orgFaqAnswer-5">
+                        <span class="faq-question">Comment prévenir les équipes d’un changement ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="orgFaqAnswer-5" role="region" aria-labelledby="orgFaqToggle-5" aria-hidden="true" inert>
+                        <div class="faq-answer-inner">
+                            <p>Tu envoies un message depuis Yamatch et les équipes reçoivent une notification. Tu peux ainsi annoncer un retard, un changement de terrain ou la remise des prix.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" id="orgFaqToggle-6" aria-expanded="false" aria-controls="orgFaqAnswer-6">
+                        <span class="faq-question">Qui peut tenir le score pendant les matchs ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="orgFaqAnswer-6" role="region" aria-labelledby="orgFaqToggle-6" aria-hidden="true" inert>
+                        <div class="faq-answer-inner">
+                            <p>Un joueur ou un bénévole peut tenir le score point par point depuis l’app. Les scores saisis alimentent le classement du tournoi.</p>
+                        </div>
+                    </div>
+                </li>
+                <li class="faq-item">
+                    <button class="faq-toggle" type="button" id="orgFaqToggle-7" aria-expanded="false" aria-controls="orgFaqAnswer-7">
+                        <span class="faq-question">Le classement se met-il à jour automatiquement ?</span>
+                        <span class="faq-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" focusable="false" fill="none"><polyline points="6 9 12 15 18 9" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </span>
+                    </button>
+                    <div class="faq-answer" id="orgFaqAnswer-7" role="region" aria-labelledby="orgFaqToggle-7" aria-hidden="true" inert>
+                        <div class="faq-answer-inner">
+                            <p>Oui. Chaque score saisi met à jour les poules et le tableau final. Les joueurs suivent les résultats en direct dans l’app, sans que tu aies à refaire les calculs dans un tableur.</p>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </section>
+
 </main>
 
 <footer class="footer" id="siteFooter">
@@ -264,7 +1583,10 @@
     </div>
 </footer>
 
-<script src="hero-organisateur.js?v=paris-clock-1" defer></script>
+<script src="hero-organisateur.js?v=static-phones-1" defer></script>
 <script src="organisateur-cards.js" defer></script>
+<script src="gestion-organisateur.js" defer></script>
+<script src="organisateur-faq.js" defer></script>
+<script src="../script.js" defer></script>
 </body>
 </html>
