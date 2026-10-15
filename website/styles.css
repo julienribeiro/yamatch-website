@@ -147,6 +147,10 @@
        used on dark/lime surfaces — those use --color-text-black/--color-text-
        white instead — so darkening it cannot hurt contrast elsewhere. */
     --color-medium-gray: #6A7282;
+    /* Muted text on --color-light-gray (#F3F4F6) surfaces, where
+       --color-medium-gray only reaches ≈4.39:1 (FAILS AA). #5F6878 keeps the
+       same cool-neutral hue and gives ≈5.10:1 on #F3F4F6 (≈5.62:1 on white). */
+    --color-medium-gray-on-light-gray: #5F6878;
     --color-text-primary: #101828;
     --color-text-white: #FFFFFF;
     /* Pure black, distinct from --color-text-primary (#101828). Used where the
@@ -270,11 +274,6 @@
     --showcase-on-dark-muted: rgba(255,255,255,.72);
     --showcase-on-dark-line: rgba(255,255,255,.14);
     --showcase-on-dark-chip: rgba(255,255,255,.12);
-    --showcase-skel-base: rgba(16,24,40,.08);
-    --showcase-skel-dark: rgba(255,255,255,.08);
-    --showcase-skel-shine: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.18) 50%, rgba(255,255,255,0) 100%);
-    --showcase-shimmer-duration: 1.4s;
-    --radius-showcase-skel: 8px;
 
 }
 
@@ -3049,11 +3048,11 @@ p {
     cursor: pointer;
     transition: background-color var(--transition), border-color var(--transition), opacity var(--transition);
 }
-.showcase-nav button:hover:not(:disabled) {
+.showcase-nav button:hover:not([aria-disabled="true"]) {
     background: var(--color-accent);
     border-color: var(--color-accent);
 }
-.showcase-nav button:disabled { opacity: .35; cursor: default; }
+.showcase-nav button[aria-disabled="true"] { opacity: .35; cursor: default; }
 .showcase-nav button:focus-visible,
 .showcase-rail:focus-visible,
 .showcase-ticket-cta:focus-visible,
@@ -3300,7 +3299,7 @@ p {
     white-space: nowrap;
 }
 .showcase-org-name { font-size: 16px; font-weight: 700; line-height: 1.3; }
-.showcase-org-city { font-size: 13px; line-height: 1.4; color: var(--color-medium-gray); }
+.showcase-org-city { font-size: 13px; line-height: 1.4; color: var(--color-medium-gray-on-light-gray); }
 .showcase-org-count { font-size: 13px; font-weight: 600; line-height: 1.4; margin-top: 2px; }
 
 /* --- Final CTA --------------------------------------------------------- */
@@ -3325,38 +3324,6 @@ p {
 }
 .showcase-cta span { color: var(--color-accent); }
 .showcase-cta:hover { background: var(--color-button-glass-hover); }
-
-/* --- Loading skeleton -------------------------------------------------- */
-.showcase-skel {
-    position: relative;
-    display: block;
-    overflow: hidden;
-    border-radius: var(--radius-showcase-skel);
-    background: var(--showcase-skel-dark);
-}
-.showcase-skel::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: var(--showcase-skel-shine);
-    translate: -100% 0;
-    animation: showcaseShimmer var(--showcase-shimmer-duration) ease-in-out infinite;
-}
-.showcase-org .showcase-skel { background: var(--showcase-skel-base); }
-.showcase-skel--stat { width: 70%; height: clamp(2.25rem, 4.6vw, 4rem); }
-.showcase-skel--label { width: 50%; height: 14px; }
-.showcase-skel--pill { width: 72px; height: 22px; border-radius: var(--radius-pill); }
-.showcase-skel--title { width: 85%; height: 22px; }
-.showcase-skel--line { width: 70%; height: 14px; }
-.showcase-skel--short { width: 45%; }
-.showcase-skel--avatar { flex: none; width: 48px; height: 48px; border-radius: var(--radius-pill); }
-.showcase-ticket--skeleton { min-height: 240px; }
-.showcase.is-loading .showcase-nav,
-.showcase.is-loading .showcase-cta-row { visibility: hidden; }
-
-@keyframes showcaseShimmer {
-    to { translate: 100% 0; }
-}
 
 @media (max-width: 767px) {
     :root {
@@ -3383,7 +3350,6 @@ p {
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .showcase-skel::after { animation: none; }
     .showcase-nav button,
     .showcase-ticket-cta,
     .showcase-cta { transition: none; }

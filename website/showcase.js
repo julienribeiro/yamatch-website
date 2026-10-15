@@ -67,15 +67,22 @@
 
     /* ---------- Formatting ---------- */
 
+    var NBSP = '\u00A0';
+
     // fr-FR groups with U+202F; NBSP has wider font coverage and is the house style.
     function formatNumber(value) {
-        return numberFormatter.format(value).replace(/ /g, ' ');
+        return numberFormatter.format(value).replace(/[\u202F ]/g, NBSP);
     }
 
+    // « 15 oct. 2026 » must never break between the day, month and year.
     function formatDate(isoDate) {
         var m = DATE_PATTERN.exec(isoDate);
         if (!m) return '';
-        return dateFormatter.format(new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])));
+        return dateFormatter.format(new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]))).replace(/[\u202F ]/g, NBSP);
+    }
+
+    function countLabel(count, singular, pluralForm) {
+        return formatNumber(count) + NBSP + plural(count, singular, pluralForm);
     }
 
     function plural(count, singular, pluralForm) {
@@ -355,7 +362,7 @@
 
     /* ---------- Components ---------- */
 
-    function ticket(t, kind) {
+    function ticket(t, kind, demo) {
         var upcoming = kind === 'upcoming';
         var item = el('li', 'showcase-rail-item');
         var card = el('article', 'showcase-ticket showcase-ticket--' + kind);
@@ -372,7 +379,7 @@
 
         var metaParts = [];
         if (t.city) metaParts.push(t.city);
-        if (t.playersPerTeam) metaParts.push('Équipes de ' + t.playersPerTeam);
+        if (t.playersPerTeam) metaParts.push('Équipes de' + NBSP + t.playersPerTeam);
         if (metaParts.length) {
             var meta = el('p', 'showcase-ticket-meta');
             if (t.city) meta.appendChild(pinIcon());
@@ -384,7 +391,7 @@
             body.appendChild(gauge(t));
         } else if (t.teamsCount > 0) {
             body.appendChild(el('p', 'showcase-ticket-teams',
-                formatNumber(t.teamsCount) + ' ' + plural(t.teamsCount, 'équipe a joué', 'équipes ont joué')));
+                countLabel(t.teamsCount, 'équipe a joué', 'équipes ont joué')));
         }
 
         if (t.organizerName) {
@@ -397,11 +404,12 @@
             body.appendChild(org);
         }
 
-        if (upcoming) {
+        // Demo ids do not exist in /tournament/: no dead link in the preview.
+        if (upcoming && !demo) {
             var link = el('a', 'showcase-ticket-cta');
             link.href = '/tournament/?id=' + encodeURIComponent(t.id);
             link.appendChild(document.createTextNode('Voir le tournoi'));
-            link.appendChild(srText(' : ' + t.title));
+            link.appendChild(srText(NBSP + ': ' + t.title));
             var arrow = el('span', null, ' →');
             arrow.setAttribute('aria-hidden', 'true');
             link.appendChild(arrow);
@@ -418,10 +426,9 @@
         var full = t.maxTeams !== null && t.teamsCount >= t.maxTeams;
         var label;
         if (t.maxTeams !== null) {
-            label = formatNumber(t.teamsCount) + '/' + formatNumber(t.maxTeams) + ' ' +
-                plural(t.maxTeams, 'équipe', 'équipes');
+            label = formatNumber(t.teamsCount) + '/' + countLabel(t.maxTeams, 'équipe', 'équipes');
         } else {
-            label = formatNumber(t.teamsCount) + ' ' + plural(t.teamsCount, 'équipe inscrite', 'équipes inscrites');
+            label = countLabel(t.teamsCount, 'équipe inscrite', 'équipes inscrites');
         }
         var row = el('p', 'showcase-gauge-label');
         row.appendChild(el('span', null, label));
@@ -446,8 +453,8 @@
         text.appendChild(el('p', 'showcase-org-name', o.name));
         if (o.city) text.appendChild(el('p', 'showcase-org-city', o.city));
         var counts = [];
-        if (o.tournamentsCount > 0) counts.push(formatNumber(o.tournamentsCount) + ' ' + plural(o.tournamentsCount, 'tournoi', 'tournois'));
-        if (o.teamsCount > 0) counts.push(formatNumber(o.teamsCount) + ' ' + plural(o.teamsCount, 'équipe', 'équipes'));
+        if (o.tournamentsCount > 0) counts.push(countLabel(o.tournamentsCount, 'tournoi', 'tournois'));
+        if (o.teamsCount > 0) counts.push(countLabel(o.teamsCount, 'équipe', 'équipes'));
         if (counts.length) text.appendChild(el('p', 'showcase-org-count', counts.join(' · ')));
         item.appendChild(text);
         return item;
@@ -489,7 +496,7 @@
             var label = el('span', 'showcase-stat-label', d.label);
             label.setAttribute('aria-hidden', 'true');
             item.appendChild(label);
-            item.appendChild(srText((d.srPrefix || '') + formatNumber(d.value) + ' ' + d.label.toLocaleLowerCase('fr-FR')));
+            item.appendChild(srText((d.srPrefix || '') + formatNumber(d.value) + NBSP + d.label.toLocaleLowerCase('fr-FR')));
             list.appendChild(item);
             counters.push({ node: live, target: d.value, prefix: prefix });
         });
@@ -537,19 +544,21 @@
         function update() {
             pending = false;
             var max = rail.scrollWidth - rail.clientWidth;
-            prev.disabled = rail.scrollLeft <= 1;
-            next.disabled = rail.scrollLeft >= max - 1;
+            // aria-disabled (not `disabled`) keeps focus on the button at the rail ends.
+            prev.setAttribute('aria-disabled', String(rail.scrollLeft <= 1));
+            next.setAttribute('aria-disabled', String(rail.scrollLeft >= max - 1));
         }
         function schedule() {
             if (pending) return;
             pending = true;
             window.requestAnimationFrame(update);
         }
-        function go(direction) {
+        function go(direction, button) {
+            if (button.getAttribute('aria-disabled') === 'true') return;
             rail.scrollBy({ left: direction * step(), behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
         }
-        prev.addEventListener('click', function () { go(-1); });
-        next.addEventListener('click', function () { go(1); });
+        prev.addEventListener('click', function () { go(-1, prev); });
+        next.addEventListener('click', function () { go(1, next); });
         rail.addEventListener('scroll', schedule, { passive: true });
         window.addEventListener('resize', schedule);
         schedule();
@@ -567,58 +576,8 @@
         };
     }
 
-    function skeletonTicket() {
-        var item = el('li', 'showcase-rail-item');
-        var card = el('div', 'showcase-ticket showcase-ticket--skeleton');
-        var top = el('div', 'showcase-ticket-top');
-        top.appendChild(el('span', 'showcase-skel showcase-skel--pill'));
-        card.appendChild(top);
-        var body = el('div', 'showcase-ticket-body');
-        body.appendChild(el('span', 'showcase-skel showcase-skel--title'));
-        body.appendChild(el('span', 'showcase-skel showcase-skel--line'));
-        body.appendChild(el('span', 'showcase-skel showcase-skel--line showcase-skel--short'));
-        card.appendChild(body);
-        item.appendChild(card);
-        return item;
-    }
-
-    function showSkeleton(section) {
-        var c = containers(section);
-        section.classList.add('is-loading');
-        section.setAttribute('aria-busy', 'true');
-        if (c.stats) {
-            clear(c.stats);
-            c.stats.style.setProperty('--showcase-stat-count', '4');
-            for (var i = 0; i < 4; i++) {
-                var stat = el('li', 'showcase-stat');
-                stat.appendChild(el('span', 'showcase-skel showcase-skel--stat'));
-                stat.appendChild(el('span', 'showcase-skel showcase-skel--label'));
-                c.stats.appendChild(stat);
-            }
-            c.stats.setAttribute('aria-hidden', 'true');
-        }
-        if (c.rail) {
-            clear(c.rail);
-            for (var j = 0; j < 3; j++) c.rail.appendChild(skeletonTicket());
-            c.rail.setAttribute('aria-hidden', 'true');
-        }
-        if (c.wall) {
-            clear(c.wall);
-            for (var k = 0; k < 4; k++) {
-                var org = el('li', 'showcase-org');
-                org.appendChild(el('span', 'showcase-skel showcase-skel--avatar'));
-                org.appendChild(el('span', 'showcase-skel showcase-skel--line'));
-                c.wall.appendChild(org);
-            }
-            c.wall.setAttribute('aria-hidden', 'true');
-        }
-        section.hidden = false;
-    }
-
     function hideSection(section) {
         section.hidden = true;
-        section.classList.remove('is-loading');
-        section.removeAttribute('aria-busy');
         var c = containers(section);
         clear(c.stats);
         clear(c.rail);
@@ -643,9 +602,9 @@
             clear(c.rail);
             c.rail.removeAttribute('aria-hidden');
             var items = variant === 'organizer'
-                ? model.recent.slice(0, MAX_ORGANIZER_RAIL).map(function (t) { return ticket(t, 'played'); })
-                : model.upcoming.map(function (t) { return ticket(t, 'upcoming'); })
-                    .concat(model.recent.map(function (t) { return ticket(t, 'played'); }));
+                ? model.recent.slice(0, MAX_ORGANIZER_RAIL).map(function (t) { return ticket(t, 'played', demo); })
+                : model.upcoming.map(function (t) { return ticket(t, 'upcoming', demo); })
+                    .concat(model.recent.map(function (t) { return ticket(t, 'played', demo); }));
             items.forEach(function (node) { c.rail.appendChild(node); });
             c.railBlock.hidden = items.length === 0;
             if (items.length) wireRailNav(c.railBlock, c.rail);
@@ -658,25 +617,33 @@
             c.wallBlock.hidden = model.organizers.length === 0;
         }
 
-        section.classList.remove('is-loading');
-        section.removeAttribute('aria-busy');
         section.hidden = false;
     }
 
+    // Any throw while building the DOM must not leave a half-rendered section.
+    function safeRender(section, model, demo) {
+        try {
+            render(section, model, demo);
+        } catch (e) {
+            hideSection(section);
+        }
+    }
+
+    // The section stays `hidden` until a credible model is fully rendered:
+    // no placeholder, so a missing or failing RPC never shifts the layout.
     function start(section) {
         if (isDemo) {
-            render(section, normalizePayload(demoPayload()), true);
+            safeRender(section, normalizePayload(demoPayload()), true);
             return;
         }
         var cachedModel = normalizePayload(readCache());
         if (isCredible(cachedModel)) {
-            render(section, cachedModel, false);
+            safeRender(section, cachedModel, false);
             return;
         }
-        showSkeleton(section);
         loadModel().then(function (model) {
             render(section, model, false);
-        }, function () {
+        }).catch(function () {
             hideSection(section);
         });
     }
