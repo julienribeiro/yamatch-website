@@ -37,6 +37,7 @@
         directly inside .how-quest and .faq; no dedicated wrapper section
         since 2026-05-12)
    10.6 Organiser cards (native scroll-snap, scoped ym-orga- rules)
+   10.7 Showcase / social proof (showcase.js — shared by / and /organisateur/)
    11. FAQ accordion
    12. Footer
    13. Toast
@@ -257,6 +258,23 @@
     --ym-orga-ball-shadow: rgba(0,0,0,.3);
     --ym-orga-ring-inner: rgba(215,255,0,.2);
     --ym-orga-ring-outer: rgba(215,255,0,.08);
+
+    /* Showcase / social proof (§10.7, fed by showcase.js). */
+    --showcase-gutter: max(var(--page-pad), calc((100% - var(--container-max)) / 2));
+    --showcase-card-width: clamp(268px, 24vw, 312px);
+    --showcase-ticket-bg: linear-gradient(160deg, #2A2A2A 0%, var(--color-dark-bg) 42%, var(--color-dark-surface) 100%);
+    --showcase-ticket-glow: radial-gradient(120% 70% at 100% 0%, rgba(215,255,0,.09) 0%, rgba(215,255,0,0) 60%);
+    --showcase-ticket-glow-strong: radial-gradient(120% 70% at 100% 0%, rgba(215,255,0,.16) 0%, rgba(215,255,0,0) 62%);
+    --showcase-ticket-stub: 64px;
+    --showcase-ticket-notch: 11px;
+    --showcase-on-dark-muted: rgba(255,255,255,.72);
+    --showcase-on-dark-line: rgba(255,255,255,.14);
+    --showcase-on-dark-chip: rgba(255,255,255,.12);
+    --showcase-skel-base: rgba(16,24,40,.08);
+    --showcase-skel-dark: rgba(255,255,255,.08);
+    --showcase-skel-shine: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.18) 50%, rgba(255,255,255,0) 100%);
+    --showcase-shimmer-duration: 1.4s;
+    --radius-showcase-skel: 8px;
 
 }
 
@@ -2853,6 +2871,522 @@ p {
     .ym-orga-track { gap: 14px; }
     .ym-orga-card h3 { top: 20px; left: 20px; right: 20px; }
     .ym-orga-detail { padding-inline: 20px; }
+}
+
+/* ==========================================================================
+   10.7 SHOWCASE / SOCIAL PROOF (showcase.js)
+   Shared by the homepage (participant variant) and /organisateur/ (organizer
+   variant). The section ships `hidden`; showcase.js reveals it only with a
+   valid PROD payload above the credibility threshold. Inline axis follows
+   --showcase-gutter (page gutter, centred 1200px well); the rail bleeds to
+   the viewport edges and pads itself with the same gutter.
+   ========================================================================== */
+.showcase {
+    position: relative;
+    background-color: var(--color-light-bg);
+    color: var(--color-text-primary);
+    padding-block: clamp(64px, 9vw, 120px);
+    overflow-x: clip;
+    scroll-margin-top: 80px;
+}
+.showcase[hidden],
+.showcase [hidden] { display: none; }
+
+.showcase-sentinel { height: 0; }
+
+.showcase-head,
+.showcase-stats,
+.showcase-block-head,
+.showcase-wall,
+.showcase-cta-row,
+.showcase-demo-note {
+    margin-inline: var(--showcase-gutter);
+}
+
+.showcase-sr {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.showcase-demo-note {
+    display: block;
+    width: fit-content;
+    margin-block-end: 24px;
+    margin-inline: auto;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-text-black);
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.showcase-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-block-end: clamp(32px, 5vw, 56px);
+}
+.showcase-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 16px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--color-medium-gray);
+}
+.showcase-eyebrow-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    box-shadow: 0 0 0 3px var(--color-text-primary);
+}
+.showcase-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1.08;
+    letter-spacing: -.025em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+}
+.showcase-lead {
+    max-width: 52ch;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: clamp(15px, 1.3vw, 18px);
+    line-height: 1.5;
+    color: var(--color-medium-gray);
+    text-wrap: balance;
+}
+
+/* --- Stats panel: dark slab, lime numbers, 1px filets via grid gap ------ */
+.showcase-stats {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--showcase-stat-count, 4), minmax(0, 1fr));
+    gap: 1px;
+    background: var(--showcase-on-dark-line);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+    margin-block: 0 clamp(40px, 6vw, 72px);
+}
+.showcase-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+    padding: clamp(20px, 2.6vw, 32px);
+    background: var(--color-dark-surface);
+    color: var(--color-text-white);
+}
+.showcase-stat-value {
+    display: inline-grid;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: clamp(2.25rem, 4.6vw, 4rem);
+    line-height: 1;
+    letter-spacing: -.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--color-accent);
+    white-space: nowrap;
+}
+.showcase-stat-ghost,
+.showcase-stat-live { grid-area: 1 / 1; }
+.showcase-stat-ghost { visibility: hidden; }
+.showcase-stat-label {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--showcase-on-dark-muted);
+}
+
+/* --- Blocks (wall + rail) ---------------------------------------------- */
+.showcase-block { margin-block-end: clamp(32px, 5vw, 56px); }
+.showcase-block-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-block-end: 18px;
+}
+.showcase-block-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+    line-height: 1.2;
+    letter-spacing: -.01em;
+    margin: 0;
+}
+.showcase-nav { display: flex; gap: 8px; flex: none; }
+.showcase-nav button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--color-divider);
+    background: var(--color-light-bg);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background-color var(--transition), border-color var(--transition), opacity var(--transition);
+}
+.showcase-nav button:hover:not(:disabled) {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+}
+.showcase-nav button:disabled { opacity: .35; cursor: default; }
+.showcase-nav button:focus-visible,
+.showcase-rail:focus-visible,
+.showcase-ticket-cta:focus-visible,
+.showcase-cta:focus-visible {
+    outline: 2px solid var(--color-text-primary);
+    outline-offset: 3px;
+}
+
+/* --- Rail of ticket cards ---------------------------------------------- */
+.showcase-rail {
+    list-style: none;
+    margin: 0;
+    padding: 4px var(--showcase-gutter) 12px;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: var(--showcase-card-width);
+    gap: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--showcase-gutter);
+    scrollbar-width: none;
+}
+.showcase-rail::-webkit-scrollbar { display: none; }
+.showcase-rail-item {
+    display: flex;
+    min-width: 0;
+    scroll-snap-align: start;
+}
+
+/* Ticket: two notches punched at the stub line via a two-layer mask. */
+.showcase-ticket {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100%;
+    border-radius: var(--radius-card);
+    background: var(--showcase-ticket-bg);
+    color: var(--color-text-white);
+    overflow: hidden;
+    -webkit-mask:
+        radial-gradient(circle var(--showcase-ticket-notch) at 0 var(--showcase-ticket-stub), transparent 96%, var(--color-text-black)) left / 51% 100% no-repeat,
+        radial-gradient(circle var(--showcase-ticket-notch) at 100% var(--showcase-ticket-stub), transparent 96%, var(--color-text-black)) right / 51% 100% no-repeat;
+    mask:
+        radial-gradient(circle var(--showcase-ticket-notch) at 0 var(--showcase-ticket-stub), transparent 96%, var(--color-text-black)) left / 51% 100% no-repeat,
+        radial-gradient(circle var(--showcase-ticket-notch) at 100% var(--showcase-ticket-stub), transparent 96%, var(--color-text-black)) right / 51% 100% no-repeat;
+}
+.showcase-ticket::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--showcase-ticket-glow);
+    pointer-events: none;
+}
+.showcase-ticket--upcoming::before { background: var(--showcase-ticket-glow-strong); }
+
+.showcase-ticket-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-sizing: border-box;
+    height: var(--showcase-ticket-stub);
+    padding: 0 20px;
+    border-bottom: 1px dashed var(--showcase-on-dark-line);
+}
+.showcase-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 10px;
+    border-radius: var(--radius-pill);
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.showcase-badge--upcoming { background: var(--color-accent); color: var(--color-text-black); }
+.showcase-badge--played { background: var(--showcase-on-dark-chip); color: var(--color-text-white); }
+.showcase-ticket-date {
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--showcase-on-dark-muted);
+    white-space: nowrap;
+}
+
+.showcase-ticket-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 20px 20px;
+}
+.showcase-ticket-title {
+    margin: 0;
+    color: var(--color-text-white);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: -.01em;
+    overflow-wrap: anywhere;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+.showcase-ticket-meta,
+.showcase-ticket-teams {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--showcase-on-dark-muted);
+}
+.showcase-pin { flex: none; color: var(--color-accent); }
+
+.showcase-gauge { display: flex; flex-direction: column; gap: 8px; }
+.showcase-gauge-label {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 4px 12px;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+.showcase-gauge-status { color: var(--color-accent); }
+.showcase-gauge-status.is-closed { color: var(--showcase-on-dark-muted); }
+.showcase-gauge-track {
+    display: block;
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background: var(--showcase-on-dark-line);
+    overflow: hidden;
+}
+.showcase-gauge-fill {
+    display: block;
+    height: 100%;
+    width: calc(var(--showcase-fill, 0) * 100%);
+    border-radius: inherit;
+    background: var(--color-accent);
+}
+
+.showcase-ticket-org {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: auto 0 0;
+    padding-top: 4px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    min-width: 0;
+}
+.showcase-ticket-org-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.showcase-ticket-cta {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 44px;
+    margin-top: auto;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    color: var(--color-text-black);
+    font-family: var(--font-body);
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color var(--transition), color var(--transition);
+}
+.showcase-ticket-cta:hover { background: var(--color-text-white); }
+.showcase-ticket-cta:focus-visible { outline-color: var(--color-accent); }
+/* The organiser row already sits at the card bottom (margin-top: auto);
+   without it, the CTA takes over the push-down role. */
+.showcase-ticket-org + .showcase-ticket-cta { margin-top: 0; }
+
+/* --- Avatars (logo image or lime initials) ----------------------------- */
+.showcase-avatar {
+    flex: none;
+    display: grid;
+    place-items: center;
+    border-radius: var(--radius-pill);
+    object-fit: cover;
+    background: var(--color-light-bg);
+    overflow: hidden;
+}
+.showcase-avatar--sm { width: 32px; height: 32px; font-size: 12px; }
+.showcase-avatar--lg { width: 48px; height: 48px; font-size: 17px; }
+.showcase-avatar--initials {
+    background: var(--color-accent);
+    color: var(--color-text-black);
+    font-family: var(--font-heading);
+    font-weight: 800;
+    letter-spacing: -.02em;
+    line-height: 1;
+}
+
+/* --- Organizer wall ---------------------------------------------------- */
+.showcase-wall {
+    list-style: none;
+    padding: 0;
+    margin-block: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 248px), 1fr));
+    gap: 12px;
+}
+.showcase-org {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+    padding: 16px;
+    border-radius: var(--radius-input);
+    background: var(--color-light-gray);
+}
+.showcase-org-text { min-width: 0; }
+.showcase-org-name,
+.showcase-org-city,
+.showcase-org-count {
+    margin: 0;
+    font-family: var(--font-body);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.showcase-org-name { font-size: 16px; font-weight: 700; line-height: 1.3; }
+.showcase-org-city { font-size: 13px; line-height: 1.4; color: var(--color-medium-gray); }
+.showcase-org-count { font-size: 13px; font-weight: 600; line-height: 1.4; margin-top: 2px; }
+
+/* --- Final CTA --------------------------------------------------------- */
+.showcase-cta-row { display: flex; justify-content: center; }
+.showcase-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    max-width: 100%;
+    min-height: 52px;
+    padding: 12px 26px;
+    border-radius: var(--radius-pill);
+    background: var(--color-text-primary);
+    color: var(--color-text-white);
+    font-family: var(--font-body);
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color var(--transition);
+}
+.showcase-cta span { color: var(--color-accent); }
+.showcase-cta:hover { background: var(--color-button-glass-hover); }
+
+/* --- Loading skeleton -------------------------------------------------- */
+.showcase-skel {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-showcase-skel);
+    background: var(--showcase-skel-dark);
+}
+.showcase-skel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--showcase-skel-shine);
+    translate: -100% 0;
+    animation: showcaseShimmer var(--showcase-shimmer-duration) ease-in-out infinite;
+}
+.showcase-org .showcase-skel { background: var(--showcase-skel-base); }
+.showcase-skel--stat { width: 70%; height: clamp(2.25rem, 4.6vw, 4rem); }
+.showcase-skel--label { width: 50%; height: 14px; }
+.showcase-skel--pill { width: 72px; height: 22px; border-radius: var(--radius-pill); }
+.showcase-skel--title { width: 85%; height: 22px; }
+.showcase-skel--line { width: 70%; height: 14px; }
+.showcase-skel--short { width: 45%; }
+.showcase-skel--avatar { flex: none; width: 48px; height: 48px; border-radius: var(--radius-pill); }
+.showcase-ticket--skeleton { min-height: 240px; }
+.showcase.is-loading .showcase-nav,
+.showcase.is-loading .showcase-cta-row { visibility: hidden; }
+
+@keyframes showcaseShimmer {
+    to { translate: 100% 0; }
+}
+
+@media (max-width: 767px) {
+    :root {
+        --showcase-gutter: var(--mobile-hero-card-margin);
+        --showcase-card-width: min(82%, 300px);
+    }
+    .showcase-title { font-size: clamp(1.25rem, 5.5vw, 2rem); }
+    .showcase-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .showcase-stat:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .showcase-stat { padding: 18px 16px; }
+    .showcase-stat-value { font-size: clamp(1.625rem, 8vw, 2.5rem); }
+    .showcase-stat-label { font-size: 13px; }
+    .showcase-rail { gap: 12px; }
+    .showcase-nav { display: none; }
+    .showcase-cta { padding-inline: 20px; font-size: 15px; }
+    /* Two compact columns keep a 12-structure wall from becoming a long list. */
+    .showcase-wall { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .showcase-org { flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px; }
+    .showcase-org .showcase-avatar--lg { width: 40px; height: 40px; font-size: 15px; }
+    .showcase-org-name,
+    .showcase-org-city,
+    .showcase-org-count { white-space: normal; overflow-wrap: anywhere; }
+    .showcase-org-name { font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .showcase-skel::after { animation: none; }
+    .showcase-nav button,
+    .showcase-ticket-cta,
+    .showcase-cta { transition: none; }
 }
 
 /* ==========================================================================

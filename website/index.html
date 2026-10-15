@@ -59,6 +59,7 @@
     <script src="vendor/qrcode.min.js" defer></script>
     <script src="carousel.js" defer></script>
     <script src="script.js" defer></script>
+    <script src="showcase.js" defer></script>
 
     <!-- JSON-LD : Organization (knowledge panel + sitelinks) -->
     <!-- sameAs : Instagram actif. Ajouter LinkedIn / TikTok quand les comptes seront créés. -->
@@ -502,6 +503,33 @@
                     <span class="floating-card__score-badge">VICTOIRE 🏆</span>
                 </article>
             </div>
+        </div>
+    </section>
+
+    <!-- === Vitrine « Ça joue déjà » — preuve sociale alimentée par showcase.js ===
+         Masquée par défaut (`hidden`) : la section n'apparaît QUE si la RPC publique
+         PROD renvoie un payload valide au-dessus du seuil de crédibilité. Échec,
+         404, payload invalide ou volume trop faible → elle reste masquée, sans
+         message d'erreur. Aucun chiffre ni tournoi n'est écrit en dur ici. -->
+    <section class="showcase" id="ca-joue" data-showcase data-showcase-variant="participant" aria-labelledby="showcaseTitle" hidden>
+        <div class="showcase-head">
+            <p class="showcase-eyebrow"><span class="showcase-eyebrow-dot" aria-hidden="true"></span>Ça joue déjà sur Yamatch</p>
+            <h2 id="showcaseTitle" class="showcase-title">Des vrais tournois, des vraies équipes</h2>
+            <p class="showcase-lead">Inscriptions, matchs et classements : les chiffres viennent directement de l’app</p>
+        </div>
+        <ul class="showcase-stats" role="list" data-showcase-stats></ul>
+        <div class="showcase-block" data-showcase-rail-block>
+            <div class="showcase-block-head">
+                <h3 class="showcase-block-title" id="showcaseRailTitle">À l’affiche et déjà joués</h3>
+                <div class="showcase-nav">
+                    <button type="button" data-showcase-prev aria-controls="showcaseRail" aria-label="Tournois précédents"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg></button>
+                    <button type="button" data-showcase-next aria-controls="showcaseRail" aria-label="Tournois suivants"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></button>
+                </div>
+            </div>
+            <ul class="showcase-rail" id="showcaseRail" role="list" tabindex="0" aria-labelledby="showcaseRailTitle" data-showcase-rail></ul>
+        </div>
+        <div class="showcase-cta-row">
+            <a class="showcase-cta" href="/download/">Trouve ton prochain tournoi sur l’app <span aria-hidden="true">→</span></a>
         </div>
     </section>
 

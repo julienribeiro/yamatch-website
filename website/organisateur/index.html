@@ -228,6 +228,37 @@
      </div>
     </section>
 
+  <!-- Vitrine organisateurs — alimentée par ../showcase.js, masquée tant que la
+       RPC publique PROD ne renvoie pas un payload valide au-dessus du seuil de
+       crédibilité. Aucun chiffre, structure ou tournoi n'est écrit en dur ici. -->
+  <section class="showcase showcase--organizer" id="ils-organisent" data-showcase data-showcase-variant="organizer" aria-labelledby="showcaseOrgTitle" hidden>
+    <div class="showcase-head">
+      <p class="showcase-eyebrow"><span class="showcase-eyebrow-dot" aria-hidden="true"></span>Ils nous font confiance</p>
+      <h2 id="showcaseOrgTitle" class="showcase-title">Ils organisent avec Yamatch</h2>
+      <p class="showcase-lead">Clubs et associations gèrent déjà leurs tournois sur l’app, de l’inscription à la finale</p>
+    </div>
+    <ul class="showcase-stats" role="list" data-showcase-stats></ul>
+    <div class="showcase-block" data-showcase-wall-block>
+      <div class="showcase-block-head">
+        <h3 class="showcase-block-title">Les structures organisatrices</h3>
+      </div>
+      <ul class="showcase-wall" role="list" data-showcase-wall></ul>
+    </div>
+    <div class="showcase-block" data-showcase-rail-block>
+      <div class="showcase-block-head">
+        <h3 class="showcase-block-title" id="showcaseOrgRailTitle">Leurs derniers tournois</h3>
+        <div class="showcase-nav">
+          <button type="button" data-showcase-prev aria-controls="showcaseOrgRail" aria-label="Tournois précédents"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <button type="button" data-showcase-next aria-controls="showcaseOrgRail" aria-label="Tournois suivants"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+      <ul class="showcase-rail" id="showcaseOrgRail" role="list" tabindex="0" aria-labelledby="showcaseOrgRailTitle" data-showcase-rail></ul>
+    </div>
+    <div class="showcase-cta-row">
+      <a class="showcase-cta" href="/download/">Crée ton tournoi sur l’app <span aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
 </main>
 
 <footer class="footer" id="siteFooter">
@@ -266,5 +297,6 @@
 
 <script src="hero-organisateur.js?v=paris-clock-1" defer></script>
 <script src="organisateur-cards.js" defer></script>
+<script src="../showcase.js" defer></script>
 </body>
 </html>

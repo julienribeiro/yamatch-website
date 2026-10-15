@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-10-14 (homepage organiser feature cards, organiser hero and homepage links; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
+Last sync: 2026-10-15 (public showcase / social-proof sections on `/` and `/organisateur/`, hidden until the PROD RPC is deployed; homepage organiser feature cards, organiser hero and homepage links; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -46,6 +46,7 @@ Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production buil
 | `website/styles.css` | All styles. Design tokens in `:root`. Heavy use of `clamp()`. **Source of truth — never minify by hand.** | ~4734 |
 | `website/carousel.js` | Standalone IIFE: complete carousel gesture state machine (wheel + touch + rubber-band). Loaded via `<script src="carousel.js" defer>` **before** `script.js`. | ~419 |
 | `website/script.js` | Standalone IIFE: copyright year, toast scaffolding (`window.yamatchToast`, exposed but currently zero in-repo callers since both hero CTAs became real links — see Hero below), wordmark scroll-aware behaviour, wave-SVG animation, page-scroll-progress block, QR widget rendering, floating-card parallax spring-chain, and more. | ~1944 |
+| `website/showcase.js` | Standalone deferred IIFE shared by `/` and `/organisateur/`: fetches the public PROD RPC `get_public_showcase`, validates it, renders the social-proof section (stats, ticket rail, organiser wall) or keeps it hidden. See « Showcase / social proof » below. | ~700 |
 
 `carousel.js` is loaded first in HTML (`<script src="carousel.js" defer>` then `<script src="script.js" defer>`). Sequential `defer` tags guarantee execution order while keeping both scripts non-blocking.
 
@@ -403,6 +404,33 @@ All new palette, gradient, overlay, border, shadow and radius values are declare
 **Details and accessibility:** each 48px plus button controls a unique `#ym-orga-detail-N` panel through `aria-controls` and `aria-expanded`. Panels initially carry `hidden`; opening removes it and adds `.ym-orga-open`, while closing restores it immediately. The accessible button label changes from « En savoir plus » to « Fermer les détails ». Escape closes the card's open panel and returns focus to its button without scrolling. Panels open independently, scroll internally when needed, and reserve 84px bottom padding for the close control. Navigation buttons are 46px targets; buttons and the track have visible keyboard outlines. Reduced motion explicitly disables sticker/detail animation and plus transitions; the JavaScript media-query object is checked on each navigation click. On `/organisateur/`, the local `.org-page *` reduced-motion override additionally disables all animations and transitions across the hero and cards.
 
 **Stacking and overflow:** each card creates an isolated context and clips its own decoration. Backgrounds sit at z=−2, shading at −1, headings at 2, detail panels at 4 and plus controls at 5. The track deliberately uses `overflow-x: auto; overflow-y: hidden` with `overscroll-behavior-x: contain`; this local containment does not change the phone rail's lift/overflow rules.
+
+---
+
+### Showcase / social proof (`section.showcase[data-showcase]`) — added 2026-10-15
+
+Founder request: show that real tournaments run on the app (participant angle on the homepage, organiser angle on `/organisateur/`) to reassure future users. **Never shows invented figures**: both sections ship `hidden` and only appear with a valid PROD payload.
+
+| Page | Placement | Variant |
+|---|---|---|
+| `index.html` | `section#ca-joue`, between `#how-it-works` and `#faq` | `data-showcase-variant="participant"` — eyebrow « Ça joue déjà sur Yamatch », h2 « Des vrais tournois, des vraies équipes », stats (tournois joués, équipes inscrites, « +N » joueurs, villes), rail of upcoming (« À venir », fill gauge, CTA `/tournament/?id=<id>`) then played (« Terminé ») tickets, CTA `/download/` |
+| `organisateur/index.html` | `section#ils-organisent`, after `#organisateurs` | `data-showcase-variant="organizer"` — « Ils organisent avec Yamatch », stats (structures, tournois organisés = played + upcoming, équipes accueillies, villes), organiser wall (logo or initials, city, « N tournois · M équipes »), rail of up to 6 recent tournaments, CTA « Crée ton tournoi sur l’app » → `/download/` (same store destinations as the hero buttons) |
+
+Static HTML holds only copy and empty containers (`[data-showcase-stats]`, `[data-showcase-rail]`, `[data-showcase-wall]`, block wrappers and prev/next buttons); `showcase.js` locates them by data attribute, so both pages share one script and one class set (`.showcase-*`). Heading order: h2 section → h3 block titles → h4 ticket titles.
+
+**Data contract.** `POST https://kxwmjjgtnrhcpgopevzb.supabase.co/rest/v1/rpc/get_public_showcase`, body `{}`, `apikey` + `Authorization: Bearer` with the same publishable key as `/tournament/`, `credentials: 'omit'`, 10 s `AbortController` timeout. Response (jsonb): `generated_at`; `stats` {`tournaments_played`, `tournaments_upcoming`, `teams_registered`, `players_estimated`, `organizers`, `cities`} (non-negative ints, all required); `recent[]` (≤ 9, played, date desc) and `upcoming[]` (≤ 6, date asc, + `registrations_open`) items {`id`, `title`, `city|null`, `date` `YYYY-MM-DD`, `organizer_name|null`, `organizer_logo_url|null`, `teams_count`, `max_teams|null`, `players_per_team|null`}; `organizers_list[]` (≤ 12) {`name`, `logo_url|null`, `city|null`, `tournaments_count`, `teams_count`}. The backend RPC lives in the **yamatch** repo migration `20261015120000_public_showcase.sql` — **not deployed; PROD deployment requires the founder’s explicit GO**. Until then every visitor gets a 404 and the sections stay hidden.
+
+**Hide-on-failure rule.** Network error, timeout, non-2xx (404 included), contract violation (missing/non-integer stat, non-array lists) or `stats.tournaments_played < MIN_TOURNAMENTS_PLAYED` (= 3) → section `hidden`, containers emptied, no visitor-facing message. Individual list items with an invalid `id` (`^[A-Za-z0-9_-]{1,128}$`), empty title or invalid date are dropped; an empty rail or wall hides only its block. Without JavaScript the sections never appear.
+
+**Loading.** A zero-height `.showcase-sentinel` is inserted before each section (a hidden element has no box to observe); an `IntersectionObserver` (`rootMargin: 600px 0px`) starts the load ahead of the viewport, or immediately without IO support. During the request the section shows a skeleton (`aria-busy="true"`, skeleton nodes `aria-hidden`, nav/CTA `visibility: hidden`, `showcaseShimmer` 1.4 s). Successful credible payloads are cached in `sessionStorage` (`yamatch.showcase.v1`, 10 min TTL, try/catch); a fresh cache entry renders without a request.
+
+**Demo preview.** `?showcase=demo` renders a built-in, explicitly fictive payload (« Démo · … » titles, invented « Démoville »-style cities, dates relative to today) with a lime « Aperçu démo — données fictives, non publiées » pill. It never reads/writes the cache and is only reachable through that query parameter.
+
+**Security.** All strings go through `textContent` (titles trimmed to 120 chars); logo URLs must parse with `new URL()` and use `https:`, otherwise lime initials are shown. Images: `alt="Logo de <nom>"`, `loading="lazy"`, `decoding="async"`, `referrerpolicy="no-referrer"`, fall back to initials on `error`. Tournament links are built as `/tournament/?id=` + `encodeURIComponent(id)`.
+
+**Formatting & motion.** Numbers use `Intl.NumberFormat('fr-FR')` with U+202F replaced by NBSP; dates use `fr-FR` `{ day: numeric, month: short, year: numeric, timeZone: UTC }` (« 12 oct. 2026 »). French singular for 0–1. Counters count up from 0 over 1200 ms (ease-out cubic, rAF) once 35 % of the stats panel is visible; a hidden ghost copy of the final value reserves the width (no reflow). Each stat carries an `.showcase-sr` sentence with the final value (« Plus de 2 140 joueurs sur les terrains »); the animated digits and labels are `aria-hidden`. Under reduced motion the final values render directly, shimmer and transitions are disabled and nav scrolling is `auto`.
+
+**Layout & tokens (CSS §10.7).** New `:root` tokens: `--showcase-gutter` (same formula as `--ym-orga-gutter`; `--mobile-hero-card-margin` at ≤ 767 px), `--showcase-card-width` (`clamp(268px, 24vw, 312px)`; `min(82%, 300px)` on mobile), `--showcase-ticket-{bg,glow,glow-strong,stub,notch}`, `--showcase-on-dark-{muted,line,chip}`, `--showcase-skel-{base,dark,shine}`, `--showcase-shimmer-duration`, `--radius-showcase-skel`. The stats panel is a black slab with lime Roboto 800 numbers and 1 px filets via grid gap (`--showcase-stat-count` columns; 2 columns on mobile, odd last item spans both). Tickets are dark-gradient cards with a 64 px stub, dashed perforation and two 11 px notches cut by a two-layer `mask`. The rail is a native horizontal scroll-snap list (`role="list"`, `tabindex="0"`, labelled by its h3) that bleeds to the viewport edges and pads itself with the gutter; 44 px prev/next buttons (hidden ≤ 767 px) scroll by one card, disabled at the edges. The organiser wall is an auto-fill grid (min 248 px), two compact columns on mobile. The section uses `overflow-x: clip`; verified without horizontal overflow at 320/390/1440 px.
 
 ---
 
