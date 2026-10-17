@@ -17,12 +17,21 @@ jouer. Fond gris clair, avec un terrain de volley dessiné en filigrane.
 
 ## 2. Ce qui existe aujourd'hui (à lire avant de coder)
 
+> **Contexte de la branche :** le hero V2 et « Comment ça marche » V2 y sont
+> déjà implémentés (voir `../hero-participant-v2/implementation/` et
+> `../comment-ca-marche-v2/implementation/`). Le header est désormais **fixe**
+> (pill condensée au scroll) : la section doit réserver la même marge d'ancre
+> que `#how-it-works` et `#faq` (hauteur du header + 16 px). `website/app-screens.css`
+> existe déjà ; cette section n'en a pas besoin (les tickets sont du CSS de
+> `styles.css`). Les numéros de ligne ci-dessous datent du 17/10 après ces
+> livraisons : se fier aux sélecteurs.
+
 | Élément | Où | Notes |
 |---|---|---|
-| Section participant | `website/index.html` ~l. 476-492 | `section.showcase#derniers-tournois[data-showcase][data-showcase-variant="participant"][hidden]` > `.showcase-block` > en-tête (`h2#showcaseRailTitle` « À l’affiche et déjà joués », flèches) + `ul#showcaseRail.showcase-rail` vide, rempli par JS |
+| Section participant | `website/index.html` ~l. 871-886 | `section.showcase#derniers-tournois[data-showcase][data-showcase-variant="participant"][hidden]` > `.showcase-block` > en-tête (`h2#showcaseRailTitle` « À l’affiche et déjà joués », flèches) + `ul#showcaseRail.showcase-rail` vide, rempli par JS |
 | Section organisateur | `website/organisateur/index.html` ~l. 220 | Même composant, variante `organizer` (« Les derniers tournois », tournois passés seulement). **Hors périmètre, ne doit pas changer** |
-| JS | `website/script.js` ~l. 1140-1672 (dernière IIFE) | RPC `get_public_showcase`, cache `sessionStorage` 10 min, chargement à l'approche (IntersectionObserver), validation stricte, `ticket()`, `gauge()`, `render()`, `wireRailNav()`, mode `?showcase=demo` |
-| CSS | `website/styles.css` §10.7 (~l. 2476+) | Rail natif en scroll-snap, tickets sombres, tokens `--showcase-*` |
+| JS | `website/script.js`, dernière IIFE (~l. 890 et suivantes ; `ticket()` ~l. 1210, `render()` ~l. 1339) | RPC `get_public_showcase`, cache `sessionStorage` 10 min, chargement à l'approche (IntersectionObserver), validation stricte, `ticket()`, `gauge()`, `render()`, `wireRailNav()`, mode `?showcase=demo` |
+| CSS | `website/styles.css` §10.7 (~l. 2474+) | Rail natif en scroll-snap, tickets sombres, tokens `--showcase-*` |
 | Doc | `docs/WEBSITE_ARCHITECTURE.md` § « Public tournament rails » | Contrat données, visibilité et cache à **conserver** |
 
 Données disponibles par tournoi (déjà normalisées par le JS) : `id`, `title`,
