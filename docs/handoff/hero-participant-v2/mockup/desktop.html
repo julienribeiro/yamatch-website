@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette hero participant — desktop</title>
+<!-- MAQUETTE DE RÉFÉRENCE — ne pas copier telle quelle dans website/.
+     Styles inline volontaires pour la lisibilité ; l'implémentation doit
+     passer par les tokens :root et les sections 7.x de styles.css (voir SPEC.md). -->
+<style>
+@font-face{font-family:'Frick 0.3';src:url('../../../../website/fonts/Frick0.3-Regular.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Inter';src:url('../../../../website/fonts/Inter-Variable.woff2') format('woff2');font-weight:100 900;font-display:swap}
+body{margin:0;background:#FFFFFF}
+a{color:#101828}a:hover{color:#000000}
+.yh-photo{background-color:#0c100b;background-image:linear-gradient(90deg,rgba(5,9,5,.88) 0%,rgba(5,9,5,.62) 38%,rgba(5,9,5,.12) 68%,rgba(5,9,5,.30) 100%),linear-gradient(180deg,rgba(5,9,5,0) 55%,rgba(5,9,5,.65) 100%),url('../../../../website/assets/hero-volley/hero-volley-mixed.webp');background-size:cover;background-position:62% center}
+.yh-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:40px}
+.yh-store:hover{transform:translateY(-1px)}
+.yh-ghost:hover{background:rgba(255,255,255,.2)}
+@media (max-width:900px){.yh-grid{grid-template-columns:minmax(0,1fr)}.yh-visual{min-height:520px}.yh-title{font-size:56px!important}.yh-orga{display:none!important}}
+</style>
+</head>
+<body>
+<div style="min-height: 900px; box-sizing: border-box; padding: 16px 24px 24px; font-family: 'Inter', system-ui, sans-serif; color: #101828; display: flex; flex-direction: column; gap: 16px">
+
+<header style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding: 0 8px; min-height: 52px">
+<a href="#top" aria-label="Yamatch — accueil" style="display: inline-flex; color: #000000">
+<svg viewBox="0 0 1067.73 206.13" width="148" height="29" fill="currentColor" aria-hidden="true">
+<path d="M277.28,3.42h28.94l22.78,99.93h1.42L353.19,3.42h79.15v199.29h-49.25V71.17h-3.42l-26.76,131.54h-46.4l-26.76-131.54h-3.42l-19.3,131.54h-9.97S277.28,3.42,277.28,3.42Z"></path>
+<path d="M480.72,3.42h84.84l42.7,199.29h-64.91l-2.85-20.5h-34.73l-2.85,20.5h-64.91L480.72,3.42ZM539.37,139.5l-14.23-74.02h-3.98l-14.24,74.02h32.46Z"></path>
+<path d="M638.43,52.95h-49.54V3.42h155.45v49.54h-49.54v149.76h-56.37V52.95Z"></path>
+<path d="M746.32,116.16v-26.19c0-60.64,6.83-89.97,77.73-89.97s77.72,27.33,77.72,75.73v12.81h-56.94v-21.35c0-11.67-4.56-18.79-20.78-18.79s-20.78,7.12-20.78,18.79v71.74c0,11.67,4.56,18.79,20.78,18.79s20.78-7.12,20.78-18.79v-22.49h56.94v13.95c0,48.4-6.83,75.73-77.72,75.73s-77.73-29.33-77.73-89.97Z"></path>
+<path d="M1011.35,125.27h-40.43v77.44h-56.37V3.42h56.37v79.15h40.43V3.42h56.37v199.29h-56.37v-77.44Z"></path>
+<path d="M201.99,3.41h84.84l-29.83,199.27h-64.91l4.61-20.5h-34.73l-10.31,20.5h-64.91L201.99,3.41ZM211.1,139.48l12.71-74.02h-3.99l-41.17,74.02h32.45Z"></path>
+<path d="M31.91,115.55L4.49,3.96h62.06l12.66,57.5h3.42L137.15,3.96h62.06l-108.66,111.59-31.91,87.68H0l31.91-87.68Z"></path>
+</svg>
+</a>
+<nav aria-label="Navigation principale" style="display: flex; align-items: center; gap: 24px; flex-wrap: wrap">
+<a href="#how-it-works" style="font-size: 15px; font-weight: 500; text-decoration: none; color: #101828">Comment ça marche</a>
+<a href="#faq" style="font-size: 15px; font-weight: 500; text-decoration: none; color: #101828">FAQ</a>
+<a class="yh-orga" href="organisateur/" style="display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px; border-radius: 100px; background: #101828; color: #FFFFFF; font-size: 15px; font-weight: 600; text-decoration: none">T’es organisateur&nbsp;? <span aria-hidden="true" style="color: #D7FF00">→</span></a>
+</nav>
+</header>
+
+<section id="top" class="yh-photo" style="position: relative; flex: 1 1 auto; min-height: 780px; border-radius: 40px; overflow: hidden; color: #FFFFFF">
+<div class="yh-grid" style="height: 100%; min-height: 780px; box-sizing: border-box; padding: 0 clamp(24px, 5vw, 80px)">
+
+<div style="display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: 72px 0 64px; max-width: 640px">
+<span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px 8px 10px; border-radius: 100px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.22); font-size: 14px; font-weight: 600; letter-spacing: .01em">
+<span aria-hidden="true" style="width: 8px; height: 8px; border-radius: 50%; background: #D7FF00; box-shadow: 0 0 0 4px rgba(215,255,0,.22)"></span>
+Volleyball · d’autres sports arrivent
+</span>
+
+<h1 class="yh-title" style="margin: 0; font-family: 'Frick 0.3', 'Inter', sans-serif; font-weight: 400; font-size: 92px; line-height: .92; text-transform: uppercase; letter-spacing: 0">
+<span style="display: inline-block; transform: skewX(-12deg); transform-origin: left bottom">Ton prochain<br>tournoi <span style="color: #D7FF00">t’attend</span></span>
+</h1>
+
+<div style="display: flex; flex-direction: column; gap: 10px">
+<p style="margin: 0; font-size: 22px; font-weight: 600; line-height: 1.3">Compose ton équipe, il y a match.</p>
+<p style="margin: 0; font-size: 17px; font-weight: 400; line-height: 1.55; color: rgba(255,255,255,.80); max-width: 46ch">Trouve un tournoi près de chez toi, réserve ta place en quelques secondes et suis tes matchs en direct le jour J.</p>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 12px">
+<a class="yh-store" href="https://apps.apple.com/fr/app/yamatch/id6773454974" aria-label="Télécharger sur l’App Store" style="display: inline-flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 22px 0 18px; border-radius: 100px; background: #D7FF00; color: #000000; text-decoration: none; transition: transform 200ms">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor" aria-hidden="true"><path d="M17.05 12.04c-.03-3.24 2.65-4.79 2.77-4.87-1.51-2.21-3.86-2.51-4.69-2.55-2-.21-3.9 1.18-4.91 1.18-1.03 0-2.59-1.16-4.27-1.12-2.18.03-4.21 1.27-5.34 3.22-2.29 3.97-.59 9.83 1.65 13.05 1.09 1.58 2.39 3.34 4.07 3.28 1.64-.07 2.25-1.06 4.23-1.06 1.96 0 2.53 1.06 4.25 1.02 1.76-.03 2.87-1.6 3.95-3.18 1.24-1.83 1.76-3.6 1.79-3.69-.04-.02-3.45-1.32-3.5-5.28zM13.78 3.4c.91-1.1 1.52-2.62 1.35-4.13-1.31.05-2.89.87-3.83 1.96-.84.97-1.58 2.51-1.38 4 1.46.11 2.95-.74 3.86-1.83z"></path></svg>
+<span style="display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 11px; font-weight: 500">Télécharger sur</span><span style="font-size: 17px; font-weight: 700">App Store</span></span>
+</a>
+<a class="yh-store yh-ghost" href="https://play.google.com/store/apps/details?id=com.appyamatch.yamatch" aria-label="Télécharger sur Google Play" style="display: inline-flex; align-items: center; gap: 12px; min-height: 56px; padding: 0 22px 0 18px; border-radius: 100px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.32); color: #FFFFFF; text-decoration: none; transition: transform 200ms, background 200ms">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202c1.302.661 1.302 2.823 0 2.594zM1.337.924a2.43 2.43 0 0 0-.337 1.286v19.474c0 .484.124.928.337 1.286l11.591-11.491L1.337.924zm12.844 10.452l2.79-2.766L3.486.36C3.106.118 2.658.058 2.218.122l11.963 11.254zm0 1.248L2.218 23.878a2.43 2.43 0 0 0 1.268-.238l13.485-7.667-2.79-2.349z"></path></svg>
+<span style="display: flex; flex-direction: column; line-height: 1.1"><span style="font-size: 11px; font-weight: 500; color: rgba(255,255,255,.80)">Télécharger sur</span><span style="font-size: 17px; font-weight: 700">Google Play</span></span>
+</a>
+</div>
+
+<ul style="list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.80)">
+<li style="display: inline-flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D7FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>App gratuite</li>
+<li style="display: inline-flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D7FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Paiement sécurisé par Stripe</li>
+<li style="display: inline-flex; align-items: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D7FF00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5L20 7"></path></svg>Apple Pay &amp; Google Pay</li>
+</ul>
+</div>
+
+<div class="yh-visual" style="position: relative; min-height: 780px">
+<img src="../../../../website/assets/screens/screen_1.webp" alt="Aperçu de l’app Yamatch — accueil de découverte des tournois" style="position: absolute; left: 50%; bottom: -150px; width: 360px; height: auto; transform: translateX(-46%) rotate(-4deg); filter: drop-shadow(0 40px 60px rgba(0,0,0,.55))">
+
+<!-- cartes flottantes (optionnelles) -->
+<div style="position: absolute; top: 150px; left: -24px; width: 272px; box-sizing: border-box; padding: 14px 16px; border-radius: 20px; background: rgba(16,24,40,.78); border: 1px solid rgba(255,255,255,.16); box-shadow: 0 18px 40px rgba(0,0,0,.45); backdrop-filter: blur(14px); display: flex; flex-direction: column; gap: 12px; transform: rotate(-2deg)">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="width: 50px; height: 54px; flex: none; border-radius: 12px; border: 1px solid rgba(255,255,255,.28); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1"><span style="font-size: 20px; font-weight: 700">17</span><span style="font-size: 11px; font-weight: 500; margin-top: 3px">MAI</span></div>
+<div style="min-width: 0"><div style="font-size: 15px; font-weight: 700">Tournoi de la jeunesse</div><div style="font-size: 12px; color: rgba(255,255,255,.75); margin-top: 3px">Milly-la-Forêt · 52 km</div></div>
+</div>
+<div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: 600"><span>27/36 inscrits</span><span style="color: #D7FF00">9 équipes restantes</span></div>
+<div aria-hidden="true" style="height: 6px; border-radius: 100px; background: rgba(255,255,255,.18); overflow: hidden"><div style="width: 75%; height: 100%; border-radius: 100px; background: #FFFFFF"></div></div>
+</div>
+
+<div style="position: absolute; top: 400px; right: -8px; width: 220px; box-sizing: border-box; padding: 14px 16px; border-radius: 20px; background: #D7FF00; color: #000000; box-shadow: 0 18px 40px rgba(0,0,0,.40); display: flex; flex-direction: column; gap: 8px; transform: rotate(3deg)">
+<span style="align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 100px; background: #000000; color: #FFFFFF; font-size: 12px; font-weight: 600"><span aria-hidden="true" style="width: 6px; height: 6px; border-radius: 50%; background: #D7FF00"></span>En cours</span>
+<div style="font-size: 13px; font-weight: 600">Match 3 · Terrain 2</div>
+<div style="font-family: 'Frick 0.3', 'Inter', sans-serif; font-size: 34px; line-height: 1">21 – 18</div>
+</div>
+
+<div style="position: absolute; top: 610px; left: 8px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 100px; background: #FFFFFF; color: #101828; font-size: 13px; font-weight: 600; box-shadow: 0 14px 30px rgba(0,0,0,.35)">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#101828" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3"></path></svg>
+Ton équipe passe en phase finale
+</div>
+<!-- /cartes flottantes -->
+</div>
+
+</div>
+</section>
+</div>
+</body>
+</html>
