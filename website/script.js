@@ -59,6 +59,47 @@
         }
     }
 
+    // Progressive, one-shot card entrances. CSS owns distance and stagger timing.
+    {
+        const section = document.querySelector('.how-quest');
+        const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const steps = section ? Array.from(section.querySelectorAll('.quest-step')) : [];
+        if (steps.length && 'IntersectionObserver' in window && !motionQuery.matches) {
+            const pending = new Set(steps);
+            const stop = () => {
+                observer.disconnect();
+                if (typeof motionQuery.removeEventListener === 'function') {
+                    motionQuery.removeEventListener('change', onMotionChange);
+                } else if (typeof motionQuery.removeListener === 'function') {
+                    motionQuery.removeListener(onMotionChange);
+                }
+            };
+            const onMotionChange = (event) => {
+                if (!event.matches) return;
+                steps.forEach((step) => step.classList.add('is-revealed'));
+                section.classList.remove('is-enhanced');
+                pending.clear();
+                stop();
+            };
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting || !pending.has(entry.target)) return;
+                    entry.target.classList.add('is-revealed');
+                    pending.delete(entry.target);
+                    observer.unobserve(entry.target);
+                });
+                if (!pending.size) stop();
+            }, { threshold: 0.1 });
+            steps.forEach((step) => observer.observe(step));
+            section.classList.add('is-enhanced');
+            if (typeof motionQuery.addEventListener === 'function') {
+                motionQuery.addEventListener('change', onMotionChange);
+            } else if (typeof motionQuery.addListener === 'function') {
+                motionQuery.addListener(onMotionChange);
+            }
+        }
+    }
+
     // FAQ accordion — toggle is-open on the parent item, flip aria-expanded.
     {
         const toggles = document.querySelectorAll('.faq-toggle');

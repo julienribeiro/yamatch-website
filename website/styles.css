@@ -28,7 +28,7 @@
        9.5 Active slide phone lift + arrival entrance
        9.6 .screen-card variants (lime / white / arrival)
        9.7 .screen-card__phone / __caption / __caption-primary / __caption-secondary
-   10. How-it-works quest (editorial 3-column static)
+   10. How-it-works V2 (three coded screen cards)
        10.1 .how-quest section + .how-quest-inner container
        10.2 .how-quest-header (eyebrow + title + organiser link)
        10.3 .quest-organiser-link (direct editorial link)
@@ -188,6 +188,30 @@
     --hero-copy-gap: 28px;
     --hero-phone-width: 360px;
     --hero-phone-scale: .8696;
+    /* Participant journey V2. */
+    --how-card-radius: 32px;
+    --how-card-min-height: 640px;
+    --how-card-dark-bg: var(--showcase-ticket-glow), var(--showcase-ticket-bg);
+    --how-ink-muted-dark: rgba(255,255,255,.78);
+    --how-ink-muted-lime: rgba(0,0,0,.78);
+    --how-intro-ink: #4A5565;
+    --how-title-size: clamp(3rem,5.8vw,5.25rem);
+    --how-numeral-size: clamp(2.75rem,3.9vw,3.5rem);
+    --how-step-title-size: 1.875rem;
+    --how-body-size: 1rem;
+    --how-intro-size: 1.125rem;
+    --how-tag-size: .8125rem;
+    --how-phone-scale: .6522;
+    --how-phone-shadow: drop-shadow(0 30px 50px rgba(0,0,0,.6));
+    --how-phone-shadow-lime: drop-shadow(0 30px 50px rgba(0,0,0,.35));
+    --how-highlight-radius: .08em;
+    --how-tag-border: rgba(255,255,255,.18);
+    --how-float-radius: 20px;
+    --how-avatar-size: 38px;
+    --how-caption-size: .6875rem;
+    --how-score-size: 1.5rem;
+    --how-reveal-duration: 480ms;
+    --how-reveal-easing: cubic-bezier(.2,.8,.2,1);
     --hero-entry: 480ms cubic-bezier(.2,.8,.2,1);
     --hero-phone-entry: 600ms cubic-bezier(.2,.8,.2,1);
     --hero-header-bg: rgba(255,255,255,.72);
@@ -1468,401 +1492,96 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
 
 
 /* ==========================================================================
-   10. HOW-IT-WORKS QUEST (editorial 3-column static section)
-   --------------------------------------------------------------------------
-   Sectioned UX block inserted between the carousel (.screens-rail) and the
-   FAQ. Three editorial step columns rendered statically as a Stripe /
-   Linear-style "feature triplet": one numeral + tag + title + body per
-   column, separated by thin vertical filets. A direct organiser link above
-   the triplet leads to /organisateur/. The participant steps are static HTML;
-   this block supplies only the visual scaffolding.
-
-   Refactor 2026-05-12: the previous "gamified" treatment is RETIRED.
-   Removed in full: the sticky panel scaffold (`.how-quest-sticky`), the
-   320svh min-height + padding-bottom buffer, the vertical numbered
-   progress bar (`.quest-progress-bar` + `.quest-progress-step` +
-   `.quest-progress-node` + `.quest-progress-number`), the per-step
-   `[data-step]` zigzag placement + accent-strip ::before + Étape badge
-   ::after, the icon container (`.quest-step-icon`), the scroll-driven
-   locked / unlocked opacity ramp, the completion pill
-   (`.quest-completion-pill`), and the radial gradient ambient lighting.
-   The defensive z-index stacking (.how-quest { z-index: 0 } +
-   .faq { z-index: 1 }) is also removed — no sticky panel left to defend
-   against. Nothing scroll-driven remains in the editorial content.
-
-   Layout strategy:
-   - The section is sized by its CONTENT (no min-height). Generous
-     `padding-block` gives the editorial composition room to breathe.
-   - Three columns of equal weight (`1fr 1fr 1fr`, gap 0). The visual
-     rhythm comes from the columns' internal `padding-inline: 28px` plus
-     1px filets painted as ::after pseudo-elements between adjacent
-     columns. No card surface, no background gradient, no shadow — the
-     hierarchy reads from typography alone.
-   - The numeral (01 / 02 / 03) is the dominant glyph in each column,
-     paired with a small uppercase tag (lime dot + label) above the
-     title; the body sits below in a quieter neutral.
-   - On mobile (§17), the grid collapses to a single column with the
-     filets rotated 90° (under each step except the last).
-
-   Token usage:
-   - Background: var(--color-light-bg) (white) — the section now matches
-     the FAQ slot color; the visual break between sections is the type +
-     padding rhythm rather than a background flip.
-   - Accent: var(--color-accent) (lime) — kept exclusively on the eyebrow
-     per-step `.quest-step-tag-dot`. No halo on the step-tag dot (the eyebrow
-     already owns that affordance; repeating it three times under would
-     dilute the accent).
-   - Typography: Roboto 700 for the numeral + title; Inter 500 (uppercase,
-     letter-spaced) for the step tag; Inter 400 for the body.
+   10. HOW-IT-WORKS V2 — three coded app screens, normal document flow
    ========================================================================== */
-
-/* --- 10.1 .how-quest section + .how-quest-inner container ----------------- */
-/* Section wrapper. Sized by content (no min-height): the editorial layout
-   is short enough that any artificial height would just create dead space
-   between the carousel and the FAQ. Plain white surface — the brand rhythm
-   carousel-section / FAQ / footer reads correctly without a gray break in
-   the middle (the previous light-gray slot was carried by the retired
-   gamified treatment).
-
-   Participant content is static HTML; the organiser link navigates directly
-   to its dedicated page without a JavaScript state change. */
-.how-quest {
-    position: relative;
-    background-color: var(--color-light-bg);
-    /* Generous vertical breathing room — clamp resolves to:
-         vp 320  → 80px floor  (12vw = 38.4 < 80)
-         vp 768  → 92.16px     (12vw = 92.16, inside band)
-         vp 1167 → 140px ceiling reached (12vw = 140.04)
-         vp 1440 → 140px ceiling
-       Equal padding top/bottom so the section reads as a deliberate
-       editorial spread regardless of viewport height. */
-    padding-block: clamp(80px, 12vw, 140px);
-    padding-inline: var(--page-pad);
-    /* Section-level horizontal clipping — defensive. No descendant currently
-       bleeds past the section box (no sentinels, no carousel), but `clip`
-       costs nothing and keeps the contract uniform with .hero / .screens-rail
-       (both use `overflow-x: clip` per CSS spec to clip x WITHOUT promoting
-       y to `auto`). */
-    overflow-x: clip;
+/* --- 10.1 Section and header --- */
+.how-quest { position: relative; background: var(--color-light-bg); padding: 96px 24px 72px; overflow-x: clip; }
+.how-quest-inner { max-width: 1392px; margin-inline: auto; }
+.how-quest-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; padding-inline: clamp(0px,3vw,56px); margin-bottom: 48px; }
+.how-quest-copy { display: flex; flex-direction: column; gap: 20px; max-width: 760px; min-width: 0; }
+.how-quest-eyebrow { align-self: flex-start; display: inline-flex; align-items: center; gap: 10px; padding: 8px 14px 8px 10px; border-radius: var(--radius-pill); background: var(--color-light-gray); color: var(--color-text-primary); font: 600 var(--hero-small-size)/1.3 var(--font-body); }
+.how-eyebrow-dot { width: 8px; height: 8px; flex: none; border-radius: var(--radius-pill); background: var(--color-text-primary); box-shadow: 0 0 0 4px var(--color-accent); }
+.how-quest-title { margin: 0; font: 400 var(--how-title-size)/.92 var(--hero-font-display); text-transform: uppercase; color: var(--color-text-black); }
+.how-title-slant { display: inline-block; transform: skewX(-12deg); transform-origin: left bottom; }
+.how-title-accent { background: var(--color-accent); padding: 0 .12em; border-radius: var(--how-highlight-radius); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.how-intro { margin: 0; max-width: 52ch; font-size: var(--how-intro-size); line-height: 1.55; color: var(--how-intro-ink); }
+/* --- 10.2 Organiser navigation --- */
+.quest-organiser-link { flex: none; margin: 0; max-width: 100%; }
+.quest-organiser-link a { display: inline-flex; align-items: center; gap: 10px; min-height: 52px; max-width: 100%; padding: 0 22px; border-radius: var(--radius-pill); background: var(--color-text-primary); color: var(--color-text-white); font-size: var(--hero-nav-size); font-weight: 600; text-decoration: none; transition: translate var(--transition); }
+.quest-organiser-link a > span { color: var(--color-accent); }
+.quest-organiser-link a:hover { translate: 0 -1px; }
+.quest-organiser-link a:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 3px; box-shadow: 0 0 0 6px var(--color-text-primary); }
+/* --- 10.3 Cards and copy --- */
+.quest-steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; margin: 0; padding: 0; list-style: none; }
+.quest-step { position: relative; min-width: 0; min-height: var(--how-card-min-height); border-radius: var(--how-card-radius); overflow: hidden; clip-path: inset(0 round var(--how-card-radius)); background: var(--how-card-dark-bg); color: var(--color-text-white); }
+.quest-step--lime { background: var(--color-accent); color: var(--color-text-black); }
+.quest-step-copy { position: relative; /* Copy above the phone illustration. */ z-index: 1; display: flex; flex-direction: column; gap: 14px; padding: 32px 32px 0; }
+.quest-step-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.quest-step-numeral { display: inline-block; font: 400 var(--how-numeral-size)/1 var(--hero-font-display); color: var(--color-accent); transform: skewX(-12deg); }
+.quest-step--lime .quest-step-numeral { color: var(--color-text-black); }
+.quest-step-tag { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: var(--radius-pill); background: var(--hero-glass-bg); border: 1px solid var(--how-tag-border); color: var(--color-text-white); font-size: var(--how-tag-size); font-weight: 600; }
+.quest-step--lime .quest-step-tag { background: var(--color-text-black); border-color: var(--color-text-black); }
+.quest-step-tag-dot { width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--color-accent); flex: none; }
+.quest-step-title { margin: 4px 0 0; font: 700 var(--how-step-title-size)/1.15 var(--font-body); letter-spacing: -.01em; color: inherit; }
+.quest-step-body { margin: 0; font-size: var(--how-body-size); line-height: 1.55; color: var(--how-ink-muted-dark); }
+.quest-step--lime .quest-step-body { color: var(--how-ink-muted-lime); }
+/* --- 10.4 Coded phones and decorative cards --- */
+.quest-step-phone { position: absolute; left: 50%; top: 330px; translate: -50% 0; rotate: -3deg; filter: var(--how-phone-shadow); pointer-events: none; }
+.quest-step--lime .quest-step-phone { rotate: 3deg; filter: var(--how-phone-shadow-lime); }
+.quest-step-phone .ym-phone-slot { --ym-phone-scale: var(--how-phone-scale); }
+.quest-step-float { position: absolute; /* Decorative overlays sit above phone and its shadow. */ z-index: 2; pointer-events: none; box-shadow: var(--hero-float-shadow); }
+.quest-step-float--location { top: 410px; left: 24px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--radius-pill); background: var(--color-text-white); color: var(--color-text-primary); font-size: var(--how-tag-size); font-weight: 600; rotate: -4deg; }
+.quest-step-float--location svg { width: 16px; height: 16px; }
+.quest-step-float--team, .quest-step-float--score { top: 420px; right: 18px; width: 220px; padding: 14px; border-radius: var(--how-float-radius); background: var(--color-text-primary); color: var(--color-text-white); rotate: -3deg; display: flex; flex-direction: column; gap: 10px; }
+.quest-step-float--score { top: 410px; width: 210px; background: var(--color-text-white); color: var(--color-text-primary); rotate: 4deg; gap: 8px; }
+/* Journey-only overrides keep FAQ decoration styles unchanged. */
+.quest-step-float .floating-card__team-eyebrow, .quest-step-float .floating-card__score-eyebrow { margin: 0; font-size: var(--how-caption-size); font-weight: 700; letter-spacing: .08em; color: var(--how-ink-muted-dark); }
+.quest-step-float .floating-card__score-eyebrow { color: var(--how-intro-ink); }
+.quest-step-float .floating-card__team-grid { display: flex; justify-content: space-between; gap: 4px; }
+.quest-step-float .floating-card__team-avatar { width: var(--how-avatar-size); height: var(--how-avatar-size); border: 0; }
+.quest-step-float .floating-card__team-avatar--me { font-size: var(--how-caption-size); }
+.quest-step-float .floating-card__team-caption { font-size: var(--how-caption-size); color: var(--color-text-white); }
+.quest-step-float .floating-card__score-row { margin: 0; }
+.quest-step-float .floating-card__score-team { font-size: var(--how-tag-size); font-weight: 600; letter-spacing: 0; color: var(--color-medium-gray); }
+.quest-step-float .floating-card__score-value { font: 400 var(--how-score-size)/1 var(--hero-font-display); color: var(--color-medium-gray); }
+.quest-step-float .floating-card__score-row--winning .floating-card__score-team, .quest-step-float .floating-card__score-row--winning .floating-card__score-value { color: var(--color-text-primary); }
+.quest-step-float .floating-card__score-badge { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 5px 10px; font-size: var(--how-tag-size); text-transform: none; letter-spacing: 0; }
+.quest-step-float .floating-card__score-badge svg { width: 14px; height: 14px; }
+/* --- 10.5 Progressive reveal: content is visible without JavaScript. --- */
+.how-quest.is-enhanced .quest-step { transition: opacity var(--how-reveal-duration) var(--how-reveal-easing), translate var(--how-reveal-duration) var(--how-reveal-easing); }
+.how-quest.is-enhanced .quest-step:nth-child(2) { transition-delay: 80ms; }
+.how-quest.is-enhanced .quest-step:nth-child(3) { transition-delay: 160ms; }
+.how-quest.is-enhanced .quest-step:not(.is-revealed) { opacity: 0; translate: 0 24px; }
+.how-quest.is-enhanced .quest-step-phone { transition: opacity var(--how-reveal-duration) var(--how-reveal-easing) 120ms, transform var(--how-reveal-duration) var(--how-reveal-easing) 120ms; }
+.how-quest.is-enhanced .quest-step:nth-child(2) .quest-step-phone { transition-delay: 200ms; }
+.how-quest.is-enhanced .quest-step:nth-child(3) .quest-step-phone { transition-delay: 280ms; }
+.how-quest.is-enhanced .quest-step:not(.is-revealed) .quest-step-phone { opacity: 0; transform: translateY(24px); }
+@media (max-width: 1023px) {
+    .how-quest-header { flex-direction: column; align-items: flex-start; }
+    .quest-steps { grid-template-columns: minmax(0,1fr); }
 }
-
-.how-quest-inner {
-    /* Centered content well. Mirrors the .container pattern used elsewhere
-       (header in .hero, FAQ list). No grid here — the inner block is a
-       simple block container that hosts the centered header + the 3-col
-       grid below. */
-    max-width: var(--container-max);
-    margin-inline: auto;
+@media (max-width: 767px) {
+    :root { --how-card-radius: 28px; --how-card-min-height: 560px; --how-title-size: clamp(2.5rem,12.3vw,3rem); --how-step-title-size: 1.5rem; --how-body-size: .9375rem; --how-intro-size: 1rem; --how-tag-size: .75rem; --how-phone-scale: .5072; --how-float-radius: 18px; --how-avatar-size: 34px; --how-caption-size: .625rem; --how-score-size: 1.25rem; }
+    .how-quest { padding: 56px var(--mobile-hero-card-margin) 40px; }
+    .how-quest-header { gap: 16px; padding-inline: 4px; margin-bottom: 28px; }
+    .how-quest-copy { gap: 16px; }
+    .how-quest-eyebrow { gap: 8px; padding: 6px 12px 6px 9px; }
+    .how-eyebrow-dot { width: 7px; height: 7px; box-shadow: 0 0 0 3px var(--color-accent); }
+    .how-title-accent { display: table; }
+    .quest-organiser-link a { min-height: 44px; padding-inline: 16px; font-size: var(--hero-small-size); }
+    .how-quest .quest-steps { gap: 16px; }
+    .quest-step-copy { gap: 10px; padding: 24px 24px 0; }
+    .quest-step-tag { gap: 6px; padding: 5px 10px; }
+    .quest-step-title { margin-top: 2px; line-height: 1.2; }
+    .quest-step-phone { top: 290px; }
+    .quest-step-float--location { top: 340px; left: 16px; gap: 6px; padding: 8px 12px; }
+    .quest-step-float--team { top: 380px; right: 12px; width: 196px; padding: 12px; }
+    .quest-step-float--score { top: 370px; right: 12px; width: 180px; padding: 12px; gap: 6px; }
 }
-
-/* --- 10.2 .how-quest-header (eyebrow + title + organiser link) --------- */
-/* Centered column above the 3-col triplet. The internal vertical rhythm
-   (eyebrow → title → organiser link) is controlled by per-item `margin-bottom`
-   declarations (mirrors the FAQ pattern where `.faq-eyebrow` and
-   `.faq-title` each carry their own margin-bottom). The flex container
-   stays in column mode purely for `align-items: center` — `gap` is
-   intentionally NOT used here because it would stack on top of the item
-   margins and break the 1:1 parity with FAQ spacing. `margin-bottom` on
-   the header itself is the separation between the header block and the
-   first row of the triplet — sized clamp(48px, 7vh, 80px) for an
-   editorial breath that resolves to ~48px on short viewports and ~80px
-   on 1200px-tall screens. No `flex: none` needed here (parent
-   .how-quest-inner is a plain block, not a flex parent). */
-.how-quest-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin-bottom: clamp(48px, 7vh, 80px);
+@media (prefers-reduced-motion: reduce) {
+    .how-quest.is-enhanced .quest-step, .how-quest.is-enhanced .quest-step-phone { opacity: 1 !important; translate: 0 !important; transition: none !important; animation: none !important; }
+    .how-quest.is-enhanced .quest-step-phone { translate: -50% 0 !important; transform: none !important; }
 }
-
-/* Eyebrow above the H2 — typography AND `margin-bottom` cloned 1:1 from
-   .faq-eyebrow (line ~1816) so the two in-page section eyebrows read as
-   identical siblings at every viewport (user request 2026-05-12: the
-   visible eyebrow→title distance must match the FAQ's exactly). Color is
-   the same muted gray used by the FAQ eyebrow. The previous lime
-   `::before` dot has been removed (user request 2026-05-12) to keep the
-   eyebrow as a pure muted-label opener, identical in pattern to .faq-eyebrow. */
-.how-quest-eyebrow {
-    font-family: var(--font-body);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--color-medium-gray);
-    text-align: center;
-    margin: 0 0 16px;
-}
-
-.how-quest-title {
-    /* Same family + weight + tracking + size as .faq-title (line ~1826) so
-       the two in-page H2 headings read as siblings — explicit re-use of the
-       FAQ clamp ensures any future tweak to the FAQ stays in sync visually
-       (the mobile override below also mirrors .faq-title's mobile clamp).
-       PREMIUM UPGRADE 2026-05-11 (iteration 2): tightened tracking from
-       -0.02em to -0.025em for a slightly more sport-bold display feel
-       at the title scale. Weight stays 700 (NOT 800) per the
-       feedback_website_aesthetic memory: "weight 600–700 (NOT 900)".
-       `margin-bottom` controls the title→link spacing (see header rule
-       above for why we use per-item margins instead of a flex `gap`). */
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: clamp(2rem, 4.5vw, 3rem);
-    line-height: 1.08;
-    letter-spacing: -0.025em;
-    color: var(--color-text-primary);
-    text-align: center;
-    /* A text link needs less separation than the former segmented control. */
-    margin: 0 0 clamp(16px, 2vw, 24px);
-}
-
-/* --- 10.3 .quest-organiser-link (direct editorial link) ---------------- */
-.quest-organiser-link {
-    margin: 0;
-    max-width: 100%;
-    font-family: var(--font-body);
-    font-size: clamp(0.875rem, 1.1vw, 1rem);
-    line-height: 1.5;
-    color: var(--color-text-primary);
-}
-
-.quest-organiser-link a {
-    /* A small tilted sticker, with a separate arrow tile: one direct link.
-       The text may wrap naturally on narrow screens or with enlarged fonts. */
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    max-width: 100%;
-    min-height: 44px;
-    padding: 10px 12px 10px 16px;
-    background: var(--color-accent);
-    color: var(--color-text-primary);
-    border: 1px solid var(--color-text-primary);
-    border-radius: var(--radius-organiser-link);
-    box-shadow: 3px 3px 0 var(--color-text-primary);
-    font-weight: 700;
-    text-align: left;
-    text-decoration: none;
-    rotate: -1deg;
-    transition: rotate var(--transition), translate var(--transition), box-shadow var(--transition);
-}
-
-.quest-organiser-link a > span {
-    display: inline-grid;
-    place-items: center;
-    flex: none;
-    width: 30px;
-    height: 30px;
-    border-radius: var(--radius-organiser-link);
-    background: var(--color-text-primary);
-    color: var(--color-accent);
-    font-size: 22px;
-    line-height: 1;
-    transition: translate var(--transition);
-}
-
-.quest-organiser-link a:focus-visible {
-    outline: 2px solid var(--color-text-primary);
-    outline-offset: 6px;
-    rotate: 0deg;
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .quest-organiser-link a:hover {
-        rotate: 0deg;
-        translate: 0 -2px;
-        box-shadow: 4px 5px 0 var(--color-text-primary);
-    }
-
-    .quest-organiser-link a:hover > span {
-        translate: 2px 0;
-    }
-}
-
-.quest-organiser-link a:active {
-    translate: 2px 2px;
-    box-shadow: 1px 1px 0 var(--color-text-primary);
-}
-
-/* --- 10.4 .quest-steps (editorial 3-column static grid) ------------------ */
-/* Three columns of equal weight, gap 0. The columns visually share their
-   edges; the rhythm is created by:
-     (a) `padding-inline: 28px` inside each .quest-step (so content never
-         touches the column boundary).
-     (b) 1px filets painted as ::after pseudo-elements between adjacent
-         columns (`.quest-step:not(:last-child)::after`), inset 8px top
-         and 8px bottom so they read as deliberate dividers rather than
-         full-height bars.
-   `align-items: stretch` lets the filets span the full height of the
-   tallest column even when copy length varies between steps (the longest
-   body wins; shorter columns extend their padding bottom to match).
-   No background, no border on the grid container — the section's
-   `.how-quest { background: var(--color-light-bg) }` is the only paint. */
-.quest-steps {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 0;
-    align-items: stretch;
-}
-
-/* --- 10.5 .quest-step + numeral / tag / title / body --------------------- */
-/* Each step is a vertical stack of 4 elements (numeral → tag → title →
-   body) inside an inline-padded column. `min-width: 0` is critical: it
-   overrides grid's default `min-width: auto` which would otherwise force
-   each column to be at least as wide as the longest unbreakable word in
-   the body copy, breaking the 1fr 1fr 1fr equality on narrower viewports.
-   `position: relative` anchors the ::after filet pseudo-element to the
-   column box (and not to the section / .how-quest-inner). */
-.quest-step {
-    position: relative;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    /* Inner padding creates the visual separation between adjacent columns
-       (the filets sit at right:0 of each column, the 28px inline padding
-       of both neighbours adds up to 56px of clear air around each filet).
-       Top/bottom padding is just 6px — the rhythm between rows is owned
-       by the typographic spacing between the 4 children, not by an outer
-       chrome. The first / last column reset their outer padding-inline
-       below so the triplet's outer edges align with .how-quest-inner. */
-    padding: 6px 28px 6px;
-}
-
-.quest-step:first-child {
-    /* Outer edge of the leftmost column flushes against the
-       .how-quest-inner left edge — symmetric with .last-child below. */
-    padding-left: 0;
-}
-
-.quest-step:last-child {
-    padding-right: 0;
-}
-
-/* Vertical filets between adjacent columns.
-   Drawn as a 1px column at right:0 of every column EXCEPT the last (no
-   filet after the last column — would be a dangling stub). Inset 8px top
-   and 8px bottom so the line stops short of the column edges; this gives
-   the filet a deliberate "divider" feel rather than a hard-edge border
-   that would imply a contained card. Alpha 0.08 on the brand text color
-   keeps the filet whisper-quiet — present enough to structure the eye,
-   never loud. */
-.quest-step:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: 8px;
-    bottom: 8px;
-    right: 0;
-    width: 1px;
-    background: rgba(16, 24, 40, 0.08);
-    pointer-events: none;
-}
-
-/* Numeral (01 / 02 / 03) — dominant glyph of the column. Roboto 700 +
-   tight letter-spacing (-0.04em) gives the digits a confident editorial
-   weight; line-height: 1 collapses the line box so the glyph's bounding
-   box is exactly its cap height (predictable spacing below).
-   clamp(2.5rem, 4.5vw, 3.5rem) resolves to:
-     vp 320  → 40px floor  (4.5vw = 14.4 < 40)
-     vp 768  → 40px floor  (4.5vw = 34.56 < 40)
-     vp 889  → 40px floor  (4.5vw = 40.0 — crossover)
-     vp 1244 → 56px ceiling reached (4.5vw = 55.98)
-     vp 1440 → 56px ceiling
-   No gradient, no halo — just the glyph in the section's primary color.
-   `aria-hidden="true"` on the markup (set by html-expert) keeps it out
-   of the AT reading order. */
-.quest-step-numeral {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: clamp(2.5rem, 4.5vw, 3.5rem);
-    line-height: 1;
-    letter-spacing: -0.04em;
-    color: var(--color-text-primary);
-    margin-bottom: 14px;
-}
-
-/* Step tag — small uppercase label with a lime dot. Sized to read as
-   secondary metadata BELOW the numeral, ABOVE the title. The tag is
-   `align-self: flex-start` so it takes only its content width (avoids
-   a stretched line that would look like a section break under the
-   numeral). `inline-flex + gap: 7px` aligns the dot vertically with
-   the label's cap height; the dot's `flex: none` prevents shrinking
-   when the label wraps to a second line (rare but possible on narrow
-   viewports). `margin-bottom: 24px` is the visible separation tag →
-   title (the title's own `margin: 0 0 8px` controls title → body). */
-.quest-step-tag {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    align-self: flex-start;
-    font-family: var(--font-body);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--color-medium-gray);
-    margin-bottom: 24px;
-}
-
-/* Lime dot prefix inside the tag. Deliberately NO halo (box-shadow) —
-   kept as a quiet "label marker" affordance (5px solid lime, no extras)
-   so the three step tags read as a calm row of repeated markers, not a
-   triplicated accent burst. (Historical note: a haloed lime dot used to
-   sit on `.how-quest-eyebrow::before` above the section title; that dot
-   was removed 2026-05-12, which leaves these tag dots as the only lime
-   accents in the section header zone.) */
-.quest-step-tag-dot {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background-color: var(--color-accent);
-    flex: none;
-}
-
-/* Step title — Roboto 700, tight letter-spacing, dark primary color.
-   clamp(1.0625rem, 1.5vw, 1.25rem) resolves to:
-     vp 320  → 17px floor   (1.5vw = 4.8 < 17)
-     vp 768  → 17px floor   (1.5vw = 11.52 < 17)
-     vp 1134 → 17px floor   (1.5vw = 17.01 — crossover)
-     vp 1333 → 20px ceiling reached (1.5vw = 19.995)
-     vp 1440 → 20px ceiling
-   `line-height: 1.25` gives the title room when it wraps (titles can run two lines in the narrower triplet columns). */
-.quest-step-title {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-    color: var(--color-text-primary);
-    margin: 0 0 8px;
-}
-
-/* Step body — Inter 400, 1.6 line-height for paragraph readability.
-   Color: 70% alpha on the primary so the body reads as supporting copy
-   beneath the title (the title sits at full primary). Margin 0 — the
-   body is the last child of the column, no trailing spacing needed.
-   clamp(0.9375rem, 1.1vw, 1rem) resolves to:
-     vp 320  → 15px floor  (1.1vw = 3.52 < 15)
-     vp 768  → 15px floor  (1.1vw = 8.45 < 15)
-     vp 1364 → 15px floor  (1.1vw = 15.0 — crossover)
-     vp 1454 → 16px ceiling reached (1.1vw ≈ 15.99)
-     vp 1440 → 15.84px (still inside the band; ceiling at vp ≈ 1454)
-
-   `min-height: calc(1.6em * 3)` reserves a balanced three-line slot for
-   the participant copy. Preserved from the previous switching layout so
-   the triplet keeps its established editorial rhythm.
-   `em` (not `rem`) keeps the floor fluid with the body's own clamp:
-   at 15px → 72px floor, at 16px → 76.8px floor. No magic px constant.
-   This is a FLOOR only; if a body grows to 4 lines on a narrower
-   viewport, it expands naturally (min-height doesn't cap). */
-.quest-step-body {
-    font-family: var(--font-body);
-    font-size: clamp(0.9375rem, 1.1vw, 1rem);
-    line-height: 1.6;
-    color: rgba(16, 24, 40, 0.7);
-    margin: 0;
-    min-height: calc(1.6em * 3);
-}
-
 
 /* ==========================================================================
    10.5 FLOATING CARDS — decorative "bordel ordonné" dispersed across §10 + §11
@@ -4707,80 +4426,6 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
         transform-origin: center top;
         will-change: transform;
         backface-visibility: hidden;
-    }
-
-    /* === Mobile overrides for the how-quest section ======================
-       Desktop layout = 3-column static triplet with vertical filets between
-       columns. On mobile (< 768px) the triplet collapses to a SINGLE
-       vertical stack: the filets rotate from vertical (between columns) to
-       horizontal (under each step except the last). Padding-inline aligns
-       with the lime card / carousel / FAQ gutter so the section sits
-       cleanly on the same left/right column as the rest of the page.
-
-       NOTE 2026-05-12: the previous gamified mobile overrides are GONE
-       (sticky panel padding, 260svh min-height, progress-bar re-routing
-       to col 1, per-[data-step] zigzag undo, accent/badge mirror,
-       completion-pill placement, quest-progress-number sizing). None of
-       those selectors / nodes exist anymore. */
-    .how-quest {
-        /* Align the section's horizontal padding with the lime card,
-           carousel, and FAQ left/right edges (same token used by
-           .screens-rail and .faq). */
-        padding-inline: var(--mobile-hero-card-margin);
-    }
-
-    /* NOTE: no mobile override on .how-quest-header anymore — the previous
-       `gap: clamp(12px, 2vh, 20px)` was removed 2026-05-12 because the
-       header no longer uses a flex `gap` (the internal vertical rhythm is
-       carried entirely by per-item `margin-bottom` on `.how-quest-eyebrow`
-       and `.how-quest-title`, mirroring the FAQ pattern). Mobile inherits
-       those margins from the base rules — eyebrow→title = 16px (matches
-       .faq-eyebrow exactly), title→link = clamp(16px, 2vw, 24px). */
-
-    .how-quest-title {
-        /* Match the mobile .faq-title clamp (declared below this block)
-           so both H2s read at the same scale on mobile — coherent in-page
-           heading hierarchy. */
-        font-size: clamp(1.25rem, 5.5vw, 2rem);
-    }
-
-    /* MOBILE triplet → vertical stack. `gap` replaces the desktop
-       padding-inline as the source of rhythm between steps; resolves to
-       28px floor on vp 320, ~5vh in mid, 48px ceiling. The horizontal
-       component is `0` (single column, no horizontal spacing needed). */
-    .quest-steps {
-        grid-template-columns: 1fr;
-        gap: clamp(28px, 5vh, 48px) 0;
-    }
-
-    /* MOBILE step: reset the desktop inline padding entirely — the gap on
-       .quest-steps (above) carries the rhythm now. Top/bottom padding 0
-       so the filet below each step sits exactly halfway through the gap
-       (see ::after override below). first-child / last-child rules from
-       desktop still apply but are no-ops here (padding is already 0). */
-    .quest-step {
-        padding: 0;
-    }
-
-    /* MOBILE filet → horizontal line UNDER each step (except the last).
-       Position math:
-         - Desktop draws the filet on right:0, top/bottom:8px (vertical).
-         - Mobile flips the orientation: left:0, top:auto, bottom:negative
-           half-gap, width:100%, height:1px (horizontal).
-         - `bottom: calc(-1 * clamp(28px, 5vh, 48px) / 2)` centers the
-           filet inside the gap below the step (since padding is 0, the
-           filet at bottom:0 would touch the step; offsetting by half the
-           gap places it at the geometric midpoint between this step's
-           bottom edge and the next step's top edge).
-       The selector inheritance from the desktop rule (.quest-step:not(:last-child)::after)
-       still applies — we only override the geometry-defining properties. */
-    .quest-step:not(:last-child)::after {
-        right: auto;
-        left: 0;
-        top: auto;
-        bottom: calc(-1 * clamp(28px, 5vh, 48px) / 2);
-        width: 100%;
-        height: 1px;
     }
 
     /* Mobile only: align the FAQ content area to the lime hero card's horizontal
