@@ -17,7 +17,8 @@
        7.4 .hero-card--photo (homepage photograph)
        7.5 .hero-title / .hero-title-slant / .hero-subtitle + titleEntrance
        7.6 .hero-buttons + .btn-glass (variants, hover, shine, fallback)
-       7.7 .glass-stack / .glass-eyebrow / .glass-label
+       7.6.1 .glass-stack / .glass-eyebrow / .glass-label
+       7.7 Participant split hero + visual
     8. Phone image (shared across carousel slides)
     9. Screens rail / carousel
        9.1 .screens-rail wrapper
@@ -167,6 +168,45 @@
     --hero-photo-shade: linear-gradient(180deg, rgba(5,9,5,.46), rgba(5,9,5,.2) 42%, rgba(5,9,5,.04) 70%, rgba(5,9,5,.2));
     --hero-photo-button-border: rgba(255,255,255,.32);
 
+    /* Participant V2 tokens: never alter shared hero defaults. */
+    --hero-photo-shade-side: linear-gradient(90deg, rgba(5,9,5,.88) 0%, rgba(5,9,5,.62) 38%, rgba(5,9,5,.12) 68%, rgba(5,9,5,.30) 100%);
+    --hero-photo-shade-bottom: linear-gradient(180deg, rgba(5,9,5,0) 55%, rgba(5,9,5,.65) 100%);
+    --hero-photo-shade-mobile: linear-gradient(180deg, rgba(5,9,5,.82) 0%, rgba(5,9,5,.55) 40%, rgba(5,9,5,.15) 62%, rgba(5,9,5,.55) 100%);
+    --hero-ink-muted: rgba(255,255,255,.80);
+    --hero-glass-bg: rgba(255,255,255,.12);
+    --hero-glass-bg-hover: rgba(255,255,255,.20);
+    --hero-glass-border: rgba(255,255,255,.22);
+    --hero-eyebrow-halo: 0 0 0 4px rgba(215,255,0,.22);
+    --hero-phone-shadow: drop-shadow(0 40px 60px rgba(0,0,0,.55));
+    --hero-store-height: 56px;
+    --hero-title-size: clamp(2.875rem, 6.4vw, 5.75rem);
+    --hero-lede-size: 1.0625rem;
+    --hero-small-size: .875rem;
+    --hero-store-eyebrow-size: .6875rem;
+    --hero-store-label-size: 1.0625rem;
+    --hero-copy-pad: clamp(24px, 5vw, 80px);
+    --hero-copy-gap: 28px;
+    --hero-phone-width: 360px;
+    --hero-entry: 480ms cubic-bezier(.2,.8,.2,1);
+    --hero-phone-entry: 600ms cubic-bezier(.2,.8,.2,1);
+    --hero-header-bg: rgba(255,255,255,.72);
+    --hero-header-border: rgba(16,24,40,.06);
+    --hero-header-fallback: rgba(255,255,255,.96);
+    --hero-header-motion: 300ms cubic-bezier(.2,.8,.2,1);
+    --hero-gutter: 24px;
+    --hero-header-top: 16px;
+    --hero-header-space: 84px;
+    --hero-card-radius: clamp(24px,3vw,40px);
+    --hero-font-display: 'Frick 0.3', var(--font-heading);
+    --hero-float-surface: rgba(16,24,40,.78);
+    --hero-float-border: rgba(255,255,255,.16);
+    --hero-float-shadow: 0 18px 40px rgba(0,0,0,.45);
+    --hero-float-radius: 20px;
+    --hero-date-radius: 12px;
+    --hero-ticket-size: .75rem;
+    --hero-nav-size: .9375rem;
+    --hero-score-size: 2.125rem;
+
     --font-heading: 'Roboto', system-ui, -apple-system, sans-serif;
     --font-body: 'Inter', system-ui, -apple-system, sans-serif;
 
@@ -196,10 +236,7 @@
     --showcase-on-dark-line: rgba(255,255,255,.14);
     --showcase-on-dark-chip: rgba(255,255,255,.12);
 
-    /* Vertical gap between the active phone's top edge and the .hero-buttons'
-       bottom edge at scroll = 0. Read by script.js (computeBaseLift) which
-       writes the resulting --scroll value (in px) on .hero-carousel-embla.
-       clamp(24px, 4vh, 56px): 24px floor on tiny viewports, 56px ceiling on 4K. */
+    /* Legacy spacing token retained for compatibility; participant V2 uses a normal rail. */
     --desired-button-gap: clamp(24px, 4vh, 56px);
 
     /* Keep the wordmark centred in the top gutter while scrolling. The
@@ -263,8 +300,7 @@ html {
    so carousel slides 0 and 4 can extend into the page-pad gutter on the left/right of
    .screens-rail and still be clipped at the viewport edges (no horizontal page scroll).
    `overflow-x: clip` is mandatory (not `hidden`): per CSS spec, `clip` allows asymmetric
-   per-axis overflow values without promoting overflow-y to auto, so the active phone
-   image's translateY(var(--scroll)) lift remains visible. */
+   per-axis overflow values without promoting overflow-y to auto, preserving vertical shadows. */
 html, body {
     overflow-x: clip;
 }
@@ -585,16 +621,7 @@ p {
 .hero-card,
 .screens-rail,
 .hero-carousel-embla {
-    /* Extended to 4 selectors (was 2) to cover the full scrollable zone affected
-       by the `--hero-flow-collapse` margin-bottom animation. On iOS Safari,
-       scroll-anchoring can latch onto a visible descendant of any of these
-       containers and silently counter-scroll the viewport when the layout
-       shifts mid-scroll — fighting the JS-driven `--scroll` lift and producing
-       the perceptible wobble reported on iPhone 16. Disabling the anchor on
-       both the source containers (.hero, .hero-card) AND the visually moving
-       targets (.screens-rail, .hero-carousel-embla) tells the engine "do not
-       compensate". The property is a hint; unsupported in Safari ≤ 16.3 — no
-       harm there because those versions also do not aggressively scroll-anchor. */
+    /* Keep scroll anchoring stable across hero and carousel image loading. */
     overflow-anchor: none;
 }
 
@@ -607,18 +634,8 @@ p {
     z-index: 1;
     width: 100%;
     flex: 0 0 auto;
-    /* iOS Safari: the URL bar collapses/expands during scroll, which makes
-       100vh oscillate (window.innerHeight changes mid-scroll). That reflows
-       .hero-card → reflows the hero stack → reflows .screens-rail below →
-       the JS-driven `computeBaseLift` (script.js, page-scroll-progress block)
-       recomputes against a moving target → the active phone image visibly
-       "jumps" / appears-disappears during vertical scroll on iPhone.
-       svh (small viewport height) is the LARGEST stable height the viewport
-       can take with all UI chrome (URL bar, toolbar) expanded — it does NOT
-       fluctuate during scroll. Double declaration: the first 100vh line is
-       the fallback for Safari < 15.4 / Firefox < 101 / Chrome < 108 (cascade
-       drops the second line on those engines and keeps the first); modern
-       engines apply the second line and ignore the first. */
+    /* Stable small-viewport height avoids layout jumps as mobile browser chrome
+       collapses. The preceding vh declaration remains an older-browser fallback. */
     /* `--card-shrink` (px, written by JS — script.js, page-scroll-progress block)
        is a POSITIVE magnitude that visually shrinks the lime fill from the BOTTOM
        in sync with the active phone descending into the carousel row. It is
@@ -719,15 +736,10 @@ p {
    The modifier is absent from the 404 and organiser hero. */
 .hero-card--photo::before {
     background-color: var(--hero-photo-surface);
-    background-image: var(--hero-photo-shade), url('assets/hero-volley/hero-volley-mixed.webp');
+    background-image: var(--hero-photo-shade-side), var(--hero-photo-shade-bottom), url('assets/hero-volley/hero-volley-mixed.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-}
-
-.hero-card--photo .hero-title,
-.hero-card--photo .hero-subtitle {
-    color: var(--hero-photo-ink);
 }
 
 .hero-card--photo .btn-glass {
@@ -890,7 +902,7 @@ p {
     transform: rotate(12deg);
 }
 
-/* --- 7.7 .glass-stack / .glass-eyebrow / .glass-label ---------------------- */
+/* --- 7.6.1 .glass-stack / .glass-eyebrow / .glass-label -------------------- */
 .glass-stack {
     display: inline-flex;
     flex-direction: column;
@@ -923,6 +935,310 @@ p {
     }
 }
 
+
+/* ==========================================================================
+   7.7 PARTICIPANT SPLIT HERO — fixed navigation, visual and decoration
+   ========================================================================== */
+.hero:has(.hero-header) {
+    padding: var(--hero-header-space) var(--hero-gutter) 24px;
+    margin-bottom: 0;
+}
+/* Keep participant navigation destinations below the persistent header pill. */
+body:has(.hero-header) :is(#faq, #how-it-works) {
+    scroll-margin-top: calc(var(--hero-header-space) + 16px);
+}
+.hero-header {
+    position: fixed;
+    top: var(--hero-header-top);
+    left: var(--hero-gutter);
+    width: calc(100% - 2 * var(--hero-gutter));
+    min-height: 60px;
+    padding: 7px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    border: 1px solid transparent;
+    border-radius: var(--radius-pill);
+    /* Same layer as the former fixed wordmark; above hero/carousel, below QR. */
+    z-index: 50;
+    transition: background-color var(--hero-header-motion), border-color var(--hero-header-motion), backdrop-filter var(--hero-header-motion);
+}
+.hero-header.is-condensed {
+    background: var(--hero-header-bg);
+    border-color: var(--hero-header-border);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.hero-header .wordmark {
+    position: static;
+    top: auto;
+    left: auto;
+    translate: 0 0;
+    min-height: 44px;
+    padding: 0;
+    flex: none;
+}
+.hero-header .wordmark svg { width: 148px; height: auto; }
+.hero-nav { display: flex; align-items: center; gap: 24px; }
+.hero-nav-link, .hero-nav-cta {
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    font-size: var(--hero-nav-size);
+    font-weight: 500;
+}
+.hero-nav-cta {
+    gap: 8px;
+    padding-inline: 18px;
+    border-radius: var(--radius-pill);
+    background: var(--color-text-primary);
+    color: var(--color-text-white);
+    font-weight: 600;
+}
+.hero-nav-cta > [aria-hidden] { color: var(--color-accent); }
+.hero-nav-cta-short { display: none; }
+.hero-header a:focus-visible {
+    outline: 3px solid var(--color-accent);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px var(--color-text-primary);
+}
+.hero-card.hero-card--photo {
+    min-height: max(680px, calc(100svh - var(--hero-header-space) - 24px));
+    border-radius: var(--hero-card-radius);
+}
+.hero-card.hero-card--photo::before { clip-path: none; background-position: 62% center; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .hero-header.is-condensed { background: var(--hero-header-fallback); }
+}
+.hero-card--photo .hero-card-inner--split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
+    align-items: stretch;
+    gap: 40px;
+    padding: 0 var(--hero-copy-pad);
+    min-height: inherit;
+    color: var(--color-text-white);
+}
+.hero-card--photo .hero-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: var(--hero-copy-gap);
+    padding-block: 72px 64px;
+}
+.hero-card--photo .hero-title {
+    color: var(--hero-photo-ink);
+    font-size: var(--hero-title-size);
+    max-width: none;
+    line-height: .92;
+    text-align: left;
+}
+.hero-card--photo .hero-title-slant { transform-origin: left bottom; }
+.hero-card--photo .br-mobile-only { display: inline; }
+.hero-card--photo .hero-title-accent { color: var(--color-accent); }
+.hero-card--photo .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 100%;
+    padding: 8px 14px 8px 10px;
+    border: 1px solid var(--hero-glass-border);
+    border-radius: var(--radius-pill);
+    background: var(--hero-glass-bg);
+    color: var(--color-text-white);
+    font-size: var(--hero-small-size);
+    line-height: 1.3;
+    letter-spacing: .01em;
+    text-transform: none;
+    text-align: left;
+    animation: titleEntrance var(--hero-entry) 160ms backwards;
+}
+.hero-card--photo .hero-eyebrow-dot {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-pill);
+    background: var(--color-accent);
+    box-shadow: var(--hero-eyebrow-halo);
+}
+.hero-card--photo .hero-lede {
+    margin: 0;
+    max-width: 46ch;
+    font-size: var(--hero-lede-size);
+    line-height: 1.55;
+    color: var(--hero-ink-muted);
+    animation: titleEntrance var(--hero-entry) 320ms backwards;
+}
+.hero-card--photo .hero-buttons { justify-content: flex-start; gap: 12px; }
+.hero-card--photo .btn-glass {
+    min-height: var(--hero-store-height);
+    gap: 12px;
+    padding: 0 22px 0 18px;
+    background: var(--hero-glass-bg);
+    box-shadow: none;
+    transition: translate var(--transition), background-color var(--transition);
+}
+.hero-card--photo .btn-glass:hover {
+    background: var(--hero-glass-bg-hover);
+    transform: none;
+    translate: 0 -1px;
+    box-shadow: none;
+}
+.hero-card--photo .btn-glass[data-cta="app-store"] {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-text-black);
+}
+.hero-card--photo .btn-glass svg { width: 24px; height: 24px; }
+.hero-card--photo .glass-eyebrow {
+    display: block;
+    font-size: var(--hero-store-eyebrow-size);
+    letter-spacing: 0;
+    opacity: 1;
+    color: var(--hero-photo-ink);
+}
+.hero-card--photo [data-cta="app-store"] .glass-eyebrow { color: inherit; }
+.hero-card--photo .glass-label {
+    font-family: var(--font-body);
+    font-size: var(--hero-store-label-size);
+    white-space: nowrap;
+}
+.hero-card--photo .hero-visual { position: relative; min-width: 0; }
+.hero-card--photo .hero-phone {
+    position: absolute;
+    left: 50%;
+    bottom: -150px;
+    width: var(--hero-phone-width);
+    max-width: none;
+    height: auto;
+    translate: -46% 0;
+    rotate: -4deg;
+    filter: var(--hero-phone-shadow);
+    user-select: none;
+    pointer-events: none;
+    animation: heroPhoneEntrance var(--hero-phone-entry) 620ms backwards;
+}
+.hero-card--photo .hero-floats { pointer-events: none; }
+.hero-card--photo .hero-float {
+    position: absolute;
+    border-radius: var(--hero-float-radius);
+    box-shadow: var(--hero-float-shadow);
+    padding: 14px 16px;
+    animation: cardEntrance var(--hero-entry) 740ms backwards;
+}
+.hero-card--photo .hero-float--ticket {
+    top: 150px; left: -24px; width: 272px;
+    display: flex; flex-direction: column; gap: 12px;
+    background: var(--hero-float-surface);
+    border: 1px solid var(--hero-float-border);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    rotate: -2deg;
+}
+.hero-card--photo .hero-ticket-head { display: flex; align-items: center; gap: 12px; }
+.hero-card--photo .hero-ticket-date {
+    width: 50px; height: 54px; flex: none;
+    border: 1px solid var(--hero-glass-border);
+    border-radius: var(--hero-date-radius);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    line-height: 1;
+    font-size: var(--hero-ticket-size);
+}
+.hero-card--photo .hero-ticket-date span:first-child { font-size: var(--hero-lede-size); font-weight: 700; margin-bottom: 3px; }
+.hero-card--photo .hero-ticket-info { min-width: 0; font-size: var(--hero-nav-size); line-height: 1.3; }
+.hero-card--photo .hero-ticket-info p { font-size: var(--hero-ticket-size); color: var(--hero-ink-muted); margin-top: 3px; }
+.hero-card--photo .hero-ticket-counts { display: flex; justify-content: space-between; gap: 8px; font-size: var(--hero-ticket-size); font-weight: 600; }
+.hero-card--photo .hero-ticket-remaining { color: var(--color-accent); }
+.hero-card--photo .hero-ticket-progress { height: 6px; border-radius: var(--radius-pill); background: var(--hero-glass-bg-hover); overflow: hidden; }
+.hero-card--photo .hero-ticket-progress span { display: block; width: 75%; height: 100%; border-radius: inherit; background: var(--color-text-white); }
+.hero-card--photo .hero-float--score {
+    top: 400px; right: -8px; width: 220px;
+    display: flex; flex-direction: column; gap: 8px;
+    background: var(--color-accent); color: var(--color-text-black);
+    rotate: 3deg; animation-delay: 820ms;
+}
+.hero-card--photo .hero-score-status {
+    align-self: flex-start; display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 10px; border-radius: var(--radius-pill);
+    background: var(--color-text-black); color: var(--color-text-white);
+    font-size: var(--hero-ticket-size); font-weight: 600;
+}
+.hero-card--photo .hero-score-dot { width: 6px; height: 6px; border-radius: var(--radius-pill); background: var(--color-accent); }
+.hero-card--photo .hero-score-label { font-size: var(--hero-ticket-size); font-weight: 600; }
+.hero-card--photo .hero-score-value { font-family: var(--hero-font-display); font-size: var(--hero-score-size); line-height: 1; }
+.hero-card--photo .hero-float--badge {
+    top: 610px; left: 8px; display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 14px; border-radius: var(--radius-pill);
+    background: var(--color-text-white); color: var(--color-text-primary);
+    font-size: var(--hero-ticket-size); font-weight: 600;
+    white-space: nowrap; animation-delay: 900ms;
+}
+.hero-card--photo .hero-float--badge svg { flex: none; width: 16px; height: 16px; }
+@keyframes heroPhoneEntrance {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 1023px) {
+    :root { --hero-title-size: 3.5rem; }
+    .hero-card--photo::before {
+        background-image: var(--hero-photo-shade-mobile), url('assets/hero-volley/hero-volley-mixed.webp');
+    }
+    .hero-card--photo .hero-card-inner--split { grid-template-columns: minmax(0, 1fr); }
+    .hero-card--photo .hero-visual { min-height: 520px; }
+    .hero-card--photo .hero-float--ticket { top: 20px; left: 0; }
+    .hero-card--photo .hero-float--score { top: 240px; right: 0; }
+    .hero-card--photo .hero-float--badge { top: 420px; }
+}
+@media (max-width: 767px) {
+    :root {
+        --hero-title-size: clamp(2rem, 10.8vw, 2.875rem);
+        --hero-small-size: .75rem;
+        --hero-store-height: 50px;
+        --hero-store-eyebrow-size: .625rem;
+        --hero-store-label-size: clamp(.75rem, 3.85vw, .9375rem);
+        --hero-copy-pad: 20px;
+        --hero-copy-gap: 18px;
+        --hero-phone-width: 230px;
+        --hero-gutter: var(--mobile-hero-card-margin);
+        --hero-header-top: 8px;
+        --hero-header-space: 80px;
+        --hero-card-radius: 28px;
+        --hero-nav-size: .8125rem;
+        --hero-float-radius: 16px;
+        --hero-score-size: 1.5rem;
+    }
+    .hero:has(.hero-header) { padding: var(--hero-header-space) 0 var(--mobile-hero-card-margin-block); }
+    .hero-card.hero-card--photo { margin-block: 0; min-height: calc(100svh - var(--hero-header-space) - var(--mobile-hero-card-margin-block)); }
+    .hero-header { padding-inline: 8px; gap: 8px; }
+    .hero-header .wordmark svg { width: 100px; }
+    .hero-nav { gap: 0; }
+    .hero-nav-link, .hero-nav-cta-long { display: none; }
+    .hero-nav-cta-short { display: inline; }
+    .hero-nav-cta { padding-inline: 12px; gap: 6px; }
+    .hero-card--photo .hero-card-inner--split { gap: 18px; }
+    .hero-card--photo .hero-float--ticket, .hero-card--photo .hero-float--badge, .hero-card--photo .hero-score-label { display: none; }
+    .hero-card--photo .hero-float--score { top: 70px; right: -6px; width: auto; padding: 10px 12px; rotate: 4deg; }
+    .hero-card--photo .hero-copy {
+        align-items: center;
+        padding-block: 36px 0;
+        text-align: center;
+    }
+    .hero-card--photo .hero-title { text-align: center; }
+    .hero-card--photo .hero-title-slant { transform-origin: center; }
+    .hero-card--photo .hero-title-accent { display: block; }
+    .hero-card--photo .hero-eyebrow { gap: 8px; padding: 6px 12px 6px 9px; letter-spacing: 0; }
+    .hero-card--photo .hero-eyebrow-dot { width: 7px; height: 7px; box-shadow: none; }
+    .hero-card--photo .hero-lede { display: none; }
+    .hero-card--photo .hero-buttons { width: 100%; gap: 8px; }
+    .hero-card--photo .btn-glass { flex: 1 1 0; min-width: 0; gap: 8px; padding-inline: 6px; }
+    .hero-card--photo .btn-glass svg { width: 20px; height: 20px; }
+    .hero-card--photo .hero-visual { min-height: 360px; }
+    .hero-card--photo .hero-phone { top: 18px; bottom: auto; translate: -50% 0; rotate: -3deg; }
+}
 
 /* ==========================================================================
    8. PHONE IMAGE (shared across carousel slides)
@@ -965,33 +1281,15 @@ p {
 /* ==========================================================================
    9. SCREENS RAIL / CAROUSEL (JS-driven horizontal carousel — no native scroll)
    --------------------------------------------------------------------------
-   The .screens-rail section is a thin semantic wrapper; the actual carousel lives in
-   .hero-carousel-embla inside. The active slide's phone image is translated UP via
-   translateY(var(--scroll)) so its top portion peeks above the carousel row at rest,
-   just below the lime card. The lift value is computed live in JS (script.js,
-   page-scroll-progress block) so the phone's top edge always sits at a constant
-   --desired-button-gap (clamp(24px, 4vh, 56px), declared in :root) below the
-   .hero-buttons bottom edge at scroll = 0, regardless of viewport. As the user
-   scrolls into the section, JS animates --scroll
-   from that lift value → 0 so the image descends into the row.
-   Horizontal motion is a pure threshold-fire state machine in script.js — wheel + touch
-   gestures are silently accumulated; once the threshold is crossed, the container is
-   snapped via translate3d to center the new active slide (CSS animates the snap). At the
-   deck edges (activeIndex = 1 swipe left, activeIndex = 3 swipe right) the gesture plays
-   a rubber-band: the container glides 70 px toward the unreachable sentinel in 280 ms,
-   then springs back to the centered position in another 280 ms (560 ms total). The default
-   440 ms snap transition declared below stays intact — script.js temporarily overrides
-   the inline transition to 280 ms during the bounce, then restores the default at the
-   end. No live-follow during the gesture itself.
+   The .screens-rail section contains the normal-flow carousel. The compatibility
+   tokens --scroll and --active-scale remain neutral (0px and 1). Horizontal live-follow,
+   snap and boundary handling are managed by carousel.js; this section supplies layout.
    ========================================================================== */
 
 /* --- 9.1 .screens-rail wrapper -------------------------------------------- */
 .screens-rail {
     position: relative;
-    /* z-index: 2 lifts the entire carousel section above the lime card (.hero-card has
-       z-index: 1), so the active slide's translateY(var(--scroll)) lift renders IN FRONT
-       of the lime card at scroll=0. Without this, the carousel section's auto z-index
-       would be drawn behind the lime card. */
+    /* Preserve carousel stacking above the preceding hero frame (z-index: 1). */
     z-index: 2;
     padding-block: clamp(20px, 3vw, 48px) clamp(40px, 7vw, 96px);
     /* Standard page gutter — every section under <main> shares the same padding-inline:
@@ -1000,25 +1298,19 @@ p {
        to the viewport edges) — clipping lives on `body` (overflow-x: clip), not here. */
     padding-inline: var(--page-pad);
     background: transparent;
-    /* overflow stays visible on both axes: the active slide is translateY(var(--scroll))-ed
-       upward into the hero zone, and side slides 0/4 extend horizontally past the page-pad
-       gutter into the viewport edges. Horizontal clipping at the viewport boundary is
-       handled by `body { overflow-x: clip }`. */
+    /* Side slides and shadows remain visible; body clips only horizontal viewport overflow. */
     overflow: visible;
 }
 
 /* --- 9.2 .hero-carousel-embla root (tokens + cursor) ----------------------
    Carousel root. --nbr-slide controls visible slides, --slide-spacing is the inter-slide
    gap, --slide-size is computed from those. --scroll is the active phone image's vertical
-   translation; default = lifted offset above the row (just below the lime card buttons),
-   animated to 0 by the scroll-progress block in script.js. No overflow constraint here —
+   translation; it stays at 0px in participant V2. No overflow constraint here —
    slides can extend into the page-pad gutter on left/right of .screens-rail. Horizontal
    clipping lives on `body` (overflow-x: clip) so slides clip at the viewport edges. */
 .hero-carousel-embla {
     /* --slide-size derives from --nbr-slide (visible slides at once) and --slide-spacing
-       (inter-slide gap). The active slide rides --scroll vertically so it lifts above the
-       row of cards into the hero zone at rest, then descends back into the row as the user
-       scrolls (page-scroll-progress block in script.js animates --scroll → 0).
+       (inter-slide gap). Participant V2 keeps every phone in the normal rail.
 
        Geometry calibrated so that at rest (active = slide 1 centered) the left sentinel
        (slide 0) aligns its LEFT edge exactly to the viewport's `--page-pad` gutter, and
@@ -1030,13 +1322,9 @@ p {
     --nbr-slide: 3;
     --slide-spacing: clamp(16px, 2vw, 28px);
     --slide-size: calc((100% - (var(--nbr-slide) - 1) * var(--slide-spacing)) / var(--nbr-slide));
-    /* --scroll initial value is a no-op (0 px). The JS page-scroll-progress block
-       overwrites it on the first rAF after load with the live-computed lift that
-       keeps the active phone's top edge 40 px below the .hero-buttons bottom. The
-       prefers-reduced-motion override at the bottom of the file pins this to 0
-       (no lift) for users who opt out of motion. */
+    /* Neutral vertical position and scale match the JS rail defaults, including before hydration. */
     --scroll: 0px;
-    --active-scale: 1.14;
+    --active-scale: 1;
     cursor: grab;
     /* Browser-side hint: vertical pan (page scroll) is committed natively without
        waiting for JS. Horizontal gestures are NOT consumed by the browser, so
@@ -1077,26 +1365,9 @@ p {
 }
 
 /* --- 9.5 Active slide phone lift + arrival entrance ----------------------- */
-/* Active slide's phone image rides --scroll vertically — at rest --scroll lifts the image
-   above the row into the hero zone (just below the lime card's CTA buttons); as the user
-   scrolls the page, --scroll animates toward 0 so the image descends into the row.
-   No CSS transition on `transform`: the lift is 100% scroll-driven (the JS writes
-   `--scroll` directly on every rAF tick, so the value is already perfectly synced
-   to the user's scroll position). A transition here would only ADD visible lag
-   between the user's scroll input and the phone's response. NOTE: this is unrelated
-   to the carousel container's snap transition (`.hero-carousel-embla--container`,
-   section 9.3) which animates the horizontal slide change — that one MUST stay. */
+/* Compatibility composition stays neutral: vertical offset 0px, scale 1.
+   Horizontal movement belongs to the carousel container, not this image. */
 .screen-card.active .phone-image {
-    /* translate3d (instead of translateY) forces Safari iOS to promote this image
-       onto its own GPU compositor layer, so the per-frame `--scroll` write
-       (driven from a `passive: true` scroll listener) is composited on the GPU
-       thread without re-rasterising the slide above. translateY alone is not
-       enough on iOS Safari — it stays on the main thread and the JS-driven
-       lift desynchronises from the compositor-scrolled page during touch scroll
-       (visible jank on iPhone 16). will-change: transform pre-allocates the
-       layer; backface-visibility: hidden is the classic companion hint that
-       keeps the layer permanently 3D-ready, preventing re-rasterisation churn
-       when --scroll crosses the integer-pixel boundary on each rAF tick. */
     transform: translate3d(0, var(--scroll), 0) scale(var(--active-scale, 1));
     transform-origin: center top;
     will-change: transform;
@@ -4229,7 +4500,7 @@ p {
     /* Portrait composition keeps the ball and the mixed block in the crop.
        Match this breakpoint with the homepage's responsive image preloads. */
     .hero-card--photo::before {
-        background-image: var(--hero-photo-shade), url('assets/hero-volley/hero-volley-mixed-mobile.webp');
+        background-image: var(--hero-photo-shade-mobile), url('assets/hero-volley/hero-volley-mixed-mobile.webp');
         background-position: center, 60% center;
     }
 
@@ -4630,6 +4901,13 @@ p {
    19. REDUCED MOTION
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
+    .hero-header,
+    .hero-header *,
+    .hero-card--photo,
+    .hero-card--photo *,
+    .hero-card--photo *::before,
+    .hero-card--photo *::after { animation: none !important; transition: none !important; }
+    .hero-card--photo .btn-glass:hover { translate: 0 0; }
     .showcase-nav button,
     .showcase-ticket-cta { transition: none; }
 

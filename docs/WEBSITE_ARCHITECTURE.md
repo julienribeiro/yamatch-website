@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-10-15 (public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
+Last sync: 2026-10-17 (participant V2 split hero, shared fixed navigation pill, decorative app cards and flat carousel; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -45,7 +45,7 @@ Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production buil
 | `website/index.html` | Single page — hero + phone carousel + participant journey + public tournament rail + FAQ + footer | ~735 |
 | `website/styles.css` | All styles. Design tokens in `:root`. Heavy use of `clamp()`. **Source of truth — never minify by hand.** | ~4664 |
 | `website/carousel.js` | Standalone IIFE: complete carousel gesture state machine (wheel + touch + rubber-band). Loaded via `<script src="carousel.js" defer>` **before** `script.js`. | ~419 |
-| `website/script.js` | Homepage IIFE plus independent public tournament rail IIFE: copyright year, toast scaffolding (`window.yamatchToast`, exposed but currently zero in-repo callers since both hero CTAs became real links — see Hero below), wordmark scroll-aware behaviour, page-scroll-progress block, QR widget rendering, floating-card parallax spring-chain, shared public tournament loading and rendering. | ~1672 |
+| `website/script.js` | Homepage IIFE plus independent public tournament rail IIFE: copyright year, toast scaffolding (`window.yamatchToast`, exposed but currently zero in-repo callers since both hero CTAs became real links — see Hero below), shared header scroll-aware pill, flat-carousel initialization, QR widget rendering, floating-card parallax spring-chain, shared public tournament loading and rendering. | ~1672 |
 
 `carousel.js` is loaded first in HTML (`<script src="carousel.js" defer>` then `<script src="script.js" defer>`). Sequential `defer` tags guarantee execution order while keeping both scripts non-blocking.
 
@@ -249,14 +249,14 @@ The 512×512 icon's `purpose` was changed from `"any"` to `"any maskable"` as pa
 
 Homepage sections under `<main id="top">`, in order:
 
-1. **`.hero`** — dark action photograph with title, subtitle, App Store + Google Play buttons (both live links since 2026-07-27); wordmark above
+1. **`.hero`** — fixed header with wordmark and navigation; dark action photograph with split text/app visual, decorative cards and App Store + Google Play buttons. No subtitle or reassurance copy.
 2. **`.screens-rail`** — horizontal carousel with 5 phone screenshots
 3. **`section.how-quest#how-it-works`** — static 3-step participant PARCOURS section with a direct organiser link; deep-link anchor `id="how-it-works"`
 4. **`section.showcase#derniers-tournois`** — public upcoming and recent tournament tickets; hidden until valid data is rendered
 5. **`section.faq#faq`** — accordion of 12 questions; deep-link anchor `id="faq"`
 6. **`<footer>`** — outside `<main>`, light-gray background (matches `.faq`), dark text, content centered
 
-**Top announcement banners (removed 2026-10-15).** Neither the homepage nor `/organisateur/` renders the former lime `.launch-ticker` strip. Its shared height token, styles, animation, reduced-motion overrides and homepage offset-measurement IIFE have been removed. The fixed wordmark is centred in the hero’s top margin: `top: calc(var(--page-pad) / 2)` on desktop and `top: calc(var(--mobile-hero-card-margin-block) / 2)` at ≤767px, without a banner-height offset. `--wordmark-scroll-lift: 0px` keeps the logo at that vertical position while scrolling, preventing clipping above the viewport after banner removal; scroll-driven scaling remains active.
+**Top announcement banners (removed 2026-10-15).** Neither route renders the former lime `.launch-ticker`. Its shared styles and homepage offset-measurement IIFE were removed. Since participant V2, the homepage logo belongs to a fixed `.hero-header` with navigation on its right; the entire header becomes one glass pill after 30 px. The organiser retains its independent wordmark controller. Earlier centred-wordmark positioning is historical.
 
 ### Footer brand strip (`.footer-brand-strip`) — added 2026-05-13 (CSS §12.1)
 
@@ -267,6 +267,47 @@ Decorative row rendered above the legal links. Flex row (`justify-content: cente
 - Focus-visible: `outline: 2px solid var(--color-text-primary); outline-offset: 3px` — site-wide pattern (§19), no dedicated rule needed.
 - `prefers-reduced-motion`: transitions neutralised by the global §19 blanket rule — no dedicated override needed.
 - The wordmark link carries no `target`/`rel` (site convention preserved, validated by reviewer on PR #10). The Instagram link carries `target="_blank" rel="noopener noreferrer"` and an extended `aria-label` `"Suivre Yamatch sur Instagram (nouvelle fenêtre)"` — **deliberate exception** for social discovery: the user stays on the landing page while exploring Instagram, protecting the conversion funnel. Validated 2026-05-13.
+
+### Hero — participant V2 (2026-10-17)
+
+```text
+.hero[aria-labelledby="heroTitle"]
+├── header.hero-header (fixed, z-index: 50; .is-condensed after 30 px)
+│   ├── a.wordmark.wordmark-link[href="#top"] (left, static inside header)
+│   └── nav.hero-nav[aria-label="Navigation principale"] (right)
+│       ├── a.hero-nav-link → #how-it-works
+│       ├── a.hero-nav-link → #faq
+│       └── a.hero-nav-cta → organisateur/ (long/short responsive labels)
+└── .hero-card.hero-card--photo (clipped, z-index: 1)
+    ├── ::before (photo + readability gradients, z-index: 0)
+    └── .hero-card-inner.hero-card-inner--split (z-index: 1)
+        ├── .hero-copy
+        │   ├── .hero-eyebrow
+        │   ├── h1#heroTitle.hero-title > .hero-title-slant > .hero-title-accent
+        │   ├── p.hero-lede (desktop/tablet)
+        │   └── .hero-buttons > a.btn-glass[data-cta] × 2
+        └── .hero-visual
+            ├── picture > img.hero-phone (screen_1, 1206 × 2450)
+            └── .hero-floats[aria-hidden="true"]
+                ├── .hero-float.hero-float--ticket
+                ├── .hero-float.hero-float--score
+                └── .hero-float.hero-float--badge
+```
+
+**Founder decisions override the original handoff.** D1: the carousel stays flat below the hero, without active-phone lift or photo shrink. D2: logo left and navigation right share a **single fixed, full-width glass pill** after scrolling, replacing the static header recommended in SPEC §8. D3: decorative ticket, example score and phase-final badge remain. The founder additionally removed “Compose ton équipe, il y a match.” and all hero reassurance copy (“App gratuite”, Stripe and wallets), including the mobile version. The H1 stays exactly “Ton prochain tournoi t’attend”, with only “t’attend” lime. These removals deliberately change spacing relative to the original target JPGs.
+
+**Layout.** CSS §7.7 scopes content to `.hero-card--photo` and navigation to `.hero-header`; shared 404 and organiser rules remain independent. Desktop uses a 1.15fr / .85fr grid, left-aligned text and a phone cropped by the rounded card. At ≤1023 px it stacks text then a 520 px visual; organiser navigation stays visible. At ≤767 px text centres, the lede and nav text links hide, stores share equal widths at 50 px height, and only the score card remains above a 230 px phone. The separate mobile inline/block tokens remain; V2 reserves header space above the card rather than applying the older equal top/bottom card margins.
+
+**Images.** Existing mutually exclusive high-priority WebP photo preloads remain: `hero-volley-mixed.webp` (1672 × 941) for ≥768 px and `hero-volley-mixed-mobile.webp` (1122 × 1402) for ≤767 px. The photo modifier disables the old `clip-path`; card overflow clips the background and phone. Side/bottom gradients improve desktop readability; a vertical gradient serves tablet/mobile. [HERO_IMAGE_PROMPT.md](HERO_IMAGE_PROMPT.md) records photo provenance. The phone uses existing `assets/screens/screen_1.avif|webp|png`, intrinsic dimensions, French alt, eager/high-priority loading and async decoding. Cards are decorative illustration, not live tournament data.
+
+**Scroll contract.** A guarded `script.js` block toggles `.hero-header.is-condensed` for `window.scrollY > 30`, performs an initial update, and handles passive `scroll` plus `pageshow` with one pending animation frame. The logo uses native `#top` navigation. `body.org-page` still exits the homepage IIFE before these controllers. Header styling changes in place; it neither centres nor individually shrinks the logo.
+
+**Navigation accessibility.** Header links and organiser CTA have a minimum 44 × 44 px target and visible lime keyboard focus. On the homepage, `#faq` and `#how-it-works` use `scroll-margin-top: calc(var(--hero-header-space) + 16px)` (100 px desktop/tablet, 96 px mobile) so the fixed pill does not cover the destination. Store eyebrows remain visible: Google Play uses opaque white (`--hero-photo-ink`, alias of `--color-text-white`), while App Store inherits black. The 80% white `--hero-ink-muted` remains for secondary paragraph/ticket text, not store eyebrows.
+
+**Motion.** `cardEntrance` and `titleEntrance` remain. The phone enters upward from 40 px over 600 ms (620 ms delay); cards use `cardEntrance` with 740/820/900 ms delays. No continuous card float is required. Hero/header descendants explicitly use `animation: none` and `transition: none` under reduced motion, alongside the shared blanket rule.
+
+<details>
+<summary>Historical photograph hero (2026-10-15; superseded by participant V2)</summary>
 
 ### Hero
 
@@ -293,6 +334,9 @@ The image and a readability gradient paint on the existing `.hero-card::before` 
 | `hero-volley-mixed-mobile.webp` | 1122 × 1402 | 120,802 bytes | ≤767 px, `cover`, image positioned at `60% center` |
 
 Two homepage image preloads use matching mutually exclusive media queries, WebP type and `fetchpriority="high"`; only the applicable composition is preloaded. The four new shared `:root` tokens are `--hero-photo-surface: #0c100b` (fallback), `--hero-photo-ink: var(--color-text-white)`, `--hero-photo-shade` (180° gradient of `rgba(5,9,5,alpha)` at .46 / .20 at 42% / .04 at 70% / .20), and `--hero-photo-button-border: rgba(255,255,255,.32)`. Generation provenance and prompts are recorded in [HERO_IMAGE_PROMPT.md](HERO_IMAGE_PROMPT.md); these are generated promotional images, not real-app captures.
+
+
+</details>
 
 **Both hero CTAs are live external links (Google Play joined the App Store on 2026-07-27, when the Android app shipped).** Neither carries a `.js-pending-cta` class or a `href="#"` placeholder any more; there is no longer a "pending" state on the homepage.
 
@@ -579,6 +623,32 @@ Each `.screen-card` contains:
 --radius-pill: 100px;
 ```
 
+### Participant V2 tokens (CSS §7.7)
+
+All new colors, shadows, type sizes and motion tokens are declared in `:root`; responsive overrides also use `:root`. Shared tokens are not repurposed for other heroes.
+
+| Tokens | Values / responsibility |
+|---|---|
+| `--hero-photo-shade-side`, `--hero-photo-shade-bottom`, `--hero-photo-shade-mobile` | Side/bottom desktop and vertical tablet/mobile gradients; exact stops in `styles.css` §2 |
+| `--hero-ink-muted` | White at 80% for secondary copy |
+| `--hero-glass-bg`, `--hero-glass-bg-hover`, `--hero-glass-border` | White at 12% / 20% / 22% |
+| `--hero-eyebrow-halo` | 4 px lime halo at 22% opacity |
+| `--hero-float-surface`, `--hero-float-border`, `--hero-float-shadow` | Dark translucent ticket, white 16% border, 18 px / 40 px shadow |
+| `--hero-phone-shadow` | 40 px / 60 px drop shadow, black 55% |
+| `--hero-store-height` | 56 px desktop/tablet; 50 px mobile |
+| `--hero-title-size` | `clamp(2.875rem, 6.4vw, 5.75rem)` desktop; 3.5rem tablet; `clamp(2.25rem, 11.8vw, 2.875rem)` mobile |
+| `--hero-lede-size`, `--hero-small-size`, `--hero-ticket-size` | 1.0625rem / .875rem / .75rem; small becomes .75rem mobile |
+| `--hero-store-eyebrow-size`, `--hero-store-label-size` | .6875rem / 1.0625rem; .625rem / `clamp(.75rem, 3.85vw, .9375rem)` mobile |
+| `--hero-nav-size`, `--hero-score-size` | .9375rem / 2.125rem; .8125rem / 1.5rem mobile |
+| `--hero-font-display` | Frick 0.3 with shared heading fallback |
+| `--hero-copy-pad`, `--hero-copy-gap` | `clamp(24px, 5vw, 80px)` / 28 px; 20 px / 18 px mobile |
+| `--hero-phone-width` | 360 px; 230 px mobile |
+| `--hero-gutter` | 24 px; `--mobile-hero-card-margin` mobile |
+| `--hero-header-top`, `--hero-header-space` | 16 px / 84 px; 8 px / 80 px mobile |
+| `--hero-card-radius`, `--hero-float-radius`, `--hero-date-radius` | `clamp(24px,3vw,40px)` / 20 px / 12 px; card 28 px and floats 16 px mobile |
+| `--hero-header-bg`, `--hero-header-border`, `--hero-header-fallback` | White 72%, dark border 6%; white 96% without backdrop-filter |
+| `--hero-entry`, `--hero-phone-entry`, `--hero-header-motion` | 480 / 600 / 300 ms, `cubic-bezier(.2,.8,.2,1)` |
+
 ### Carousel — runtime-critical
 ```css
 --scroll: 0px;                                                   /* active phone image's translateY (px value written by JS; 0 = phone flat in row) */
@@ -602,7 +672,7 @@ Each `.screen-card` contains:
 
 ## Carousel state machine (carousel.js)
 
-The carousel is a JS-driven state machine — NOT native CSS scroll-snap. Choice motivated by the constraint that the active phone image's `translateY(var(--scroll))` lift requires `overflow-y: visible`, which is incompatible with `overflow-x: auto` (CSS spec promotes the y-axis to `auto` and clips the lift).
+The carousel is a JS-driven state machine — NOT native CSS scroll-snap. The original choice was motivated by the constraint that the active phone image's `translateY(var(--scroll))` lift requires `overflow-y: visible`, which is incompatible with `overflow-x: auto` (CSS spec promotes the y-axis to `auto` and clips the lift). Participant V2 removes that lift but preserves the gesture state machine.
 
 ### State variables
 
@@ -659,6 +729,13 @@ Fire-on-threshold pattern: the listener fires immediately when `|wheelAccum|` re
 
 `setActiveIndex`'s internal clamp to `getCarouselBounds()` remains a defensive safety net. In practice, boundary gestures are routed to `rubberBand` before reaching `setActiveIndex`, so the clamp is never the first line of defense.
 
+### Flat carousel initialization (participant V2)
+
+The homepage initializes `.hero-carousel-embla` with `--scroll: 0px`, `--active-scale: 1` and `data-horizontal-ready="true"`. Gestures work immediately, including before page scrolling and with reduced motion. `carousel.js` remains owner of wheel/touch intent, snapping, active index and rubber-band behaviour. `computeBaseLift`, scroll interpolation and the photo shrink writer have been removed from `script.js`; retained CSS lift hooks are inert on the homepage. No handler measures hero buttons for carousel positioning.
+
+<details>
+<summary>Historical lift algorithm (removed from homepage on 2026-10-17)</summary>
+
 ### Page-scroll-progress block (animates `--scroll`)
 
 Listens to `window.scroll` + `resize` + `orientationchange` + `load` — all rAF-throttled via a shared `rafPending` flag. On each tick, calls `computeBaseLift()` first, then interpolates:
@@ -698,14 +775,16 @@ Mobile + reduced-motion paths skip the writer entirely (CSS keeps `--scroll: 0`)
 
 ---
 
+</details>
+
 ## Z-index / stacking contexts
 
 | Element | z-index | Stacking-context creator | Why |
 |---------|---------|--------------------------|-----|
 | `.skip-link` | 1000 | yes | a11y; always on top when focused |
 | `.toast` | 1000 | yes | always on top |
-| `.wordmark` | 50 | yes (position: fixed) | fixed header above all sections |
-| `.screens-rail` | 2 | yes | above `.hero-card` so the active phone image's lift renders in front |
+| `.hero-header` | 50 | yes (position: fixed) | shared homepage navigation pill; logo static inside |
+| `.screens-rail` | 2 | yes | retained carousel stacking level; no V2 phone lift |
 | `.hero-card` | 1 | yes | own stacking context for the background below content |
 | `.hero-card-inner` | 1 | yes | content above the photograph and gradient |
 | `.hero-card::before` | 0 | yes | clipped photograph and gradient inside the homepage hero, behind content |
@@ -720,7 +799,7 @@ html, body { overflow-x: clip; }
 
 `overflow-x: clip` (NOT `hidden`/`auto`) is critical: per CSS spec, `clip` allows asymmetric per-axis values WITHOUT promoting the other axis to `auto`. This lets the page clip horizontal bleed (carousel sentinels off-screen) while keeping `overflow-y: visible` (page scroll works normally and the active phone lift isn't clipped vertically).
 
-`.screens-rail` has `overflow: visible` so the active phone image's `translateY(var(--scroll))` upward lift extends into the hero zone without clipping.
+`.screens-rail` retains `overflow: visible` for slide geometry. Participant V2 keeps `--scroll: 0px`, so no phone extends upward into the hero. The photo card independently clips its embedded phone.
 
 `.hero-carousel-embla--container` has NO overflow rule — it's a wide flex row whose excess content (slides 0 and 4) is clipped at viewport edges by `body { overflow-x: clip }`.
 
@@ -731,7 +810,8 @@ html, body { overflow-x: clip; }
 | Selector | Property | Duration | Easing |
 |----------|----------|----------|--------|
 | `a` | color, opacity | 200ms | `var(--transition)` |
-| `.wordmark` | translate, scale, opacity, etc. | 300ms | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
+| `.hero-header` | background-color, border-color, backdrop-filter | 300ms | `--hero-header-motion` |
+| `.wordmark` (legacy shared styling) | translate, scale, opacity, etc. | 300ms | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
 | `.btn-glass` | transform, bg, box-shadow | 200ms | `var(--transition)` |
 | `.btn-glass svg` | transform | 240ms | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
 | `.screen-card.active .phone-image` | transform | 80ms | linear |
@@ -764,9 +844,11 @@ html, body { overflow-x: clip; }
 - The former wave-specific override was removed with the SVG; the photograph itself has no animation loop.
 - `.hero-carousel-embla { --scroll: 0 }` (phone flat in row, no lift).
 - Organiser stickers/detail entry use `animation: none`; plus controls use `transition: none`; navigation uses native auto scrolling.
-- JS: page-scroll-progress checks `matchMedia('(prefers-reduced-motion: reduce)').matches` and skips the writer when reduced motion is requested.
+- Participant hero/header explicitly disable all animations and transitions. Carousel initialization stays flat regardless of motion preference; no scroll-progress writer remains.
 
 ### `@media (max-width: 767px)`
+
+The following shared/legacy rules remain available for other consumers. Participant V2 overrides header/card geometry and store typography as described in Hero above; the legacy equal-margin/centred-logo assumptions no longer apply to it.
 - `.hero { padding: 0 }` — removes all padding from the hero section; horizontal spacing is handled by `.hero-card` itself.
 - Two tokens govern mobile spacing (inline and block axes are **intentionally decoupled**):
   - `--mobile-hero-card-margin: clamp(20px, 5vw, 40px)` — **inline axis only**: consumed by `width` formula (`calc(100% - 2 * var(--mobile-hero-card-margin))`), `margin-inline: auto` on `.hero-card`, and `padding-inline` on `.screens-rail` and `.faq`. Aligns all three elements to the same left/right edge.
@@ -778,11 +860,15 @@ html, body { overflow-x: clip; }
 - `.faq { padding-inline: var(--mobile-hero-card-margin); padding-block: var(--mobile-hero-card-margin) }` — overrides `--page-pad` on mobile so the FAQ left/right edges align with the hero card and carousel, not the wider desktop gutter; `padding-block` reuses the inline token (the FAQ block padding is independent of the hero card block-axis split). Footer keeps `--page-pad`.
 - `.glass-eyebrow { display: none }` (`styles.css:4258`) — the eyebrow line of the `.btn-glass` CTAs is hidden entirely on mobile; the narrow 320–414 px viewport leaves only ~55–80 px of label width, too tight for the two-line "Télécharger sur / App Store" stack. The `aria-label` on `.btn-glass` already carries the full "Télécharger sur l'App Store" / "Télécharger sur Google Play" copy to screen readers, so there is no semantic loss.
 - `.glass-label { font-size: clamp(10px, 2.6vw, 12px); white-space: nowrap }` (`styles.css:4271`) — shrinks and locks the CTA label to a single line so "Google Play" never wraps inside its button; the desktop clamp collapses to a 12 px floor on mobile, which is still too wide for the ~55 px label slot at vp 320, hence the tighter 10 px floor.
-- JS: page-scroll-progress checks `mobileQuery.matches` and skips.
+- Participant V2 overrides legacy mobile hero/wordmark/CTA rules through §7.7 scoped selectors: header spacing, static left logo, visible store eyebrows and tokenized label sizing. Carousel initialization stays flat at every width.
 
 ---
 
 ## Recent design decisions (with rationale)
+
+### Participant hero V2 — founder decisions (2026-10-17)
+
+Implemented split hero with embedded screen_1 and decorative cards, unchanged H1, no subtitle/reassurance, and a single fixed header pill after 30 px. Removed homepage carousel lift, active scaling and photo shrink writers; retained independent carousel and organiser controllers. [Implementation notes](handoff/hero-participant-v2/implementation/README.md) record accepted differences from the original handoff. Earlier decisions below are historical where superseded by V2.
 
 ### `--mobile-hero-card-margin` token + wordmark vertical centering (2026-05-10)
 The four repeated inline `clamp(20px, 5vw, 40px)` literals in `.hero-card`'s mobile override block were factored into a single CSS custom property `--mobile-hero-card-margin`. A new `.wordmark` mobile rule `top: calc(var(--mobile-hero-card-margin) / 2)` places the wordmark at the visual midpoint between viewport top and lime card top, achieving equal optical spacing. One source of truth for the margin value; the wordmark tracks it automatically when the margin changes.

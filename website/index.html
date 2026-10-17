@@ -241,8 +241,9 @@
 <a class="skip-link" href="#top">Aller au contenu</a>
 
 <main id="top">
-    <section class="hero">
-        <button type="button" class="wordmark wordmark-link" aria-label="Retour en haut">
+    <section class="hero" aria-labelledby="heroTitle">
+        <header class="hero-header">
+        <a class="wordmark wordmark-link" href="#top" aria-label="Retour en haut">
             <svg viewBox="0 0 1067.73 206.13" aria-hidden="true" focusable="false">
                 <path d="M277.28,3.42h28.94l22.78,99.93h1.42L353.19,3.42h79.15v199.29h-49.25V71.17h-3.42l-26.76,131.54h-46.4l-26.76-131.54h-3.42l-19.3,131.54h-9.97S277.28,3.42,277.28,3.42Z"/>
                 <path d="M480.72,3.42h84.84l42.7,199.29h-64.91l-2.85-20.5h-34.73l-2.85,20.5h-64.91L480.72,3.42ZM539.37,139.5l-14.23-74.02h-3.98l-14.24,74.02h32.46Z"/>
@@ -252,15 +253,27 @@
                 <path d="M201.99,3.41h84.84l-29.83,199.27h-64.91l4.61-20.5h-34.73l-10.31,20.5h-64.91L201.99,3.41ZM211.1,139.48l12.71-74.02h-3.99l-41.17,74.02h32.45Z"/>
                 <path d="M31.91,115.55L4.49,3.96h62.06l12.66,57.5h3.42L137.15,3.96h62.06l-108.66,111.59-31.91,87.68H0l31.91-87.68Z"/>
             </svg>
-        </button>
+        </a>
+        <nav class="hero-nav" aria-label="Navigation principale">
+            <a class="hero-nav-link" href="#how-it-works">Comment ça marche</a>
+            <a class="hero-nav-link" href="#faq">FAQ</a>
+            <a class="hero-nav-cta" href="organisateur/">
+                <span class="hero-nav-cta-long">T’es organisateur&nbsp;?</span>
+                <span class="hero-nav-cta-short">Organisateur</span>
+                <span aria-hidden="true">→</span>
+            </a>
+        </nav>
+        </header>
         <div class="hero-card hero-card--photo">
-        <div class="hero-card-inner">
-        <!-- NOTE COPYWRITING : H1 baseline sport-agnostique (revert 2026-05-12 du LOT 1 audit SEO). Règle produit : la baseline/slogan reste agnostique pour s'adapter à n'importe quel sport futur ; le positionnement volley vit dans <title>/meta description/JSON-LD/body copy. Le sous-titre garde une formulation neutre (équipe / match). -->
-        <h1 class="hero-title"><span class="hero-title-slant">Ton prochain<br class="br-mobile-only"> tournoi t'attend</span></h1>
-        <p class="hero-subtitle">Compose ton équipe,<br class="br-mobile-only"> il y a match</p>
+        <div class="hero-card-inner hero-card-inner--split">
+        <div class="hero-copy">
+        <p class="hero-eyebrow"><span class="hero-eyebrow-dot" aria-hidden="true"></span>Volleyball · d’autres sports arrivent</p>
+        <!-- NOTE COPYWRITING : H1 baseline sport-agnostique (revert 2026-05-12 du LOT 1 audit SEO). Règle produit : la baseline/slogan reste agnostique pour s'adapter à n'importe quel sport futur ; le positionnement volley vit dans <title>/meta description/JSON-LD/body copy. Sous-titre retiré à la demande du founder pour le hero V2. -->
+        <h1 class="hero-title" id="heroTitle"><span class="hero-title-slant">Ton prochain<br class="br-mobile-only"> tournoi <span class="hero-title-accent">t’attend</span></span></h1>
+        <p class="hero-lede">Trouve un tournoi près de chez toi, réserve ta place en quelques secondes et suis tes matchs en direct le jour J.</p>
         <div class="hero-buttons">
             <a class="btn-glass" data-cta="app-store" href="https://apps.apple.com/fr/app/yamatch/id6773454974" target="_blank" rel="noopener" aria-label="Télécharger sur l'App Store">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M17.05 12.04c-.03-3.24 2.65-4.79 2.77-4.87-1.51-2.21-3.86-2.51-4.69-2.55-2-.21-3.9 1.18-4.91 1.18-1.03 0-2.59-1.16-4.27-1.12-2.18.03-4.21 1.27-5.34 3.22-2.29 3.97-.59 9.83 1.65 13.05 1.09 1.58 2.39 3.34 4.07 3.28 1.64-.07 2.25-1.06 4.23-1.06 1.96 0 2.53 1.06 4.25 1.02 1.76-.03 2.87-1.6 3.95-3.18 1.24-1.83 1.76-3.6 1.79-3.69-.04-.02-3.45-1.32-3.5-5.28zM13.78 3.4c.91-1.1 1.52-2.62 1.35-4.13-1.31.05-2.89.87-3.83 1.96-.84.97-1.58 2.51-1.38 4 1.46.11 2.95-.74 3.86-1.83z"/>
                 </svg>
                 <span class="glass-stack">
@@ -269,7 +282,7 @@
                 </span>
             </a>
             <a class="btn-glass" data-cta="play-store" href="https://play.google.com/store/apps/details?id=com.appyamatch.yamatch" target="_blank" rel="noopener" aria-label="Télécharger sur Google Play">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202c1.302.661 1.302 2.823 0 2.594zM1.337.924a2.43 2.43 0 0 0-.337 1.286v19.474c0 .484.124.928.337 1.286l11.591-11.491L1.337.924zm12.844 10.452l2.79-2.766L3.486.36C3.106.118 2.658.058 2.218.122l11.963 11.254zm0 1.248L2.218 23.878a2.43 2.43 0 0 0 1.268-.238l13.485-7.667-2.79-2.349z"/>
                 </svg>
                 <span class="glass-stack">
@@ -278,18 +291,45 @@
                 </span>
             </a>
         </div>
+        </div><!-- /.hero-copy -->
+        <div class="hero-visual">
+            <picture>
+                <source srcset="assets/screens/screen_1.avif" type="image/avif">
+                <source srcset="assets/screens/screen_1.webp" type="image/webp">
+                <img class="hero-phone" src="assets/screens/screen_1.png" alt="Aperçu de l’app Yamatch — accueil de découverte des tournois"
+                     width="1206" height="2450" loading="eager" fetchpriority="high" decoding="async" draggable="false">
+            </picture>
+            <div class="hero-floats" aria-hidden="true">
+                <div class="hero-float hero-float--ticket">
+                    <div class="hero-ticket-head">
+                        <div class="hero-ticket-date"><span>17</span><span>MAI</span></div>
+                        <div class="hero-ticket-info">
+                            <strong>Tournoi de la jeunesse</strong>
+                            <p>Milly-la-Forêt · 52&nbsp;km</p>
+                        </div>
+                    </div>
+                    <div class="hero-ticket-counts"><span>27/36 inscrits</span><span class="hero-ticket-remaining">9 équipes restantes</span></div>
+                    <div class="hero-ticket-progress"><span></span></div>
+                </div>
+                <div class="hero-float hero-float--score">
+                    <span class="hero-score-status"><span class="hero-score-dot"></span>En cours</span>
+                    <p class="hero-score-label">Match 3 · Terrain 2</p>
+                    <p class="hero-score-value">21 – 18</p>
+                </div>
+                <div class="hero-float hero-float--badge">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3"/></svg>
+                    Ton équipe passe en phase finale
+                </div>
+            </div>
+        </div><!-- /.hero-visual -->
         </div><!-- /.hero-card-inner -->
         </div><!-- /.hero-card -->
 
     </section>
 
-    <!-- === Carrousel d'écrans — pattern hero-carousel (Spendesk-inspired).
-         5 slides en rang horizontal ; la slide ".active" (index 2) est translatée vers le
-         haut via --scroll: -33% — son tiers supérieur dépasse au-dessus du rang, juste sous
-         la lime card du hero. Au scroll, --scroll est animé de -33% → 0 (script.js,
-         scroll-progress block) pour faire descendre la slide active dans le rang.
-         Le défilement horizontal et le snap sont gérés en CSS natif via scroll-snap-type;
-         l'alignement initial sur la slide active est posé en JS (centerOnActive) via scrollLeft. === -->
+    <!-- === Carrousel d'écrans : cinq slides sous le hero V2, sans remontée.
+         carousel.js gère les gestes horizontaux et le centrage par transform.
+         La slide screen_2 (index 1) est active au chargement. === -->
     <section class="screens-rail" aria-label="Aperçu de l'app Yamatch">
         <div class="hero-carousel-embla">
             <div class="hero-carousel-embla--container">
@@ -309,9 +349,8 @@
                     </p>
                 </article>
 
-                <!-- Slide active — Spendesk's `.active` modifier. translateY(var(--scroll))
-                     la fait flotter dans la zone hero au repos, puis la JS-anime vers 0 au
-                     scroll. Image = screen_2 (filtres lieu/niveau/format), porte d'entrée du parcours. -->
+                <!-- Slide active initiale : screen_2 (filtres lieu/niveau/format).
+                     Le modificateur d'entrée reste fixe lorsque .active change de slide. -->
                 <article class="screen-card screen-card--white screen-card--arrival hero-carousel-embla--slide active">
                     <div class="screen-card__phone">
                         <picture>
