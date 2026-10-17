@@ -1,0 +1,109 @@
+{
+  "overflow": [],
+  "contrast": [
+    {
+      "w": 1440,
+      "sel": ".how-intro",
+      "min": 7.558072756271033
+    },
+    {
+      "w": 1440,
+      "sel": ".quest-organiser-link a",
+      "min": 17.74659431591738,
+      "method": "Opaque white on computed background rgb(16,24,40); excludes transparent pill corners, which contain no text."
+    },
+    {
+      "w": 1440,
+      "sel": ".quest-step:nth-child(1) .quest-step-body",
+      "min": 10.013385065944432
+    },
+    {
+      "w": 1440,
+      "sel": ".quest-step:nth-child(2) .quest-step-body",
+      "min": 10.70641051122694
+    },
+    {
+      "w": 1440,
+      "sel": ".quest-step:nth-child(3) .quest-step-body",
+      "min": 10.013385065944432
+    },
+    {
+      "w": 820,
+      "sel": ".how-intro",
+      "min": 7.558072756271033
+    },
+    {
+      "w": 820,
+      "sel": ".quest-organiser-link a",
+      "min": 17.74659431591738,
+      "method": "Opaque white on computed background rgb(16,24,40); excludes transparent pill corners, which contain no text."
+    },
+    {
+      "w": 820,
+      "sel": ".quest-step:nth-child(1) .quest-step-body",
+      "min": 9.945625353296446
+    },
+    {
+      "w": 820,
+      "sel": ".quest-step:nth-child(2) .quest-step-body",
+      "min": 10.76591688169313
+    },
+    {
+      "w": 820,
+      "sel": ".quest-step:nth-child(3) .quest-step-body",
+      "min": 9.945625353296446
+    },
+    {
+      "w": 390,
+      "sel": ".how-intro",
+      "min": 7.558072756271033
+    },
+    {
+      "w": 390,
+      "sel": ".quest-organiser-link a",
+      "min": 17.74659431591738,
+      "method": "Opaque white on computed background rgb(16,24,40); excludes transparent pill corners, which contain no text."
+    },
+    {
+      "w": 390,
+      "sel": ".quest-step:nth-child(1) .quest-step-body",
+      "min": 9.721602541734057
+    },
+    {
+      "w": 390,
+      "sel": ".quest-step:nth-child(2) .quest-step-body",
+      "min": 10.76591688169313
+    },
+    {
+      "w": 390,
+      "sel": ".quest-step:nth-child(3) .quest-step-body",
+      "min": 9.721602541734057
+    },
+    {
+      "w": 320,
+      "sel": ".how-intro",
+      "min": 7.558072756271033
+    },
+    {
+      "w": 320,
+      "sel": ".quest-organiser-link a",
+      "min": 17.74659431591738,
+      "method": "Opaque white on computed background rgb(16,24,40); excludes transparent pill corners, which contain no text."
+    },
+    {
+      "w": 320,
+      "sel": ".quest-step:nth-child(1) .quest-step-body",
+      "min": 9.63928268600661
+    },
+    {
+      "w": 320,
+      "sel": ".quest-step:nth-child(2) .quest-step-body",
+      "min": 10.538977528375781
+    },
+    {
+      "w": 320,
+      "sel": ".quest-step:nth-child(3) .quest-step-body",
+      "min": 9.617423683671918
+    }
+  ]
+}
