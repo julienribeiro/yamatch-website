@@ -1,0 +1,24 @@
+[
+  {
+    "name": "tournament",
+    "length": 987480,
+    "other": 987480,
+    "mean": 0.06142402884109045,
+    "max": 11,
+    "channelsOver5": 23
+  },
+  {
+    "name": "confirmation",
+    "length": 987480,
+    "other": 987480,
+    "mean": 0.080833029529712,
+    "max": 41,
+    "channelsOver5": 17
+  },
+  {
+    "name": "ranking",
+    "mean": 0.03367663142544659,
+    "max": 62,
+    "channelsOver5": 47
+  }
+]

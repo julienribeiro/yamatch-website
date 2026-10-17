@@ -1,0 +1,122 @@
+[
+  {
+    "w": 1440,
+    "errors": [],
+    "ax": "- region \"Comment ça marche\":\n  - text: Parcours · 3 étapes\n  - heading \"Comment ça marche\" [level=2]\n  - paragraph: De la recherche au tableau final, tout se passe dans l’app. Trois étapes, et tu n’as plus qu’à jouer.\n  - paragraph:\n    - link \"T’es organisateur ? C’est par ici\":\n      - /url: organisateur/\n  - article:\n    - text: Recherche\n    - heading \"Trouve un tournoi\" [level=3]\n    - paragraph: On t’affiche les tournois les plus proches de ta position — ou autour de l’adresse de ton choix. Tu n’as plus qu’à choisir celui qui t’intéresse.\n    - img \"Aperçu de l’app — fiche d’un tournoi avec date, lieu et places restantes\"\n  - article:\n    - text: Inscription\n    - heading \"Inscris ton équipe\" [level=3]\n    - paragraph: Réserve ta place en quelques secondes, puis associe une équipe existante ou crée ta dream team directement dans l’app.\n    - img \"Aperçu de l’app — réservation confirmée et association de l’équipe\"\n  - article:\n    - text: Le jour J\n    - heading \"Place au jeu\" [level=3]\n    - paragraph: \"Pointage à l’arrivée, matchs, arbitrage, classement, tableau final : tout se passe dans l’app. Tu n’as plus qu’à enfiler tes baskets.\"\n    - img \"Aperçu de l’app — classement du tournoi en direct\"",
+    "dom": {
+      "h2": 1,
+      "h3": 3,
+      "imgs": 0,
+      "interactive": 0,
+      "revealed": 3,
+      "cards": [
+        {
+          "w": 450.65625,
+          "h": 640
+        },
+        {
+          "w": 450.671875,
+          "h": 640
+        },
+        {
+          "w": 450.65625,
+          "h": 640
+        }
+      ],
+      "org": {
+        "w": 294.734375,
+        "h": 52
+      }
+    }
+  },
+  {
+    "w": 820,
+    "errors": [],
+    "ax": "- region \"Comment ça marche\":\n  - text: Parcours · 3 étapes\n  - heading \"Comment ça marche\" [level=2]\n  - paragraph: De la recherche au tableau final, tout se passe dans l’app. Trois étapes, et tu n’as plus qu’à jouer.\n  - paragraph:\n    - link \"T’es organisateur ? C’est par ici\":\n      - /url: organisateur/\n  - article:\n    - text: Recherche\n    - heading \"Trouve un tournoi\" [level=3]\n    - paragraph: On t’affiche les tournois les plus proches de ta position — ou autour de l’adresse de ton choix. Tu n’as plus qu’à choisir celui qui t’intéresse.\n    - img \"Aperçu de l’app — fiche d’un tournoi avec date, lieu et places restantes\"\n  - article:\n    - text: Inscription\n    - heading \"Inscris ton équipe\" [level=3]\n    - paragraph: Réserve ta place en quelques secondes, puis associe une équipe existante ou crée ta dream team directement dans l’app.\n    - img \"Aperçu de l’app — réservation confirmée et association de l’équipe\"\n  - article:\n    - text: Le jour J\n    - heading \"Place au jeu\" [level=3]\n    - paragraph: \"Pointage à l’arrivée, matchs, arbitrage, classement, tableau final : tout se passe dans l’app. Tu n’as plus qu’à enfiler tes baskets.\"\n    - img \"Aperçu de l’app — classement du tournoi en direct\"",
+    "dom": {
+      "h2": 1,
+      "h3": 3,
+      "imgs": 0,
+      "interactive": 0,
+      "revealed": 3,
+      "cards": [
+        {
+          "w": 772,
+          "h": 640
+        },
+        {
+          "w": 772,
+          "h": 640
+        },
+        {
+          "w": 772,
+          "h": 640
+        }
+      ],
+      "org": {
+        "w": 294.734375,
+        "h": 52
+      }
+    }
+  },
+  {
+    "w": 390,
+    "errors": [],
+    "ax": "- region \"Comment ça marche\":\n  - text: Parcours · 3 étapes\n  - heading \"Comment ça marche\" [level=2]\n  - paragraph: De la recherche au tableau final, tout se passe dans l’app. Trois étapes, et tu n’as plus qu’à jouer.\n  - paragraph:\n    - link \"T’es organisateur ? C’est par ici\":\n      - /url: organisateur/\n  - article:\n    - text: Recherche\n    - heading \"Trouve un tournoi\" [level=3]\n    - paragraph: On t’affiche les tournois les plus proches de ta position — ou autour de l’adresse de ton choix. Tu n’as plus qu’à choisir celui qui t’intéresse.\n    - img \"Aperçu de l’app — fiche d’un tournoi avec date, lieu et places restantes\"\n  - article:\n    - text: Inscription\n    - heading \"Inscris ton équipe\" [level=3]\n    - paragraph: Réserve ta place en quelques secondes, puis associe une équipe existante ou crée ta dream team directement dans l’app.\n    - img \"Aperçu de l’app — réservation confirmée et association de l’équipe\"\n  - article:\n    - text: Le jour J\n    - heading \"Place au jeu\" [level=3]\n    - paragraph: \"Pointage à l’arrivée, matchs, arbitrage, classement, tableau final : tout se passe dans l’app. Tu n’as plus qu’à enfiler tes baskets.\"\n    - img \"Aperçu de l’app — classement du tournoi en direct\"",
+    "dom": {
+      "h2": 1,
+      "h3": 3,
+      "imgs": 0,
+      "interactive": 0,
+      "revealed": 3,
+      "cards": [
+        {
+          "w": 350,
+          "h": 560
+        },
+        {
+          "w": 350,
+          "h": 560
+        },
+        {
+          "w": 350,
+          "h": 560
+        }
+      ],
+      "org": {
+        "w": 234.765625,
+        "h": 44
+      }
+    }
+  },
+  {
+    "w": 320,
+    "errors": [],
+    "ax": "- region \"Comment ça marche\":\n  - text: Parcours · 3 étapes\n  - heading \"Comment ça marche\" [level=2]\n  - paragraph: De la recherche au tableau final, tout se passe dans l’app. Trois étapes, et tu n’as plus qu’à jouer.\n  - paragraph:\n    - link \"T’es organisateur ? C’est par ici\":\n      - /url: organisateur/\n  - article:\n    - text: Recherche\n    - heading \"Trouve un tournoi\" [level=3]\n    - paragraph: On t’affiche les tournois les plus proches de ta position — ou autour de l’adresse de ton choix. Tu n’as plus qu’à choisir celui qui t’intéresse.\n    - img \"Aperçu de l’app — fiche d’un tournoi avec date, lieu et places restantes\"\n  - article:\n    - text: Inscription\n    - heading \"Inscris ton équipe\" [level=3]\n    - paragraph: Réserve ta place en quelques secondes, puis associe une équipe existante ou crée ta dream team directement dans l’app.\n    - img \"Aperçu de l’app — réservation confirmée et association de l’équipe\"\n  - article:\n    - text: Le jour J\n    - heading \"Place au jeu\" [level=3]\n    - paragraph: \"Pointage à l’arrivée, matchs, arbitrage, classement, tableau final : tout se passe dans l’app. Tu n’as plus qu’à enfiler tes baskets.\"\n    - img \"Aperçu de l’app — classement du tournoi en direct\"",
+    "dom": {
+      "h2": 1,
+      "h3": 3,
+      "imgs": 0,
+      "interactive": 0,
+      "revealed": 3,
+      "cards": [
+        {
+          "w": 280,
+          "h": 560
+        },
+        {
+          "w": 280,
+          "h": 560
+        },
+        {
+          "w": 280,
+          "h": 560
+        }
+      ],
+      "org": {
+        "w": 234.765625,
+        "h": 44
+      }
+    }
+  }
+]

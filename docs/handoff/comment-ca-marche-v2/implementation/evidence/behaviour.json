@@ -1,0 +1,94 @@
+{
+  "faq": {
+    "before": "-13.44px",
+    "after": "-0.50px",
+    "expanded": "true",
+    "count": 1
+  },
+  "focus": {
+    "color": "rgb(215, 255, 0)",
+    "style": "solid",
+    "width": "3px",
+    "focusVisible": true
+  },
+  "normal": [
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    },
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    },
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    }
+  ],
+  "reduce": [
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    },
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    },
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    }
+  ],
+  "noIO": [
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    },
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    },
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    }
+  ],
+  "noJS": [
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    },
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    },
+    {
+      "opacity": "1",
+      "animation": "none",
+      "translate": "none"
+    }
+  ],
+  "hero1440": {
+    "mean": 0.000001286008230452675,
+    "max": 1
+  },
+  "hero820": {
+    "mean": 0.03506235358963759,
+    "max": 7
+  },
+  "hero390": {
+    "mean": 0,
+    "max": 0
+  }
+}

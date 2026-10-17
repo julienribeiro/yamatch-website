@@ -1,0 +1,60 @@
+/* Tokens de l'app Flutter Yamatch, copiés depuis
+   yamatch/lib/shared/theme/app_theme.dart (AppColors / AppFontSizes).
+   SOURCE DE VÉRITÉ = le fichier Dart. Ne pas inventer de couleur :
+   si une valeur manque ici, l'ajouter en citant la constante Dart. */
+@font-face{font-family:'Inter';src:url('../../../../website/fonts/Inter-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Roboto';src:url('../../../../website/fonts/Roboto-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+
+.ym-app{
+  /* AppColors */
+  --ym-accent:#D7FF00;
+  --ym-accent-gradient-end:#C5F000;
+  --ym-dark-bg:#1A1A1A;
+  --ym-dark-surface:#000000;
+  --ym-dark-surface-elevated:#2A2A2A;
+  --ym-dark-card:#111111;
+  --ym-light-bg:#FFFFFF;
+  --ym-light-gray:#F3F4F6;
+  --ym-surface-muted:#E5E7EB;
+  --ym-medium-gray:#99A1AF;
+  --ym-dark-gray:#364153;
+  --ym-text-primary:#101828;
+  --ym-text-white:#FFFFFF;
+  --ym-subtitle-gray:#666666;
+  --ym-placeholder:#999999;
+  --ym-divider:#E0E0E0;
+  --ym-progress-empty:#F0F0F0;
+  --ym-onboarding-bg-end:#F5FFE6;
+  --ym-onboarding-border:#EEF1DD;
+  --ym-glass-light:rgba(255,255,255,.68);        /* 0xADFFFFFF */
+  --ym-glass-light-border:rgba(255,255,255,.90); /* 0xE6FFFFFF */
+  --ym-dark-overlay-low:rgba(255,255,255,.12);   /* 0x1FFFFFFF */
+  --ym-teal:#36B7AA;
+  --ym-success:#4CAF50;
+  --ym-error:#EF4444;
+  --ym-pending:#FF9800;
+  /* AppFontSizes */
+  --ym-fs-avatar-label:10px;
+  --ym-fs-nav-label:10px;
+  --ym-fs-caption:12px;
+  --ym-fs-body:14px;
+  --ym-fs-message-body:15px;
+  --ym-fs-button:16px;
+  --ym-fs-body-large:17px;
+  --ym-fs-subtitle:18px;
+  --ym-fs-bottom-bar-value:20px;
+  --ym-fs-title:22px;
+  --ym-fs-display:28px;
+  --ym-fs-display-large:34px;
+  /* Typo (AppTheme : Roboto pour les titres, Inter pour le corps) */
+  --ym-font-heading:'Roboto',system-ui,-apple-system,sans-serif;
+  --ym-font-body:'Inter',system-ui,-apple-system,sans-serif;
+  /* Rayons usuels (AppTheme) */
+  --ym-radius-pill:100px;
+  --ym-radius-input:16px;
+  --ym-radius-card:24px;
+  font-family:var(--ym-font-body);
+  color:var(--ym-text-primary);
+  -webkit-font-smoothing:antialiased;
+}
+.ym-app *,.ym-app *::before,.ym-app *::after{box-sizing:border-box}

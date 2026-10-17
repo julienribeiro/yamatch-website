@@ -1,0 +1,168 @@
+{
+  "overflow": {
+    "range": "320..1920 every integer",
+    "failures": []
+  },
+  "audits": [
+    {
+      "w": 1440,
+      "h": 900,
+      "googleEyebrowMinContrast": 9.384182597050241,
+      "rects": {
+        "x": 323.53125,
+        "y": 682.03125,
+        "width": 82.53125,
+        "height": 11,
+        "color": "rgb(255, 255, 255)"
+      },
+      "targets": [
+        {
+          "label": "Retour en haut",
+          "width": 150,
+          "height": 44
+        },
+        {
+          "label": "Comment ça marche",
+          "width": 148.796875,
+          "height": 44
+        },
+        {
+          "label": "FAQ",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "label": "T’es organisateur ?\n                Organisateur\n                →",
+          "width": 195.8125,
+          "height": 44
+        },
+        {
+          "label": "Télécharger sur l'App Store",
+          "width": 160.53125,
+          "height": 56
+        },
+        {
+          "label": "Télécharger sur Google Play",
+          "width": 176.5625,
+          "height": 56
+        }
+      ],
+      "errors": []
+    },
+    {
+      "w": 820,
+      "h": 1180,
+      "googleEyebrowMinContrast": 14.475713770150858,
+      "rects": {
+        "x": 292.53125,
+        "y": 455.578125,
+        "width": 82.53125,
+        "height": 11,
+        "color": "rgb(255, 255, 255)"
+      },
+      "targets": [
+        {
+          "label": "Retour en haut",
+          "width": 150,
+          "height": 44
+        },
+        {
+          "label": "Comment ça marche",
+          "width": 148.796875,
+          "height": 44
+        },
+        {
+          "label": "FAQ",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "label": "T’es organisateur ?\n                Organisateur\n                →",
+          "width": 195.8125,
+          "height": 44
+        },
+        {
+          "label": "Télécharger sur l'App Store",
+          "width": 160.53125,
+          "height": 56
+        },
+        {
+          "label": "Télécharger sur Google Play",
+          "width": 176.5625,
+          "height": 56
+        }
+      ],
+      "errors": []
+    },
+    {
+      "w": 390,
+      "h": 844,
+      "googleEyebrowMinContrast": 5.870995007369977,
+      "rects": {
+        "x": 245.015625,
+        "y": 324.625,
+        "width": 75.03125,
+        "height": 10,
+        "color": "rgb(255, 255, 255)"
+      },
+      "targets": [
+        {
+          "label": "Retour en haut",
+          "width": 102,
+          "height": 44
+        },
+        {
+          "label": "T’es organisateur ?\n                Organisateur\n                →",
+          "width": 123.734375,
+          "height": 44
+        },
+        {
+          "label": "Télécharger sur l'App Store",
+          "width": 151,
+          "height": 50
+        },
+        {
+          "label": "Télécharger sur Google Play",
+          "width": 151,
+          "height": 50
+        }
+      ],
+      "errors": []
+    },
+    {
+      "w": 320,
+      "h": 900,
+      "googleEyebrowMinContrast": 5.777578091783237,
+      "rects": {
+        "x": 199,
+        "y": 319.46875,
+        "width": 74,
+        "height": 20,
+        "color": "rgb(255, 255, 255)"
+      },
+      "targets": [
+        {
+          "label": "Retour en haut",
+          "width": 102,
+          "height": 44
+        },
+        {
+          "label": "T’es organisateur ?\n                Organisateur\n                →",
+          "width": 123.734375,
+          "height": 44
+        },
+        {
+          "label": "Télécharger sur l'App Store",
+          "width": 116,
+          "height": 50
+        },
+        {
+          "label": "Télécharger sur Google Play",
+          "width": 116,
+          "height": 50
+        }
+      ],
+      "errors": []
+    }
+  ]
+}
