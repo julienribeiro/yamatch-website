@@ -187,6 +187,7 @@
     --hero-copy-pad: clamp(24px, 5vw, 80px);
     --hero-copy-gap: 28px;
     --hero-phone-width: 360px;
+    --hero-phone-scale: .8696;
     --hero-entry: 480ms cubic-bezier(.2,.8,.2,1);
     --hero-phone-entry: 600ms cubic-bezier(.2,.8,.2,1);
     --hero-header-bg: rgba(255,255,255,.72);
@@ -1008,6 +1009,8 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
 .hero-card.hero-card--photo {
     min-height: max(680px, calc(100svh - var(--hero-header-space) - 24px));
     border-radius: var(--hero-card-radius);
+    /* Clip composited phone shadows to the same rounded contour as the photograph. */
+    clip-path: inset(0 round var(--hero-card-radius));
 }
 .hero-card.hero-card--photo::before { clip-path: none; background-position: 62% center; }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
@@ -1124,6 +1127,10 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     animation: heroPhoneEntrance var(--hero-phone-entry) 620ms backwards;
 }
 .hero-card--photo .hero-floats { pointer-events: none; }
+/* The coded screen reserves its scaled dimensions before fonts load. */
+.hero-card--photo .hero-phone .ym-phone-slot {
+    --ym-phone-scale: var(--hero-phone-scale);
+}
 .hero-card--photo .hero-float {
     position: absolute;
     border-radius: var(--hero-float-radius);
@@ -1203,6 +1210,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
         --hero-copy-pad: 20px;
         --hero-copy-gap: 18px;
         --hero-phone-width: 230px;
+        --hero-phone-scale: .5556;
         --hero-gutter: var(--mobile-hero-card-margin);
         --hero-header-top: 8px;
         --hero-header-space: 80px;

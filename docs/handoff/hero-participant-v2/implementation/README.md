@@ -1,12 +1,14 @@
 # Hero participant V2 — décisions d’implémentation
 
-Date : 17 octobre 2026. Le dossier de passation utilisé pour cette implémentation est celui du commit `e0f733e` ; les documents présents sur la branche ont depuis évolué. Les décisions suivantes, confirmées ensuite par le founder, priment leurs indications contradictoires.
+Date : 17 octobre 2026. Cette étape livre le hero participant avec son écran discovery codé, conformément au §5 bis de la SPEC actualisée, et conserve les décisions complémentaires du founder ci-dessous.
 
-## Portée de la livraison après synchronisation distante
+## Écran codé — phase hero
 
-L’implémentation et sa validation portent sur le dossier au commit `e0f733e`, complété par les décisions du founder ci-dessous. Lors du push, des changements concurrents distants (`236b294` et `f8f886d`) ont nécessité un rebase, effectué sans conflit et sans modification du code implémenté.
+Le téléphone du hero reprend le fragment `docs/handoff/app-screens/screens/discovery.html` dans `.hero-phone[role="img"]`, avec un libellé français. Le slot `.ym-phone-slot[aria-hidden="true"]` contient le cadre et le fragment illustratif ; les contrôles dessinés dans l’écran ne sont pas interactifs. Les corrections de SVG décoratifs sont effectuées dans le fragment source avant copie.
 
-La SPEC mise à jour demande désormais un écran de téléphone codé en HTML/CSS avec `app-screens.css`. **Cette nouvelle exigence n’est pas implémentée dans cette livraison** : le hero utilise toujours le `<picture>` `screen_1.avif|webp|png` prévu dans le dossier initial. Le rapport de validation du périmètre initial ne constitue donc pas une validation complète de cette nouvelle SPEC. L’architecture décrit le code livré ; l’écran HTML/CSS reste un travail distinct à réaliser.
+`website/app-screens.css`, chargé après `styles.min.css` et servi hors `build:css`, contient les tokens `--ym-*`, le cadre et les styles discovery. Les polices Inter/Roboto utilisent les fichiers locaux `fonts/`. Le cadre de 414 × 868 px contient un écran de 390 × 844 px ; le slot réserve ses dimensions après échelle (.8696 desktop/tablette, .5556 mobile, soit environ 360/230 px de largeur). Le téléphone n’utilise plus de capture PNG/WebP/AVIF ; la photo de fond conserve ses préchargements.
+
+La première livraison reposait sur `e0f733e` et une image `screen_1`. La demande distante de téléphone HTML/CSS, reçue lors de la synchronisation des commits `236b294`/`f8f886d`, est désormais implémentée dans cette phase. Les résultats de validation antérieurs ne valent pas validation automatique de ce nouveau rendu : le reviewer vérifie cette étape séparément. La refonte « Comment ça marche » n’appartient pas à cette phase hero.
 
 ## Décisions acceptées
 

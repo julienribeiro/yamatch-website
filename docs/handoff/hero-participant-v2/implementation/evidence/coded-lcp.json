@@ -1,0 +1,146 @@
+[
+  {
+    "mode": "before",
+    "w": 1440,
+    "run": 0,
+    "cls": 0,
+    "lcp": 208,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "before",
+    "w": 1440,
+    "run": 1,
+    "cls": 0,
+    "lcp": 192,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "before",
+    "w": 1440,
+    "run": 2,
+    "cls": 0,
+    "lcp": 196,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "before",
+    "w": 820,
+    "run": 0,
+    "cls": 0,
+    "lcp": 204,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "before",
+    "w": 820,
+    "run": 1,
+    "cls": 0,
+    "lcp": 200,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "before",
+    "w": 820,
+    "run": 2,
+    "cls": 0,
+    "lcp": 200,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "before",
+    "w": 390,
+    "run": 0,
+    "cls": 0,
+    "lcp": 176,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "before",
+    "w": 390,
+    "run": 1,
+    "cls": 0,
+    "lcp": 184,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "before",
+    "w": 390,
+    "run": 2,
+    "cls": 0,
+    "lcp": 184,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "after",
+    "w": 1440,
+    "run": 0,
+    "cls": 0,
+    "lcp": 204,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "after",
+    "w": 1440,
+    "run": 1,
+    "cls": 0,
+    "lcp": 184,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "after",
+    "w": 1440,
+    "run": 2,
+    "cls": 0,
+    "lcp": 184,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "after",
+    "w": 820,
+    "run": 0,
+    "cls": 0,
+    "lcp": 212,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "after",
+    "w": 820,
+    "run": 1,
+    "cls": 0,
+    "lcp": 188,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "after",
+    "w": 820,
+    "run": 2,
+    "cls": 0,
+    "lcp": 208,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "after",
+    "w": 390,
+    "run": 0,
+    "cls": 0,
+    "lcp": 200,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "after",
+    "w": 390,
+    "run": 1,
+    "cls": 0,
+    "lcp": 188,
+    "element": "hero-card hero-card--photo"
+  },
+  {
+    "mode": "after",
+    "w": 390,
+    "run": 2,
+    "cls": 0,
+    "lcp": 200,
+    "element": "hero-card hero-card--photo"
+  }
+]

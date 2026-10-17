@@ -1,0 +1,179 @@
+/* Écrans illustratifs : sources docs/handoff/app-screens. Servi hors build:css. */
+:root {
+  --ym-accent:#D7FF00;
+  --ym-accent-gradient-end:#C5F000;
+  --ym-dark-bg:#1A1A1A;
+  --ym-dark-surface:#000000;
+  --ym-dark-surface-elevated:#2A2A2A;
+  --ym-dark-card:#111111;
+  --ym-light-bg:#FFFFFF;
+  --ym-light-gray:#F3F4F6;
+  --ym-surface-muted:#E5E7EB;
+  --ym-medium-gray:#99A1AF;
+  --ym-dark-gray:#364153;
+  --ym-text-primary:#101828;
+  --ym-text-white:#FFFFFF;
+  --ym-subtitle-gray:#666666;
+  --ym-placeholder:#999999;
+  --ym-divider:#E0E0E0;
+  --ym-progress-empty:#F0F0F0;
+  --ym-onboarding-bg-end:#F5FFE6;
+  --ym-onboarding-border:#EEF1DD;
+  --ym-glass-light:rgba(255,255,255,.68);
+  --ym-glass-light-border:rgba(255,255,255,.90);
+  --ym-dark-overlay-low:rgba(255,255,255,.12);
+  --ym-teal:#36B7AA;
+  --ym-success:#4CAF50;
+  --ym-error:#EF4444;
+  --ym-pending:#FF9800;
+  --ym-fs-avatar-label:10px;
+  --ym-fs-nav-label:10px;
+  --ym-fs-caption:12px;
+  --ym-fs-body:14px;
+  --ym-fs-message-body:15px;
+  --ym-fs-button:16px;
+  --ym-fs-body-large:17px;
+  --ym-fs-subtitle:18px;
+  --ym-fs-bottom-bar-value:20px;
+  --ym-fs-title:22px;
+  --ym-fs-display:28px;
+  --ym-fs-display-large:34px;
+  --ym-font-heading:'Roboto',system-ui,-apple-system,sans-serif;
+  --ym-font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --ym-radius-pill:100px;
+  --ym-radius-input:16px;
+  --ym-radius-card:24px;
+  --ym-disc-gray-start:#5F5F5F;
+  --ym-disc-gray-end:#545454;
+  --ym-disc-white-30:rgba(255,255,255,.3);
+  --ym-disc-white-90:rgba(255,255,255,.9);
+  --ym-disc-white-20:rgba(255,255,255,.2);
+  --ym-disc-white-70:rgba(255,255,255,.7);
+  --ym-disc-white-10:rgba(255,255,255,.1);
+  --ym-disc-shadow-5:rgba(0,0,0,.05);
+  --ym-disc-shadow-10:rgba(0,0,0,.10);
+  --ym-disc-nav-fill:rgba(0,0,0,.82);
+  --ym-disc-nav-bubble:rgba(255,255,255,.16);
+  --ym-disc-nav-shadow:rgba(0,0,0,.22);
+  --ym-frame-surface:#0B0B0C;
+  --ym-frame-shadow:0 0 0 1.5px #5F5B57,0 0 0 4px #BDB7AF,0 0 0 5px #7A756F,inset 0 0 0 1.5px #2C2C2E;
+  --ym-font-status:-apple-system,'SF Pro Text','Inter',sans-serif;
+  --ym-radius-64:64px;
+  --ym-radius-52:52px;
+  --ym-radius-20:20px;
+  --ym-radius-3:3px;
+  --ym-radius-50percent:50%;
+  --ym-radius-17:17px;
+  --ym-radius-11:11px;
+  --ym-shadow-1:0 4px 18px var(--ym-disc-shadow-10);
+  --ym-shadow-2:0 6px 18px var(--ym-disc-nav-shadow);
+}
+
+/* Tokens de l'app Flutter Yamatch, copiés depuis
+   yamatch/lib/shared/theme/app_theme.dart (AppColors / AppFontSizes).
+   SOURCE DE VÉRITÉ = le fichier Dart. Ne pas inventer de couleur :
+   si une valeur manque ici, l'ajouter en citant la constante Dart. */
+@font-face{font-family:'Inter';src:url('fonts/Inter-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Roboto';src:url('fonts/Roboto-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+
+.ym-app{
+  line-height:normal;
+  text-align:left;
+  font-family:var(--ym-font-body);
+  color:var(--ym-text-primary);
+  -webkit-font-smoothing:antialiased;
+}
+.ym-app *,.ym-app *::before,.ym-app *::after,.ym-phone{box-sizing:border-box}
+/* Isoler les paragraphes du rythme éditorial de la page. */
+.ym-app p{margin:0;line-height:normal;color:inherit}
+
+/* Le slot réserve les dimensions réelles du cadre 414 × 868 après mise à l’échelle. */
+.ym-phone-slot{--ym-phone-scale:1;width:calc(414px * var(--ym-phone-scale));height:calc(868px * var(--ym-phone-scale));position:relative;flex:none}
+.ym-phone-slot>.ym-phone{position:absolute;top:0;left:0;transform:scale(var(--ym-phone-scale));transform-origin:top left}
+.ym-phone{width:414px;height:868px;padding:12px;border-radius:var(--ym-radius-64);background:var(--ym-frame-surface);
+  /* liseré titane extérieur + bord intérieur */
+  box-shadow:var(--ym-frame-shadow)}
+.ym-screen{position:relative;width:390px;height:844px;border-radius:var(--ym-radius-52);overflow:hidden;background:var(--ym-light-bg)}
+/* Status bar iOS (54 pt) superposée au contenu, comme sur l'appareil */
+.ym-statusbar{position:absolute;z-index:50;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:6px 34px 0 52px;color:var(--ym-dark-surface);pointer-events:none}
+.ym-statusbar--light{color:var(--ym-text-white)}
+.ym-statusbar__time{font-family:var(--ym-font-status);font-size:var(--ym-fs-body-large);font-weight:600;letter-spacing:-.01em}
+.ym-statusbar__icons{display:flex;align-items:center;gap:6px}
+.ym-island{position:absolute;z-index:51;top:11px;left:50%;width:124px;height:36px;margin-left:-62px;border-radius:var(--ym-radius-20);background:var(--ym-dark-surface)}
+/* Indicateur d'accueil iOS */
+.ym-home-indicator{position:absolute;z-index:50;bottom:8px;left:50%;width:134px;height:5px;margin-left:-67px;border-radius:var(--ym-radius-3);background:var(--ym-dark-surface)}
+.ym-home-indicator--light{background:var(--ym-text-white)}
+
+/* Écran « discovery » — Accueil « Prochains tournois ».
+   Style : lib/features/home/screens/home_screen.dart, MainTabHeader,
+   TournamentCard (lib/shared/widgets/tournament_card.dart),
+   tournamentCardBackground, OrganizerCtaCard (legacy), BottomNavBar.
+   Contenu : capture website/assets/screens/screen_1.png. */
+.ym-screen--discovery{
+  background:linear-gradient(180deg,var(--ym-light-bg) 0%,var(--ym-onboarding-bg-end) 100%);
+}
+.ym-screen--discovery svg{display:block;fill:currentColor}
+
+/* ---- MainTabHeader ---- */
+.ym-screen--discovery .ym-disc-header{position:absolute;left:18px;right:18px;top:90px;height:44px;display:flex;align-items:center;justify-content:space-between}
+.ym-screen--discovery .ym-disc-title{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-title);letter-spacing:.1px;color:var(--ym-text-primary)}
+.ym-screen--discovery .ym-disc-bell{width:25px;height:25px;margin-right:4px;color:var(--ym-text-primary)}
+
+/* ---- Barre de filtres ---- */
+.ym-screen--discovery .ym-disc-filters{position:absolute;left:18px;right:20px;top:146px;height:56px;padding:7px 7px 7px 8px;display:flex;align-items:center;border-radius:var(--ym-radius-pill);background:var(--ym-glass-light);border:1px solid var(--ym-glass-light-border);box-shadow:var(--ym-shadow-1)}
+.ym-screen--discovery .ym-disc-sport{height:40px;width:119px;padding:0 15px;display:flex;align-items:center;justify-content:space-between;border-radius:var(--ym-radius-pill);background:linear-gradient(90deg,var(--ym-accent),var(--ym-accent-gradient-end));font-family:var(--ym-font-body);font-weight:600;font-size:var(--ym-fs-body);color:var(--ym-dark-bg)}
+.ym-screen--discovery .ym-disc-sport svg{width:16px;height:16px;margin-right:-2px}
+.ym-screen--discovery .ym-disc-location{flex:1;display:flex;align-items:center;gap:7px;padding-left:18px;font-family:var(--ym-font-body);font-weight:500;font-size:var(--ym-fs-body);color:var(--ym-text-primary)}
+.ym-screen--discovery .ym-disc-location svg{width:16px;height:16px;color:var(--ym-medium-gray)}
+.ym-screen--discovery .ym-disc-toggle{width:85px;height:42px;padding:0 3px;display:flex;align-items:center;justify-content:space-between;border-radius:var(--ym-radius-pill);background:var(--ym-dark-surface)}
+.ym-screen--discovery .ym-disc-toggle__seg{width:36px;height:36px;margin:0 2px;border-radius:var(--ym-radius-50percent);display:flex;align-items:center;justify-content:center;color:var(--ym-medium-gray)}
+.ym-screen--discovery .ym-disc-toggle__seg--on{background:var(--ym-light-bg);color:var(--ym-text-primary)}
+.ym-screen--discovery .ym-disc-toggle__seg svg{width:20px;height:20px}
+.ym-screen--discovery .ym-disc-toggle__seg:not(.ym-disc-toggle__seg--on) svg{width:21px;height:21px;color:var(--ym-dark-gray)}
+
+/* ---- Card ticket ---- */
+.ym-screen--discovery .ym-disc-ticket{position:absolute;left:18px;width:353px;top:218px;height:281px;border-radius:var(--ym-radius-card);overflow:hidden;background:var(--ym-dark-bg);
+  /* Encoches latérales (notchRadius 8) retranchées du contour */
+  -webkit-mask:radial-gradient(circle at 0 183px,transparent 8px,var(--ym-dark-surface) 8.5px) left/51% 100% no-repeat,radial-gradient(circle at 100% 183px,transparent 8px,var(--ym-dark-surface) 8.5px) right/51% 100% no-repeat;
+  mask:radial-gradient(circle at 0 183px,transparent 8px,var(--ym-dark-surface) 8.5px) left/51% 100% no-repeat,radial-gradient(circle at 100% 183px,transparent 8px,var(--ym-dark-surface) 8.5px) right/51% 100% no-repeat}
+.ym-screen--discovery .ym-disc-ticket__head{position:relative;height:175px;background:radial-gradient(circle 263px at 50% 50%,var(--ym-dark-surface) 0%,var(--ym-teal) 100%)}
+.ym-screen--discovery .ym-disc-date{position:absolute;left:20px;top:27px;width:69px;height:69px;border:2px solid var(--ym-disc-white-30);border-radius:var(--ym-radius-17);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-date__day{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-display);line-height:1}
+.ym-screen--discovery .ym-disc-date__month{margin-top:3px;font-family:var(--ym-font-body);font-size:var(--ym-fs-body);line-height:1;color:var(--ym-disc-white-90)}
+.ym-screen--discovery .ym-disc-info{position:absolute;left:105px;top:20px;right:30px;color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-info__name{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-title);line-height:30px;width:150px}
+.ym-screen--discovery .ym-disc-info__place{margin-top:3px;font-family:var(--ym-font-body);font-size:var(--ym-fs-body);line-height:20px;color:var(--ym-disc-white-90)}
+.ym-screen--discovery .ym-disc-sep{margin:0 11px}
+.ym-screen--discovery .ym-disc-chev{position:absolute;right:12px;top:11px;width:21px;height:21px;border-radius:var(--ym-radius-50percent);background:var(--ym-dark-overlay-low);display:flex;align-items:center;justify-content:center;color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-chev svg{width:16px;height:16px}
+.ym-screen--discovery .ym-disc-progress-row{position:absolute;left:20px;right:20px;top:119px;display:flex;justify-content:space-between;font-family:var(--ym-font-body);font-size:var(--ym-fs-body);line-height:20px;color:var(--ym-text-white);letter-spacing:.2px}
+.ym-screen--discovery .ym-disc-remaining{display:flex;align-items:center;font-weight:700;color:var(--ym-accent)}
+.ym-screen--discovery .ym-disc-remaining i{width:8.5px;height:8.5px;margin-right:6.5px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent)}
+.ym-screen--discovery .ym-disc-bar{position:absolute;left:20px;right:20px;top:146px;height:6px;border-radius:var(--ym-radius-pill);background:var(--ym-disc-white-20);overflow:hidden}
+.ym-screen--discovery .ym-disc-bar span{display:block;width:75%;height:100%;border-radius:var(--ym-radius-pill);background:linear-gradient(90deg,var(--ym-text-white) 55%,var(--ym-disc-white-70) 75%,var(--ym-text-white) 92%)}
+.ym-screen--discovery .ym-disc-ticket__tear{height:16px;background:linear-gradient(90deg,var(--ym-disc-white-20) 6px,transparent 6px) 0 50%/10px 1px repeat-x}
+.ym-screen--discovery .ym-disc-ticket__foot{display:flex;align-items:center;gap:12px;padding:15px 20px 0 20px}
+.ym-screen--discovery .ym-disc-expand{flex:none;width:54px;height:54px;border-radius:var(--ym-radius-50percent);background:var(--ym-dark-surface);border:.6px solid var(--ym-disc-white-10);display:flex;align-items:center;justify-content:center;color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-expand svg{width:26px;height:26px}
+.ym-screen--discovery .ym-disc-pay{flex:1;height:58px;border-radius:var(--ym-radius-pill);background:var(--ym-accent);display:flex;align-items:center;justify-content:center;font-family:var(--ym-font-body);font-weight:700;font-size:var(--ym-fs-subtitle);color:var(--ym-text-primary)}
+
+/* ---- Card organisateur ---- */
+.ym-screen--discovery .ym-disc-orga{position:absolute;left:18px;width:353px;top:514px;height:196px;padding:18px;border-radius:var(--ym-radius-card);background:var(--ym-dark-card);color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-orga__row{display:flex;align-items:center;gap:12px}
+.ym-screen--discovery .ym-disc-orga__icon{flex:none;width:39px;height:39px;border-radius:var(--ym-radius-11);background:var(--ym-accent);display:flex;align-items:center;justify-content:center;color:var(--ym-dark-card)}
+.ym-screen--discovery .ym-disc-orga__icon svg{width:24px;height:24px}
+.ym-screen--discovery .ym-disc-orga__title{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-subtitle)}
+.ym-screen--discovery .ym-disc-orga__close{position:absolute;right:14px;top:13px;width:16px;height:16px;color:var(--ym-disc-white-90)}
+.ym-screen--discovery .ym-disc-orga__text{margin:10px 0 0;font-family:var(--ym-font-body);font-size:var(--ym-fs-body);line-height:20px;letter-spacing:.2px}
+.ym-screen--discovery .ym-disc-orga__cta{position:absolute;left:17px;right:18px;top:121px;height:58px;border-radius:var(--ym-radius-pill);background:var(--ym-accent);display:flex;align-items:center;justify-content:center;font-family:var(--ym-font-body);font-weight:700;font-size:var(--ym-fs-subtitle);color:var(--ym-dark-surface)}
+
+/* ---- 2e card tournoi ---- */
+.ym-screen--discovery .ym-disc-ticket--next{top:727px;height:175px;-webkit-mask:none;mask:none}
+.ym-screen--discovery .ym-disc-ticket--next .ym-disc-ticket__head{background:radial-gradient(circle 263px at 50% 50%,var(--ym-disc-gray-start) 0%,var(--ym-disc-gray-end) 100%)}
+
+/* ---- Nav bar glassmorphism ---- */
+.ym-screen--discovery .ym-disc-nav{position:absolute;left:98px;top:757px;width:193px;height:70px;padding:0 8px;display:flex;align-items:center;justify-content:space-between;border-radius:var(--ym-radius-pill);background:var(--ym-disc-nav-fill);border:1px solid var(--ym-dark-overlay-low);box-shadow:var(--ym-shadow-2);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.ym-screen--discovery .ym-disc-nav__item{width:52px;height:52px;border-radius:var(--ym-radius-50percent);background:var(--ym-disc-nav-bubble);display:flex;align-items:center;justify-content:center;color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-nav__item svg{width:24px;height:24px}
+.ym-screen--discovery .ym-disc-nav__item--on{background:var(--ym-light-bg);color:var(--ym-dark-surface)}
+.ym-screen--discovery .ym-disc-ticket--next .ym-disc-info{top:25px}

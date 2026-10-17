@@ -48,6 +48,7 @@
     <link rel="preload" as="image" type="image/webp" href="assets/hero-volley/hero-volley-mixed-mobile.webp" media="(max-width: 767px)" fetchpriority="high">
 
     <link rel="stylesheet" href="styles.min.css">
+    <link rel="stylesheet" href="app-screens.css">
     <!-- qrcode-generator@1.4.4 (Kazuhiko Arase, MIT) — AUTO-HÉBERGÉ dans le repo
          (website/vendor/qrcode.min.js), utilisée par script.js pour générer la matrice
          du QR Code de la widget flottante en bas-droite. UMD browser build qui expose un
@@ -293,12 +294,114 @@
         </div>
         </div><!-- /.hero-copy -->
         <div class="hero-visual">
-            <picture>
-                <source srcset="assets/screens/screen_1.avif" type="image/avif">
-                <source srcset="assets/screens/screen_1.webp" type="image/webp">
-                <img class="hero-phone" src="assets/screens/screen_1.png" alt="Aperçu de l’app Yamatch — accueil de découverte des tournois"
-                     width="1206" height="2450" loading="eager" fetchpriority="high" decoding="async" draggable="false">
-            </picture>
+            <div class="hero-phone" role="img" aria-label="Aperçu de l’app Yamatch — accueil de découverte des tournois">
+                <div class="ym-phone-slot" aria-hidden="true">
+                    <div class="ym-phone">
+<div class="ym-app ym-screen ym-screen--discovery">
+<div class="ym-statusbar" aria-hidden="true">
+  <span class="ym-statusbar__time">09:15</span>
+  <span class="ym-statusbar__icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.1-1.2A10.2 10.2 0 0 0 8 .8 10.2 10.2 0 0 0 .9 3.6L2 4.8a8.6 8.6 0 0 1 6-2.4zm0 3.3c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7 7 0 0 0 8 4.1a7 7 0 0 0-4.8 1.8l1.1 1.2c1-.9 2.3-1.4 3.7-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.2l1.2-1.7A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none" aria-hidden="true" focusable="false"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="currentColor"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="currentColor" opacity=".45"/></svg>
+  </span>
+</div>
+<div class="ym-island" aria-hidden="true"></div>
+
+  <!-- MainTabHeader : titre + cloche -->
+  <div class="ym-disc-header">
+    <span class="ym-disc-title">Prochains tournois</span>
+    <svg class="ym-disc-bell" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
+  </div>
+
+  <!-- Barre de filtres : sport + zone + toggle vue -->
+  <div class="ym-disc-filters">
+    <div class="ym-disc-sport">
+      <span>Volleyball</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+    </div>
+    <div class="ym-disc-location">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <span>Paris</span>
+    </div>
+    <div class="ym-disc-toggle">
+      <span class="ym-disc-toggle__seg ym-disc-toggle__seg--on">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
+      </span>
+      <span class="ym-disc-toggle__seg">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V10h16v11zm0-13H4V5h16v3z"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Card ticket tournoi -->
+  <div class="ym-disc-ticket">
+    <div class="ym-disc-ticket__head">
+      <div class="ym-disc-date"><span class="ym-disc-date__day">17</span><span class="ym-disc-date__month">MAI</span></div>
+      <div class="ym-disc-info">
+        <div class="ym-disc-info__name">Tournoi de la jeunesse</div>
+        <div class="ym-disc-info__place">Milly la forêt<span class="ym-disc-sep">•</span>52 km</div>
+      </div>
+      <span class="ym-disc-chev">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </span>
+      <div class="ym-disc-progress-row">
+        <span>27/36 inscrits</span>
+        <span class="ym-disc-remaining"><i></i>9 équipes restantes</span>
+      </div>
+      <div class="ym-disc-bar"><span></span></div>
+    </div>
+    <div class="ym-disc-ticket__tear"></div>
+    <div class="ym-disc-ticket__foot">
+      <span class="ym-disc-expand">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </span>
+      <span class="ym-disc-pay">Payer<span class="ym-disc-sep">•</span>45€/eq.</span>
+    </div>
+  </div>
+
+  <!-- Card « Envie d'organiser un tournoi ? » -->
+  <div class="ym-disc-orga">
+    <div class="ym-disc-orga__row">
+      <span class="ym-disc-orga__icon">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.23 6c-1.66 0-3.22.66-4.36 1.73C6.54 6.73 5.61 6 4.5 6 3.12 6 2 7.12 2 8.5S3.12 11 4.5 11c.21 0 .41-.03.61-.08-.05.25-.09.51-.1.78-.18 3.68 2.95 6.68 6.68 6.27 2.55-.28 4.68-2.26 5.19-4.77.15-.71.15-1.4.06-2.06-.09-.6.38-1.13.99-1.13H22V6H11.23zM4.5 9c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zm6.5 6c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/><circle cx="11" cy="12" r="2"/></svg>
+      </span>
+      <span class="ym-disc-orga__title">Envie d'organiser un tournoi ?</span>
+    </div>
+    <svg class="ym-disc-orga__close" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+    <p class="ym-disc-orga__text">Créez et gérez vos tournois directement sur Yamatch</p>
+    <span class="ym-disc-orga__cta">Devenir organisateur</span>
+  </div>
+
+  <!-- 2e card tournoi (coupée en bas) -->
+  <div class="ym-disc-ticket ym-disc-ticket--next">
+    <div class="ym-disc-ticket__head">
+      <div class="ym-disc-date"><span class="ym-disc-date__day">27</span><span class="ym-disc-date__month">MAI</span></div>
+      <div class="ym-disc-info">
+        <div class="ym-disc-info__name">Tournoi du printemps</div>
+      </div>
+      <span class="ym-disc-chev">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Nav bar glassmorphism -->
+  <div class="ym-disc-nav">
+    <span class="ym-disc-nav__item ym-disc-nav__item--on">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z"/></svg>
+    </span>
+    <span class="ym-disc-nav__item">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 4.5h13a2.5 2.5 0 0 1 2.5 2.5v2.1a3 3 0 0 0 0 5.8V17a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17v-2.1a3 3 0 0 0 0-5.8V7a2.5 2.5 0 0 1 2.5-2.5z"/></svg>
+    </span>
+    <span class="ym-disc-nav__item">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-1c0-2.66-5.33-4-8-4z"/></svg>
+    </span>
+  </div>
+</div>
+                    </div>
+                </div>
+            </div>
             <div class="hero-floats" aria-hidden="true">
                 <div class="hero-float hero-float--ticket">
                     <div class="hero-ticket-head">

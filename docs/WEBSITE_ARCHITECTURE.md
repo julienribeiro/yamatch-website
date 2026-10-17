@@ -49,7 +49,7 @@ Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production buil
 
 `carousel.js` is loaded first in HTML (`<script src="carousel.js" defer>` then `<script src="script.js" defer>`). Sequential `defer` tags guarantee execution order while keeping both scripts non-blocking.
 
-HTML pages reference **`styles.min.css`** (the generated shared output), not `styles.css`. `/organisateur/` additionally loads its local `hero-organisateur.css`, then `gestion-organisateur.css`, after the shared stylesheet.
+HTML pages reference **`styles.min.css`** (the generated shared output), not `styles.css`. The homepage additionally loads `app-screens.css` directly after that shared stylesheet for its coded discovery illustration; it is outside the CSS minification build. `/organisateur/` additionally loads its local `hero-organisateur.css`, then `gestion-organisateur.css`, after the shared stylesheet.
 
 `website/vendor/qrcode.min.js` (20,768 bytes) is a vendored third-party library — **not** one of the four source files above and not authored in-repo. It ships `qrcode-generator@1.4.4` (Kazuhiko Arase, MIT license), byte-identical to the former jsdelivr CDN build. Loaded via `<script src="vendor/qrcode.min.js" defer>` in `index.html`, **before** `script.js`, which calls the global `window.qrcode` factory to render the homepage QR widget. See SEO → Third-party scripts below for the CDN → self-host migration history.
 
@@ -287,7 +287,9 @@ Decorative row rendered above the legal links. Flex row (`justify-content: cente
         │   ├── p.hero-lede (desktop/tablet)
         │   └── .hero-buttons > a.btn-glass[data-cta] × 2
         └── .hero-visual
-            ├── picture > img.hero-phone (screen_1, 1206 × 2450)
+            ├── .hero-phone[role="img"][aria-label] (coded discovery illustration)
+            │   └── .ym-phone-slot[aria-hidden="true"] > .ym-phone
+            │       └── .ym-app.ym-screen.ym-screen--discovery
             └── .hero-floats[aria-hidden="true"]
                 ├── .hero-float.hero-float--ticket
                 ├── .hero-float.hero-float--score
@@ -298,7 +300,7 @@ Decorative row rendered above the legal links. Flex row (`justify-content: cente
 
 **Layout.** CSS §7.7 scopes content to `.hero-card--photo` and navigation to `.hero-header`; shared 404 and organiser rules remain independent. Desktop uses a 1.15fr / .85fr grid, left-aligned text and a phone cropped by the rounded card. At ≤1023 px it stacks text then a 520 px visual; organiser navigation stays visible. At ≤767 px text centres, the lede and nav text links hide, stores share equal widths at 50 px height, and only the score card remains above a 230 px phone. The separate mobile inline/block tokens remain; V2 reserves header space above the card rather than applying the older equal top/bottom card margins.
 
-**Images.** Existing mutually exclusive high-priority WebP photo preloads remain: `hero-volley-mixed.webp` (1672 × 941) for ≥768 px and `hero-volley-mixed-mobile.webp` (1122 × 1402) for ≤767 px. The photo modifier disables the old `clip-path`; card overflow clips the background and phone. Side/bottom gradients improve desktop readability; a vertical gradient serves tablet/mobile. [HERO_IMAGE_PROMPT.md](HERO_IMAGE_PROMPT.md) records photo provenance. The phone uses existing `assets/screens/screen_1.avif|webp|png`, intrinsic dimensions, French alt, eager/high-priority loading and async decoding. Cards are decorative illustration, not live tournament data.
+**Images.** Existing mutually exclusive high-priority WebP photo preloads remain: `hero-volley-mixed.webp` (1672 × 941) for ≥768 px and `hero-volley-mixed-mobile.webp` (1122 × 1402) for ≤767 px. The photo modifier disables the old `clip-path`; card overflow clips the background and phone. Side/bottom gradients improve desktop readability; a vertical gradient serves tablet/mobile. [HERO_IMAGE_PROMPT.md](HERO_IMAGE_PROMPT.md) records photo provenance. The phone now embeds the exact `docs/handoff/app-screens/screens/discovery.html` fragment instead of a raster capture. Its `.hero-phone` wrapper exposes one French-labelled `role="img"`; the `.ym-phone-slot` hides the entire decorative frame and screen from assistive technology. The slot reserves scaled frame dimensions, so no phone-image preload or intrinsic image attributes are needed. `app-screens.css` loads after `styles.min.css`; the photo preloads remain. Source SVGs carry decorative accessibility attributes before the fragment is copied into the homepage. Cards are decorative illustration, not live tournament data.
 
 **Scroll contract.** A guarded `script.js` block toggles `.hero-header.is-condensed` for `window.scrollY > 30`, performs an initial update, and handles passive `scroll` plus `pageshow` with one pending animation frame. The logo uses native `#top` navigation. `body.org-page` still exits the homepage IIFE before these controllers. Header styling changes in place; it neither centres nor individually shrinks the logo.
 
@@ -642,12 +644,18 @@ All new colors, shadows, type sizes and motion tokens are declared in `:root`; r
 | `--hero-nav-size`, `--hero-score-size` | .9375rem / 2.125rem; .8125rem / 1.5rem mobile |
 | `--hero-font-display` | Frick 0.3 with shared heading fallback |
 | `--hero-copy-pad`, `--hero-copy-gap` | `clamp(24px, 5vw, 80px)` / 28 px; 20 px / 18 px mobile |
-| `--hero-phone-width` | 360 px; 230 px mobile |
+| `--hero-phone-width`, `--hero-phone-scale` | 360 px / .8696 desktop and tablet; 230 px / .5556 mobile |
 | `--hero-gutter` | 24 px; `--mobile-hero-card-margin` mobile |
 | `--hero-header-top`, `--hero-header-space` | 16 px / 84 px; 8 px / 80 px mobile |
 | `--hero-card-radius`, `--hero-float-radius`, `--hero-date-radius` | `clamp(24px,3vw,40px)` / 20 px / 12 px; card 28 px and floats 16 px mobile |
 | `--hero-header-bg`, `--hero-header-border`, `--hero-header-fallback` | White 72%, dark border 6%; white 96% without backdrop-filter |
 | `--hero-entry`, `--hero-phone-entry`, `--hero-header-motion` | 480 / 600 / 300 ms, `cubic-bezier(.2,.8,.2,1)` |
+
+### Coded illustrative app screen — `website/app-screens.css`
+
+The standalone stylesheet is served directly, outside `build:css`. It combines app tokens (`--ym-*`), the phone frame and discovery screen styling from `docs/handoff/app-screens/`. Its Inter/Roboto font paths point to the existing local `fonts/` files. Rules use the `ym-` namespace; paragraph/reset rules are scoped to `.ym-app` so the page typography stays independent.
+
+The frame is 414 × 868 px with a 390 × 844 px screen. `.ym-phone-slot` reserves the scaled frame dimensions before fonts load; the inner `.ym-phone` scales from its top-left origin. Hero CSS maps `--ym-phone-scale` to `--hero-phone-scale` (.8696 desktop/tablet, .5556 mobile), producing nominal widths of 360 and 230 px. Device status chrome uses local stacking levels 50/51 within the screen, independent of the fixed page header. Tokens and source fragments remain in the handoff; corrections to discovery markup must first update the source fragment and then be copied into the homepage.
 
 ### Carousel — runtime-critical
 ```css
@@ -868,7 +876,7 @@ The following shared/legacy rules remain available for other consumers. Particip
 
 ### Participant hero V2 — founder decisions (2026-10-17)
 
-Implemented split hero with embedded screen_1 and decorative cards, unchanged H1, no subtitle/reassurance, and a single fixed header pill after 30 px. Removed homepage carousel lift, active scaling and photo shrink writers; retained independent carousel and organiser controllers. [Implementation notes](handoff/hero-participant-v2/implementation/README.md) record accepted differences from the original handoff. Earlier decisions below are historical where superseded by V2.
+Implemented split hero with a coded discovery screen and decorative cards, unchanged H1, no subtitle/reassurance, and a single fixed header pill after 30 px. Removed homepage carousel lift, active scaling and photo shrink writers; retained independent carousel and organiser controllers. [Implementation notes](handoff/hero-participant-v2/implementation/README.md) record accepted differences from the original handoff. Earlier decisions below are historical where superseded by V2.
 
 ### `--mobile-hero-card-margin` token + wordmark vertical centering (2026-05-10)
 The four repeated inline `clamp(20px, 5vw, 40px)` literals in `.hero-card`'s mobile override block were factored into a single CSS custom property `--mobile-hero-card-margin`. A new `.wordmark` mobile rule `top: calc(var(--mobile-hero-card-margin) / 2)` places the wordmark at the visual midpoint between viewport top and lime card top, achieving equal optical spacing. One source of truth for the margin value; the wordmark tracks it automatically when the margin changes.
