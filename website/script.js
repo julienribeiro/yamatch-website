@@ -48,17 +48,6 @@
         }
     }
 
-    // The hero owns its phone. The carousel stays flat and is navigable immediately,
-    // including before any page scroll and with reduced motion. carousel.js owns snap.
-    {
-        const carousel = document.querySelector('.hero-carousel-embla');
-        if (carousel) {
-            carousel.style.setProperty('--scroll', '0px');
-            carousel.style.setProperty('--active-scale', '1');
-            carousel.dataset.horizontalReady = 'true';
-        }
-    }
-
     // Progressive, one-shot card entrances. CSS owns distance and stagger timing.
     {
         const section = document.querySelector('.how-quest');

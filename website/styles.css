@@ -178,14 +178,16 @@
     --hero-glass-border: rgba(255,255,255,.22);
     --hero-eyebrow-halo: 0 0 0 4px rgba(215,255,0,.22);
     --hero-phone-shadow: drop-shadow(0 40px 60px rgba(0,0,0,.55));
-    --hero-store-height: 56px;
+    --hero-store-height: 50px;
     --hero-title-size: clamp(2.875rem, 6.4vw, 5.75rem);
     --hero-lede-size: 1.0625rem;
     --hero-small-size: .875rem;
     --hero-store-eyebrow-size: .6875rem;
-    --hero-store-label-size: 1.0625rem;
+    --hero-store-label-size: 1rem;
     --hero-copy-pad: clamp(24px, 5vw, 80px);
     --hero-copy-gap: 28px;
+    /* Positive skew starts at the first line; supporting copy shares that edge. */
+    --hero-copy-text-inset: 0px;
     --hero-phone-width: 360px;
     --hero-phone-scale: .8696;
     /* Participant journey V2. */
@@ -214,7 +216,9 @@
     --how-reveal-easing: cubic-bezier(.2,.8,.2,1);
     --hero-entry: 480ms cubic-bezier(.2,.8,.2,1);
     --hero-phone-entry: 600ms cubic-bezier(.2,.8,.2,1);
-    --hero-header-bg: rgba(255,255,255,.72);
+    --hero-header-bg: rgba(255,255,255,.64);
+    --hero-header-backdrop: blur(32px) saturate(160%);
+    --hero-logo-height: 18.4px;
     --hero-header-border: rgba(16,24,40,.06);
     --hero-header-fallback: rgba(255,255,255,.96);
     --hero-header-motion: 300ms cubic-bezier(.2,.8,.2,1);
@@ -992,8 +996,8 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
 .hero-header.is-condensed {
     background: var(--hero-header-bg);
     border-color: var(--hero-header-border);
-    backdrop-filter: blur(14px) saturate(140%);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: var(--hero-header-backdrop);
+    backdrop-filter: var(--hero-header-backdrop);
 }
 .hero-header .wordmark {
     position: static;
@@ -1004,7 +1008,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     padding: 0;
     flex: none;
 }
-.hero-header .wordmark svg { width: 148px; height: auto; }
+.hero-header .wordmark svg { width: auto; height: var(--hero-logo-height); }
 .hero-nav { display: flex; align-items: center; gap: 24px; }
 .hero-nav-link, .hero-nav-cta {
     min-width: 44px;
@@ -1065,7 +1069,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     line-height: .92;
     text-align: left;
 }
-.hero-card--photo .hero-title-slant { transform-origin: left bottom; }
+.hero-card--photo .hero-title-slant { transform: skewX(12deg); transform-origin: left top; }
 .hero-card--photo .br-mobile-only { display: inline; }
 .hero-card--photo .hero-title-accent { color: var(--color-accent); }
 .hero-card--photo .hero-eyebrow {
@@ -1098,14 +1102,19 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     max-width: 46ch;
     font-size: var(--hero-lede-size);
     line-height: 1.55;
-    color: var(--hero-ink-muted);
+    color: var(--hero-photo-ink);
     animation: titleEntrance var(--hero-entry) 320ms backwards;
 }
+.hero-card--photo :is(.hero-eyebrow, .hero-lede) {
+    margin-inline-start: var(--hero-copy-text-inset);
+    max-width: calc(100% - var(--hero-copy-text-inset));
+}
+.hero-card--photo .hero-lede { max-width: min(46ch, calc(100% - var(--hero-copy-text-inset))); }
 .hero-card--photo .hero-buttons { justify-content: flex-start; gap: 12px; }
 .hero-card--photo .btn-glass {
     min-height: var(--hero-store-height);
-    gap: 12px;
-    padding: 0 22px 0 18px;
+    gap: 10px;
+    padding: 0 20px 0 16px;
     background: var(--hero-glass-bg);
     box-shadow: none;
     transition: translate var(--transition), background-color var(--transition);
@@ -1121,7 +1130,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     border-color: var(--color-accent);
     color: var(--color-text-black);
 }
-.hero-card--photo .btn-glass svg { width: 24px; height: 24px; }
+.hero-card--photo .btn-glass svg { width: 22px; height: 22px; }
 .hero-card--photo .glass-eyebrow {
     display: block;
     font-size: var(--hero-store-eyebrow-size);
@@ -1228,15 +1237,18 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     :root {
         --hero-title-size: clamp(2rem, 10.8vw, 2.875rem);
         --hero-small-size: .75rem;
-        --hero-store-height: 50px;
+        --hero-store-height: 46px;
         --hero-store-eyebrow-size: .625rem;
         --hero-store-label-size: clamp(.75rem, 3.85vw, .9375rem);
         --hero-copy-pad: 20px;
         --hero-copy-gap: 18px;
+        /* The mobile title remains centered inside its wider copy column. */
+        --hero-copy-text-inset: calc(var(--hero-title-size) * .3);
         --hero-phone-width: 230px;
         --hero-phone-scale: .5556;
         --hero-gutter: var(--mobile-hero-card-margin);
         --hero-header-top: 8px;
+        --hero-logo-height: 12.88px;
         --hero-header-space: 80px;
         --hero-card-radius: 28px;
         --hero-nav-size: .8125rem;
@@ -1246,7 +1258,6 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     .hero:has(.hero-header) { padding: var(--hero-header-space) 0 var(--mobile-hero-card-margin-block); }
     .hero-card.hero-card--photo { margin-block: 0; min-height: calc(100svh - var(--hero-header-space) - var(--mobile-hero-card-margin-block)); }
     .hero-header { padding-inline: 8px; gap: 8px; }
-    .hero-header .wordmark svg { width: 100px; }
     .hero-nav { gap: 0; }
     .hero-nav-link, .hero-nav-cta-long { display: none; }
     .hero-nav-cta-short { display: inline; }
@@ -1260,9 +1271,8 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
         text-align: center;
     }
     .hero-card--photo .hero-title { text-align: center; }
-    .hero-card--photo .hero-title-slant { transform-origin: center; }
     .hero-card--photo .hero-title-accent { display: block; }
-    .hero-card--photo .hero-eyebrow { gap: 8px; padding: 6px 12px 6px 9px; letter-spacing: 0; }
+    .hero-card--photo .hero-eyebrow { align-self: flex-start; gap: 8px; padding: 6px 12px 6px 9px; letter-spacing: 0; }
     .hero-card--photo .hero-eyebrow-dot { width: 7px; height: 7px; box-shadow: none; }
     .hero-card--photo .hero-lede { display: none; }
     .hero-card--photo .hero-buttons { width: 100%; gap: 8px; }

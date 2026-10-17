@@ -54,13 +54,12 @@
          du QR Code de la widget flottante en bas-droite. UMD browser build qui expose un
          global `window.qrcode` (factory function). Defer pour ne pas bloquer le rendu
          initial ET pour préserver l'ordre d'exécution (ce script doit rester AVANT
-         carousel.js / script.js). NB: passé du CDN jsdelivr au self-host — même origine,
+         script.js). NB: passé du CDN jsdelivr au self-host — même origine,
          donc plus besoin de `integrity`/`crossorigin`/`preconnect`. Motivation : indépendance
          CDN (Firefox protection anti-pistage stricte ou un bloqueur peut bloquer
          cdn.jsdelivr.net et casser le widget), plus de risque de rupture SRI. Le fichier
          local est byte-identique au build CDN (hash SRI vérifié avant commit). -->
     <script src="vendor/qrcode.min.js" defer></script>
-    <script src="carousel.js" defer></script>
     <script src="script.js" defer></script>
 
     <!-- JSON-LD : Organization (knowledge panel + sitelinks) -->
@@ -268,7 +267,7 @@
         <div class="hero-card hero-card--photo">
         <div class="hero-card-inner hero-card-inner--split">
         <div class="hero-copy">
-        <p class="hero-eyebrow"><span class="hero-eyebrow-dot" aria-hidden="true"></span>Volleyball · d’autres sports arrivent</p>
+        <p class="hero-eyebrow"><span class="hero-eyebrow-dot" aria-hidden="true"></span>Volleyball</p>
         <!-- NOTE COPYWRITING : H1 baseline sport-agnostique (revert 2026-05-12 du LOT 1 audit SEO). Règle produit : la baseline/slogan reste agnostique pour s'adapter à n'importe quel sport futur ; le positionnement volley vit dans <title>/meta description/JSON-LD/body copy. Sous-titre retiré à la demande du founder pour le hero V2. -->
         <h1 class="hero-title" id="heroTitle"><span class="hero-title-slant">Ton prochain<br class="br-mobile-only"> tournoi <span class="hero-title-accent">t’attend</span></span></h1>
         <p class="hero-lede">Trouve un tournoi près de chez toi, réserve ta place en quelques secondes et suis tes matchs en direct le jour J.</p>
@@ -298,6 +297,7 @@
                 <div class="ym-phone-slot" aria-hidden="true">
                     <div class="ym-phone">
 <div class="ym-app ym-screen ym-screen--discovery">
+<div class="ym-disc-viewport">
 <div class="ym-statusbar" aria-hidden="true">
   <span class="ym-statusbar__time">09:15</span>
   <span class="ym-statusbar__icons">
@@ -331,32 +331,6 @@
       <span class="ym-disc-toggle__seg">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V10h16v11zm0-13H4V5h16v3z"/></svg>
       </span>
-    </div>
-  </div>
-
-  <!-- Card ticket tournoi -->
-  <div class="ym-disc-ticket">
-    <div class="ym-disc-ticket__head">
-      <div class="ym-disc-date"><span class="ym-disc-date__day">17</span><span class="ym-disc-date__month">MAI</span></div>
-      <div class="ym-disc-info">
-        <div class="ym-disc-info__name">Tournoi de la jeunesse</div>
-        <div class="ym-disc-info__place">Milly la forêt<span class="ym-disc-sep">•</span>52 km</div>
-      </div>
-      <span class="ym-disc-chev">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-      </span>
-      <div class="ym-disc-progress-row">
-        <span>27/36 inscrits</span>
-        <span class="ym-disc-remaining"><i></i>9 équipes restantes</span>
-      </div>
-      <div class="ym-disc-bar"><span></span></div>
-    </div>
-    <div class="ym-disc-ticket__tear"></div>
-    <div class="ym-disc-ticket__foot">
-      <span class="ym-disc-expand">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-      </span>
-      <span class="ym-disc-pay">Payer<span class="ym-disc-sep">•</span>45€/eq.</span>
     </div>
   </div>
 
@@ -399,126 +373,49 @@
     </span>
   </div>
 </div>
+<div class="ym-disc-ticket-relief">
+  <!-- Card ticket tournoi -->
+  <div class="ym-disc-ticket">
+    <div class="ym-disc-ticket__head">
+      <div class="ym-disc-date"><span class="ym-disc-date__day">17</span><span class="ym-disc-date__month">MAI</span></div>
+      <div class="ym-disc-info">
+        <div class="ym-disc-info__name">Tournoi de la jeunesse</div>
+        <div class="ym-disc-info__place">Milly la forêt<span class="ym-disc-sep">•</span>52 km</div>
+      </div>
+      <span class="ym-disc-chev">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </span>
+      <div class="ym-disc-progress-row">
+        <span>27/36 inscrits</span>
+        <span class="ym-disc-remaining"><i></i>9 équipes restantes</span>
+      </div>
+      <div class="ym-disc-bar"><span></span></div>
+    </div>
+    <div class="ym-disc-ticket__tear"></div>
+    <div class="ym-disc-ticket__foot">
+      <span class="ym-disc-expand">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </span>
+      <span class="ym-disc-pay">Payer<span class="ym-disc-sep">•</span>45€/eq.</span>
+    </div>
+  </div>
+
+</div>
+</div>
                     </div>
                 </div>
             </div>
             <div class="hero-floats" aria-hidden="true">
-                <div class="hero-float hero-float--ticket">
-                    <div class="hero-ticket-head">
-                        <div class="hero-ticket-date"><span>17</span><span>MAI</span></div>
-                        <div class="hero-ticket-info">
-                            <strong>Tournoi de la jeunesse</strong>
-                            <p>Milly-la-Forêt · 52&nbsp;km</p>
-                        </div>
-                    </div>
-                    <div class="hero-ticket-counts"><span>27/36 inscrits</span><span class="hero-ticket-remaining">9 équipes restantes</span></div>
-                    <div class="hero-ticket-progress"><span></span></div>
-                </div>
                 <div class="hero-float hero-float--score">
                     <span class="hero-score-status"><span class="hero-score-dot"></span>En cours</span>
                     <p class="hero-score-label">Match 3 · Terrain 2</p>
                     <p class="hero-score-value">21 – 18</p>
-                </div>
-                <div class="hero-float hero-float--badge">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3"/></svg>
-                    Ton équipe passe en phase finale
                 </div>
             </div>
         </div><!-- /.hero-visual -->
         </div><!-- /.hero-card-inner -->
         </div><!-- /.hero-card -->
 
-    </section>
-
-    <!-- === Carrousel d'écrans : cinq slides sous le hero V2, sans remontée.
-         carousel.js gère les gestes horizontaux et le centrage par transform.
-         La slide screen_2 (index 1) est active au chargement. === -->
-    <section class="screens-rail" aria-label="Aperçu de l'app Yamatch">
-        <div class="hero-carousel-embla">
-            <div class="hero-carousel-embla--container">
-                <article class="screen-card screen-card--lime hero-carousel-embla--slide">
-                    <div class="screen-card__phone">
-                        <picture>
-                            <source srcset="assets/screens/screen_1.avif" type="image/avif">
-                            <source srcset="assets/screens/screen_1.webp" type="image/webp">
-                            <img class="phone-image" src="assets/screens/screen_1.png" alt="Aperçu de l'app Yamatch — accueil de découverte des tournois"
-                                 width="1206" height="2450"
-                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
-                        </picture>
-                    </div>
-                    <p class="screen-card__caption">
-                        <span class="screen-card__caption-primary">Tous tes tournois,</span>
-                        <span class="screen-card__caption-secondary">une seule app</span>
-                    </p>
-                </article>
-
-                <!-- Slide active initiale : screen_2 (filtres lieu/niveau/format).
-                     Le modificateur d'entrée reste fixe lorsque .active change de slide. -->
-                <article class="screen-card screen-card--white screen-card--arrival hero-carousel-embla--slide active">
-                    <div class="screen-card__phone">
-                        <picture>
-                            <source srcset="assets/screens/screen_2.avif" type="image/avif">
-                            <source srcset="assets/screens/screen_2.webp" type="image/webp">
-                            <img class="phone-image" src="assets/screens/screen_2.png" alt="Yamatch — filtres lieu, niveau et format de tournoi"
-                                 width="1206" height="2450"
-                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
-                        </picture>
-                    </div>
-                    <p class="screen-card__caption">
-                        <span class="screen-card__caption-primary">Lieu, niveau, format…</span>
-                        <span class="screen-card__caption-secondary">— tout y est</span>
-                    </p>
-                </article>
-
-                <article class="screen-card screen-card--lime hero-carousel-embla--slide">
-                    <div class="screen-card__phone">
-                        <picture>
-                            <source srcset="assets/screens/screen_3.avif" type="image/avif">
-                            <source srcset="assets/screens/screen_3.webp" type="image/webp">
-                            <img class="phone-image" src="assets/screens/screen_3.png" alt="Yamatch — paiement sécurisé d'un tournoi"
-                                 width="1206" height="2450"
-                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
-                        </picture>
-                    </div>
-                    <p class="screen-card__caption">
-                        <span class="screen-card__caption-primary">Paiement sécurisé,</span>
-                        <span class="screen-card__caption-secondary">victoire non garantie</span>
-                    </p>
-                </article>
-
-                <article class="screen-card screen-card--white hero-carousel-embla--slide">
-                    <div class="screen-card__phone">
-                        <picture>
-                            <source srcset="assets/screens/screen_4.avif" type="image/avif">
-                            <source srcset="assets/screens/screen_4.webp" type="image/webp">
-                            <img class="phone-image" src="assets/screens/screen_4.png" alt="Yamatch — matchs, scores et classement en direct"
-                                 width="1206" height="2450"
-                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
-                        </picture>
-                    </div>
-                    <p class="screen-card__caption">
-                        <span class="screen-card__caption-primary">Matchs, scores, classement</span>
-                        <span class="screen-card__caption-secondary">— en live</span>
-                    </p>
-                </article>
-
-                <article class="screen-card screen-card--lime hero-carousel-embla--slide">
-                    <div class="screen-card__phone">
-                        <picture>
-                            <source srcset="assets/screens/screen_5.avif" type="image/avif">
-                            <source srcset="assets/screens/screen_5.webp" type="image/webp">
-                            <img class="phone-image" src="assets/screens/screen_5.png" alt="Yamatch — progression de la poule à la finale"
-                                 width="1206" height="2450"
-                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
-                        </picture>
-                    </div>
-                    <p class="screen-card__caption">
-                        <span class="screen-card__caption-primary">De la poule à la finale,</span>
-                        <span class="screen-card__caption-secondary">suis ta progression</span>
-                    </p>
-                </article>
-            </div>
-        </div>
     </section>
 
     <!-- === Comment ça marche — design éditorial 3 colonnes statiques ===
@@ -537,9 +434,6 @@
                     <h2 id="howQuestTitle" class="how-quest-title"><span class="how-title-slant">Comment <span class="how-title-accent">ça marche</span></span></h2>
                     <p class="how-intro">De la recherche au tableau final, tout se passe dans l’app. Trois étapes, et tu n’as plus qu’à jouer.</p>
                 </div>
-                <p class="quest-organiser-link">
-                    <a href="organisateur/">T’es organisateur&nbsp;? C’est par ici <span aria-hidden="true">→</span></a>
-                </p>
             </div>
             <div class="quest-steps" aria-live="polite">
                 <article class="quest-step">

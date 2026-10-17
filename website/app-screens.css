@@ -1,5 +1,7 @@
 /* Écrans illustratifs : sources docs/handoff/app-screens. Servi hors build:css. */
 :root {
+  --ym-hero-ticket-scale:1.22;
+  --ym-hero-ticket-shadow:drop-shadow(0 14px 18px rgba(0,0,0,.38));
   --ym-accent:#D7FF00;
   --ym-accent-gradient-end:#C5F000;
   --ym-dark-bg:#1A1A1A;
@@ -416,3 +418,9 @@
 .ym-screen--ranking .ym-rank-slot--loss{background:var(--ym-error)}
 .ym-screen--ranking .ym-rank-slot--draw{background:var(--ym-medium-gray)}
 .ym-screen--ranking .ym-rank-slot--none{background:var(--ym-dark-gray)}
+
+/* Seule la carte au premier plan sort du cadre ; le reste de l’écran reste découpé. */
+.hero-phone .ym-screen--discovery{overflow:visible}
+.hero-phone .ym-screen--discovery .ym-disc-viewport{position:absolute;inset:0;overflow:hidden;border-radius:inherit}
+.hero-phone .ym-screen--discovery .ym-disc-ticket-relief{position:absolute;left:18px;top:218px;width:353px;height:281px;z-index:1;scale:var(--ym-hero-ticket-scale);transform-origin:center;filter:var(--ym-hero-ticket-shadow);pointer-events:none}
+.hero-phone .ym-screen--discovery .ym-disc-ticket-relief>.ym-disc-ticket{position:relative;left:0;top:0;width:100%;height:100%}
