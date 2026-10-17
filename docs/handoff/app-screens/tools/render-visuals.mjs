@@ -18,6 +18,9 @@ const JOBS = [
   ['tournois-plateforme-v2', 'desktop.html', 1440, 900, 'desktop-1440.jpg'],
   ['tournois-plateforme-v2', 'desktop.html', 820, 1180, 'tablette-820.jpg'],
   ['tournois-plateforme-v2', 'mobile.html', 390, 844, 'mobile-390.jpg'],
+  ['stories-v2', 'desktop.html', 1440, 900, 'desktop-1440.jpg'],
+  ['stories-v2', 'desktop.html', 820, 1000, 'tablette-820.jpg'],
+  ['stories-v2', 'mobile.html', 390, 844, 'mobile-390.jpg'],
 ];
 const exe = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium';
 const browser = await pw.chromium.launch({ executablePath: exe }).catch(() => pw.chromium.launch());
