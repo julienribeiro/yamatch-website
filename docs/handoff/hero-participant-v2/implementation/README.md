@@ -1,6 +1,12 @@
 # Hero participant V2 — décisions d’implémentation
 
-Date : 17 octobre 2026. Les documents `../README.md`, `../SPEC.md`, maquettes et JPG sont conservés comme dossier de passation initial. Les décisions suivantes, confirmées ensuite par le founder, priment leurs indications contradictoires.
+Date : 17 octobre 2026. Le dossier de passation utilisé pour cette implémentation est celui du commit `e0f733e` ; les documents présents sur la branche ont depuis évolué. Les décisions suivantes, confirmées ensuite par le founder, priment leurs indications contradictoires.
+
+## Portée de la livraison après synchronisation distante
+
+L’implémentation et sa validation portent sur le dossier au commit `e0f733e`, complété par les décisions du founder ci-dessous. Lors du push, des changements concurrents distants (`236b294` et `f8f886d`) ont nécessité un rebase, effectué sans conflit et sans modification du code implémenté.
+
+La SPEC mise à jour demande désormais un écran de téléphone codé en HTML/CSS avec `app-screens.css`. **Cette nouvelle exigence n’est pas implémentée dans cette livraison** : le hero utilise toujours le `<picture>` `screen_1.avif|webp|png` prévu dans le dossier initial. Le rapport de validation du périmètre initial ne constitue donc pas une validation complète de cette nouvelle SPEC. L’architecture décrit le code livré ; l’écran HTML/CSS reste un travail distinct à réaliser.
 
 ## Décisions acceptées
 

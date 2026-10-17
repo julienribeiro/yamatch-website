@@ -1,12 +1,18 @@
-# REVIEW RESULT: PASS — hero participant V2
+# REVIEW RESULT: PASS sur la SPEC initiale — nouvelle SPEC non entièrement implémentée
 
 Revue du 17 octobre 2026 — Chromium/Chrome local via Playwright, DPR 1. Captures à 1440 × 900, 820 × 1180 et 390 × 844, polices chargées et animations d’entrée terminées. Données des tournois distants bloquées et date figée pour comparer les pages. Les captures avant/après se trouvent dans `before/` et `after/`.
+
+## Périmètre exact du verdict après rebase
+
+Le verdict **PASS** ci-dessous porte sur la [SPEC initiale au commit e0f733e](https://github.com/julienribeiro/yamatch-website/blob/e0f733e/docs/handoff/hero-participant-v2/SPEC.md) et les décisions utilisateur documentées. Deux commits distants, `236b294` et `f8f886d`, sont arrivés pendant le travail ; ils ont été conservés par rebase sans conflit. Ils enrichissent les dossiers de passation, ajoutent l’écran discovery codé et remplacent les visuels. La PR inclut aussi ces commits documentaires.
+
+**La nouvelle exigence de la SPEC présente à f8f886d n’est pas implémentée** : le téléphone reste un `<picture>` utilisant screen_1, conformément à la baseline initiale. Le fragment discovery HTML/CSS et `website/app-screens.css` ne sont pas intégrés. Le critère11 de la nouvelle SPEC, qui exige cet écran codé sans image de capture, ne passe donc pas. La comparaison aux nouveaux visuels n’est pas revendiquée. Les captures et mesures ci-dessous correspondent aux cibles initiales ; elles restent valides pour le code inchangé après rebase.
 
 ## Pre-flight compliance
 
 PASS. Les trois auteurs ont fourni leurs **Current State Summary** et **Verified safety greps**. HTML : header, titre, cartes et consommateurs JS ; CSS : sélecteurs du hero, tokens, shared title et consommateurs ; JS : header, gate du carousel, anciens writers de lift et variables CSS. Lecture préalable architecture, trois fichiers et mémoires confirmée par les auteurs. Le reviewer a lu les fichiers actuels, architecture, dossier de passation, maquettes et quatre cibles.
 
-## Critères SPEC §10
+## Critères de la SPEC initiale e0f733e §10
 
 | # | Critère | Résultat et preuve |
 |---|---|---|
@@ -33,7 +39,7 @@ Les tests sont Chromium locaux, pas une campagne multi-navigateurs/appareils. Le
 
 ## Critical Issues (must fix)
 
-Aucun problème bloquant restant. Les trois défauts trouvés pendant la revue (ancre masquée, FAQ trop étroite, contraste Google Play 320) sont corrigés et recontrôlés. Aucun critère applicable en échec ; adaptations autorisées et N/A préexistants explicités ci-dessus.
+Aucun problème bloquant restant. Les trois défauts trouvés pendant la revue (ancre masquée, FAQ trop étroite, contraste Google Play 320) sont corrigés et recontrôlés. Aucun critère applicable de la SPEC initiale en échec ; adaptations autorisées et N/A préexistants explicités ci-dessus. La nouvelle exigence d’écran codé reste non satisfaite, comme expliqué dans le périmètre du verdict.
 
 ## Minor Issues (non-blocking)
 
