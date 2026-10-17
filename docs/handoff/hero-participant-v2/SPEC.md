@@ -3,7 +3,8 @@
 > Statut : maquette validée par le founder le 17/10/2026, **non implémentée**.
 > Cible : `website/index.html` (`section.hero`) + `website/styles.css` §7
 > (+ `website/script.js` selon la décision D1).
-> Référence visuelle : `visuals/*.jpg` · maquettes : `mockup/*.html`.
+> Référence visuelle : `visuals/*.jpg` · maquettes : `mockup/*.html` ·
+> écran de l'app codé : `../app-screens/`.
 
 ## 1. Objectif
 
@@ -122,7 +123,11 @@ Garder les classes existantes et ajouter des éléments. Exemple (à adapter par
         <ul class="hero-trust">…3 × li avec icône check SVG aria-hidden…</ul>
       </div>
       <div class="hero-visual">
-        <picture><!-- screen_1 avif/webp/png, width/height, alt descriptif --></picture>
+        <div class="hero-phone" role="img" aria-label="Aperçu de l’app Yamatch — accueil de découverte des tournois">
+          <div class="ym-phone-slot" aria-hidden="true"><div class="ym-phone">
+            <!-- contenu exact de ../app-screens/screens/discovery.html -->
+          </div></div>
+        </div>
         <div class="hero-floats" aria-hidden="true">
           <div class="hero-float hero-float--ticket">…</div>
           <div class="hero-float hero-float--score">…</div>
@@ -138,11 +143,29 @@ Garder les classes existantes et ajouter des éléments. Exemple (à adapter par
   conserver.
 - Les cartes flottantes sont **décoratives** (`aria-hidden="true"`) : elles
   illustrent l'app, le téléphone porte l'`alt`.
-- Téléphone : `<picture>` avec `assets/screens/screen_1.avif|webp|png`,
-  `width="1206" height="2450"`, `alt="Aperçu de l’app Yamatch — accueil de
-  découverte des tournois"`, `decoding="async"`, `draggable="false"`.
+- Téléphone : **écran de l'app codé en HTML/CSS** (`../app-screens/screens/discovery.html`),
+  pas de `<picture>` ni de capture PNG. Voir §5 bis.
 - Liens stores : garder `data-cta`, `target="_blank" rel="noopener"`,
   `aria-label`.
+
+## 5 bis. Écran codé (pas d'image PNG)
+
+Le téléphone du hero est l'écran `discovery` de `../app-screens/`, une copie
+conforme en HTML/CSS de l'accueil de l'app Flutter. La comparaison avec la
+capture se trouve dans `../app-screens/compare/discovery.png`.
+
+- Créer `website/app-screens.css` (tokens `--ym-*`, cadre, styles de l'écran ;
+  chemins des polices corrigés en `fonts/…`). Il est chargé après
+  `styles.min.css`. Si « Comment ça marche » V2 est livré aussi, ce fichier
+  est partagé.
+- Coller le fragment tel quel. Ne pas le retoucher dans `index.html` : toute
+  correction se fait dans `app-screens/screens/`, puis on recolle.
+- Échelle `--ym-phone-scale` réglée en CSS : 0,8696 sur desktop (360 px de
+  large), 0,5556 sur mobile (230 px).
+- Le cadre porte `aria-hidden="true"`, et le conteneur `.hero-phone` porte
+  `role="img"` avec l'`aria-label`.
+- LCP : l'écran codé ne se charge pas comme une image, il n'y a donc rien à
+  précharger. La photo de fond reste préchargée.
 
 ## 6. Design tokens (à ajouter dans `:root`, aucune valeur brute ailleurs)
 
@@ -215,12 +238,13 @@ par **Current State Summary** et **Verified safety greps** (sinon FAIL du
 reviewer).
 
 1. **`html-expert`** — `website/index.html` uniquement : header + nav,
-   nouvelle structure du hero (§5), contenus exacts (§4), `<picture>` du
-   téléphone, `aria-hidden` des cartes, préchargement de screen_1 si utile.
+   nouvelle structure du hero (§5), contenus exacts (§4), écran codé
+   `discovery` (§5 bis) et `<link>` vers `app-screens.css`, `aria-hidden` des cartes.
    JSON-LD, meta et `title` inchangés.
-2. **`css-expert`** — `website/styles.css` uniquement : tokens (§6) dans
+2. **`css-expert`** — `website/styles.css` et `website/app-screens.css` uniquement : tokens (§6) dans
    `:root`, sections 7.x (nouvelle sous-section « 7.7 hero split + visuel +
-   cartes flottantes »), responsive (§3), mouvement (§7). Ne pas toucher
+   cartes flottantes »), responsive (§3), mouvement (§7), création de
+   `website/app-screens.css` (§5 bis). Ne pas toucher
    `styles.min.css` (généré). Vérifier que la 404 et `organisateur/` ne
    changent pas.
 3. **`js-expert`** — `website/script.js` uniquement, selon D1/D2 :
@@ -251,8 +275,9 @@ fixés par l'orchestrateur (reprendre ceux du §5).
 - [ ] 404 et page organisateur visuellement identiques à avant.
 - [ ] Carrousel : swipe, snap et boutons fonctionnent (D1 appliquée).
 - [ ] `npm run build:css` et `npm test` passent.
-- [ ] LCP non dégradé : la photo reste préchargée ; le téléphone a
-      `width`/`height` (pas de layout shift).
+- [ ] LCP non dégradé : la photo reste préchargée ; le téléphone est
+      l'écran HTML codé (aucun `<img>` de capture) et son slot réserve sa
+      taille (pas de layout shift).
 - [ ] `docs/WEBSITE_ARCHITECTURE.md` à jour.
 
 ### Vérification visuelle (Playwright déjà installé)

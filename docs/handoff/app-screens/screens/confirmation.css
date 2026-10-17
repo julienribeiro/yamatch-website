@@ -1,0 +1,121 @@
+/* Écran « confirmation » — BookingConfirmationScreen (capture de référence screen_3).
+   Couleurs locales absentes de app-tokens.css : */
+.ym-screen--confirmation{
+  /* pill_toast.dart : _kToastAccent = Color(0xFFC8F000) */
+  --ym-conf-toast-accent:#C8F000;
+  /* pill_toast.dart : piste de progression Colors.white.withValues(alpha: 0.10) */
+  --ym-conf-toast-track:rgba(255,255,255,.10);
+  /* GlassIconButton (fond verre du bouton fermer, sur darkBg) */
+  --ym-conf-glass:rgba(255,255,255,.18);
+  /* Fond sombre du header de succès (dégradé teal → quasi noir, relevé sur la capture) */
+  --ym-conf-header-top:#2A9C92;
+  --ym-conf-header-bottom:#0B1F21;
+  --ym-conf-header-glow:rgba(54,183,170,.85);  /* AppColors.teal */
+  /* Halo autour du disque lime : AppColors.accent à faible opacité */
+  --ym-conf-halo:rgba(215,255,0,.28);
+  /* Carte récap : surface très légèrement grisée */
+  --ym-conf-card:#F7F7F7;
+  --ym-conf-subtitle:rgba(255,255,255,.82);
+  background:linear-gradient(180deg,var(--ym-light-bg) 30%,var(--ym-onboarding-bg-end) 82%);
+}
+
+/* ---------- Header ---------- */
+.ym-screen--confirmation .ym-conf-header{
+  position:absolute;top:0;left:0;right:0;height:244px;
+  background:
+    radial-gradient(120% 70% at 50% 0%,var(--ym-conf-header-glow) 0%,transparent 70%),
+    linear-gradient(180deg,var(--ym-conf-header-top) 0%,var(--ym-conf-header-bottom) 100%);
+  text-align:center;color:var(--ym-text-white);
+}
+.ym-screen--confirmation .ym-conf-hero{
+  position:absolute;left:50%;top:74px;width:82px;height:82px;margin-left:-41px;
+  border-radius:50%;background:var(--ym-conf-halo);display:grid;place-items:center;
+}
+.ym-screen--confirmation .ym-conf-hero__disc{
+  width:42px;height:42px;border-radius:50%;background:var(--ym-accent);
+  display:grid;place-items:center;color:var(--ym-dark-surface);
+}
+.ym-screen--confirmation .ym-conf-title{
+  position:absolute;left:0;right:0;top:167px;
+  font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-title);
+  line-height:30px;letter-spacing:.1px;
+}
+.ym-screen--confirmation .ym-conf-subtitle{
+  position:absolute;left:0;right:0;top:201px;
+  font-size:var(--ym-fs-message-body);line-height:20px;letter-spacing:.35px;
+  color:var(--ym-conf-subtitle);
+}
+
+/* ---------- Toast ---------- */
+.ym-screen--confirmation .ym-conf-toast{
+  position:absolute;z-index:40;top:65px;left:9px;right:10px;
+  border-radius:999px;overflow:hidden;background:var(--ym-dark-bg);
+}
+.ym-screen--confirmation .ym-conf-toast__row{
+  display:flex;align-items:center;gap:8px;padding:9px 10px 8px 11px;
+}
+.ym-screen--confirmation .ym-conf-toast__check{
+  width:20px;height:20px;border-radius:50%;flex:none;
+  background:var(--ym-conf-toast-accent);color:var(--ym-dark-surface);
+  display:grid;place-items:center;
+}
+.ym-screen--confirmation .ym-conf-toast__msg{
+  flex:1;font-size:var(--ym-fs-caption);font-weight:600;color:var(--ym-text-white);
+}
+.ym-screen--confirmation .ym-conf-toast__close{
+  width:16px;height:16px;border-radius:50%;flex:none;background:var(--ym-conf-glass);
+  color:var(--ym-text-white);display:grid;place-items:center;
+}
+.ym-screen--confirmation .ym-conf-toast__bar{position:relative;height:3px;background:var(--ym-conf-toast-track)}
+.ym-screen--confirmation .ym-conf-toast__fill{position:absolute;inset:0 auto 0 0;width:71%;background:var(--ym-conf-toast-accent)}
+
+/* ---------- Corps ---------- */
+.ym-screen--confirmation .ym-conf-body{position:absolute;top:244px;left:0;right:0;padding:28px 18px 0}
+.ym-screen--confirmation .ym-conf-recap{
+  background:var(--ym-conf-card);border:1px solid var(--ym-divider);border-radius:20px;
+  padding:20px 21px 18px;
+}
+.ym-screen--confirmation .ym-conf-recap__title{
+  font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-subtitle);
+  line-height:24px;margin-bottom:14px;
+}
+.ym-screen--confirmation .ym-conf-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ym-screen--confirmation .ym-conf-row__label{font-size:var(--ym-fs-message-body);color:var(--ym-medium-gray);line-height:20px;letter-spacing:.3px}
+.ym-screen--confirmation .ym-conf-row__value{display:flex;flex-direction:column;align-items:flex-end;text-align:right}
+.ym-screen--confirmation .ym-conf-row__main{font-size:var(--ym-fs-message-body);font-weight:600;line-height:20px;letter-spacing:.2px}
+.ym-screen--confirmation .ym-conf-row__sub{font-size:var(--ym-fs-caption);color:var(--ym-medium-gray);line-height:16.5px;margin-top:3px;letter-spacing:.4px}
+.ym-screen--confirmation .ym-conf-row__sub--address{max-width:250px;margin-top:2px;letter-spacing:.3px}
+.ym-screen--confirmation .ym-conf-fields{display:flex;gap:13px;margin:12px 0 15px}
+.ym-screen--confirmation .ym-conf-field{
+  flex:1;height:59px;background:var(--ym-light-bg);border:1px solid var(--ym-divider);
+  border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;
+}
+.ym-screen--confirmation .ym-conf-field__label{font-size:var(--ym-fs-caption);color:var(--ym-medium-gray);line-height:16px;letter-spacing:.4px}
+.ym-screen--confirmation .ym-conf-field__value{font-size:var(--ym-fs-message-body);font-weight:600;line-height:22px;margin-top:3px;letter-spacing:.4px}
+.ym-screen--confirmation .ym-conf-divider{height:1px;background:var(--ym-divider);margin:12px 0 15px}
+.ym-screen--confirmation .ym-conf-total{display:flex;justify-content:space-between;align-items:center}
+.ym-screen--confirmation .ym-conf-total__label{font-size:var(--ym-fs-message-body);line-height:20px;letter-spacing:.2px}
+.ym-screen--confirmation .ym-conf-total__value{font-size:var(--ym-fs-button);font-weight:700}
+
+.ym-screen--confirmation .ym-conf-info{
+  margin-top:13px;background:var(--ym-light-bg);border:1px solid var(--ym-onboarding-border);
+  border-radius:16px;padding:14px 14px 16px 16px;display:flex;gap:12px;align-items:flex-start;
+}
+.ym-screen--confirmation .ym-conf-info__icon{flex:none;color:var(--ym-dark-gray);margin-top:2px}
+.ym-screen--confirmation .ym-conf-info__text{font-size:var(--ym-fs-body);line-height:19.5px;color:var(--ym-dark-gray);letter-spacing:.15px}
+
+/* ---------- Barre basse (ScreenBottomBar) ---------- */
+.ym-screen--confirmation .ym-conf-bottom{
+  position:absolute;left:0;right:0;bottom:0;top:692px;background:var(--ym-light-bg);
+  padding:13px 18px 0;
+}
+.ym-screen--confirmation .ym-conf-cta{
+  height:58px;border-radius:var(--ym-radius-pill);background:var(--ym-accent);
+  display:grid;place-items:center;
+  font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-subtitle);
+  color:var(--ym-dark-surface);
+}
+.ym-screen--confirmation .ym-conf-link{
+  margin-top:21px;text-align:center;font-size:var(--ym-fs-message-body);
+  font-weight:500;color:var(--ym-text-primary);letter-spacing:.3px;
+}

@@ -8,9 +8,12 @@ founder le 17/10/2026. Le code du site n'est **pas** encore modifié.
 
 | Fichier | Rôle |
 |---|---|
+| `PROMPT.md` | Prompt prêt à coller pour lancer l'agent IA. |
 | `SPEC.md` | **Instructions pour les agents** : périmètre, design cible, tokens, contenus, responsive, accessibilité, contraintes, plan de délégation, critères d'acceptation. À lire en entier avant d'écrire du code. |
 | `mockup/desktop.html` | Maquette de référence desktop (ouvrable dans un navigateur, assets du site en chemins relatifs). |
 | `mockup/mobile.html` | Maquette de référence mobile (390 × 844). |
+| `mockup/src/*.html` | Sources des maquettes. Les commentaires `SCREEN:` y sont remplacés par l'écran codé (`node ../app-screens/tools/assemble-mockups.mjs`). |
+| `../app-screens/` | Écran de l'app `discovery` en HTML/CSS (copie conforme de l'app, partagé avec « Comment ça marche »). |
 | `visuals/desktop-1440.jpg` | Rendu cible desktop, 1440 × 900 (@2x). |
 | `visuals/desktop-1440-sans-cartes.jpg` | Même rendu sans les cartes flottantes (variante de repli). |
 | `visuals/tablette-820.jpg` | Rendu à 820 px : colonnes empilées. |

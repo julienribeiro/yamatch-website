@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Écran codé — tournament</title>
+<link rel="stylesheet" href="../css/app-tokens.css">
+<link rel="stylesheet" href="../css/phone-frame.css">
+<link rel="stylesheet" href="../screens/tournament.css">
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#E9EBEF;padding:24px}</style>
+</head><body>
+<div class="ym-phone">
+<div class="ym-app ym-screen ym-screen--tournament">
+<div class="ym-statusbar ym-statusbar--light" aria-hidden="true">
+  <span class="ym-statusbar__time">09:16</span>
+  <span class="ym-statusbar__icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.1-1.2A10.2 10.2 0 0 0 8 .8 10.2 10.2 0 0 0 .9 3.6L2 4.8a8.6 8.6 0 0 1 6-2.4zm0 3.3c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7 7 0 0 0 8 4.1a7 7 0 0 0-4.8 1.8l1.1 1.2c1-.9 2.3-1.4 3.7-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.2l1.2-1.7A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="currentColor"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="currentColor" opacity=".45"/></svg>
+  </span>
+</div>
+<div class="ym-island" aria-hidden="true"></div>
+
+<div class="ym-trn-header">
+  <div class="ym-trn-titlerow">
+    <span class="ym-trn-back" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M17.77 3.77 16 2 6 12l10 10 1.77-1.77L9.54 12z"/></svg></span>
+    <div class="ym-trn-titles">
+      <div class="ym-trn-title">Tournoi de la jeunesse</div>
+      <div class="ym-trn-subtitle">Milly la forêt<span class="ym-trn-dot">•</span>52&nbsp;km</div>
+    </div>
+  </div>
+  <div class="ym-trn-statsrow">
+    <div class="ym-trn-date"><span class="ym-trn-date__day">17</span><span class="ym-trn-date__month">MAI</span></div>
+    <div class="ym-trn-regs">
+      <div class="ym-trn-regs__count">27/36 inscrits</div>
+      <div class="ym-trn-regs__left"><span class="ym-trn-regs__pulse"></span>9 équipes restantes</div>
+    </div>
+  </div>
+  <div class="ym-trn-progress"><span class="ym-trn-progress__fill"></span></div>
+</div>
+
+<div class="ym-trn-body">
+  <div class="ym-trn-card">
+    <div class="ym-trn-label">Détails</div>
+    <div class="ym-trn-pair">
+      <div class="ym-trn-row ym-trn-row--compact">
+        <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg></span>
+        <div class="ym-trn-texts"><div class="ym-trn-row__label">Coup d'envoi</div><div class="ym-trn-row__value">13h38</div></div>
+      </div>
+      <div class="ym-trn-row ym-trn-row--compact">
+        <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z"/></svg></span>
+        <div class="ym-trn-texts"><div class="ym-trn-row__label">Terrain</div><div class="ym-trn-row__value">Indoor</div></div>
+      </div>
+    </div>
+    <div class="ym-trn-row">
+      <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 12.75c1.63 0 3.07.39 4.24.9 1.08.48 1.76 1.56 1.76 2.73V18H6v-1.61c0-1.18.68-2.26 1.76-2.73 1.17-.52 2.61-.91 4.24-.91zM4 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm1.13 1.1c-.37-.06-.74-.1-1.13-.1-.99 0-1.93.21-2.78.58C.48 14.9 0 15.62 0 16.43V18h4.5v-1.61c0-.83.23-1.61.63-2.29zM20 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4 3.43c0-.81-.48-1.53-1.22-1.85-.85-.37-1.79-.58-2.78-.58-.39 0-.76.04-1.13.1.4.68.63 1.46.63 2.29V18H24v-1.57zM12 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/></svg></span>
+      <div class="ym-trn-texts"><div class="ym-trn-row__label">Format</div><div class="ym-trn-row__value">4×4 · Mixte · min 1 fille</div></div>
+    </div>
+    <div class="ym-trn-row">
+      <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z"/></svg></span>
+      <div class="ym-trn-texts"><div class="ym-trn-row__label">Niveau</div><div class="ym-trn-row__value">Départemental</div></div>
+    </div>
+    <div class="ym-trn-divider"></div>
+    <div class="ym-trn-label">Adresse</div>
+    <div class="ym-trn-row ym-trn-row--address">
+      <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span>
+      <div class="ym-trn-address">Gymnase Henri Chapu, Rue Henri Chapu, Fontainebleau (77300)</div>
+      <span class="ym-trn-glass"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M21.71 11.29l-9-9c-.39-.39-1.02-.39-1.41 0l-9 9c-.39.39-.39 1.02 0 1.41l9 9c.39.39 1.02.39 1.41 0l9-9c.39-.38.39-1.01 0-1.41zM14 14.5V12h-4v3H8v-4c0-.55.45-1 1-1h5V7.5l3.5 3.5-3.5 3.5z"/></svg></span>
+    </div>
+    <div class="ym-trn-divider"></div>
+    <div class="ym-trn-label">Organisateur</div>
+    <div class="ym-trn-row ym-trn-row--org"></div>
+  </div>
+</div>
+
+<div class="ym-trn-bottombar">
+  <div class="ym-trn-cta">Payer<span class="ym-trn-cta__dot">•</span>45€/eq.</div>
+  <div class="ym-trn-cancel"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M16.59 7.58 10 14.17l-3.59-3.58L5 12l5 5 8-8zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>Annulation gratuite jusqu'à 48h avant le tournoi</div>
+</div>
+</div>
+
+</div>
+</body></html>
