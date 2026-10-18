@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-10-18 (participant public tournament grid and recent ticker; HOW V2 coded three-card journey, progressive reveal and FAQ-only parallax; participant V2 split hero, shared fixed full-width navigation bar, decorative app cards and screenshot-carousel removal; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
+Last sync: 2026-10-18 (Stories S1 hidden shell and asset requirements; participant public tournament grid and recent ticker; HOW V2 coded three-card journey, progressive reveal and FAQ-only parallax; participant V2 split hero, shared fixed full-width navigation bar, decorative app cards and screenshot-carousel removal; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -251,9 +251,10 @@ Homepage sections under `<main id="top">`, in order:
 
 1. **`.hero`** — fixed header with wordmark and navigation; dark action photograph with split text/app visual and App Store + Google Play buttons. No subtitle or reassurance copy.
 2. **`section.how-quest#how-it-works`** — three-card participant journey with coded app illustrations and progressive reveal; deep-link anchor `id="how-it-works"`
-3. **`section.showcase#derniers-tournois`** — public upcoming and recent tournament tickets; hidden until valid data is rendered
-4. **`section.faq#faq`** — accordion of 12 questions; deep-link anchor `id="faq"`
-5. **`<footer>`** — outside `<main>`, light-gray background (matches `.faq`), dark text, content centered
+3. **`section.stories#temoignages`** — prepared stories shell, `hidden` with an empty rail until at least three real stories are validated
+4. **`section.showcase#derniers-tournois`** — public upcoming and recent tournament tickets; hidden until valid data is rendered
+5. **`section.faq#faq`** — accordion of 12 questions; deep-link anchor `id="faq"`
+6. **`<footer>`** — outside `<main>`, light-gray background (matches `.faq`), dark text, content centered
 
 **Top announcement banners (removed 2026-10-15).** Neither route renders the former lime `.launch-ticker`. Its shared styles and homepage offset-measurement IIFE were removed. Since participant V2, the homepage logo belongs to a fixed `.hero-header` with navigation on its right; the header is now a full-width glass bar flush with the viewport top, both before and after scrolling. The organiser retains its independent wordmark controller. Earlier centred-wordmark positioning is historical.
 
@@ -588,6 +589,35 @@ Seven static French answers use `tu` throughout and cover match formats, sharing
 Closed panels use the shared grid collapse, not `hidden`, preserving the CSS 300 ms row/padding and chevron transitions. The route's existing `.org-page *` reduced-motion override disables those transitions. The route does not load the homepage controller: unlike that controller, the local FAQ also synchronizes answer `aria-hidden` and `inert`. Without JavaScript the answers remain collapsed.
 
 ---
+
+### Stories V2 (`section.stories#temoignages`) — prepared, hidden (2026-10-18)
+
+**S1 is the release condition.** No real story media or testimonials were supplied. The section sits between HOW and public tournaments with `hidden`, an empty rail and no story nodes, media URLs, author identities or quotations. It makes no story-media request. Fewer than three validated real stories must keep this state; adding CSS or the section shell does not activate it. There is no Instagram feed/API integration or new header navigation link.
+
+```text
+section.stories#temoignages[aria-labelledby="storiesTitle"][hidden]
+└── .stories-band
+    ├── svg.stories-court--desktop + svg.stories-court--mobile (aria-hidden)
+    ├── .stories-head
+    │   ├── wrapper → p.stories-eyebrow + h2#storiesTitle.stories-title
+    │   └── a.stories-insta → instagram.com/yamatch_app/ (new tab)
+    └── ul.stories-rail[tabindex="0"][aria-label] (empty)
+```
+
+**Real-content contract.** Every person, media item and quote must be real, with written permission for image/citation and rights from the media author. Do not publish bracketed mockup placeholders or fabricated testimonials. Require a short accurate alt description, first name plus surname initial, an allowed role and a real quote ≤60 characters without quotation marks. Images use `story-NN.webp` (9:16, recommended 720 × 1280, ≤150 KB); optional avatars use `story-NN-avatar.webp` (96 × 96), otherwise a lime circle. A supplied original-post URL is optional, as is at most one featured story. Full asset specifications and private permission-record guidance live in [website/assets/stories/README.md](../website/assets/stories/README.md).
+
+**Prepared CSS, not populated-content validation.** Scoped `.stories` rules preserve `[hidden]`, use a light-gray rounded band and decorative court strokes shared with tournament tokens. The Instagram CTA is 48 px tall. The future native horizontal rail is focusable, uses mandatory start snapping, hidden scrollbars and a negative right margin matched by padding so cards reach the rounded edge. Focus is visible on the rail and links. `#temoignages` reserves `--hero-header-space + 16px` beneath the fixed header. The existing three live-radar badge selectors do not include Stories.
+
+| Stories tokens (`:root`) | Desktop/tablet → mobile |
+|---|---|
+| `--stories-band-bg`, `--stories-court-line`, `--stories-court-net` | shared light gray and `--tp-court-line` / `--tp-court-net` |
+| `--stories-card-w`, `--stories-card-h`, `--stories-card-radius` | 250 / 444 / 24 px → 220 / 390 / 22 px |
+| `--stories-band-radius`, `--stories-content-pad` | 40 px / `clamp(24px,4.5vw,72px)` → 28 / 16 px |
+| `--stories-title-size`, `--stories-quote-size` | 4.75 / 1.375rem → `clamp(2.25rem,11.28vw,2.75rem)` / 1.25rem |
+| `--stories-shade` | transparent-to-black .85 vertical gradient |
+| `--stories-placeholder`, `--stories-shadow`, `--stories-progress-muted` | `#2E333A`; 18/40 px dark-ink .18 shadow; white .4 |
+
+**Video work is not implemented.** No video was supplied, so no controller or story-specific JavaScript is added. Future video activation must implement the SPEC §5 requirements: H.264 ≤1.5 MB/10 seconds with WebP poster, `muted loop playsinline preload="none"`, a 44 × 44 pause/play button, autoplay only at ≥60% visibility, pause outside view, at most one playing video, no reduced-motion autoplay, and poster-only fallback without JS. These behaviours, populated-media layout/contrast and image layout-shift checks require real content and a new review before activation. Current validation covers the empty hidden state only.
 
 ### Public tournament rails (`section.showcase#derniers-tournois`) — added 2026-10-15
 

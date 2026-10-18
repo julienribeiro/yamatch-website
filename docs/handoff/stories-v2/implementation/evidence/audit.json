@@ -1,0 +1,130 @@
+[
+  {
+    "w": 1440,
+    "actual": {
+      "hidden": true,
+      "display": "none",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "media": 0,
+      "items": 0,
+      "h2": 1,
+      "railChildren": 0,
+      "svgsDecorative": true,
+      "previous": "how-it-works",
+      "next": "showcase tp-band"
+    },
+    "preview": {
+      "overflow": false,
+      "anchor": "100px",
+      "cta": {
+        "x": 1171.3125,
+        "y": 462.1875,
+        "width": 179.890625,
+        "height": 48,
+        "top": 462.1875,
+        "right": 1351.203125,
+        "bottom": 510.1875,
+        "left": 1171.3125
+      },
+      "focus": "rgb(215, 255, 0) solid 3px",
+      "railFocusRule": "auto"
+    },
+    "requests": [],
+    "errors": []
+  },
+  {
+    "w": 820,
+    "actual": {
+      "hidden": true,
+      "display": "none",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "media": 0,
+      "items": 0,
+      "h2": 1,
+      "railChildren": 0,
+      "svgsDecorative": true,
+      "previous": "how-it-works",
+      "next": "showcase tp-band"
+    },
+    "preview": {
+      "overflow": false,
+      "anchor": "100px",
+      "cta": {
+        "x": 579.21875,
+        "y": 462.6875,
+        "width": 179.890625,
+        "height": 48,
+        "top": 462.6875,
+        "right": 759.109375,
+        "bottom": 510.6875,
+        "left": 579.21875
+      },
+      "focus": "rgb(215, 255, 0) solid 3px",
+      "railFocusRule": "auto"
+    },
+    "requests": [],
+    "errors": []
+  },
+  {
+    "w": 390,
+    "actual": {
+      "hidden": true,
+      "display": "none",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 0,
+        "height": 0,
+        "top": 0,
+        "right": 0,
+        "bottom": 0,
+        "left": 0
+      },
+      "media": 0,
+      "items": 0,
+      "h2": 1,
+      "railChildren": 0,
+      "svgsDecorative": true,
+      "previous": "how-it-works",
+      "next": "showcase tp-band"
+    },
+    "preview": {
+      "overflow": false,
+      "anchor": "96px",
+      "cta": {
+        "x": 36,
+        "y": 449.984375,
+        "width": 179.890625,
+        "height": 48,
+        "top": 449.984375,
+        "right": 215.890625,
+        "bottom": 497.984375,
+        "left": 36
+      },
+      "focus": "rgb(215, 255, 0) solid 3px",
+      "railFocusRule": "auto",
+      "actualOverflowWidths": [],
+      "widthsChecked": 1601
+    },
+    "requests": [],
+    "errors": []
+  }
+]
