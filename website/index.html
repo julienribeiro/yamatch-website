@@ -48,18 +48,18 @@
     <link rel="preload" as="image" type="image/webp" href="assets/hero-volley/hero-volley-mixed-mobile.webp" media="(max-width: 767px)" fetchpriority="high">
 
     <link rel="stylesheet" href="styles.min.css">
+    <link rel="stylesheet" href="app-screens.css">
     <!-- qrcode-generator@1.4.4 (Kazuhiko Arase, MIT) — AUTO-HÉBERGÉ dans le repo
          (website/vendor/qrcode.min.js), utilisée par script.js pour générer la matrice
          du QR Code de la widget flottante en bas-droite. UMD browser build qui expose un
          global `window.qrcode` (factory function). Defer pour ne pas bloquer le rendu
          initial ET pour préserver l'ordre d'exécution (ce script doit rester AVANT
-         carousel.js / script.js). NB: passé du CDN jsdelivr au self-host — même origine,
+         script.js). NB: passé du CDN jsdelivr au self-host — même origine,
          donc plus besoin de `integrity`/`crossorigin`/`preconnect`. Motivation : indépendance
          CDN (Firefox protection anti-pistage stricte ou un bloqueur peut bloquer
          cdn.jsdelivr.net et casser le widget), plus de risque de rupture SRI. Le fichier
          local est byte-identique au build CDN (hash SRI vérifié avant commit). -->
     <script src="vendor/qrcode.min.js" defer></script>
-    <script src="carousel.js" defer></script>
     <script src="script.js" defer></script>
 
     <!-- JSON-LD : Organization (knowledge panel + sitelinks) -->
@@ -241,8 +241,9 @@
 <a class="skip-link" href="#top">Aller au contenu</a>
 
 <main id="top">
-    <section class="hero">
-        <button type="button" class="wordmark wordmark-link" aria-label="Retour en haut">
+    <section class="hero" aria-labelledby="heroTitle">
+        <header class="hero-header">
+        <a class="wordmark wordmark-link" href="#top" aria-label="Retour en haut">
             <svg viewBox="0 0 1067.73 206.13" aria-hidden="true" focusable="false">
                 <path d="M277.28,3.42h28.94l22.78,99.93h1.42L353.19,3.42h79.15v199.29h-49.25V71.17h-3.42l-26.76,131.54h-46.4l-26.76-131.54h-3.42l-19.3,131.54h-9.97S277.28,3.42,277.28,3.42Z"/>
                 <path d="M480.72,3.42h84.84l42.7,199.29h-64.91l-2.85-20.5h-34.73l-2.85,20.5h-64.91L480.72,3.42ZM539.37,139.5l-14.23-74.02h-3.98l-14.24,74.02h32.46Z"/>
@@ -252,15 +253,27 @@
                 <path d="M201.99,3.41h84.84l-29.83,199.27h-64.91l4.61-20.5h-34.73l-10.31,20.5h-64.91L201.99,3.41ZM211.1,139.48l12.71-74.02h-3.99l-41.17,74.02h32.45Z"/>
                 <path d="M31.91,115.55L4.49,3.96h62.06l12.66,57.5h3.42L137.15,3.96h62.06l-108.66,111.59-31.91,87.68H0l31.91-87.68Z"/>
             </svg>
-        </button>
+        </a>
+        <nav class="hero-nav" aria-label="Navigation principale">
+            <a class="hero-nav-link" href="#how-it-works">Comment ça marche</a>
+            <a class="hero-nav-link" href="#faq">FAQ</a>
+            <a class="hero-nav-cta" href="organisateur/">
+                <span class="hero-nav-cta-long">T’es organisateur&nbsp;?</span>
+                <span class="hero-nav-cta-short">Organisateur</span>
+                <span aria-hidden="true">→</span>
+            </a>
+        </nav>
+        </header>
         <div class="hero-card hero-card--photo">
-        <div class="hero-card-inner">
-        <!-- NOTE COPYWRITING : H1 baseline sport-agnostique (revert 2026-05-12 du LOT 1 audit SEO). Règle produit : la baseline/slogan reste agnostique pour s'adapter à n'importe quel sport futur ; le positionnement volley vit dans <title>/meta description/JSON-LD/body copy. Le sous-titre garde une formulation neutre (équipe / match). -->
-        <h1 class="hero-title"><span class="hero-title-slant">Ton prochain<br class="br-mobile-only"> tournoi t'attend</span></h1>
-        <p class="hero-subtitle">Compose ton équipe,<br class="br-mobile-only"> il y a match</p>
+        <div class="hero-card-inner hero-card-inner--split">
+        <div class="hero-copy">
+        <p class="hero-eyebrow"><span class="hero-eyebrow-dot" aria-hidden="true"></span>Volleyball</p>
+        <!-- NOTE COPYWRITING : H1 baseline sport-agnostique (revert 2026-05-12 du LOT 1 audit SEO). Règle produit : la baseline/slogan reste agnostique pour s'adapter à n'importe quel sport futur ; le positionnement volley vit dans <title>/meta description/JSON-LD/body copy. Sous-titre retiré à la demande du founder pour le hero V2. -->
+        <h1 class="hero-title" id="heroTitle"><span class="hero-title-slant">Ton prochain<br class="br-mobile-only"> tournoi <span class="hero-title-accent">t’attend</span></span></h1>
+        <p class="hero-lede">Trouve un tournoi près de chez toi, réserve ta place en quelques secondes et suis tes matchs en direct le jour J.</p>
         <div class="hero-buttons">
             <a class="btn-glass" data-cta="app-store" href="https://apps.apple.com/fr/app/yamatch/id6773454974" target="_blank" rel="noopener" aria-label="Télécharger sur l'App Store">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M17.05 12.04c-.03-3.24 2.65-4.79 2.77-4.87-1.51-2.21-3.86-2.51-4.69-2.55-2-.21-3.9 1.18-4.91 1.18-1.03 0-2.59-1.16-4.27-1.12-2.18.03-4.21 1.27-5.34 3.22-2.29 3.97-.59 9.83 1.65 13.05 1.09 1.58 2.39 3.34 4.07 3.28 1.64-.07 2.25-1.06 4.23-1.06 1.96 0 2.53 1.06 4.25 1.02 1.76-.03 2.87-1.6 3.95-3.18 1.24-1.83 1.76-3.6 1.79-3.69-.04-.02-3.45-1.32-3.5-5.28zM13.78 3.4c.91-1.1 1.52-2.62 1.35-4.13-1.31.05-2.89.87-3.83 1.96-.84.97-1.58 2.51-1.38 4 1.46.11 2.95-.74 3.86-1.83z"/>
                 </svg>
                 <span class="glass-stack">
@@ -269,7 +282,7 @@
                 </span>
             </a>
             <a class="btn-glass" data-cta="play-store" href="https://play.google.com/store/apps/details?id=com.appyamatch.yamatch" target="_blank" rel="noopener" aria-label="Télécharger sur Google Play">
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
                     <path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202c1.302.661 1.302 2.823 0 2.594zM1.337.924a2.43 2.43 0 0 0-.337 1.286v19.474c0 .484.124.928.337 1.286l11.591-11.491L1.337.924zm12.844 10.452l2.79-2.766L3.486.36C3.106.118 2.658.058 2.218.122l11.963 11.254zm0 1.248L2.218 23.878a2.43 2.43 0 0 0 1.268-.238l13.485-7.667-2.79-2.349z"/>
                 </svg>
                 <span class="glass-stack">
@@ -278,105 +291,161 @@
                 </span>
             </a>
         </div>
+        </div><!-- /.hero-copy -->
+        <div class="hero-visual">
+            <div class="hero-phone" role="img" aria-label="Aperçu de l’app Yamatch — accueil de découverte des tournois">
+                <div class="ym-phone-slot" aria-hidden="true">
+                    <div class="ym-phone">
+<div class="ym-app ym-screen ym-screen--discovery">
+<div class="ym-disc-viewport">
+<div class="ym-statusbar" aria-hidden="true">
+  <span class="ym-statusbar__time" data-hero-clock>09:15</span>
+  <span class="ym-statusbar__icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.1-1.2A10.2 10.2 0 0 0 8 .8 10.2 10.2 0 0 0 .9 3.6L2 4.8a8.6 8.6 0 0 1 6-2.4zm0 3.3c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7 7 0 0 0 8 4.1a7 7 0 0 0-4.8 1.8l1.1 1.2c1-.9 2.3-1.4 3.7-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.2l1.2-1.7A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none" aria-hidden="true" focusable="false"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="currentColor"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="currentColor" opacity=".45"/></svg>
+  </span>
+</div>
+<div class="ym-island" aria-hidden="true"></div>
+
+  <!-- MainTabHeader : titre + choix de la vue -->
+  <div class="ym-disc-header">
+    <span class="ym-disc-title">Accueil</span>
+    <div class="ym-disc-toggle">
+      <span class="ym-disc-toggle__seg ym-disc-toggle__seg--on">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
+      </span>
+      <span class="ym-disc-toggle__seg">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 3h-1V1h-2v2H7V1H5v2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 18H4V10h16v11zm0-13H4V5h16v3z"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Barre de filtres : sport + zone -->
+  <div class="ym-disc-filters">
+    <div class="ym-disc-sport">
+      <span>Volleyball</span>
+    </div>
+    <div class="ym-disc-location">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <span>Paris</span>
+    </div>
+  </div>
+
+  <!-- Card ticket tournoi -->
+  <div class="ym-disc-ticket ym-disc-ticket--original" aria-hidden="true">
+    <div class="ym-disc-ticket__head">
+      <div class="ym-disc-date"><span class="ym-disc-date__day" data-hero-tournament-day>1</span><span class="ym-disc-date__month" data-hero-tournament-month>NOV</span></div>
+      <div class="ym-disc-info">
+        <div class="ym-disc-info__name">Tournoi de la jeunesse</div>
+        <div class="ym-disc-info__place">Paris<span class="ym-disc-sep">·</span>5&nbsp;km</div>
+      </div>
+      <span class="ym-disc-chev">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </span>
+      <div class="ym-disc-progress-row">
+        <span>27/36 inscrits</span>
+        <span class="ym-disc-remaining"><i></i>9 équipes restantes</span>
+      </div>
+      <div class="ym-disc-bar"><span></span></div>
+    </div>
+    <div class="ym-disc-ticket__tear"></div>
+    <div class="ym-disc-ticket__foot">
+      <span class="ym-disc-expand">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </span>
+      <span class="ym-disc-pay">Payer<span class="ym-disc-sep">•</span>45€/eq.</span>
+    </div>
+  </div>
+
+  <div class="ym-disc-ticket-placeholder" aria-hidden="true"></div>
+
+  <!-- Acquisition organisateur : état participant sans simulation -->
+  <div class="ym-disc-orga">
+    <div class="ym-disc-orga__row">
+      <span class="ym-disc-orga__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5ZM20 2v4m-2-2h4"/></svg></span>
+      <div class="ym-disc-orga__headings">
+        <span class="ym-disc-orga__eyebrow">Plus de sport, moins de galère</span>
+        <span class="ym-disc-orga__title">Pas encore organisateur ?</span>
+      </div>
+    </div>
+    <p class="ym-disc-orga__text">Teste la gestion d’un tournoi fictif façon Yamatch avec autant d’équipes que tu le souhaites</p>
+    <div class="ym-disc-orga__features">
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Poules équilibrées</span></span>
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 6h3c5 0 7 12 12 12h3m-4-4 4 4-4 4M3 18h3c2 0 3-2 4-4m4-4c1-2 2-4 4-4h3m-4-4 4 4-4 4"/></svg><span>Remix des équipes</span></span>
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 8h12v5h-5a6 6 0 1 1-7-5Z"/><circle cx="9" cy="14" r="2"/><path d="M3 7 1 5m8 0V2"/></svg><span>Arbitres assignés automatiquement</span></span>
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m3 17 6-6 4 3 8-10"/></svg><span>Classement en direct</span></span>
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 9 2 7v8h3l2 4h3v-3h5v3h3l2-6h2V9h-3l-2-4-4 2H9a5 5 0 0 0-5 2Z"/><path d="M10 10h4m3 1h.01"/></svg><span>100% gratuit</span></span>
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 7-3M12 14v3"/></svg><span>Sans engagement</span></span>
+    </div>
+    <span class="ym-disc-orga__cta">Essayer, ça prend 2 min</span>
+  </div>
+
+  <!-- 2e card tournoi (coupée en bas) -->
+  <div class="ym-disc-ticket ym-disc-ticket--next">
+    <div class="ym-disc-ticket__head">
+      <div class="ym-disc-date"><span class="ym-disc-date__day">27</span><span class="ym-disc-date__month">MAI</span></div>
+      <div class="ym-disc-info">
+        <div class="ym-disc-info__name">Tournoi du printemps</div>
+      </div>
+      <span class="ym-disc-chev">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </span>
+    </div>
+  </div>
+
+  <!-- Nav bar glassmorphism -->
+  <div class="ym-disc-nav">
+    <span class="ym-disc-nav__item ym-disc-nav__item--on">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z"/></svg>
+      <span class="ym-disc-nav__label">Accueil</span>
+    </span>
+    <span class="ym-disc-nav__item">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 4.5h13a2.5 2.5 0 0 1 2.5 2.5v2.1a3 3 0 0 0 0 5.8V17a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17v-2.1a3 3 0 0 0 0-5.8V7a2.5 2.5 0 0 1 2.5-2.5z"/></svg>
+      <span class="ym-disc-nav__label">Mes tournois</span>
+    </span>
+    <span class="ym-disc-nav__item">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-1c0-2.66-5.33-4-8-4z"/></svg>
+      <span class="ym-disc-nav__label">Profil</span>
+    </span>
+  </div>
+</div>
+<div class="ym-disc-ticket-relief" aria-hidden="true">
+  <!-- Card ticket tournoi -->
+  <div class="ym-disc-ticket">
+    <div class="ym-disc-ticket__head">
+      <div class="ym-disc-date"><span class="ym-disc-date__day" data-hero-tournament-day>1</span><span class="ym-disc-date__month" data-hero-tournament-month>NOV</span></div>
+      <div class="ym-disc-info">
+        <div class="ym-disc-info__name">Tournoi de la jeunesse</div>
+        <div class="ym-disc-info__place">Paris<span class="ym-disc-sep">·</span>5&nbsp;km</div>
+      </div>
+      <span class="ym-disc-chev">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </span>
+      <div class="ym-disc-progress-row">
+        <span data-hero-registrations>27/36 inscrits</span>
+        <span class="ym-disc-remaining"><i></i><span data-hero-remaining>9 équipes restantes</span></span>
+      </div>
+      <div class="ym-disc-bar"><span data-hero-progress></span></div>
+    </div>
+    <div class="ym-disc-ticket__tear"></div>
+    <div class="ym-disc-ticket__foot">
+      <span class="ym-disc-expand">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </span>
+      <span class="ym-disc-pay">Payer<span class="ym-disc-sep">•</span>45€/eq.</span>
+    </div>
+  </div>
+
+</div>
+</div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.hero-visual -->
         </div><!-- /.hero-card-inner -->
         </div><!-- /.hero-card -->
 
-    </section>
-
-    <!-- === Carrousel d'écrans — pattern hero-carousel (Spendesk-inspired).
-         5 slides en rang horizontal ; la slide ".active" (index 2) est translatée vers le
-         haut via --scroll: -33% — son tiers supérieur dépasse au-dessus du rang, juste sous
-         la lime card du hero. Au scroll, --scroll est animé de -33% → 0 (script.js,
-         scroll-progress block) pour faire descendre la slide active dans le rang.
-         Le défilement horizontal et le snap sont gérés en CSS natif via scroll-snap-type;
-         l'alignement initial sur la slide active est posé en JS (centerOnActive) via scrollLeft. === -->
-    <section class="screens-rail" aria-label="Aperçu de l'app Yamatch">
-        <div class="hero-carousel-embla">
-            <div class="hero-carousel-embla--container">
-                <article class="screen-card screen-card--lime hero-carousel-embla--slide">
-                    <div class="screen-card__phone">
-                        <picture>
-                            <source srcset="assets/screens/screen_1.avif" type="image/avif">
-                            <source srcset="assets/screens/screen_1.webp" type="image/webp">
-                            <img class="phone-image" src="assets/screens/screen_1.png" alt="Aperçu de l'app Yamatch — accueil de découverte des tournois"
-                                 width="1206" height="2450"
-                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
-                        </picture>
-                    </div>
-                    <p class="screen-card__caption">
-                        <span class="screen-card__caption-primary">Tous tes tournois,</span>
-                        <span class="screen-card__caption-secondary">une seule app</span>
-                    </p>
-                </article>
-
-                <!-- Slide active — Spendesk's `.active` modifier. translateY(var(--scroll))
-                     la fait flotter dans la zone hero au repos, puis la JS-anime vers 0 au
-                     scroll. Image = screen_2 (filtres lieu/niveau/format), porte d'entrée du parcours. -->
-                <article class="screen-card screen-card--white screen-card--arrival hero-carousel-embla--slide active">
-                    <div class="screen-card__phone">
-                        <picture>
-                            <source srcset="assets/screens/screen_2.avif" type="image/avif">
-                            <source srcset="assets/screens/screen_2.webp" type="image/webp">
-                            <img class="phone-image" src="assets/screens/screen_2.png" alt="Yamatch — filtres lieu, niveau et format de tournoi"
-                                 width="1206" height="2450"
-                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
-                        </picture>
-                    </div>
-                    <p class="screen-card__caption">
-                        <span class="screen-card__caption-primary">Lieu, niveau, format…</span>
-                        <span class="screen-card__caption-secondary">— tout y est</span>
-                    </p>
-                </article>
-
-                <article class="screen-card screen-card--lime hero-carousel-embla--slide">
-                    <div class="screen-card__phone">
-                        <picture>
-                            <source srcset="assets/screens/screen_3.avif" type="image/avif">
-                            <source srcset="assets/screens/screen_3.webp" type="image/webp">
-                            <img class="phone-image" src="assets/screens/screen_3.png" alt="Yamatch — paiement sécurisé d'un tournoi"
-                                 width="1206" height="2450"
-                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
-                        </picture>
-                    </div>
-                    <p class="screen-card__caption">
-                        <span class="screen-card__caption-primary">Paiement sécurisé,</span>
-                        <span class="screen-card__caption-secondary">victoire non garantie</span>
-                    </p>
-                </article>
-
-                <article class="screen-card screen-card--white hero-carousel-embla--slide">
-                    <div class="screen-card__phone">
-                        <picture>
-                            <source srcset="assets/screens/screen_4.avif" type="image/avif">
-                            <source srcset="assets/screens/screen_4.webp" type="image/webp">
-                            <img class="phone-image" src="assets/screens/screen_4.png" alt="Yamatch — matchs, scores et classement en direct"
-                                 width="1206" height="2450"
-                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
-                        </picture>
-                    </div>
-                    <p class="screen-card__caption">
-                        <span class="screen-card__caption-primary">Matchs, scores, classement</span>
-                        <span class="screen-card__caption-secondary">— en live</span>
-                    </p>
-                </article>
-
-                <article class="screen-card screen-card--lime hero-carousel-embla--slide">
-                    <div class="screen-card__phone">
-                        <picture>
-                            <source srcset="assets/screens/screen_5.avif" type="image/avif">
-                            <source srcset="assets/screens/screen_5.webp" type="image/webp">
-                            <img class="phone-image" src="assets/screens/screen_5.png" alt="Yamatch — progression de la poule à la finale"
-                                 width="1206" height="2450"
-                                 loading="eager" fetchpriority="high" decoding="async" draggable="false">
-                        </picture>
-                    </div>
-                    <p class="screen-card__caption">
-                        <span class="screen-card__caption-primary">De la poule à la finale,</span>
-                        <span class="screen-card__caption-secondary">suis ta progression</span>
-                    </p>
-                </article>
-            </div>
-        </div>
     </section>
 
     <!-- === Comment ça marche — design éditorial 3 colonnes statiques ===
@@ -390,112 +459,351 @@
     <section class="how-quest" id="how-it-works" aria-labelledby="howQuestTitle">
         <div class="how-quest-inner">
             <div class="how-quest-header">
-                <span class="how-quest-eyebrow">Parcours</span>
-                <h2 id="howQuestTitle" class="how-quest-title">Comment ça marche</h2>
-                <p class="quest-organiser-link">
-                    <a href="organisateur/">T’es organisateur&nbsp;? C’est par ici <span aria-hidden="true">→</span></a>
-                </p>
+                <div class="how-quest-copy">
+                    <span class="how-quest-eyebrow"><span class="how-eyebrow-dot" aria-hidden="true"></span>Parcours · 3 étapes</span>
+                    <h2 id="howQuestTitle" class="how-quest-title section-title">Comment ça marche, en <span class="title-pill">3 étapes</span></h2>
+                    <p class="how-intro">De la recherche au tableau final, tout se passe dans l’app. Trois étapes, et tu n’as plus qu’à jouer.</p>
+                </div>
             </div>
             <div class="quest-steps" aria-live="polite">
                 <article class="quest-step">
-                    <span class="quest-step-numeral" aria-hidden="true">01</span>
+                    <div class="quest-step-copy">
+                    <div class="quest-step-top"><span class="quest-step-numeral" aria-hidden="true">01</span>
                     <span class="quest-step-tag">
                         <span class="quest-step-tag-dot" aria-hidden="true"></span>
                         <span class="quest-step-tag-label">Recherche</span>
-                    </span>
+                    </span></div>
                     <h3 class="quest-step-title">Trouve un tournoi</h3>
-                    <p class="quest-step-body">On t’affiche les tournois les plus proches de ta position — ou autour de l’adresse de ton choix. Tu n’as plus qu’à choisir celui qui t’intéresse.</p>
+                    <p class="quest-step-body">On t’affiche les tournois les plus proches de ta position — ou autour de l’adresse de ton choix. Tu n’as plus qu’à choisir celui qui t’intéresse.</p></div>
+                    <div class="quest-step-phone" role="img" aria-label="Aperçu de l’app — fiche d’un tournoi avec date, lieu et places restantes">
+                        <div class="ym-phone-slot" aria-hidden="true">
+                            <div class="ym-phone">
+<div class="ym-app ym-screen ym-screen--tournament">
+<div class="ym-statusbar ym-statusbar--light" aria-hidden="true">
+  <span class="ym-statusbar__time">09:16</span>
+  <span class="ym-statusbar__icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.1-1.2A10.2 10.2 0 0 0 8 .8 10.2 10.2 0 0 0 .9 3.6L2 4.8a8.6 8.6 0 0 1 6-2.4zm0 3.3c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7 7 0 0 0 8 4.1a7 7 0 0 0-4.8 1.8l1.1 1.2c1-.9 2.3-1.4 3.7-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.2l1.2-1.7A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none" aria-hidden="true" focusable="false"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="currentColor"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="currentColor" opacity=".45"/></svg>
+  </span>
+</div>
+<div class="ym-island" aria-hidden="true"></div>
+
+<div class="ym-trn-header">
+  <div class="ym-trn-titlerow">
+    <span class="ym-trn-back" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.77 3.77 16 2 6 12l10 10 1.77-1.77L9.54 12z"/></svg></span>
+    <div class="ym-trn-titles">
+      <div class="ym-trn-title">Tournoi de la jeunesse</div>
+      <div class="ym-trn-subtitle">Milly la forêt<span class="ym-trn-dot">•</span>52&nbsp;km</div>
+    </div>
+    <span class="ym-trn-more" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span>
+  </div>
+  <div class="ym-trn-statsrow">
+    <div class="ym-trn-date"><span class="ym-trn-date__day">17</span><span class="ym-trn-date__month">MAI</span></div>
+    <div class="ym-trn-price"><span class="ym-trn-price__value">45€</span><span class="ym-trn-price__unit">par équipe</span></div>
+    <div class="ym-trn-regs">
+      <div class="ym-trn-regs__count">27/36 inscrits</div>
+      <div class="ym-trn-regs__left"><span class="ym-trn-regs__pulse"></span>9 équipes restantes</div>
+    </div>
+  </div>
+  <div class="ym-trn-progress"><span class="ym-trn-progress__fill"></span></div>
+</div>
+
+<div class="ym-trn-body">
+  <div class="ym-trn-card">
+    <div class="ym-trn-label">Détails</div>
+    <div class="ym-trn-pair">
+      <div class="ym-trn-row ym-trn-row--compact">
+        <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg></span>
+        <div class="ym-trn-texts"><div class="ym-trn-row__label">Coup d’envoi</div><div class="ym-trn-row__value">13h38</div></div>
+      </div>
+      <div class="ym-trn-row ym-trn-row--compact">
+        <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z"/></svg></span>
+        <div class="ym-trn-texts"><div class="ym-trn-row__label">Terrain</div><div class="ym-trn-row__value">Indoor</div></div>
+      </div>
+    </div>
+    <div class="ym-trn-row">
+      <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 12.75c1.63 0 3.07.39 4.24.9 1.08.48 1.76 1.56 1.76 2.73V18H6v-1.61c0-1.18.68-2.26 1.76-2.73 1.17-.52 2.61-.91 4.24-.91zM4 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm1.13 1.1c-.37-.06-.74-.1-1.13-.1-.99 0-1.93.21-2.78.58C.48 14.9 0 15.62 0 16.43V18h4.5v-1.61c0-.83.23-1.61.63-2.29zM20 13c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4 3.43c0-.81-.48-1.53-1.22-1.85-.85-.37-1.79-.58-2.78-.58-.39 0-.76.04-1.13.1.4.68.63 1.46.63 2.29V18H24v-1.57zM12 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3z"/></svg></span>
+      <div class="ym-trn-texts"><div class="ym-trn-row__label">Format</div><div class="ym-trn-row__value">4×4 · Mixte · min 1 fille</div></div>
+    </div>
+    <div class="ym-trn-row">
+      <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z"/></svg></span>
+      <div class="ym-trn-texts"><div class="ym-trn-row__label">Niveau</div><div class="ym-trn-row__value">Départemental</div></div>
+    </div>
+    <div class="ym-trn-divider"></div>
+    <div class="ym-trn-label">Adresse</div>
+    <div class="ym-trn-row ym-trn-row--address">
+      <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span>
+      <div class="ym-trn-address">Gymnase Henri Chapu, Rue Henri Chapu, Fontainebleau (77300)</div>
+      <span class="ym-trn-glass"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M21.71 11.29l-9-9c-.39-.39-1.02-.39-1.41 0l-9 9c-.39.39-.39 1.02 0 1.41l9 9c.39.39 1.02.39 1.41 0l9-9c.39-.38.39-1.01 0-1.41zM14 14.5V12h-4v3H8v-4c0-.55.45-1 1-1h5V7.5l3.5 3.5-3.5 3.5z"/></svg></span>
+    </div>
+    <div class="ym-trn-divider"></div>
+    <div class="ym-trn-label">Organisateur</div>
+    <div class="ym-trn-row ym-trn-row--org"></div>
+  </div>
+</div>
+
+<div class="ym-trn-bottombar">
+  <div class="ym-trn-bar-info">
+    <div class="ym-trn-bar-price">45&nbsp;€ <span>/ équipe</span></div>
+    <div class="ym-trn-bar-caption"><span aria-hidden="true"></span>9 restantes</div>
+  </div>
+  <div class="ym-trn-cta">Payer</div>
+</div>
+</div>
+                            </div>
+                        </div>
+                    </div>
                 </article>
-                <article class="quest-step">
-                    <span class="quest-step-numeral" aria-hidden="true">02</span>
+                <article class="quest-step quest-step--lime">
+                    <div class="quest-step-copy">
+                    <div class="quest-step-top"><span class="quest-step-numeral" aria-hidden="true">02</span>
                     <span class="quest-step-tag">
                         <span class="quest-step-tag-dot" aria-hidden="true"></span>
                         <span class="quest-step-tag-label">Inscription</span>
-                    </span>
+                    </span></div>
                     <h3 class="quest-step-title">Inscris ton équipe</h3>
-                    <p class="quest-step-body">Réserve ta place en quelques secondes, puis associe une équipe existante ou crée ta dream team directement dans l’app.</p>
+                    <p class="quest-step-body">Réserve ta place en quelques secondes, puis associe une équipe existante ou crée ta dream team directement dans l’app.</p></div>
+                    <div class="quest-step-phone" role="img" aria-label="Aperçu de l’app — réservation confirmée et association de l’équipe">
+                        <div class="ym-phone-slot" aria-hidden="true">
+                            <div class="ym-phone">
+<div class="ym-app ym-screen ym-screen--confirmation">
+<div class="ym-statusbar" aria-hidden="true">
+  <span class="ym-statusbar__time">09:19</span>
+  <span class="ym-statusbar__icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.1-1.2A10.2 10.2 0 0 0 8 .8 10.2 10.2 0 0 0 .9 3.6L2 4.8a8.6 8.6 0 0 1 6-2.4zm0 3.3c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7 7 0 0 0 8 4.1a7 7 0 0 0-4.8 1.8l1.1 1.2c1-.9 2.3-1.4 3.7-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.2l1.2-1.7A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none" aria-hidden="true" focusable="false"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="currentColor"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="currentColor" opacity=".45"/></svg>
+  </span>
+</div>
+<div class="ym-island" aria-hidden="true"></div>
+
+  <div class="ym-conf-header">
+    <div class="ym-conf-hero" aria-hidden="true">
+      <div class="ym-conf-hero__disc"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"/></svg></div>
+    </div>
+    <div class="ym-conf-label">INSCRIPTION CONFIRMÉE</div>
+    <div class="ym-conf-title">Rendez-vous sur le terrain !</div>
+    <div class="ym-conf-subtitle">Invite tes coéquipiers pour préparer le tournoi.</div>
+  </div>
+  <div class="ym-conf-summary">
+    <div class="ym-conf-summary-row">
+      <div class="ym-conf-date"><span class="ym-conf-date__day">17</span><span class="ym-conf-date__month">MAI</span></div>
+      <div class="ym-conf-summary-content">
+        <div class="ym-conf-summary-name">Tournoi de la jeunesse</div>
+        <div class="ym-conf-summary-meta">Volleyball · 4×4</div>
+        <div class="ym-conf-summary-meta">Milly la forêt · 13h38</div>
+      </div>
+    </div>
+    <div class="ym-conf-summary-status"><span aria-hidden="true"></span>Place réservée</div>
+  </div>
+  <div class="ym-conf-bottom">
+    <div class="ym-conf-cta">Inviter mon équipe</div>
+    <div class="ym-conf-link">Voir mes tournois à venir</div>
+  </div>
+</div>
+                            </div>
+                        </div>
+                    </div>
                 </article>
                 <article class="quest-step">
-                    <span class="quest-step-numeral" aria-hidden="true">03</span>
+                    <div class="quest-step-copy">
+                    <div class="quest-step-top"><span class="quest-step-numeral" aria-hidden="true">03</span>
                     <span class="quest-step-tag">
                         <span class="quest-step-tag-dot" aria-hidden="true"></span>
                         <span class="quest-step-tag-label">Le jour J</span>
-                    </span>
+                    </span></div>
                     <h3 class="quest-step-title">Place au jeu</h3>
-                    <p class="quest-step-body">Pointage à l’arrivée, matchs, arbitrage, classement, tableau final : tout se passe dans l’app. Tu n’as plus qu’à enfiler tes baskets.</p>
-                </article>
-            </div>
-        </div>
-
-        <!-- Cartes décoratives flottantes (purement visuelles, aria-hidden). Positionnées
-             en absolute au-dessus du contenu de la section via CSS, pointer-events: none
-             pour laisser passer les clics sur le lien organisateur et les colonnes. -->
-        <div class="floating-card-parallax" data-card-id="3" data-parallax-speed="0.08" aria-hidden="true">
-            <div class="floating-card-inner">
-                <article class="floating-card floating-card--team">
-                    <p class="floating-card__team-eyebrow">MON ÉQUIPE · 4/4</p>
-                    <div class="floating-card__team-grid">
-                        <div class="floating-card__team-member">
-                            <img class="floating-card__team-avatar" src="assets/avatar-team-1.jpg" alt="" loading="lazy" decoding="async" width="52" height="52">
-                            <span class="floating-card__team-caption">Léa</span>
-                        </div>
-                        <div class="floating-card__team-member">
-                            <img class="floating-card__team-avatar" src="assets/avatar-team-2.jpg" alt="" loading="lazy" decoding="async" width="52" height="52">
-                            <span class="floating-card__team-caption">Tom</span>
-                        </div>
-                        <div class="floating-card__team-member">
-                            <img class="floating-card__team-avatar" src="assets/avatar-team-3.jpg" alt="" loading="lazy" decoding="async" width="52" height="52">
-                            <span class="floating-card__team-caption">Sami</span>
-                        </div>
-                        <div class="floating-card__team-member">
-                            <span class="floating-card__team-avatar floating-card__team-avatar--me">MOI</span>
-                            <span class="floating-card__team-caption">Moi</span>
+                    <p class="quest-step-body">Pointage à l’arrivée, matchs, arbitrage, classement, tableau final : tout se passe dans l’app. Tu n’as plus qu’à enfiler tes baskets.</p></div>
+                    <div class="quest-step-phone" role="img" aria-label="Aperçu de l’app — classement du tournoi en direct">
+                        <div class="ym-phone-slot" aria-hidden="true">
+                            <div class="ym-phone">
+<div class="ym-app ym-screen ym-screen--ranking">
+<div class="ym-statusbar" aria-hidden="true">
+  <span class="ym-statusbar__time">09:19</span>
+  <span class="ym-statusbar__icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.1-1.2A10.2 10.2 0 0 0 8 .8 10.2 10.2 0 0 0 .9 3.6L2 4.8a8.6 8.6 0 0 1 6-2.4zm0 3.3c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7 7 0 0 0 8 4.1a7 7 0 0 0-4.8 1.8l1.1 1.2c1-.9 2.3-1.4 3.7-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.2l1.2-1.7A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none" aria-hidden="true" focusable="false"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="currentColor"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="currentColor" opacity=".45"/></svg>
+  </span>
+</div>
+<div class="ym-island" aria-hidden="true"></div>
+  <div class="ym-rank-header">
+    <div class="ym-rank-back" aria-hidden="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+    </div>
+    <div class="ym-rank-titles">
+      <div class="ym-rank-title">Tournoi de la jeunesse</div>
+      <div class="ym-rank-subtitle">Suivre mon tournoi</div>
+    </div>
+  </div>
+  <div class="ym-rank-pillbar">
+    <span class="ym-rank-pill">QG</span>
+    <span class="ym-rank-pill">Matchs</span>
+    <span class="ym-rank-pill ym-rank-pill--active">Classement</span>
+  </div>
+  <div class="ym-rank-scroll-viewport">
+  <div class="ym-rank-scopes">
+    <span class="ym-rank-scope ym-rank-scope--active">Tableau général</span>
+    <span class="ym-rank-scope">Par poule</span>
+  </div>
+  <div class="ym-rank-sort">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 17.01V11c0-.55-.45-1-1-1s-1 .45-1 1v6.01h-1.79c-.45 0-.67.54-.35.85l2.79 2.78c.2.19.51.19.71 0l2.79-2.78c.32-.31.09-.85-.35-.85H16zM8.65 3.35 5.86 6.14c-.32.31-.1.85.35.85H8V13c0 .55.45 1 1 1s1-.45 1-1V6.99h1.79c.45 0 .67-.54.35-.85L9.35 3.35a.501.501 0 0 0-.7 0z"/></svg>
+    <span>Ordonné par points marqués</span>
+  </div>
+  <div class="ym-rank-card">
+    <table class="ym-rank-table">
+      <thead>
+        <tr><th class="ym-rank-c-rank">#</th><th class="ym-rank-c-team">Équipe</th><th class="ym-rank-c-stat">MJ</th><th class="ym-rank-c-stat">V</th><th class="ym-rank-c-stat">D</th><th class="ym-rank-c-stat">N</th><th class="ym-rank-c-points">Pts</th><th class="ym-rank-c-form">5 derniers matchs</th></tr>
+      </thead>
+      <tbody>
+        <tr class="ym-rank-row ym-rank-row--q">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">1</span><svg class="ym-rank-trend ym-rank-trend--up" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 14l5-5 5 5z"/></svg></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Nantes Nautiq...</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">5</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">2</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--q">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">2</span><svg class="ym-rank-trend ym-rank-trend--up" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 14l5-5 5 5z"/></svg></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Lyon Lions</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">5</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--q">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">3</span><svg class="ym-rank-trend ym-rank-trend--down" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5z"/></svg></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Toulouse Ti...</span><span class="ym-rank-dot" aria-hidden="true"></span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--o ym-rank-row--q ym-rank-row--me">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">4</span><svg class="ym-rank-trend ym-rank-trend--down" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5z"/></svg></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Beach Boys</span><span class="ym-rank-dot" aria-hidden="true"></span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--o">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">5</span><svg class="ym-rank-trend ym-rank-trend--down" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5z"/></svg></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Bordeaux Blast</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--o">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos ym-rank-pos--solo">6</span></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Nice Néons</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--o">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos ym-rank-pos--solo">7</span></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Marseille Mar...</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--o">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos ym-rank-pos--solo">8</span></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Strasbourg St...</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ym-rank-legend">
+    <div class="ym-rank-legend-title">Légende — 5 derniers matchs</div>
+    <div class="ym-rank-legend-items">
+      <span class="ym-rank-legend-item"><span class="ym-rank-slot ym-rank-slot--win"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>Victoire</span>
+      <span class="ym-rank-legend-item"><span class="ym-rank-slot ym-rank-slot--loss"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></span>Défaite</span>
+      <span class="ym-rank-legend-item"><span class="ym-rank-slot ym-rank-slot--draw"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 13H5v-2h14v2z"/></svg></span>Nul</span>
+      <span class="ym-rank-legend-item"><span class="ym-rank-slot ym-rank-slot--none"></span>Non joué</span>
+    </div>
+  </div>
+  </div>
+</div>
+                            </div>
                         </div>
                     </div>
-                </article>
-            </div>
-        </div>
-
-        <div class="floating-card-parallax" data-card-id="2" data-parallax-speed="0.06" aria-hidden="true">
-            <div class="floating-card-inner">
-                <article class="floating-card floating-card--scoreboard">
-                    <p class="floating-card__score-eyebrow">MATCH 2 · POULE</p>
-                    <div class="floating-card__score-row floating-card__score-row--winning">
-                        <span class="floating-card__score-team">MON ÉQUIPE</span>
-                        <span class="floating-card__score-value">25</span>
-                    </div>
-                    <div class="floating-card__score-row">
-                        <span class="floating-card__score-team">TEAM RIVAL</span>
-                        <span class="floating-card__score-value">17</span>
-                    </div>
-                    <span class="floating-card__score-badge">VICTOIRE 🏆</span>
                 </article>
             </div>
         </div>
     </section>
 
-    <!-- Rail alimenté par script.js, masqué jusqu’à réception de données valides. -->
-    <section class="showcase" id="derniers-tournois" data-showcase data-showcase-variant="participant" aria-labelledby="showcaseRailTitle" hidden>
-        <div class="showcase-block" data-showcase-rail-block>
-            <div class="showcase-block-head">
-                <h2 class="showcase-block-title" id="showcaseRailTitle">À l’affiche et déjà joués</h2>
-                <div class="showcase-nav">
-                    <button type="button" data-showcase-prev aria-controls="showcaseRail" aria-label="Tournois précédents">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>
-                    </button>
-                    <button type="button" data-showcase-next aria-controls="showcaseRail" aria-label="Tournois suivants">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg>
-                    </button>
+    <section class="stories" id="temoignages" aria-labelledby="storiesTitle" hidden>
+        <div class="stories-band">
+            <svg class="stories-court stories-court--desktop" viewBox="0 0 1392 860" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true" focusable="false">
+                <rect x="120" y="80" width="1152" height="700" rx="4"/>
+                <line class="stories-court-net" x1="696" y1="50" x2="696" y2="810"/>
+            </svg>
+            <svg class="stories-court stories-court--mobile" viewBox="0 0 358 800" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true" focusable="false">
+                <rect x="24" y="40" width="310" height="720" rx="4"/>
+                <line class="stories-court-net" x1="8" y1="400" x2="350" y2="400"/>
+            </svg>
+            <div class="stories-head">
+                <div>
+                    <p class="stories-eyebrow"><span aria-hidden="true"></span>Ils jouent sur Yamatch</p>
+                    <h2 id="storiesTitle" class="stories-title section-title">Vu dans <span class="title-pill">les stories</span></h2>
                 </div>
+                <a class="stories-insta" href="https://www.instagram.com/yamatch_app/" target="_blank" rel="noopener" aria-label="Yamatch sur Instagram (nouvel onglet)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+                    @yamatch_app
+                </a>
             </div>
-            <ul class="showcase-rail" id="showcaseRail" role="list" tabindex="0" aria-labelledby="showcaseRailTitle" data-showcase-rail></ul>
+            <ul class="stories-rail" tabindex="0" aria-label="Stories des joueurs et organisateurs"></ul>
+        </div>
+    </section>
+
+    <!-- Tournois alimentés par script.js, masqués jusqu’à réception de données valides. -->
+    <section class="showcase tp-band" id="derniers-tournois" data-showcase data-showcase-variant="participant" aria-labelledby="showcaseRailTitle" hidden>
+        <svg class="tp-court tp-court--desktop" viewBox="0 0 1392 900" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true" focusable="false">
+            <rect x="120" y="90" width="1152" height="620" rx="4"/>
+            <line class="tp-court-net" x1="696" y1="60" x2="696" y2="740"/>
+            <line x1="504" y1="90" x2="504" y2="710"/>
+            <line x1="888" y1="90" x2="888" y2="710"/>
+        </svg>
+        <svg class="tp-court tp-court--mobile" viewBox="0 0 390 1200" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true" focusable="false">
+            <rect x="30" y="60" width="330" height="1080" rx="4"/>
+            <line class="tp-court-net" x1="10" y1="600" x2="380" y2="600"/>
+            <line x1="30" y1="420" x2="360" y2="420"/>
+            <line x1="30" y1="780" x2="360" y2="780"/>
+        </svg>
+        <div class="tp-content" data-showcase-rail-block>
+            <header class="tp-header">
+                <p class="tp-eyebrow"><span class="tp-eyebrow-dot" aria-hidden="true"></span>Les tournois sur Yamatch</p>
+                <h2 class="tp-title section-title" id="showcaseRailTitle">Ça smash <span class="title-pill">près de chez toi</span></h2>
+                <p class="tp-intro">Des tournois qui se remplissent, des équipes qui se chambrent et des smashs qui claquent. Choisis ton terrain, ramène ta team.</p>
+            </header>
+            <ol class="tp-cards" id="showcaseRail" role="list" aria-labelledby="showcaseRailTitle" data-showcase-rail>
+                <li data-showcase-create>
+                    <article class="tp-ticket tp-ticket--create" aria-labelledby="tpCreateTitle">
+                        <div class="tp-head">
+                            <span class="tp-date" aria-hidden="true">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+                            </span>
+                            <div class="tp-info">
+                                <h3 class="tp-name" id="tpCreateTitle">Ton prochain tournoi</h3>
+                                <p class="tp-meta">Organisé par toi</p>
+                            </div>
+                            <span class="tp-chevron" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+                            </span>
+                            <div class="tp-counts">
+                                <span class="tp-count">0/16 inscrits</span>
+                                <span class="tp-status"><span class="tp-status-dot" aria-hidden="true"></span>À toi de jouer</span>
+                            </div>
+                            <span class="tp-progress" aria-hidden="true"></span>
+                        </div>
+                        <div class="tp-tear" aria-hidden="true"></div>
+                        <div class="tp-foot">
+                            <span class="tp-expand" aria-hidden="true">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+                            </span>
+                            <a class="tp-cta is-secondary" href="organisateur/">Créer mon tournoi <span aria-hidden="true">→</span></a>
+                        </div>
+                    </article>
+                </li>
+            </ol>
+        </div>
+        <div class="tp-ticker" role="region" aria-label="Tournois déjà joués" tabindex="0" hidden>
+            <span class="tp-ticker-label"><span>Ça s’est joué</span></span>
+            <ul class="tp-track" data-showcase-ticker></ul>
         </div>
     </section>
 
     <section class="faq" id="faq" aria-labelledby="faqTitle">
         <div class="faq-inner">
             <p class="faq-eyebrow">FAQ</p>
-            <h2 class="faq-title" id="faqTitle">Questions fréquentes</h2>
+            <h2 class="faq-title section-title" id="faqTitle">Questions <span class="title-pill">fréquentes</span></h2>
             <ul class="faq-list">
                 <li class="faq-item">
                     <button class="faq-toggle" type="button" id="faqToggle-1" aria-expanded="false" aria-controls="faqAnswer-1">

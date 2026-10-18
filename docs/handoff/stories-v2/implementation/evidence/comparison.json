@@ -1,0 +1,44 @@
+[
+  {
+    "name": "home-1440-full",
+    "sameSize": true,
+    "max": 10,
+    "mean": 0.004261804585467527,
+    "changedChannels": 120923
+  },
+  {
+    "name": "junction-1440",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "home-820-full",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "junction-820",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "home-390-full",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "junction-390",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  }
+]

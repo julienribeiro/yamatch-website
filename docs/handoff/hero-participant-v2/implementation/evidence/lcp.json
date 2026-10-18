@@ -1,0 +1,236 @@
+[
+  {
+    "state": "before",
+    "w": 1440,
+    "run": 0,
+    "lcp": {
+      "time": 224,
+      "size": 1102156,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "before",
+    "w": 1440,
+    "run": 1,
+    "lcp": {
+      "time": 204,
+      "size": 1102156,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "before",
+    "w": 1440,
+    "run": 2,
+    "lcp": {
+      "time": 208,
+      "size": 1102156,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "before",
+    "w": 820,
+    "run": 0,
+    "lcp": {
+      "time": 208,
+      "size": 889200,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "before",
+    "w": 820,
+    "run": 1,
+    "lcp": {
+      "time": 216,
+      "size": 889200,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "before",
+    "w": 820,
+    "run": 2,
+    "lcp": {
+      "time": 204,
+      "size": 889200,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "before",
+    "w": 390,
+    "run": 0,
+    "lcp": {
+      "time": 208,
+      "size": 294144,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed-mobile.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "before",
+    "w": 390,
+    "run": 1,
+    "lcp": {
+      "time": 212,
+      "size": 294144,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed-mobile.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "before",
+    "w": 390,
+    "run": 2,
+    "lcp": {
+      "time": 220,
+      "size": 294144,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed-mobile.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "after",
+    "w": 1440,
+    "run": 0,
+    "lcp": {
+      "time": 208,
+      "size": 1177876,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "after",
+    "w": 1440,
+    "run": 1,
+    "lcp": {
+      "time": 196,
+      "size": 1177876,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "after",
+    "w": 1440,
+    "run": 2,
+    "lcp": {
+      "time": 172,
+      "size": 1177876,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "after",
+    "w": 820,
+    "run": 0,
+    "lcp": {
+      "time": 208,
+      "size": 891436,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "after",
+    "w": 820,
+    "run": 1,
+    "lcp": {
+      "time": 208,
+      "size": 891436,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0.0002799940777795859
+  },
+  {
+    "state": "after",
+    "w": 820,
+    "run": 2,
+    "lcp": {
+      "time": 208,
+      "size": 891436,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "after",
+    "w": 390,
+    "run": 0,
+    "lcp": {
+      "time": 188,
+      "size": 284928,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed-mobile.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "after",
+    "w": 390,
+    "run": 1,
+    "lcp": {
+      "time": 192,
+      "size": 284928,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed-mobile.webp"
+    },
+    "cls": 0
+  },
+  {
+    "state": "after",
+    "w": 390,
+    "run": 2,
+    "lcp": {
+      "time": 176,
+      "size": 284928,
+      "tag": "DIV",
+      "cl": "hero-card hero-card--photo",
+      "url": "http://localhost:8000/assets/hero-volley/hero-volley-mixed-mobile.webp"
+    },
+    "cls": 0
+  }
+]

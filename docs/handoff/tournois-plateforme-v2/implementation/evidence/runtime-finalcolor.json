@@ -1,0 +1,81 @@
+{
+  "errors": [],
+  "states": [
+    {
+      "text": "1\nSEPT\nTournoi de contrôle\n\nParis • 4×4\n\n15/16 inscrits\n1 équipe restante\nS’inscrire\n : Tournoi de contrôle",
+      "status": "1 équipe restante",
+      "background": "radial-gradient(300px, rgb(0, 0, 0) 0%, rgb(54, 183, 170) 100%)",
+      "link": "/tournament/?id=fixture-1",
+      "accessibleName": "S’inscrire : Tournoi de contrôle",
+      "bar": true
+    },
+    {
+      "text": "1\nSEPT\nTournoi complet\n\nParis • 4×4\n\n16/16 inscrits\nComplet\nVoir le tournoi\n : Tournoi complet",
+      "status": "Complet",
+      "background": "radial-gradient(300px, rgb(0, 0, 0) 0%, rgb(54, 183, 170) 100%)",
+      "link": "/tournament/?id=fixture-2",
+      "accessibleName": "Voir le tournoi : Tournoi complet",
+      "bar": true
+    },
+    {
+      "text": "1\nSEPT\nInscriptions fermées\n\nParis • 4×4\n\n15/16 inscrits\nInscriptions closes\nVoir le tournoi\n : Inscriptions fermées",
+      "status": "Inscriptions closes",
+      "background": "none",
+      "link": "/tournament/?id=fixture-3",
+      "accessibleName": "Voir le tournoi : Inscriptions fermées",
+      "bar": true
+    },
+    {
+      "text": "1\nSEPT\nSans capacité\n\nParis • 4×4\n\n15 inscrits\nS’inscrire\n : Sans capacité",
+      "background": "radial-gradient(300px, rgb(0, 0, 0) 0%, rgb(54, 183, 170) 100%)",
+      "link": "/tournament/?id=fixture-4",
+      "accessibleName": "S’inscrire : Sans capacité",
+      "bar": false
+    }
+  ],
+  "ticker": {
+    "normal": {
+      "duration": "40s",
+      "state": "running",
+      "copies": 3,
+      "width": 970.1875,
+      "children": [
+        485.0937194824219,
+        485.09375
+      ]
+    },
+    "hover": "paused",
+    "focus": "paused",
+    "reduced": {
+      "animation": "none",
+      "copyDisplay": "none",
+      "overflow": "auto"
+    }
+  },
+  "focus": {
+    "outline": "rgb(0, 0, 0) solid 3px",
+    "offset": "-6px",
+    "height": 56,
+    "width": 301.46875
+  },
+  "overflow": [],
+  "widthsChecked": 0,
+  "noPast": {
+    "hidden": false,
+    "tickerHidden": true,
+    "tickerDisplay": "none",
+    "creationLast": true
+  },
+  "empty": {
+    "hidden": true,
+    "tickerHidden": true,
+    "tickerDisplay": "none",
+    "creationLast": true
+  },
+  "recentOnly": {
+    "hidden": false,
+    "tickerHidden": false,
+    "tickerDisplay": "flex",
+    "creationLast": true
+  }
+}

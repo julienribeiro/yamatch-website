@@ -1,0 +1,25 @@
+{
+  "time": "2026-10-18T10:00:00Z",
+  "timezone": "Europe/Paris",
+  "reducedMotion": "reduce",
+  "tournois": "?showcase=demo",
+  "overlays": "header, QR and FAQ floating decoration hidden screenshot-only for titles",
+  "stories": "local empty preview only; source hidden unchanged",
+  "records": [
+    {
+      "width": 1440,
+      "storiesHidden": true,
+      "storiesItems": 0
+    },
+    {
+      "width": 820,
+      "storiesHidden": true,
+      "storiesItems": 0
+    },
+    {
+      "width": 390,
+      "storiesHidden": true,
+      "storiesItems": 0
+    }
+  ]
+}

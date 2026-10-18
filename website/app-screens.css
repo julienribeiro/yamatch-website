@@ -1,0 +1,486 @@
+/* Écrans illustratifs : sources docs/handoff/app-screens. Servi hors build:css. */
+:root {
+  --ym-hero-progress-shimmer-duration:3500ms;
+  --ym-hero-ticket-float-duration:6s;
+  --ym-hero-ticket-float-distance:-4px;
+  --ym-quest-scroll-max:36px;
+  --ym-rank-scroll-top:191px;
+  --ym-rank-tabs-shadow:0 6px 16px rgba(0,0,0,.08);
+  --ym-rank-scope-border:rgba(26,26,26,.25);
+  --ym-rank-scope-ink:rgba(26,26,26,.55);
+  --ym-conf-badge-shadow:0 12px 24px rgba(0,0,0,.16),0 2px 6px rgba(0,0,0,.12);
+  --ym-conf-badge-ring:rgba(215,255,0,.22);
+  --ym-conf-date-border:rgba(255,255,255,.35);
+  --ym-conf-meta:rgba(255,255,255,.75);
+  --ym-conf-summary-shadow:0 10px 15px rgba(0,0,0,.1),0 4px 6px rgba(0,0,0,.1);
+  --ym-disc-scroll-max:36px;
+  --ym-disc-current-filter-shadow:0 2px 6px rgba(0,0,0,.05);
+  --ym-disc-current-icon-tile:rgba(215,255,0,.12);
+  --ym-disc-current-feature-bg:rgba(255,255,255,.06);
+  --ym-disc-current-card-shadow:0 10px 15px rgba(0,0,0,.10),0 4px 6px rgba(0,0,0,.10);
+  --ym-disc-current-nav-fill:rgba(0,0,0,.34);
+  --ym-disc-current-label:rgba(255,255,255,.85);
+  --ym-disc-current-toggle-ink:rgba(255,255,255,.4);
+  --ym-hero-pop-transform:var(--hero-pop-transform);
+  --ym-hero-pop-shadow:var(--hero-pop-shadow);
+  --ym-hero-pop-placeholder-bg:var(--hero-pop-placeholder-bg);
+  --ym-hero-pop-placeholder-border:var(--hero-pop-placeholder-border);
+  --ym-hero-pop-placeholder-radius:var(--hero-pop-placeholder-radius);
+  --ym-hero-pop-gauge-transition:var(--hero-pop-gauge-transition);
+  --ym-accent:#D7FF00;
+  --ym-accent-gradient-end:#C5F000;
+  --ym-dark-bg:#1A1A1A;
+  --ym-dark-surface:#000000;
+  --ym-dark-surface-elevated:#2A2A2A;
+  --ym-dark-card:#111111;
+  --ym-light-bg:#FFFFFF;
+  --ym-light-gray:#F3F4F6;
+  --ym-surface-muted:#E5E7EB;
+  --ym-medium-gray:#99A1AF;
+  --ym-dark-gray:#364153;
+  --ym-text-primary:#101828;
+  --ym-text-white:#FFFFFF;
+  --ym-subtitle-gray:#666666;
+  --ym-placeholder:#999999;
+  --ym-divider:#E0E0E0;
+  --ym-progress-empty:#F0F0F0;
+  --ym-onboarding-bg-end:#F5FFE6;
+  --ym-onboarding-border:#EEF1DD;
+  --ym-glass-light:rgba(255,255,255,.68);
+  --ym-glass-light-border:rgba(255,255,255,.90);
+  --ym-dark-overlay-low:rgba(255,255,255,.12);
+  --ym-teal:#36B7AA;
+  --ym-success:#4CAF50;
+  --ym-error:#EF4444;
+  --ym-pending:#FF9800;
+  --ym-fs-avatar-label:10px;
+  --ym-fs-nav-label:10px;
+  --ym-fs-caption:12px;
+  --ym-fs-body:14px;
+  --ym-fs-message-body:15px;
+  --ym-fs-button:16px;
+  --ym-fs-body-large:17px;
+  --ym-fs-subtitle:18px;
+  --ym-fs-bottom-bar-value:20px;
+  --ym-fs-title:22px;
+  --ym-fs-display:28px;
+  --ym-fs-display-large:34px;
+  --ym-font-heading:'Roboto',system-ui,-apple-system,sans-serif;
+  --ym-font-body:'Inter',system-ui,-apple-system,sans-serif;
+  --ym-radius-pill:100px;
+  --ym-radius-input:16px;
+  --ym-radius-card:24px;
+  --ym-disc-gray-start:#5F5F5F;
+  --ym-disc-gray-end:#545454;
+  --ym-disc-white-30:rgba(255,255,255,.3);
+  --ym-disc-white-90:rgba(255,255,255,.9);
+  --ym-disc-white-20:rgba(255,255,255,.2);
+  --ym-disc-white-70:rgba(255,255,255,.7);
+  --ym-disc-white-10:rgba(255,255,255,.1);
+  --ym-disc-shadow-5:rgba(0,0,0,.05);
+  --ym-disc-shadow-10:rgba(0,0,0,.10);
+  --ym-disc-nav-fill:rgba(0,0,0,.82);
+  --ym-disc-nav-bubble:rgba(255,255,255,.16);
+  --ym-disc-nav-shadow:rgba(0,0,0,.22);
+  --ym-frame-surface:#0B0B0C;
+  --ym-frame-shadow:0 0 0 1.5px #5F5B57,0 0 0 4px #BDB7AF,0 0 0 5px #7A756F,inset 0 0 0 1.5px #2C2C2E;
+  --ym-font-status:-apple-system,'SF Pro Text','Inter',sans-serif;
+  --ym-radius-64:64px;
+  --ym-radius-52:52px;
+  --ym-radius-20:20px;
+  --ym-radius-3:3px;
+  --ym-radius-50percent:50%;
+  --ym-radius-17:17px;
+  --ym-radius-11:11px;
+  --ym-shadow-1:0 4px 18px var(--ym-disc-shadow-10);
+  --ym-shadow-2:0 6px 18px var(--ym-disc-nav-shadow);
+  --ym-trn-grad-start:#000000;
+  --ym-trn-grad-end:var(--ym-teal);
+  --ym-trn-white-90:rgba(255,255,255,.9);
+  --ym-trn-white-70:rgba(255,255,255,.7);
+  --ym-trn-white-30:rgba(255,255,255,.3);
+  --ym-trn-white-20:rgba(255,255,255,.2);
+  --ym-trn-white-10:rgba(255,255,255,.1);
+  --ym-trn-white-08:rgba(255,255,255,.08);
+  --ym-trn-progress-fill-end:#C9C9C9;
+  --ym-conf-toast-accent:#C8F000;
+  --ym-conf-toast-track:rgba(255,255,255,.10);
+  --ym-conf-glass:rgba(255,255,255,.18);
+  --ym-conf-header-top:#2A9C92;
+  --ym-conf-header-bottom:#0B1F21;
+  --ym-conf-header-glow:rgba(54,183,170,.85);
+  --ym-conf-halo:rgba(215,255,0,.28);
+  --ym-conf-card:#F7F7F7;
+  --ym-conf-subtitle:rgba(255,255,255,.82);
+  --ym-rank-me-bg:rgba(215,255,0,.20);
+  --ym-rank-me-border:rgba(215,255,0,.80);
+  --ym-rank-accent-border:#B9DC00;
+  --ym-rank-fs-row:13px;
+  --ym-rank-shadow:rgba(16,24,40,.07);
+  --ym-radius-12:12px;
+  --ym-radius-10:10px;
+  --ym-radius-999:999px;
+  --ym-step-shadow-1:inset 0 0 0 .8px var(--ym-trn-white-30);
+  --ym-step-shadow-2:inset 0 0 0 1.5px var(--ym-trn-white-30);
+  --ym-step-shadow-3:0 6px 18px var(--ym-rank-shadow);
+}
+
+/* Tokens de l'app Flutter Yamatch, copiés depuis
+   yamatch/lib/shared/theme/app_theme.dart (AppColors / AppFontSizes).
+   SOURCE DE VÉRITÉ = le fichier Dart. Ne pas inventer de couleur :
+   si une valeur manque ici, l'ajouter en citant la constante Dart. */
+@font-face{font-family:'Inter';src:url('fonts/Inter-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+@font-face{font-family:'Roboto';src:url('fonts/Roboto-Variable.woff2') format('woff2');font-weight:100 900;font-style:normal;font-display:swap}
+
+.ym-app{
+  line-height:normal;
+  text-align:left;
+  font-family:var(--ym-font-body);
+  color:var(--ym-text-primary);
+  -webkit-font-smoothing:antialiased;
+}
+.ym-app *,.ym-app *::before,.ym-app *::after,.ym-phone{box-sizing:border-box}
+/* Isoler les paragraphes du rythme éditorial de la page. */
+.ym-app p{margin:0;line-height:normal;color:inherit}
+
+/* Le slot réserve les dimensions réelles du cadre 414 × 868 après mise à l’échelle. */
+.ym-phone-slot{--ym-phone-scale:1;width:calc(414px * var(--ym-phone-scale));height:calc(868px * var(--ym-phone-scale));position:relative;flex:none}
+.ym-phone-slot>.ym-phone{position:absolute;top:0;left:0;transform:scale(var(--ym-phone-scale));transform-origin:top left}
+.ym-phone{width:414px;height:868px;padding:12px;border-radius:var(--ym-radius-64);background:var(--ym-frame-surface);
+  /* liseré titane extérieur + bord intérieur */
+  box-shadow:var(--ym-frame-shadow)}
+.ym-screen{position:relative;width:390px;height:844px;border-radius:var(--ym-radius-52);overflow:hidden;background:var(--ym-light-bg)}
+/* Status bar iOS (54 pt) superposée au contenu, comme sur l'appareil */
+.ym-statusbar{position:absolute;z-index:50;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:6px 34px 0 52px;color:var(--ym-dark-surface);pointer-events:none}
+.ym-statusbar--light{color:var(--ym-text-white)}
+.ym-statusbar__time{font-family:var(--ym-font-status);font-size:var(--ym-fs-body-large);font-weight:600;letter-spacing:-.01em}
+.ym-statusbar__icons{display:flex;align-items:center;gap:6px}
+.ym-island{position:absolute;z-index:51;top:11px;left:50%;width:124px;height:36px;margin-left:-62px;border-radius:var(--ym-radius-20);background:var(--ym-dark-surface)}
+/* Indicateur d'accueil iOS */
+.ym-home-indicator{position:absolute;z-index:50;bottom:8px;left:50%;width:134px;height:5px;margin-left:-67px;border-radius:var(--ym-radius-3);background:var(--ym-dark-surface)}
+.ym-home-indicator--light{background:var(--ym-text-white)}
+
+/* Écran « discovery » — Accueil « Prochains tournois ».
+   Style : lib/features/home/screens/home_screen.dart, MainTabHeader,
+   TournamentCard (lib/shared/widgets/tournament_card.dart),
+   tournamentCardBackground, OrganizerCtaCard (legacy), BottomNavBar.
+   Contenu : capture website/assets/screens/screen_1.png. */
+.ym-screen--discovery{
+  background:linear-gradient(180deg,var(--ym-light-bg) 0%,var(--ym-onboarding-bg-end) 100%);
+}
+.ym-screen--discovery svg{display:block;fill:currentColor}
+
+/* ---- MainTabHeader ---- */
+.ym-screen--discovery .ym-disc-header{position:absolute;left:18px;right:18px;top:90px;height:44px;display:flex;align-items:center;justify-content:space-between}
+.ym-screen--discovery .ym-disc-title{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-title);letter-spacing:.1px;color:var(--ym-text-primary)}
+.ym-screen--discovery .ym-disc-bell{width:25px;height:25px;margin-right:4px;color:var(--ym-text-primary)}
+
+/* ---- Barre de filtres ---- */
+.ym-screen--discovery .ym-disc-filters{position:absolute;left:18px;right:20px;top:146px;height:56px;padding:7px 7px 7px 8px;display:flex;align-items:center;border-radius:var(--ym-radius-pill);background:var(--ym-glass-light);border:1px solid var(--ym-glass-light-border);box-shadow:var(--ym-shadow-1)}
+.ym-screen--discovery .ym-disc-sport{height:40px;width:119px;padding:0 15px;display:flex;align-items:center;justify-content:space-between;border-radius:var(--ym-radius-pill);background:linear-gradient(90deg,var(--ym-accent),var(--ym-accent-gradient-end));font-family:var(--ym-font-body);font-weight:600;font-size:var(--ym-fs-body);color:var(--ym-dark-bg)}
+.ym-screen--discovery .ym-disc-sport svg{width:16px;height:16px;margin-right:-2px}
+.ym-screen--discovery .ym-disc-location{flex:1;display:flex;align-items:center;gap:7px;padding-left:18px;font-family:var(--ym-font-body);font-weight:500;font-size:var(--ym-fs-body);color:var(--ym-text-primary)}
+.ym-screen--discovery .ym-disc-location svg{width:16px;height:16px;color:var(--ym-medium-gray)}
+.ym-screen--discovery .ym-disc-toggle{width:85px;height:42px;padding:0 3px;display:flex;align-items:center;justify-content:space-between;border-radius:var(--ym-radius-pill);background:var(--ym-dark-surface)}
+.ym-screen--discovery .ym-disc-toggle__seg{width:36px;height:36px;margin:0 2px;border-radius:var(--ym-radius-50percent);display:flex;align-items:center;justify-content:center;color:var(--ym-medium-gray)}
+.ym-screen--discovery .ym-disc-toggle__seg--on{background:var(--ym-light-bg);color:var(--ym-text-primary)}
+.ym-screen--discovery .ym-disc-toggle__seg svg{width:20px;height:20px}
+.ym-screen--discovery .ym-disc-toggle__seg:not(.ym-disc-toggle__seg--on) svg{width:21px;height:21px;color:var(--ym-dark-gray)}
+
+/* ---- Card ticket ---- */
+.ym-screen--discovery .ym-disc-ticket{position:absolute;left:18px;width:353px;top:218px;height:281px;border-radius:var(--ym-radius-card);overflow:hidden;background:var(--ym-dark-bg);
+  /* Encoches latérales (notchRadius 8) retranchées du contour */
+  -webkit-mask:radial-gradient(circle at 0 183px,transparent 8px,var(--ym-dark-surface) 8.5px) left/51% 100% no-repeat,radial-gradient(circle at 100% 183px,transparent 8px,var(--ym-dark-surface) 8.5px) right/51% 100% no-repeat;
+  mask:radial-gradient(circle at 0 183px,transparent 8px,var(--ym-dark-surface) 8.5px) left/51% 100% no-repeat,radial-gradient(circle at 100% 183px,transparent 8px,var(--ym-dark-surface) 8.5px) right/51% 100% no-repeat}
+.ym-screen--discovery .ym-disc-ticket__head{position:relative;height:175px;background:radial-gradient(circle 263px at 50% 50%,var(--ym-dark-surface) 0%,var(--ym-teal) 100%)}
+.ym-screen--discovery .ym-disc-date{position:absolute;left:20px;top:27px;width:69px;height:69px;border:2px solid var(--ym-disc-white-30);border-radius:var(--ym-radius-17);display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-date__day{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-display);line-height:1}
+.ym-screen--discovery .ym-disc-date__month{margin-top:3px;font-family:var(--ym-font-body);font-size:var(--ym-fs-body);line-height:1;color:var(--ym-disc-white-90)}
+.ym-screen--discovery .ym-disc-info{position:absolute;left:105px;top:20px;right:30px;color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-info__name{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-title);line-height:30px;width:150px}
+.ym-screen--discovery .ym-disc-info__place{margin-top:3px;font-family:var(--ym-font-body);font-size:var(--ym-fs-body);line-height:20px;color:var(--ym-disc-white-90)}
+.ym-screen--discovery .ym-disc-sep{margin:0 11px}
+.ym-screen--discovery .ym-disc-chev{position:absolute;right:12px;top:11px;width:21px;height:21px;border-radius:var(--ym-radius-50percent);background:var(--ym-dark-overlay-low);display:flex;align-items:center;justify-content:center;color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-chev svg{width:16px;height:16px}
+.ym-screen--discovery .ym-disc-progress-row{position:absolute;left:20px;right:20px;top:119px;display:flex;justify-content:space-between;font-family:var(--ym-font-body);font-size:var(--ym-fs-body);line-height:20px;color:var(--ym-text-white);letter-spacing:.2px}
+.ym-screen--discovery .ym-disc-remaining{display:flex;align-items:center;font-weight:700;color:var(--ym-accent)}
+.ym-screen--discovery .ym-disc-remaining i{width:8.5px;height:8.5px;margin-right:6.5px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent)}
+.ym-screen--discovery .ym-disc-bar{position:absolute;left:20px;right:20px;top:146px;height:6px;border-radius:var(--ym-radius-pill);background:var(--ym-disc-white-20);overflow:hidden}
+.ym-screen--discovery .ym-disc-bar span{display:block;width:75%;height:100%;border-radius:var(--ym-radius-pill);background:linear-gradient(90deg,var(--ym-text-white) 55%,var(--ym-disc-white-70) 75%,var(--ym-text-white) 92%)}
+.ym-screen--discovery .ym-disc-ticket__tear{height:16px;background:linear-gradient(90deg,var(--ym-disc-white-20) 6px,transparent 6px) 0 50%/10px 1px repeat-x}
+.ym-screen--discovery .ym-disc-ticket__foot{display:flex;align-items:center;gap:12px;padding:15px 20px 0 20px}
+.ym-screen--discovery .ym-disc-expand{flex:none;width:54px;height:54px;border-radius:var(--ym-radius-50percent);background:var(--ym-dark-surface);border:.6px solid var(--ym-disc-white-10);display:flex;align-items:center;justify-content:center;color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-expand svg{width:26px;height:26px}
+.ym-screen--discovery .ym-disc-pay{flex:1;height:58px;border-radius:var(--ym-radius-pill);background:var(--ym-accent);display:flex;align-items:center;justify-content:center;font-family:var(--ym-font-body);font-weight:700;font-size:var(--ym-fs-subtitle);color:var(--ym-text-primary)}
+
+/* ---- Card organisateur ---- */
+.ym-screen--discovery .ym-disc-orga{position:absolute;left:18px;width:353px;top:514px;height:196px;padding:18px;border-radius:var(--ym-radius-card);background:var(--ym-dark-card);color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-orga__row{display:flex;align-items:center;gap:12px}
+.ym-screen--discovery .ym-disc-orga__icon{flex:none;width:39px;height:39px;border-radius:var(--ym-radius-11);background:var(--ym-accent);display:flex;align-items:center;justify-content:center;color:var(--ym-dark-card)}
+.ym-screen--discovery .ym-disc-orga__icon svg{width:24px;height:24px}
+.ym-screen--discovery .ym-disc-orga__title{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-subtitle)}
+.ym-screen--discovery .ym-disc-orga__close{position:absolute;right:14px;top:13px;width:16px;height:16px;color:var(--ym-disc-white-90)}
+.ym-screen--discovery .ym-disc-orga__text{margin:10px 0 0;font-family:var(--ym-font-body);font-size:var(--ym-fs-body);line-height:20px;letter-spacing:.2px}
+.ym-screen--discovery .ym-disc-orga__cta{position:absolute;left:17px;right:18px;top:121px;height:58px;border-radius:var(--ym-radius-pill);background:var(--ym-accent);display:flex;align-items:center;justify-content:center;font-family:var(--ym-font-body);font-weight:700;font-size:var(--ym-fs-subtitle);color:var(--ym-dark-surface)}
+
+/* ---- 2e card tournoi ---- */
+.ym-screen--discovery .ym-disc-ticket--next{top:727px;height:175px;-webkit-mask:none;mask:none}
+.ym-screen--discovery .ym-disc-ticket--next .ym-disc-ticket__head{background:radial-gradient(circle 263px at 50% 50%,var(--ym-disc-gray-start) 0%,var(--ym-disc-gray-end) 100%)}
+
+/* ---- Nav bar glassmorphism ---- */
+.ym-screen--discovery .ym-disc-nav{position:absolute;left:98px;top:757px;width:193px;height:70px;padding:0 8px;display:flex;align-items:center;justify-content:space-between;border-radius:var(--ym-radius-pill);background:var(--ym-disc-nav-fill);border:1px solid var(--ym-dark-overlay-low);box-shadow:var(--ym-shadow-2);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.ym-screen--discovery .ym-disc-nav__item{width:52px;height:52px;border-radius:var(--ym-radius-50percent);background:var(--ym-disc-nav-bubble);display:flex;align-items:center;justify-content:center;color:var(--ym-text-white)}
+.ym-screen--discovery .ym-disc-nav__item svg{width:24px;height:24px}
+.ym-screen--discovery .ym-disc-nav__item--on{background:var(--ym-light-bg);color:var(--ym-dark-surface)}
+.ym-screen--discovery .ym-disc-ticket--next .ym-disc-info{top:25px}
+
+/* Écran « tournament » — PaymentScreen (fiche tournoi avant paiement).
+   Sources Flutter : tournament_detail_header.dart, tournament_card_background.dart,
+   back_button_circle.dart, tournament_info_section.dart, info_row.dart,
+   tournament_info_footer.dart, glass_icon_button.dart, screen_bottom_bar.dart. */
+.ym-screen--tournament{
+  background:var(--ym-light-bg);
+}
+.ym-screen--tournament .ym-trn-header{position:absolute;top:0;left:0;right:0;height:222px;padding:70px 16px 16px;
+  /* RadialGradient(center, radius 1.5 × côté court) */
+  background:radial-gradient(circle 344px at 50% 50%,var(--ym-trn-grad-start),var(--ym-trn-grad-end));color:var(--ym-text-white)}
+.ym-screen--tournament .ym-trn-titlerow{display:flex;align-items:center;gap:12px}
+.ym-screen--tournament .ym-trn-back{flex:none;width:34px;height:34px;border-radius:var(--ym-radius-50percent);display:flex;align-items:center;justify-content:center;
+  background:var(--ym-trn-white-20);box-shadow:var(--ym-step-shadow-1);color:var(--ym-text-white)}
+.ym-screen--tournament .ym-trn-titles{min-width:0;flex:1}
+.ym-screen--tournament .ym-trn-title{font-family:var(--ym-font-heading);font-size:var(--ym-fs-title);font-weight:700;line-height:1.2}
+.ym-screen--tournament .ym-trn-subtitle{margin-top:4px;font-size:var(--ym-fs-body);color:var(--ym-trn-white-90);line-height:1.3;letter-spacing:.02em}
+.ym-screen--tournament .ym-trn-dot{margin:0 10px}
+.ym-screen--tournament .ym-trn-statsrow{margin-top:20px;display:flex;gap:8px;align-items:center}
+.ym-screen--tournament .ym-trn-date{width:52px;height:52px;border-radius:var(--ym-radius-12);box-shadow:var(--ym-step-shadow-2);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ym-screen--tournament .ym-trn-date__day{font-family:var(--ym-font-heading);font-size:var(--ym-fs-title);font-weight:700;line-height:1}
+.ym-screen--tournament .ym-trn-date__month{font-size:var(--ym-fs-caption);color:var(--ym-trn-white-90);line-height:1;margin-top:2px}
+.ym-screen--tournament .ym-trn-regs{text-align:right;margin-left:auto}
+.ym-screen--tournament .ym-trn-regs__count{font-size:var(--ym-fs-body);color:var(--ym-trn-white-70);letter-spacing:.02em}
+.ym-screen--tournament .ym-trn-regs__left{margin-top:4px;font-size:var(--ym-fs-body);font-weight:700;color:var(--ym-accent);display:flex;align-items:center;justify-content:flex-end;gap:6px}
+.ym-screen--tournament .ym-trn-regs__pulse{width:8px;height:8px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent)}
+.ym-screen--tournament .ym-trn-progress{margin-top:10px;height:6px;border-radius:var(--ym-radius-3);background:var(--ym-trn-white-30);overflow:hidden}
+.ym-screen--tournament .ym-trn-progress__fill{display:block;width:75%;height:100%;border-radius:var(--ym-radius-3);background:linear-gradient(90deg,var(--ym-text-white) 45%,var(--ym-trn-progress-fill-end))}
+.ym-screen--tournament .ym-trn-body{position:absolute;top:250px;left:20px;right:20px}
+.ym-screen--tournament .ym-trn-card{background:var(--ym-dark-bg);border-radius:var(--ym-radius-card);padding:20px 20px 40px;color:var(--ym-text-white)}
+.ym-screen--tournament .ym-trn-label{font-size:var(--ym-fs-caption);font-weight:600;letter-spacing:.4px;color:var(--ym-medium-gray);margin-bottom:8px}
+.ym-screen--tournament .ym-trn-pair{display:flex;gap:12px;margin-bottom:12px}
+.ym-screen--tournament .ym-trn-pair .ym-trn-row{flex:1;margin-bottom:0}
+.ym-screen--tournament .ym-trn-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:var(--ym-radius-12);background:var(--ym-trn-white-08);margin-bottom:12px}
+.ym-screen--tournament .ym-trn-row--compact{gap:8px}
+.ym-screen--tournament .ym-trn-icon{flex:none;width:32px;height:32px;border-radius:var(--ym-radius-10);background:var(--ym-accent);color:var(--ym-dark-surface);display:flex;align-items:center;justify-content:center}
+.ym-screen--tournament .ym-trn-texts{min-width:0}
+.ym-screen--tournament .ym-trn-row__label{font-size:var(--ym-fs-caption);color:var(--ym-trn-white-70);line-height:1.32;letter-spacing:.02em}
+.ym-screen--tournament .ym-trn-row__value{font-size:var(--ym-fs-body);font-weight:500;line-height:1.32;letter-spacing:.02em;white-space:nowrap}
+.ym-screen--tournament .ym-trn-divider{height:.6px;background:var(--ym-trn-white-10);margin:20px 0 21px}
+.ym-screen--tournament .ym-trn-row--address{padding:12px 14px;margin-bottom:17px}
+.ym-screen--tournament .ym-trn-address{flex:1;font-size:var(--ym-fs-body);font-weight:500;line-height:1.4;letter-spacing:.02em}
+.ym-screen--tournament .ym-trn-glass{flex:none;margin-left:-4px;width:34px;height:34px;border-radius:var(--ym-radius-50percent);display:flex;align-items:center;justify-content:center;background:var(--ym-trn-white-20);box-shadow:var(--ym-step-shadow-1)}
+.ym-screen--tournament .ym-trn-row--org{height:60px;margin-bottom:0}
+.ym-screen--tournament .ym-trn-bottombar{position:absolute;left:0;right:0;bottom:0;min-height:110px;background:var(--ym-light-bg);padding:8px 30px 34px;display:flex;align-items:center;gap:12px}
+.ym-screen--tournament .ym-trn-cta{flex:1;min-width:0;height:52px;border-radius:var(--ym-radius-pill);background:var(--ym-accent);display:flex;align-items:center;justify-content:center;font-size:var(--ym-fs-button);font-weight:700;color:var(--ym-text-primary)}
+.ym-screen--tournament .ym-trn-cta__dot{margin:0 12px}
+.ym-screen--tournament .ym-trn-cancel{margin-top:9px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:var(--ym-fs-caption);color:var(--ym-dark-gray);letter-spacing:.005em}
+
+.ym-screen--tournament .ym-trn-more{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:var(--ym-radius-50percent);background:var(--ym-trn-white-20);box-shadow:var(--ym-step-shadow-1)}
+.ym-screen--tournament .ym-trn-price{min-width:52px;height:52px;padding:0 8px;border:1.5px solid var(--ym-trn-white-30);border-radius:var(--ym-radius-12);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px}
+.ym-screen--tournament .ym-trn-price__value{font-family:var(--ym-font-heading);font-size:var(--ym-fs-title);font-weight:700;line-height:1}
+.ym-screen--tournament .ym-trn-price__unit{font-size:var(--ym-fs-caption);line-height:1}
+.ym-screen--tournament .ym-trn-bar-info{flex:1;min-width:0;padding-left:15px}
+.ym-screen--tournament .ym-trn-bar-price{font-size:var(--ym-fs-bottom-bar-value);font-weight:700;line-height:1}
+.ym-screen--tournament .ym-trn-bar-price>span{font-size:var(--ym-fs-caption);font-weight:400;color:var(--ym-dark-gray)}
+.ym-screen--tournament .ym-trn-bar-caption{margin-top:2px;font-size:var(--ym-fs-caption);color:var(--ym-text-primary);display:flex;align-items:center;gap:6px}
+.ym-screen--tournament .ym-trn-bar-caption>span{width:6px;height:6px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent)}
+
+/* BookingConfirmationScreen → SuccessScreen : état final statique, sans toast. */
+.ym-screen--confirmation{background:var(--ym-accent);color:var(--ym-text-primary)}
+.ym-screen--confirmation .ym-conf-hero{position:absolute;top:154px;left:50%;margin-left:-42px;width:84px;height:84px;border-radius:var(--ym-radius-50percent);background:var(--ym-dark-surface);box-shadow:var(--ym-conf-badge-shadow);display:grid;place-items:center;color:var(--ym-accent)}
+.ym-screen--confirmation .ym-conf-hero::before{content:"";position:absolute;inset:5px;border:1px solid var(--ym-conf-badge-ring);border-radius:inherit}
+.ym-screen--confirmation .ym-conf-hero svg{width:36px;height:36px}
+.ym-screen--confirmation .ym-conf-label{position:absolute;left:32px;right:32px;top:274px;text-align:center;font-size:var(--ym-fs-caption);font-weight:600;letter-spacing:.4px}
+.ym-screen--confirmation .ym-conf-title{position:absolute;left:32px;right:32px;top:296px;text-align:center;font-family:var(--ym-font-heading);font-size:var(--ym-fs-display);font-weight:700;line-height:1.2;color:var(--ym-dark-surface)}
+.ym-screen--confirmation .ym-conf-subtitle{position:absolute;left:32px;right:32px;top:371px;text-align:center;font-size:var(--ym-fs-button);line-height:1.2}
+.ym-screen--confirmation .ym-conf-summary{position:absolute;left:20px;right:20px;top:441px;padding:20px;background:var(--ym-dark-surface);border-radius:var(--ym-radius-card);box-shadow:var(--ym-conf-summary-shadow);color:var(--ym-text-white);display:flex;flex-wrap:wrap;align-items:flex-start;column-gap:14px}
+.ym-screen--confirmation .ym-conf-summary-row{display:flex;align-items:flex-start;gap:14px;width:100%}
+.ym-screen--confirmation .ym-conf-date{min-width:52px;min-height:56px;padding:4px 8px;background:var(--ym-dark-bg);border:1px solid var(--ym-conf-date-border);border-radius:var(--ym-radius-12);text-align:center;display:flex;flex-direction:column}
+.ym-screen--confirmation .ym-conf-date__day{font-family:var(--ym-font-heading);font-size:var(--ym-fs-display);font-weight:700;line-height:1.2}
+.ym-screen--confirmation .ym-conf-date__month{font-size:var(--ym-fs-caption);font-weight:600}
+.ym-screen--confirmation .ym-conf-summary-content{flex:1;min-width:0}
+.ym-screen--confirmation .ym-conf-summary-name{font-family:var(--ym-font-heading);font-size:var(--ym-fs-subtitle);font-weight:700;line-height:1.2}
+.ym-screen--confirmation .ym-conf-summary-meta{margin-top:4px;font-size:var(--ym-fs-body);color:var(--ym-conf-meta);line-height:1.2}
+.ym-screen--confirmation .ym-conf-summary-status{width:100%;margin-top:16px;padding-top:16px;border-top:1px dashed var(--ym-trn-white-20);font-size:var(--ym-fs-body);font-weight:600;color:var(--ym-accent);display:flex;align-items:center;gap:6px}
+.ym-screen--confirmation .ym-conf-summary-status>span{content:"";width:7px;height:7px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent);flex:none}
+.ym-screen--confirmation .ym-conf-bottom{position:absolute;left:20px;right:20px;bottom:34px;padding-top:12px;background:var(--ym-accent)}
+.ym-screen--confirmation .ym-conf-cta,.ym-screen--confirmation .ym-conf-link{height:52px;display:grid;place-items:center;font-size:var(--ym-fs-button);font-weight:600;border-radius:var(--ym-radius-pill)}
+.ym-screen--confirmation .ym-conf-cta{background:var(--ym-dark-surface);color:var(--ym-accent)}
+.ym-screen--confirmation .ym-conf-link{margin-top:4px;color:var(--ym-dark-surface)}
+
+/* Écran « Suivre mon tournoi » — onglet Rang, classement global.
+   Style : MyTournamentDayScreen + SegmentedPillBar + ClassementPanel
+   (yamatch/lib/features/tournament_management/widgets/classement_panel.dart). */
+.ym-screen--ranking{
+  background:linear-gradient(180deg,var(--ym-light-bg) 0%,var(--ym-light-bg) 22%,var(--ym-onboarding-bg-end) 100%);
+}
+.ym-screen--ranking .ym-rank-header{position:absolute;top:62px;left:20px;right:20px;display:flex;align-items:center;gap:16px}
+.ym-screen--ranking .ym-rank-back{flex:none;width:33px;height:33px;border-radius:var(--ym-radius-50percent);background:var(--ym-light-gray);border:1px solid var(--ym-divider);display:flex;align-items:center;justify-content:center;margin-top:0}
+.ym-screen--ranking .ym-rank-back svg{width:20px;height:20px;fill:var(--ym-text-primary)}
+.ym-screen--ranking .ym-rank-title{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-title);line-height:1.2;color:var(--ym-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ym-screen--ranking .ym-rank-subtitle{font-size:var(--ym-fs-body);color:var(--ym-medium-gray);margin-top:4px;letter-spacing:normal}
+.ym-screen--ranking .ym-rank-pillbar{position:absolute;top:133px;left:16px;width:358px;height:46px;padding:4px;border-radius:var(--ym-radius-pill);background:var(--ym-light-gray);border:1px solid var(--ym-light-bg);box-shadow:var(--ym-rank-tabs-shadow);display:flex}
+.ym-screen--ranking .ym-rank-pill{flex:1;display:flex;align-items:center;justify-content:center;border-radius:var(--ym-radius-pill);font-size:var(--ym-fs-body);color:var(--ym-medium-gray)}
+.ym-screen--ranking .ym-rank-pill--active{background:var(--ym-accent);color:var(--ym-dark-bg);font-weight:700}
+.ym-screen--ranking .ym-rank-scopes{position:absolute;top:203px;left:20px;display:flex;gap:8px}
+.ym-screen--ranking .ym-rank-scope{height:34px;padding:8px 20px;border-radius:var(--ym-radius-pill);display:flex;align-items:center;font-size:var(--ym-fs-body);font-weight:600;color:var(--ym-rank-scope-ink);background:var(--ym-light-gray);border:.8px solid var(--ym-rank-scope-border)}
+.ym-screen--ranking .ym-rank-scope--active{background:var(--ym-accent);border-color:var(--ym-rank-scope-border);color:var(--ym-dark-bg)}
+.ym-screen--ranking .ym-rank-sort{position:absolute;top:257px;left:20px;display:flex;align-items:center;gap:6px;font-size:var(--ym-fs-caption);color:var(--ym-medium-gray);letter-spacing:.03em}
+.ym-screen--ranking .ym-rank-sort svg{width:13px;height:13px;fill:var(--ym-medium-gray)}
+.ym-screen--ranking .ym-rank-card{position:absolute;top:285px;left:20px;width:350px;background:var(--ym-light-bg);border:1px solid var(--ym-light-gray);border-radius:var(--ym-radius-input);overflow:hidden}
+/* Le reset marketing retire le padding natif des cellules présent dans la référence. */
+.ym-screen--ranking th,.ym-screen--ranking td{padding:1px}
+.ym-screen--ranking .ym-rank-table{width:573px;border-collapse:collapse;table-layout:fixed}
+.ym-screen--ranking .ym-rank-table th{height:44px;font-weight:500;font-size:var(--ym-fs-body);color:var(--ym-medium-gray);border-bottom:1px solid var(--ym-light-gray)}
+.ym-screen--ranking .ym-rank-table td{height:56px;font-weight:500;font-size:var(--ym-fs-caption);color:var(--ym-text-primary);border-bottom:1px solid var(--ym-light-gray)}
+.ym-screen--ranking .ym-rank-table tr:last-child td{border-bottom:0}
+.ym-screen--ranking .ym-rank-c-rank{width:59px;text-align:center;padding:0 0 0 3px}
+.ym-screen--ranking .ym-rank-c-team{width:106px;text-align:left;white-space:nowrap}
+.ym-screen--ranking th.ym-rank-c-team{padding-left:4px}
+.ym-screen--ranking .ym-rank-c-stat{width:50px;text-align:center}
+.ym-screen--ranking .ym-rank-row td:first-child{position:relative}
+.ym-screen--ranking .ym-rank-row td:first-child::before{content:"";position:absolute;left:0;top:0;bottom:-1px;width:3px}
+.ym-screen--ranking .ym-rank-row--q td:first-child::before{background:var(--ym-success)}
+.ym-screen--ranking .ym-rank-row--o td:first-child::before{background:var(--ym-medium-gray)}
+.ym-screen--ranking .ym-rank-row--me td{background:var(--ym-rank-me-bg);border-top:1.2px solid var(--ym-rank-me-border);border-bottom:1.2px solid var(--ym-rank-me-border)}
+.ym-screen--ranking .ym-rank-row--me .ym-rank-team{font-weight:700;padding-left:1px}
+.ym-screen--ranking .ym-rank-rankcell{display:inline-flex;align-items:center;gap:1px;margin-left:-5px}
+.ym-screen--ranking .ym-rank-pos{font-weight:600}
+.ym-screen--ranking .ym-rank-pos--solo{margin-left:5px}
+.ym-screen--ranking .ym-rank-trend{width:14px;height:14px}
+.ym-screen--ranking .ym-rank-trend--up{fill:var(--ym-success)}
+.ym-screen--ranking .ym-rank-trend--down{fill:var(--ym-error)}
+.ym-screen--ranking .ym-rank-titles{min-width:0;flex:1}
+.ym-screen--ranking .ym-rank-team{font-weight:600;font-size:var(--ym-fs-caption);display:inline-block;max-width:94px;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
+.ym-screen--ranking .ym-rank-team-level{display:block;max-width:98px;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-size:var(--ym-fs-avatar-label);color:var(--ym-medium-gray)}
+.ym-screen--ranking .ym-rank-c-points{width:58px;text-align:center}
+.ym-screen--ranking .ym-rank-c-form{width:150px;text-align:center}
+.ym-screen--ranking .ym-rank-dot{display:inline-block;width:7px;height:7px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent);margin-left:10px;vertical-align:1px}
+.ym-screen--ranking .ym-rank-legend{position:absolute;top:794px;left:19px;width:351px;padding:12px 14px 14px;border-radius:var(--ym-radius-input);background:var(--ym-light-gray)}
+.ym-screen--ranking .ym-rank-legend-title{font-size:var(--ym-fs-caption);font-weight:600;color:var(--ym-dark-gray);letter-spacing:.02em}
+.ym-screen--ranking .ym-rank-legend-items{display:flex;gap:12px;margin-top:8px;font-size:var(--ym-fs-caption);color:var(--ym-dark-gray);letter-spacing:.02em}
+.ym-screen--ranking .ym-rank-legend-item{display:inline-flex;align-items:center;gap:6px}
+.ym-screen--ranking .ym-rank-slot{width:13px;height:13px;border-radius:var(--ym-radius-3);display:inline-flex;align-items:center;justify-content:center}
+.ym-screen--ranking .ym-rank-slot svg{width:10px;height:10px;fill:var(--ym-text-white)}
+.ym-screen--ranking .ym-rank-slot--win{background:var(--ym-success)}
+.ym-screen--ranking .ym-rank-slot--loss{background:var(--ym-error)}
+.ym-screen--ranking .ym-rank-slot--draw{background:var(--ym-medium-gray)}
+.ym-screen--ranking .ym-rank-slot--none{background:var(--ym-dark-gray)}
+
+/* Seule la carte au premier plan sort du cadre ; le reste de l’écran reste découpé. */
+.hero-phone .ym-screen--discovery{overflow:visible}
+.hero-phone .ym-screen--discovery .ym-disc-viewport{position:absolute;inset:0;overflow:hidden;border-radius:inherit}
+.hero-phone .ym-screen--discovery .ym-disc-ticket-relief{position:absolute;left:18px;top:218px;width:353px;height:281px;z-index:4;transform:var(--ym-hero-pop-transform);transform-origin:center;filter:var(--ym-hero-pop-shadow);pointer-events:none}
+.hero-phone .ym-screen--discovery .ym-disc-ticket-relief>.ym-disc-ticket{position:relative;left:0;top:0;width:100%;height:100%}
+
+/* Accueil participant : composants app actuels (MainTabHeader, PillToggle, OrganizerCtaCard, BottomNavBar). */
+.hero-phone .ym-screen--discovery .ym-disc-header{left:20px;right:20px;top:74px}
+.hero-phone .ym-screen--discovery .ym-disc-toggle{width:88px;height:44px;padding:0}
+.hero-phone .ym-screen--discovery .ym-disc-toggle__seg{width:36px;height:36px;margin:0 4px;color:var(--ym-disc-current-toggle-ink)}
+.hero-phone .ym-screen--discovery .ym-disc-toggle__seg--on{color:var(--ym-text-primary)}
+.hero-phone .ym-screen--discovery .ym-disc-toggle__seg:not(.ym-disc-toggle__seg--on) svg{width:20px;height:20px;color:inherit}
+.hero-phone .ym-screen--discovery .ym-disc-filters{left:20px;right:20px;top:136px;height:48px;padding:4px;background:var(--ym-light-gray);border-color:var(--ym-light-bg);box-shadow:var(--ym-disc-current-filter-shadow)}
+.hero-phone .ym-screen--discovery .ym-disc-sport{width:auto;height:38px;padding:10px 14px;justify-content:center;background:var(--ym-accent)}
+.hero-phone .ym-screen--discovery .ym-disc-location{padding-left:8px;gap:6px}
+.hero-phone .ym-screen--discovery .ym-disc-orga{height:auto;padding:20px;background:var(--ym-dark-bg);box-shadow:var(--ym-disc-current-card-shadow)}
+.hero-phone .ym-screen--discovery .ym-disc-orga__icon{width:40px;height:40px;border-radius:var(--ym-radius-12);background:var(--ym-disc-current-icon-tile);color:var(--ym-accent)}
+.hero-phone .ym-screen--discovery .ym-disc-orga__icon svg{width:20px;height:20px}
+.hero-phone .ym-screen--discovery .ym-disc-orga__headings{flex:1;min-width:0}
+.hero-phone .ym-screen--discovery .ym-disc-orga__eyebrow{display:block;font-size:var(--ym-fs-caption);font-weight:300;letter-spacing:.2px;color:var(--ym-accent);margin-bottom:2px}
+.hero-phone .ym-screen--discovery .ym-disc-orga__title{display:block;line-height:1.25}
+.hero-phone .ym-screen--discovery .ym-disc-orga__text{margin-top:16px;line-height:1.5;color:var(--ym-disc-white-70);letter-spacing:normal}
+.hero-phone .ym-screen--discovery .ym-disc-orga__features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.hero-phone .ym-screen--discovery .ym-disc-orga__feature{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--ym-radius-12);background:var(--ym-disc-current-feature-bg);font-size:var(--ym-fs-caption);color:var(--ym-text-white)}
+.hero-phone .ym-screen--discovery .ym-disc-orga__feature svg{width:16px;height:16px;flex:none;color:var(--ym-accent)}
+.hero-phone .ym-screen--discovery .ym-disc-orga__cta{position:static;height:52px;margin-top:16px;font-size:var(--ym-fs-button)}
+.hero-phone .ym-screen--discovery .ym-disc-nav{left:50%;top:auto;bottom:52px;width:max-content;height:62px;padding:3px;translate:-50% 0;background:var(--ym-disc-current-nav-fill);z-index:2}
+.hero-phone .ym-screen--discovery .ym-disc-nav__item{width:auto;height:54px;padding:8px 20px;flex-direction:column;gap:2px;border-radius:var(--ym-radius-pill);background:transparent}
+.hero-phone .ym-screen--discovery .ym-disc-nav__item--on{background:var(--ym-light-bg)}
+.hero-phone .ym-screen--discovery .ym-disc-nav__item svg{flex:none;width:24px;height:26px}
+.hero-phone .ym-screen--discovery .ym-disc-nav__item:nth-child(2) svg{width:18px}
+.hero-phone .ym-screen--discovery .ym-disc-nav__label{font-size:var(--ym-fs-nav-label);line-height:1;font-weight:400;color:var(--ym-disc-current-label);white-space:nowrap}
+.hero-phone .ym-screen--discovery .ym-disc-nav__item--on .ym-disc-nav__label{font-weight:600;color:var(--ym-dark-surface)}
+
+
+/* Le header accompagne le contenu à mi-vitesse, sans collision avec les filtres. */
+.hero-phone .ym-screen--discovery .ym-disc-ticket-relief{translate:0 var(--ym-disc-scroll,0px)}
+.hero-phone .ym-screen--discovery .ym-disc-ticket-placeholder,
+.hero-phone .ym-screen--discovery .ym-disc-orga,
+.hero-phone .ym-screen--discovery .ym-disc-filters,
+.hero-phone .ym-screen--discovery .ym-disc-ticket--next{translate:0 calc(-1 * var(--ym-disc-scroll,0px))}
+.hero-phone .ym-screen--discovery .ym-disc-header,
+.hero-phone .ym-screen--discovery .ym-disc-filters{z-index:3}
+.hero-phone .ym-screen--discovery .ym-disc-header{translate:0 calc(-.5 * var(--ym-disc-scroll,0px))}
+@media (prefers-reduced-motion:reduce){
+  .hero-phone .ym-screen--discovery .ym-disc-header,
+  .hero-phone .ym-screen--discovery .ym-disc-ticket-relief,
+  .hero-phone .ym-screen--discovery .ym-disc-ticket-placeholder,
+.hero-phone .ym-screen--discovery .ym-disc-orga,
+  .hero-phone .ym-screen--discovery .ym-disc-filters,
+.hero-phone .ym-screen--discovery .ym-disc-ticket--next{translate:0 0}
+}
+
+/* Le tournoi suivant reste après la carte acquisition, hors du viewport illustré. */
+.hero-phone .ym-screen--discovery .ym-disc-ticket--next{top:calc(100% + var(--ym-disc-scroll-max))}
+
+/* L’original conserve sa géométrie ; sa silhouette rend visible l’emplacement libéré. */
+.hero-phone .ym-screen--discovery .ym-disc-ticket--original{visibility:hidden}
+.hero-phone .ym-screen--discovery .ym-disc-ticket-placeholder{position:absolute;left:18px;top:218px;width:353px;height:281px;border-radius:var(--ym-hero-pop-placeholder-radius);background:var(--ym-hero-pop-placeholder-bg);border:var(--ym-hero-pop-placeholder-border)}
+.hero-phone .ym-screen--discovery [data-hero-progress]{transition:width var(--ym-hero-pop-gauge-transition)}
+@media (prefers-reduced-motion:reduce){
+  .hero-phone .ym-screen--discovery [data-hero-progress]{transition:none}
+}
+
+/* Le cadre et les commandes restent fixes pendant le déplacement illustratif du contenu. */
+.quest-step-phone .ym-screen--tournament .ym-trn-body,
+.quest-step-phone .ym-screen--confirmation .ym-conf-hero,
+.quest-step-phone .ym-screen--confirmation .ym-conf-label,
+.quest-step-phone .ym-screen--confirmation .ym-conf-title,
+.quest-step-phone .ym-screen--confirmation .ym-conf-subtitle,
+.quest-step-phone .ym-screen--confirmation .ym-conf-summary,
+.quest-step-phone .ym-screen--ranking .ym-rank-scroll-viewport>div{translate:0 calc(-1 * var(--ym-quest-scroll,0px))}
+.quest-step-phone .ym-screen--tournament .ym-trn-header,
+.quest-step-phone .ym-screen--tournament .ym-trn-bottombar{z-index:1}
+.quest-step-phone .ym-screen--ranking .ym-rank-scroll-viewport{position:absolute;inset:0;clip-path:inset(var(--ym-rank-scroll-top) 0 0)}
+@media (prefers-reduced-motion:reduce){
+.quest-step-phone .ym-screen--tournament .ym-trn-body,
+.quest-step-phone .ym-screen--confirmation .ym-conf-hero,
+.quest-step-phone .ym-screen--confirmation .ym-conf-label,
+.quest-step-phone .ym-screen--confirmation .ym-conf-title,
+.quest-step-phone .ym-screen--confirmation .ym-conf-subtitle,
+.quest-step-phone .ym-screen--confirmation .ym-conf-summary,
+.quest-step-phone .ym-screen--ranking .ym-rank-scroll-viewport>div{translate:0 0}
+}
+
+/* Le ticket flotte seul pour conserver la pose et le scroll du relief parent. */
+.hero-phone .ym-disc-ticket-relief>.ym-disc-ticket{animation:ym-hero-ticket-float var(--ym-hero-ticket-float-duration) ease-in-out infinite}
+@keyframes ym-hero-ticket-float{
+  0%,100%{translate:0 0}
+  50%{translate:0 var(--ym-hero-ticket-float-distance)}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-phone .ym-disc-ticket-relief>.ym-disc-ticket{animation:none;translate:0 0}
+}
+
+.hero-phone .ym-disc-ticket-relief .ym-disc-remaining i{box-shadow:var(--hero-led-shadow-static);animation:heroBadgeLed var(--hero-led-duration) ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){
+  .hero-phone .ym-disc-ticket-relief .ym-disc-remaining i{animation:none;scale:1;background:var(--ym-accent);box-shadow:var(--hero-led-shadow-static)}
+}
+
+/* Même voile blanc que la TournamentCard de l’app, borné au remplissage réel. */
+.hero-phone .ym-disc-ticket-relief [data-hero-progress]{position:relative;overflow:hidden;background:var(--ym-text-white)}
+.hero-phone .ym-disc-ticket-relief [data-hero-progress]::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,var(--ym-disc-white-70) 30%,var(--ym-disc-white-70) 70%,transparent 100%);animation:ym-hero-progress-shimmer var(--ym-hero-progress-shimmer-duration) linear infinite}
+@keyframes ym-hero-progress-shimmer{
+  from{translate:-100% 0}
+  to{translate:100% 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-phone .ym-disc-ticket-relief [data-hero-progress]::after{animation:none;content:none}
+}

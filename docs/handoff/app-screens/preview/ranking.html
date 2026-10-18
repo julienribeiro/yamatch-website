@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Écran codé — ranking</title>
+<link rel="stylesheet" href="../css/app-tokens.css">
+<link rel="stylesheet" href="../css/phone-frame.css">
+<link rel="stylesheet" href="../screens/ranking.css">
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#E9EBEF;padding:24px}</style>
+</head><body>
+<div class="ym-phone">
+<div class="ym-app ym-screen ym-screen--ranking">
+<div class="ym-statusbar" aria-hidden="true">
+  <span class="ym-statusbar__time">09:19</span>
+  <span class="ym-statusbar__icons">
+    <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
+    <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.1-1.2A10.2 10.2 0 0 0 8 .8 10.2 10.2 0 0 0 .9 3.6L2 4.8a8.6 8.6 0 0 1 6-2.4zm0 3.3c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7 7 0 0 0 8 4.1a7 7 0 0 0-4.8 1.8l1.1 1.2c1-.9 2.3-1.4 3.7-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.2l1.2-1.7A1.6 1.6 0 0 0 8 9z"/></svg>
+    <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.5" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="currentColor"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="currentColor" opacity=".45"/></svg>
+  </span>
+</div>
+<div class="ym-island" aria-hidden="true"></div>
+  <div class="ym-rank-header">
+    <div class="ym-rank-back" aria-hidden="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+    </div>
+    <div class="ym-rank-titles">
+      <div class="ym-rank-title">Suivre mon tournoi</div>
+      <div class="ym-rank-subtitle">Tournoi de la Concorde</div>
+    </div>
+  </div>
+  <div class="ym-rank-pillbar">
+    <span class="ym-rank-pill">QG</span>
+    <span class="ym-rank-pill">Matchs</span>
+    <span class="ym-rank-pill ym-rank-pill--active">Rang</span>
+    <span class="ym-rank-pill">Arbre</span>
+  </div>
+  <div class="ym-rank-scopes">
+    <span class="ym-rank-scope ym-rank-scope--active">Global</span>
+    <span class="ym-rank-scope">Par poule</span>
+  </div>
+  <div class="ym-rank-sort">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 17.01V11c0-.55-.45-1-1-1s-1 .45-1 1v6.01h-1.79c-.45 0-.67.54-.35.85l2.79 2.78c.2.19.51.19.71 0l2.79-2.78c.32-.31.09-.85-.35-.85H16zM8.65 3.35 5.86 6.14c-.32.31-.1.85.35.85H8V13c0 .55.45 1 1 1s1-.45 1-1V6.99h1.79c.45 0 .67-.54.35-.85L9.35 3.35a.501.501 0 0 0-.7 0z"/></svg>
+    <span>Ordonné par points marqués</span>
+  </div>
+  <div class="ym-rank-card">
+    <table class="ym-rank-table">
+      <thead>
+        <tr><th class="ym-rank-c-rank">#</th><th class="ym-rank-c-team">Équipe</th><th class="ym-rank-c-stat">MJ</th><th class="ym-rank-c-stat">V</th><th class="ym-rank-c-stat">D</th><th class="ym-rank-c-stat">N</th></tr>
+      </thead>
+      <tbody>
+        <tr class="ym-rank-row ym-rank-row--q">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">1</span><svg class="ym-rank-trend ym-rank-trend--up" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14l5-5 5 5z"/></svg></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Nantes Nautiq...</span></td>
+          <td class="ym-rank-c-stat">5</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">2</td><td class="ym-rank-c-stat">0</td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--q">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">2</span><svg class="ym-rank-trend ym-rank-trend--up" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14l5-5 5 5z"/></svg></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Lyon Lions</span></td>
+          <td class="ym-rank-c-stat">5</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">0</td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--q">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">3</span><svg class="ym-rank-trend ym-rank-trend--down" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Toulouse Ti...</span><span class="ym-rank-dot" aria-hidden="true"></span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">0</td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--o ym-rank-row--q ym-rank-row--me">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">4</span><svg class="ym-rank-trend ym-rank-trend--down" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Beach Boys</span><span class="ym-rank-dot" aria-hidden="true"></span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">0</td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--o">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">5</span><svg class="ym-rank-trend ym-rank-trend--down" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Bordeaux Blast</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">0</td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--o">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos ym-rank-pos--solo">6</span></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Nice Néons</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--o">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos ym-rank-pos--solo">7</span></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Marseille Mar...</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td>
+        </tr>
+        <tr class="ym-rank-row ym-rank-row--o">
+          <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos ym-rank-pos--solo">8</span></span></td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Strasbourg St...</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ym-rank-legend">
+    <div class="ym-rank-legend-title">Légende — 5 derniers matchs</div>
+    <div class="ym-rank-legend-items">
+      <span class="ym-rank-legend-item"><span class="ym-rank-slot ym-rank-slot--win"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>Victoire</span>
+      <span class="ym-rank-legend-item"><span class="ym-rank-slot ym-rank-slot--loss"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></span>Défaite</span>
+      <span class="ym-rank-legend-item"><span class="ym-rank-slot ym-rank-slot--draw"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13H5v-2h14v2z"/></svg></span>Nul</span>
+      <span class="ym-rank-legend-item"><span class="ym-rank-slot ym-rank-slot--none"></span>Non joué</span>
+    </div>
+  </div>
+</div>
+
+</div>
+</body></html>

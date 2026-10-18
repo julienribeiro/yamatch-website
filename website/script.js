@@ -30,326 +30,266 @@
     // any future ad-hoc notification (inline handler, console, future block).
     window.yamatchToast = showToast;
 
-    // === Wordmark click-to-top — independent of scroll listener ===
+    // Share one scroll frame between the participant header and all decorative app content.
     {
-        const wordmark = document.querySelector('.wordmark');
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-        if (wordmark) {
-            wordmark.addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
-            });
-
+        const header = document.querySelector('.hero-header');
+        const phone = document.querySelector('.hero-phone');
+        const relief = phone && phone.querySelector('.ym-disc-ticket-relief');
+        const appHeader = phone && phone.querySelector('.ym-disc-header');
+        const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const CONTENT_SCROLL_FACTOR = 0.12;
+        const questPhones = Array.from(document.querySelectorAll('.quest-step-phone'), (node) => ({
+            node, step: node.closest('.quest-step'), start: 0, range: 1, max: 0, last: null,
+        }));
+        if (header || phone || questPhones.length) {
             let rafId = null;
+            let maxContentScroll = 0;
+            let lastContentScroll = null;
             const updateCondensed = () => {
-                wordmark.classList.toggle('is-condensed', window.scrollY > 30);
                 rafId = null;
+                const scrollY = Math.max(0, window.scrollY);
+                if (header) header.classList.toggle('is-condensed', scrollY > 30);
+                if (phone) {
+                    const offset = motionQuery.matches ? 0 : Math.min(maxContentScroll, scrollY * CONTENT_SCROLL_FACTOR);
+                    const value = offset.toFixed(2) + 'px';
+                    if (value !== lastContentScroll) {
+                        phone.style.setProperty('--ym-disc-scroll', value);
+                        lastContentScroll = value;
+                    }
+                }
+                questPhones.forEach((item) => {
+                    const progress = Math.max(0, Math.min(1, (scrollY - item.start) / item.range));
+                    const value = (motionQuery.matches ? 0 : progress * item.max).toFixed(2) + 'px';
+                    if (value !== item.last) {
+                        item.node.style.setProperty('--ym-quest-scroll', value);
+                        item.last = value;
+                    }
+                });
             };
-            const onScroll = () => {
-                if (!rafId) rafId = requestAnimationFrame(updateCondensed);
+            const scheduleCondensed = () => {
+                if (rafId === null) rafId = requestAnimationFrame(updateCondensed);
             };
-            window.addEventListener('scroll', onScroll, { passive: true });
+            const measurePhone = () => {
+                if (phone && relief && appHeader) {
+                    const configuredMax = parseFloat(getComputedStyle(phone).getPropertyValue('--ym-disc-scroll-max')) || 0;
+                    // Bound the underlying content, not the intentionally popped-out decorative copy.
+                    // CSS owns the relief's transform; layout offsets exclude that transform and scroll translation.
+                    const clearance = relief.offsetTop - appHeader.offsetTop - appHeader.offsetHeight;
+                    maxContentScroll = Math.max(0, Math.min(configuredMax, clearance));
+                }
+                questPhones.forEach((item) => {
+                    // Offset geometry deliberately ignores the one-shot entrance and decorative rotation.
+                    let top = 0;
+                    for (let node = item.node; node; node = node.offsetParent) top += node.offsetTop;
+                    const visibleHeight = item.step
+                        ? Math.min(item.node.offsetHeight, Math.max(0, item.step.clientHeight - item.node.offsetTop))
+                        : item.node.offsetHeight;
+                    item.start = top - window.innerHeight;
+                    item.range = Math.max(1, window.innerHeight + visibleHeight);
+                    item.max = Math.max(0, parseFloat(getComputedStyle(item.node).getPropertyValue('--ym-quest-scroll-max')) || 0);
+                });
+                scheduleCondensed();
+            };
+            window.addEventListener('scroll', scheduleCondensed, { passive: true });
+            window.addEventListener('pageshow', measurePhone);
+            window.addEventListener('resize', measurePhone, { passive: true });
+            if (typeof motionQuery.addEventListener === 'function') {
+                motionQuery.addEventListener('change', scheduleCondensed);
+            } else if (typeof motionQuery.addListener === 'function') {
+                motionQuery.addListener(scheduleCondensed);
+            }
+            if ('ResizeObserver' in window) {
+                const observer = new ResizeObserver(measurePhone);
+                if (phone) observer.observe(phone);
+                if (relief) observer.observe(relief);
+                if (appHeader) observer.observe(appHeader);
+                questPhones.forEach((item) => {
+                    observer.observe(item.node);
+                    if (item.step) observer.observe(item.step);
+                });
+                const heroSection = document.querySelector('section.hero');
+                const howSection = document.querySelector('.how-quest');
+                if (heroSection) observer.observe(heroSection);
+                if (howSection) observer.observe(howSection);
+            }
+            if (document.fonts) document.fonts.ready.then(measurePhone);
+            measurePhone();
         }
     }
 
-    // === Page-scroll-driven --scroll + --active-scale on .hero-carousel-embla ===
-    // Desktop and mobile: the active phone starts lifted over the lime hero card so that
-    // its top edge sits exactly --desired-button-gap below the hero buttons' bottom
-    // edge — regardless of viewport. As the user scrolls, the lift interpolates back to
-    // 0 and the phone descends into its row position.
+    // Local visitor time and an illustrative tournament fourteen calendar days ahead.
     {
-        const carousel = document.querySelector('.hero-carousel-embla');
-        // The lime hero card is the consumer of `--card-shrink` (a px value
-        // that shrinks the card's `min-height` so its bottom edge rises in
-        // sync with the active phone descending into the row). Querying it
-        // here in the page-scroll setup keeps the writer scoped: each custom
-        // property is written directly to its consumer element, never to
-        // documentElement (mirrors the existing `--scroll` write on `.hero-carousel-embla`).
-        const heroCard = document.querySelector('.hero-card');
-        // The outer `.hero` section is the consumer of `--hero-flow-collapse`
-        // (a POSITIVE px magnitude written live by the page-scroll writer so
-        // its CSS rule `margin-bottom: calc(-1 * var(--hero-flow-collapse, 0px))`
-        // collapses the hero's flow box by exactly the same number of pixels
-        // the lime fill has visually shrunk via `clip-path` on `.hero-card::before`.
-        // Without this, the carousel (in-flow sibling of `.hero`) keeps its
-        // natural top and a whitespace gap opens between the shrunk fill and
-        // the carousel. See styles.css `.hero` rule for the consumer side.
-        const hero = document.querySelector('.hero');
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const mobileQuery = window.matchMedia('(max-width: 767px)');
-
-        // Reduced-motion path: the page-scroll writer below early-returns on the
-        // `!reduceMotion` guard, so `--scroll` stays at its CSS default (0px) and
-        // the active phone is flat in the row from the start. There is no lift
-        // to "fully retract" → the carousel is horizontally navigable by
-        // construction. Set the dataset flag once at setup so carousel.js's gate
-        // (`isHorizontalReady`) doesn't permanently block these users.
-        if (reduceMotion && carousel) {
-            carousel.dataset.horizontalReady = 'true';
+        const phone = document.querySelector('.hero-phone');
+        const clock = phone && phone.querySelector('[data-hero-clock]');
+        const days = phone ? Array.from(phone.querySelectorAll('[data-hero-tournament-day]')) : [];
+        const months = phone ? Array.from(phone.querySelectorAll('[data-hero-tournament-month]')) : [];
+        if (clock || days.length || months.length) {
+            const MINUTE_MS = 60000;
+            const TOURNAMENT_DAYS_AHEAD = 14;
+            const timeFormatter = new Intl.DateTimeFormat('fr-FR', {
+                hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+            });
+            const monthFormatter = new Intl.DateTimeFormat('fr-FR', { month: 'short' });
+            let timer = null;
+            let suspended = false;
+            const clearClockTimer = () => {
+                if (timer !== null) clearTimeout(timer);
+                timer = null;
+            };
+            const updateClockAndDate = () => {
+                clearClockTimer();
+                if (document.hidden || suspended) return;
+                const now = new Date();
+                if (clock) clock.textContent = timeFormatter.format(now);
+                // Calendar arithmetic preserves the visitor's local date across daylight-saving changes.
+                const tournamentDate = new Date(now.getTime());
+                tournamentDate.setDate(tournamentDate.getDate() + TOURNAMENT_DAYS_AHEAD);
+                const day = String(tournamentDate.getDate());
+                const month = monthFormatter.format(tournamentDate).replace(/\./g, '').toLocaleUpperCase('fr-FR');
+                days.forEach((node) => { node.textContent = day; });
+                months.forEach((node) => { node.textContent = month; });
+                timer = setTimeout(updateClockAndDate, MINUTE_MS - now.getTime() % MINUTE_MS);
+            };
+            document.addEventListener('visibilitychange', updateClockAndDate);
+            window.addEventListener('pagehide', () => {
+                suspended = true;
+                clearClockTimer();
+            });
+            window.addEventListener('pageshow', () => {
+                suspended = false;
+                updateClockAndDate();
+            });
+            updateClockAndDate();
         }
+    }
 
-        if (carousel && heroCard && hero && !reduceMotion) {
-            // Default state for the carousel horizontal-navigation gate (read by
-            // carousel.js via `viewport.dataset.horizontalReady`): start LOCKED so
-            // wheel/touch on the carousel can't navigate horizontally while the
-            // active phone is still lifted above the rail. The first
-            // `updateScroll` tick (scheduled at the bottom of this block) will
-            // flip it to 'true' if the user already loaded mid-scroll past the
-            // threshold; otherwise it stays 'false' until the user scrolls down
-            // and `progress` reaches >= 0.995.
-            carousel.dataset.horizontalReady = 'false';
-
-            // Desired vertical gap (in px) between the active phone's top edge and the
-            // hero buttons' bottom edge at scroll = 0. Sourced from the CSS custom
-            // property --desired-button-gap (declared in styles.css :root) so the value
-            // is owned by the design tokens, not hardcoded in JS. clamp(24px, 4vh, 56px)
-            // resolves at computed-time, so getPropertyValue returns the resolved px
-            // string ("e.g. 27px"). Re-read on every rAF tick — getComputedStyle on
-            // documentElement for a single custom property is sub-microsecond, and this
-            // automatically picks up resize / orientationchange (vh-dependent clamp).
-            // Fallback to 40 if the token is missing (defensive — older deployments).
-            const ROOT = document.documentElement;
-            const readDesiredButtonGap = () => {
-                const raw = getComputedStyle(ROOT).getPropertyValue('--desired-button-gap');
-                const parsed = parseFloat(raw);
-                return Number.isFinite(parsed) ? parsed : 40;
+    // Decorative sample registrations: one visible hero run, with a single pausable timeout.
+    {
+        const hero = document.querySelector('section.hero');
+        const phone = document.querySelector('.hero-phone');
+        const ticket = phone && phone.querySelector('.ym-disc-ticket-relief');
+        const countNode = ticket && ticket.querySelector('[data-hero-registrations]');
+        const remainingNode = ticket && ticket.querySelector('[data-hero-remaining]');
+        const progress = ticket && ticket.querySelector('[data-hero-progress]');
+        if (countNode && remainingNode && progress) {
+            const INITIAL_COUNT = 27;
+            const FINAL_COUNT = 33;
+            const CAPACITY = 36;
+            const STEP_MS = 1400;
+            const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+            let count = INITIAL_COUNT;
+            let started = false;
+            let timer = null;
+            let observer = null;
+            let remainingDelay = STEP_MS;
+            let deadline = 0;
+            const renderCount = () => {
+                const remaining = CAPACITY - count;
+                countNode.textContent = count + '/' + CAPACITY + ' inscrits';
+                remainingNode.textContent = remaining + (remaining === 1 ? ' équipe restante' : ' équipes restantes');
+                progress.style.width = (count / CAPACITY * 100) + '%';
             };
-
-            // Cache viewport height. iOS Safari shrinks/grows window.innerHeight as the
-            // URL bar collapses/expands DURING vertical scroll, which would otherwise
-            // make our (startY = vh) → (endY = vh * 0.4) interpolation jitter mid-scroll
-            // and cause the active phone image to "teleport" frame-to-frame. We refresh
-            // the cached value only on resize / orientationchange / load — events that
-            // signal a deliberate layout-affecting change — never on scroll.
-            let cachedVh = window.innerHeight || document.documentElement.clientHeight;
-            const refreshCachedVh = () => {
-                cachedVh = window.innerHeight || document.documentElement.clientHeight;
-            };
-
-            // Reference top of the carousel in PAGE coordinates (scroll-independent),
-            // captured "as if `--hero-flow-collapse` were 0" so it survives unchanged
-            // across rAF ticks. The page-scroll writer derives a per-frame
-            // `virtualCarouselTop` from `staticCarouselTop - latestScrollY` instead
-            // of calling `carousel.getBoundingClientRect().top`. This breaks the
-            // layout-feedback loop that would otherwise form: writing
-            // `--hero-flow-collapse` shifts `.screens-rail` (in-flow sibling), which
-            // would change `carousel.getBoundingClientRect().top`, which would change
-            // `progress`, which would change the next written collapse — jitter.
-            //
-            // `currentFlowCollapse` mirrors the most recently written collapse value.
-            // It is added back into the rect-based reading inside
-            // `measureScrollAnimationGeometry` so the snapshot we keep is the
-            // carousel's UNCOLLAPSED page position. At first measure (load),
-            // `currentFlowCollapse === 0`, so the addition is a no-op. On a resize
-            // that happens mid-scroll, `currentFlowCollapse` may be > 0 — adding it
-            // cancels the active collapse and recovers the same stable reference.
-            // Re-measured only on layout-affecting events
-            // (load / resize / orientationchange), never per scroll.
-            let staticCarouselTop = 0;
-            let currentFlowCollapse = 0;
-            // Caches updated only by `measureScrollAnimationGeometry` (load / resize /
-            // orientationchange — never per scroll). The per-frame `updateScroll` reads
-            // these instead of calling `computeBaseLift` / `getBoundingClientRect` /
-            // `getComputedStyle`, eliminating the layout-read pass that desynchronised
-            // the lift from the iOS compositor's touch-driven scroll.
-            //  - `cachedBaseLift`     mirrors `computeBaseLift()` (NEGATIVE px — phone
-            //                         translateY needed to put its top edge
-            //                         `--desired-button-gap` below the buttons).
-            //  - `cachedLiftMagnitude` is `Math.max(0, -cachedBaseLift)` — POSITIVE px,
-            //                         consumed by `cardShrink = liftMagnitude * 0.8 * progress`.
-            //  - `latestScrollY`      mirrors `window.scrollY`. The scroll listener writes
-            //                         it once per event (single property read, no layout
-            //                         work), and the rAF callback consumes it.
-            // All three may go slightly stale between resize events (e.g. user changes the
-            // active carousel slide while the height of the new phone differs); since all
-            // five phones share the same intrinsic dimensions this drift is invisible. If
-            // it ever becomes visible we can call `measureScrollAnimationGeometry()` from
-            // the carousel's `setActiveIndex`.
-            let cachedBaseLift = 0;
-            let cachedLiftMagnitude = 0;
-            let latestScrollY = window.scrollY || window.pageYOffset || 0;
-
-            let rafId = null;
-
-            // Reads the active phone's CURRENT translateY (m42) from the live computed
-            // transform. Necessary because the lift we apply on each frame composes with
-            // any prior frame's transform — to recover the phone's natural (untransformed)
-            // top we subtract the current applied translateY from the bounding-rect top.
-            // Mirrors the pattern carousel.js uses for translateX (getCurrentTranslateX).
-            const readPhoneTranslateY = (phone) => {
-                const transform = window.getComputedStyle(phone).transform;
-                if (!transform || transform === 'none') return 0;
-
-                try {
-                    return new DOMMatrixReadOnly(transform).m42;
-                } catch (_) {
-                    const matrix = transform.match(/matrix\(([^)]+)\)/);
-                    if (!matrix) return 0;
-                    const values = matrix[1].split(',').map((v) => parseFloat(v.trim()));
-                    return Number.isFinite(values[5]) ? values[5] : 0;
+            const cleanup = () => {
+                if (timer !== null) clearTimeout(timer);
+                timer = null;
+                if (observer) observer.disconnect();
+                observer = null;
+                document.removeEventListener('visibilitychange', onVisibilityChange);
+                if (typeof motionQuery.removeEventListener === 'function') {
+                    motionQuery.removeEventListener('change', onMotionChange);
+                } else if (typeof motionQuery.removeListener === 'function') {
+                    motionQuery.removeListener(onMotionChange);
                 }
             };
-
-            // Lift (in px) needed so the phone's top sits exactly --desired-button-gap
-            // below the hero-buttons bottom. Returns 0 if either node is missing.
-            // Negative values lift the phone UP (translateY domain).
-            //
-            // Why we add `currentFlowCollapse` to `phoneNaturalTop`: the active
-            // `--hero-flow-collapse` shrinks the hero's flow box by N px via
-            // `margin-bottom: calc(-1 * var(--hero-flow-collapse))`, which pulls
-            // every in-flow descendant of the document below `.hero` (including
-            // `.screen-card.active .phone-image`) UP by exactly N px in the
-            // viewport. If we measured the phone naïvely, its `phoneRect.top`
-            // would already include that lift and `baseLift` would shrink as
-            // the collapse grew → the lift `--scroll` would drift downward as
-            // the user scrolls (visible drift of the phone away from
-            // `--desired-button-gap`). Adding `currentFlowCollapse` cancels
-            // the collapse-induced shift and restores the ORIGINAL natural top
-            // — the same value we would have measured at scroll = 0. Result:
-            // `baseLift` stays stable across the scroll, `--scroll = baseLift`
-            // at `inv = 1` is identical regardless of the collapse, and the
-            // collapse animates independently without disturbing the lift.
-            const computeBaseLift = () => {
-                const buttons = document.querySelector('.hero-buttons');
-                const phone = document.querySelector('.screen-card.active .phone-image');
-                if (!buttons || !phone) return 0;
-
-                const buttonsRect = buttons.getBoundingClientRect();
-                const phoneRect = phone.getBoundingClientRect();
-                const currentTranslateY = readPhoneTranslateY(phone);
-                const phoneNaturalTop = phoneRect.top - currentTranslateY + currentFlowCollapse;
-
-                return buttonsRect.bottom + readDesiredButtonGap() - phoneNaturalTop;
+            const scheduleStep = () => {
+                if (!started || document.hidden || count >= FINAL_COUNT || timer !== null) return;
+                deadline = performance.now() + remainingDelay;
+                timer = setTimeout(() => {
+                    timer = null;
+                    if (document.hidden) { remainingDelay = 0; return; }
+                    count += 1;
+                    renderCount();
+                    remainingDelay = STEP_MS;
+                    if (count === FINAL_COUNT) cleanup();
+                    else scheduleStep();
+                }, remainingDelay);
             };
-
-            // Centralises every layout read used by the per-frame writer. Called only on
-            // load / resize / orientationchange (NEVER from `onScroll` or `updateScroll`),
-            // so the per-scroll path stays pure: `scrollY → progress → setProperty`. iOS
-            // jank cause: in the previous version `updateScroll` called `computeBaseLift()`
-            // (which itself reads two `getBoundingClientRect` + one `getComputedStyle`),
-            // forcing a synchronous layout pass per rAF tick. iOS Safari drives the
-            // compositor scroll on a separate thread; the JS layout pass desynchronised
-            // the `--scroll` write from the on-screen scroll position, producing the
-            // "lift lags behind the finger" jank reported on iPhone 16. With the reads
-            // hoisted out, `updateScroll` does pure arithmetic + 4 setProperty calls.
-            const measureScrollAnimationGeometry = () => {
-                latestScrollY = window.scrollY || window.pageYOffset || 0;
-
-                cachedBaseLift = computeBaseLift();
-                cachedLiftMagnitude = Math.max(0, -cachedBaseLift);
-
-                staticCarouselTop =
-                    latestScrollY + carousel.getBoundingClientRect().top + currentFlowCollapse;
+            const onVisibilityChange = () => {
+                if (document.hidden && timer !== null) {
+                    remainingDelay = Math.max(0, deadline - performance.now());
+                    clearTimeout(timer);
+                    timer = null;
+                } else if (!document.hidden) scheduleStep();
             };
-
-            // PURE per-frame writer. NO layout reads (no `getBoundingClientRect`, no
-            // `getComputedStyle`, no `computeBaseLift`). Reads cached values populated by
-            // `measureScrollAnimationGeometry` plus `latestScrollY` (refreshed by the
-            // scroll listener), runs arithmetic, writes 4 CSS variables. This is what
-            // keeps the lift in lockstep with the iOS compositor's touch-driven scroll —
-            // the function is short enough that the browser can comfortably finish it
-            // inside one composite-aligned rAF slot, even on mid-range hardware.
-            const updateScroll = () => {
-                rafId = null;
-
-                const isMobile = mobileQuery.matches;
-                const vh = cachedVh;
-
-                const startY = vh;
-                const endY = isMobile ? vh * 0.55 : vh * 0.4;
-
-                // `staticCarouselTop` = carousel's page-coordinate top WITHOUT any active
-                // flow collapse, snapshotted only on layout-affecting events. Subtracting
-                // `latestScrollY` reconstructs the on-screen top — same reference point
-                // as `carousel.getBoundingClientRect().top` would give, but without the
-                // live read (which would also re-incorporate the flow-collapse, creating
-                // a feedback loop).
-                const virtualCarouselTop = staticCarouselTop - latestScrollY;
-
-                let progress = (startY - virtualCarouselTop) / (startY - endY);
-                if (progress < 0) progress = 0;
-                else if (progress > 1) progress = 1;
-
-                // Carousel horizontal-navigation gate — handshake with carousel.js.
-                // The carousel may only intercept horizontal wheel/touch gestures
-                // once the active phone has fully retracted from its lifted-over-
-                // the-hero-buttons position (progress ~= 1, lift ~= 0). 0.995 leaves
-                // a sub-pixel safety band so float-arithmetic noise on the last
-                // pre-snap tick (e.g. 0.99998…) doesn't oscillate the dataset
-                // attribute between true/false. Writing to a dataset slot is a pure
-                // string property assignment — no layout invalidation, sub-µs cost,
-                // safe in this hot rAF path. carousel.js reads it via
-                // `viewport.dataset.horizontalReady === 'true'`.
-                carousel.dataset.horizontalReady = progress >= 0.995 ? 'true' : 'false';
-
-                const inv = 1 - progress;
-                const activeScale = 1 + inv * (isMobile ? 0.06 : 0.14);
-
-                // `cachedLiftMagnitude` is `Math.max(0, -cachedBaseLift)` (positive px,
-                // see comment on the cache declaration). `cardShrink` is consumed by the
-                // VISUAL-ONLY `clip-path` on `.hero-card::before`,
-                // and mirrored 1:1 by `--hero-flow-collapse` so the carousel rises in
-                // lockstep with the lime fill. 0.8 factor: shrink stays slightly below
-                // lift travel so the card never visually collapses past the buttons.
-                const cardShrink = cachedLiftMagnitude * 0.8 * progress;
-                const flowCollapse = cardShrink;
-
-                carousel.style.setProperty('--scroll', `${cachedBaseLift * inv}px`);
-                carousel.style.setProperty('--active-scale', activeScale.toFixed(4));
-                heroCard.style.setProperty('--card-shrink', `${cardShrink}px`);
-                hero.style.setProperty('--hero-flow-collapse', `${flowCollapse}px`);
-                ROOT.style.setProperty('--wordmark-scroll-progress', progress.toFixed(4));
-
-                // Mirror the most recently written collapse so the NEXT
-                // `measureScrollAnimationGeometry` (on a future resize) can back-cancel
-                // it when re-snapshotting `staticCarouselTop`.
-                currentFlowCollapse = flowCollapse;
+            const onMotionChange = () => {
+                if (!motionQuery.matches) return;
+                count = FINAL_COUNT;
+                renderCount();
+                cleanup();
             };
+            const start = () => {
+                if (started) return;
+                started = true;
+                if (observer) observer.disconnect();
+                observer = null;
+                scheduleStep();
+            };
+            if (motionQuery.matches) onMotionChange();
+            else {
+                document.addEventListener('visibilitychange', onVisibilityChange);
+                if (typeof motionQuery.addEventListener === 'function') {
+                    motionQuery.addEventListener('change', onMotionChange);
+                } else if (typeof motionQuery.addListener === 'function') {
+                    motionQuery.addListener(onMotionChange);
+                }
+                if ('IntersectionObserver' in window) {
+                    observer = new IntersectionObserver((entries) => {
+                        if (entries.some((entry) => entry.isIntersecting)) start();
+                    }, { threshold: 0 });
+                    observer.observe(hero || phone);
+                } else start();
+            }
+        }
+    }
 
-            // Per-scroll path: ONLY refresh `latestScrollY` (a single property read on
-            // `window`, no layout work) and schedule the rAF coalescer. `{ passive: true }`
-            // is preserved on the listener so the browser can keep the scroll on the
-            // compositor thread on iOS Safari — `preventDefault` is never called.
-            const onScroll = () => {
-                latestScrollY = window.scrollY || window.pageYOffset || 0;
-
-                if (!rafId) {
-                    rafId = requestAnimationFrame(updateScroll);
+    // Progressive, one-shot card entrances. CSS owns distance and stagger timing.
+    {
+        const section = document.querySelector('.how-quest');
+        const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const steps = section ? Array.from(section.querySelectorAll('.quest-step')) : [];
+        if (steps.length && 'IntersectionObserver' in window && !motionQuery.matches) {
+            const pending = new Set(steps);
+            const stop = () => {
+                observer.disconnect();
+                if (typeof motionQuery.removeEventListener === 'function') {
+                    motionQuery.removeEventListener('change', onMotionChange);
+                } else if (typeof motionQuery.removeListener === 'function') {
+                    motionQuery.removeListener(onMotionChange);
                 }
             };
-            // Layout-affecting events: refresh the cached viewport height, re-measure
-            // the geometry (carousel top + base lift + lift magnitude — all reads
-            // concentrated here), then schedule the rAF tick. `refreshCachedVh` runs
-            // first so `measureScrollAnimationGeometry` sees a fresh `cachedVh` if it
-            // ever depended on it (it doesn't today, but the ordering is the safe one
-            // for any future addition). Keeps everything in sync with the real viewport
-            // (orientation flips, window resize, late font load shifting layout) while
-            // keeping the per-scroll path read-free.
-            const onLayoutChange = () => {
-                refreshCachedVh();
-                latestScrollY = window.scrollY || window.pageYOffset || 0;
-
-                measureScrollAnimationGeometry();
-
-                if (!rafId) {
-                    rafId = requestAnimationFrame(updateScroll);
-                }
+            const onMotionChange = (event) => {
+                if (!event.matches) return;
+                steps.forEach((step) => step.classList.add('is-revealed'));
+                section.classList.remove('is-enhanced');
+                pending.clear();
+                stop();
             };
-
-            window.addEventListener('scroll', onScroll, { passive: true });
-            window.addEventListener('resize', onLayoutChange, { passive: true });
-            window.addEventListener('orientationchange', onLayoutChange, { passive: true });
-            // Re-measure once webfonts settle — the buttons can shift vertically by a few
-            // pixels between the system fallback and Inter loading, which would otherwise
-            // bake in a stale lift until the next user-driven scroll/resize event.
-            window.addEventListener('load', onLayoutChange, { passive: true });
-
-            // Initial geometry snapshot — `currentFlowCollapse` is 0 here (no collapse
-            // has been written yet), so the carousel rect read is the raw page-coordinate
-            // top with no compensation needed. `cachedBaseLift` and `cachedLiftMagnitude`
-            // are populated for the very first `updateScroll` tick scheduled below.
-            measureScrollAnimationGeometry();
-            requestAnimationFrame(updateScroll);
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (!entry.isIntersecting || !pending.has(entry.target)) return;
+                    entry.target.classList.add('is-revealed');
+                    pending.delete(entry.target);
+                    observer.unobserve(entry.target);
+                });
+                if (!pending.size) stop();
+            }, { threshold: 0.1 });
+            steps.forEach((step) => observer.observe(step));
+            section.classList.add('is-enhanced');
+            if (typeof motionQuery.addEventListener === 'function') {
+                motionQuery.addEventListener('change', onMotionChange);
+            } else if (typeof motionQuery.addListener === 'function') {
+                motionQuery.addListener(onMotionChange);
+            }
         }
     }
 
@@ -669,9 +609,7 @@
        cascade triggers a paint, not a re-layout (translate is composited).
      - 0 layout reads. NO `getBoundingClientRect`, NO `getComputedStyle`,
        NO `offsetTop` inside `tick`. All geometry is snapshotted in
-       `measureGeometry()` (load + resize + orientationchange only) — the
-       same discipline applied in the page-scroll-progress block around
-       line 235 (`measureScrollAnimationGeometry`).
+       `measureGeometry()` (load + resize + orientationchange only).
 
    Activation gate (IntersectionObserver, rootMargin 20% top/bottom):
      The scroll listener is attached while AT LEAST ONE unique parent
@@ -743,8 +681,7 @@
     // The cards are `display: none` on mobile per styles.css §18, so any
     // `--parallax-y` write is silently ignored by the renderer; we skip
     // the work entirely rather than burn an rAF tick per scroll event +
-    // N setProperty calls + an IntersectionObserver. Same MQL family as
-    // the page-scroll-progress block.
+    // N setProperty calls + an IntersectionObserver.
     const mobileQuery = window.matchMedia('(max-width: 767px)');
 
     // === Per-card data, snapshotted at setup ===
@@ -1026,7 +963,7 @@
         // vertical layout 100-500ms after first paint, moving each parent
         // section by tens of pixels. Without this re-measure, the initial
         // `sectionTopAtRest` values would be stale for the rest of the
-        // session. Mirrors the page-scroll-progress block's `load` listener.
+        // session.
         // Stored on a closure-scope variable so `teardown` can detach this
         // exact reference (even though `load` fires at most once per page
         // lifecycle, a mobile→desktop→mobile→desktop pattern would otherwise
@@ -1159,6 +1096,7 @@
 
     var MAX_RECENT = 9;
     var MAX_UPCOMING = 6;
+    var MAX_UPCOMING_V2 = 5;
     var MAX_ORGANIZER_RAIL = 6;
     var MAX_STAT_VALUE = 10000000;
     var MAX_TEXT_LENGTH = 120;
@@ -1522,6 +1460,131 @@
         return item;
     }
 
+    // Participant tickets share only normalized data with the organiser rail.
+    var ticketDayFormatter = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', timeZone: 'UTC' });
+    var ticketMonthFormatter = new Intl.DateTimeFormat('fr-FR', { month: 'short', timeZone: 'UTC' });
+    var tickerDateFormatter = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+    function participantDate(value) {
+        var parts = DATE_PATTERN.exec(value);
+        return new Date(Date.UTC(+parts[1], +parts[2] - 1, +parts[3]));
+    }
+
+    function participantIcon(pathData, size) {
+        var svg = document.createElementNS(SVG_NS, 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('width', String(size));
+        svg.setAttribute('height', String(size));
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '2.2');
+        svg.setAttribute('stroke-linecap', 'round');
+        svg.setAttribute('stroke-linejoin', 'round');
+        svg.setAttribute('aria-hidden', 'true');
+        svg.setAttribute('focusable', 'false');
+        var path = document.createElementNS(SVG_NS, 'path');
+        path.setAttribute('d', pathData);
+        svg.appendChild(path);
+        return svg;
+    }
+
+    function appTicket(t, demo) {
+        var full = t.maxTeams !== null && t.teamsCount >= t.maxTeams;
+        var closed = !t.registrationsOpen;
+        var item = el('li');
+        item.setAttribute('data-showcase-generated', '');
+        var card = el('article', 'tp-ticket' + (closed && !full ? ' is-closed' : '') + (full ? ' is-full' : ''));
+        var head = el('div', 'tp-head');
+        var date = participantDate(t.date);
+        var time = el('time', 'tp-date');
+        time.setAttribute('datetime', t.date);
+        time.setAttribute('aria-label', formatDate(t.date));
+        time.appendChild(el('span', 'tp-day', ticketDayFormatter.format(date)));
+        time.appendChild(el('span', 'tp-month', ticketMonthFormatter.format(date).replace(/\./g, '').toLocaleUpperCase('fr-FR')));
+        head.appendChild(time);
+        var info = el('div', 'tp-info');
+        info.appendChild(el('h3', 'tp-name', t.title));
+        var meta = [];
+        if (t.city) meta.push(t.city);
+        if (t.playersPerTeam) meta.push(t.playersPerTeam + '×' + t.playersPerTeam);
+        if (meta.length) info.appendChild(el('p', 'tp-meta', meta.join(' • ')));
+        head.appendChild(info);
+        var chevron = el('span', 'tp-chevron');
+        chevron.setAttribute('aria-hidden', 'true');
+        chevron.appendChild(participantIcon('M9 6l6 6-6 6', 20));
+        head.appendChild(chevron);
+        var counts = el('div', 'tp-counts');
+        counts.appendChild(el('span', 'tp-count', formatNumber(t.teamsCount) +
+            (t.maxTeams !== null ? '/' + formatNumber(t.maxTeams) : '') + ' inscrits'));
+        if (t.maxTeams !== null) {
+            var status = el('span', 'tp-status' + (full || closed ? ' is-muted' : ''));
+            // Full takes precedence in both the label and the gradient head palette.
+            if (full || closed) {
+                status.textContent = full ? 'Complet' : 'Inscriptions closes';
+            } else {
+                var dot = el('span', 'tp-status-dot');
+                dot.setAttribute('aria-hidden', 'true');
+                status.appendChild(dot);
+                status.appendChild(document.createTextNode(countLabel(t.maxTeams - t.teamsCount, 'équipe restante', 'équipes restantes')));
+            }
+            counts.appendChild(status);
+            var progress = el('span', 'tp-progress');
+            progress.setAttribute('aria-hidden', 'true');
+            var fill = el('span', 'tp-progress-fill');
+            fill.style.setProperty('--tp-fill', String(Math.min(1, t.teamsCount / t.maxTeams)));
+            progress.appendChild(fill);
+            head.appendChild(progress);
+        }
+        head.appendChild(counts);
+        card.appendChild(head);
+        var tear = el('div', 'tp-tear');
+        tear.setAttribute('aria-hidden', 'true');
+        card.appendChild(tear);
+        var foot = el('div', 'tp-foot');
+        var expand = el('span', 'tp-expand');
+        expand.setAttribute('aria-hidden', 'true');
+        expand.appendChild(participantIcon('M6 9l6 6 6-6', 24));
+        foot.appendChild(expand);
+        // Demo preserves the visual CTA without navigating to a fictitious id.
+        var link = el(demo ? 'span' : 'a', 'tp-cta' + (full || closed ? ' is-secondary' : ''), full || closed ? 'Voir le tournoi' : 'S’inscrire');
+        if (demo) link.setAttribute('aria-disabled', 'true');
+        else link.href = '/tournament/?id=' + encodeURIComponent(t.id);
+        link.appendChild(srText(NBSP + ': ' + t.title));
+        foot.appendChild(link);
+        card.appendChild(foot);
+        item.appendChild(card);
+        return item;
+    }
+
+    function renderTicker(section, recent) {
+        var track = section.querySelector('[data-showcase-ticker]');
+        var ticker = track && track.closest('.tp-ticker');
+        if (!track || !ticker) throw new Error('showcase_ticker_missing');
+        clear(track);
+        ticker.hidden = !recent.length;
+        for (var copy = 0; copy < 2; copy++) {
+            recent.slice(0, MAX_RECENT).forEach(function (t) {
+                var item = el('li', 'tp-ticker-item' + (copy ? ' tp-ticker-copy' : ''));
+                if (copy) item.setAttribute('aria-hidden', 'true');
+                item.appendChild(el('span', 'tp-ticker-title', t.title));
+                var parts = [];
+                if (t.city) parts.push(t.city);
+                parts.push(tickerDateFormatter.format(participantDate(t.date)));
+                if (t.teamsCount > 0) parts.push(countLabel(t.teamsCount, 'équipe', 'équipes'));
+                item.appendChild(el('span', 'tp-ticker-meta', parts.join(' · ')));
+                item.appendChild(participantIcon('M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3', 16));
+                track.appendChild(item);
+            });
+        }
+    }
+
+    function clearParticipant(rail) {
+        if (!rail) return;
+        Array.from(rail.children).forEach(function (child) {
+            if (!child.hasAttribute('data-showcase-create')) rail.removeChild(child);
+        });
+    }
+
     function gauge(t) {
         var wrap = el('div', 'showcase-gauge');
         var full = t.maxTeams !== null && t.teamsCount >= t.maxTeams;
@@ -1588,7 +1651,18 @@
     function hideSection(section) {
         var wasVisible = !section.hidden;
         section.hidden = true;
-        clear(section.querySelector('[data-showcase-rail]'));
+        var rail = section.querySelector('[data-showcase-rail]');
+        if (section.getAttribute('data-showcase-variant') === 'organizer') {
+            clear(rail);
+        } else {
+            clearParticipant(rail);
+            var track = section.querySelector('[data-showcase-ticker]');
+            if (track) {
+                clear(track);
+                var ticker = track.closest('.tp-ticker');
+                if (ticker) ticker.hidden = true;
+            }
+        }
         if (wasVisible) window.dispatchEvent(new Event('yamatch:showcase-layout'));
     }
 
@@ -1600,11 +1674,10 @@
 
         var items = variant === 'organizer'
             ? model.recent.slice(0, MAX_ORGANIZER_RAIL).map(function (t) { return ticket(t, 'played', demo); })
-            : model.upcoming.map(function (t) { return ticket(t, 'upcoming', demo); })
-                .concat(model.recent.map(function (t) { return ticket(t, 'played', demo); }));
+            : model.upcoming.slice(0, MAX_UPCOMING_V2).map(function (t) { return appTicket(t, demo); });
 
-        // The rail is the section's only content: nothing to show, no section.
-        if (!items.length) {
+        // A creation card alone never makes an empty participant section visible.
+        if (variant === 'organizer' ? !items.length : !hasTickets(model)) {
             hideSection(section);
             return;
         }
@@ -1614,10 +1687,18 @@
             section.insertBefore(note, section.firstElementChild);
         }
 
-        clear(rail);
-        items.forEach(function (node) { rail.appendChild(node); });
+        if (variant === 'organizer') {
+            clear(rail);
+            items.forEach(function (node) { rail.appendChild(node); });
+        } else {
+            var create = rail.querySelector('[data-showcase-create]');
+            if (!create) throw new Error('showcase_creation_missing');
+            clearParticipant(rail);
+            items.forEach(function (node) { rail.insertBefore(node, create); });
+            renderTicker(section, model.recent);
+        }
         section.hidden = false;
-        wireRailNav(block, rail);
+        if (variant === 'organizer') wireRailNav(block, rail);
         window.dispatchEvent(new Event('yamatch:showcase-layout'));
     }
 

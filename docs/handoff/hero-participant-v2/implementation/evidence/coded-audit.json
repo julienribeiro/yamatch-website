@@ -1,0 +1,125 @@
+[
+  {
+    "w": 1440,
+    "errors": [],
+    "details": {
+      "h1": "Ton prochain tournoi t’attend",
+      "phoneImgs": 0,
+      "slot": [
+        "360px",
+        "754.812px"
+      ],
+      "scale": ".8696",
+      "phoneInteractive": 0,
+      "targets": [
+        {
+          "w": 150,
+          "h": 44
+        },
+        {
+          "w": 148.796875,
+          "h": 44
+        },
+        {
+          "w": 44,
+          "h": 44
+        },
+        {
+          "w": 195.8125,
+          "h": 44
+        },
+        {
+          "w": 160.53125,
+          "h": 56
+        },
+        {
+          "w": 176.5625,
+          "h": 56
+        }
+      ],
+      "header": "fixed"
+    }
+  },
+  {
+    "w": 820,
+    "errors": [],
+    "details": {
+      "h1": "Ton prochain tournoi t’attend",
+      "phoneImgs": 0,
+      "slot": [
+        "360px",
+        "754.812px"
+      ],
+      "scale": ".8696",
+      "phoneInteractive": 0,
+      "targets": [
+        {
+          "w": 150,
+          "h": 44
+        },
+        {
+          "w": 148.796875,
+          "h": 44
+        },
+        {
+          "w": 44,
+          "h": 44
+        },
+        {
+          "w": 195.8125,
+          "h": 44
+        },
+        {
+          "w": 160.53125,
+          "h": 56
+        },
+        {
+          "w": 176.5625,
+          "h": 56
+        }
+      ],
+      "header": "fixed"
+    }
+  },
+  {
+    "w": 390,
+    "errors": [],
+    "details": {
+      "h1": "Ton prochain tournoi t’attend",
+      "phoneImgs": 0,
+      "slot": [
+        "230.016px",
+        "482.25px"
+      ],
+      "scale": ".5556",
+      "phoneInteractive": 0,
+      "targets": [
+        {
+          "w": 102,
+          "h": 44
+        },
+        {
+          "w": 0,
+          "h": 0
+        },
+        {
+          "w": 0,
+          "h": 0
+        },
+        {
+          "w": 123.734375,
+          "h": 44
+        },
+        {
+          "w": 151,
+          "h": 50
+        },
+        {
+          "w": 151,
+          "h": 50
+        }
+      ],
+      "header": "fixed"
+    }
+  }
+]

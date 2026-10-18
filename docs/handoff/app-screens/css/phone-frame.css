@@ -1,0 +1,26 @@
+/* Cadre iPhone commun à tous les écrans codés.
+   Taille logique de l'écran : 390 × 844 pt (iPhone 14/15).
+   Usage :
+   <div class="ym-phone-slot" style="--ym-phone-scale:.6">
+     <div class="ym-phone">
+       <div class="ym-app ym-screen ym-screen--<nom>"> …contenu… </div>
+       (status bar et Dynamic Island sont DANS l'écran, voir .ym-statusbar)
+     </div>
+   </div>
+   .ym-phone-slot réserve la place réelle (largeur/hauteur × scale) ; le
+   téléphone est mis à l'échelle sans changer la mise en page interne. */
+.ym-phone-slot{--ym-phone-scale:1;width:calc(414px * var(--ym-phone-scale));height:calc(868px * var(--ym-phone-scale));position:relative;flex:none}
+.ym-phone-slot>.ym-phone{position:absolute;top:0;left:0;transform:scale(var(--ym-phone-scale));transform-origin:top left}
+.ym-phone{width:414px;height:868px;padding:12px;border-radius:64px;background:#0B0B0C;
+  /* liseré titane extérieur + bord intérieur */
+  box-shadow:0 0 0 1.5px #5F5B57,0 0 0 4px #BDB7AF,0 0 0 5px #7A756F,inset 0 0 0 1.5px #2C2C2E}
+.ym-screen{position:relative;width:390px;height:844px;border-radius:52px;overflow:hidden;background:var(--ym-light-bg,#fff)}
+/* Status bar iOS (54 pt) superposée au contenu, comme sur l'appareil */
+.ym-statusbar{position:absolute;z-index:50;top:0;left:0;right:0;height:54px;display:flex;align-items:center;justify-content:space-between;padding:6px 34px 0 52px;color:#000;pointer-events:none}
+.ym-statusbar--light{color:#fff}
+.ym-statusbar__time{font-family:-apple-system,'SF Pro Text','Inter',sans-serif;font-size:17px;font-weight:600;letter-spacing:-.01em}
+.ym-statusbar__icons{display:flex;align-items:center;gap:6px}
+.ym-island{position:absolute;z-index:51;top:11px;left:50%;width:124px;height:36px;margin-left:-62px;border-radius:20px;background:#000}
+/* Indicateur d'accueil iOS */
+.ym-home-indicator{position:absolute;z-index:50;bottom:8px;left:50%;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#000}
+.ym-home-indicator--light{background:#fff}

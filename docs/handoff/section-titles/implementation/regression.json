@@ -1,0 +1,56 @@
+[
+  {
+    "name": "hero-1440.png",
+    "equalSize": true,
+    "max": 0,
+    "mean": 0
+  },
+  {
+    "name": "hero-820.png",
+    "equalSize": true,
+    "max": 12,
+    "mean": 0.00004375086123742593
+  },
+  {
+    "name": "hero-390.png",
+    "equalSize": true,
+    "max": 0,
+    "mean": 0
+  },
+  {
+    "name": "organisateur-1440.png",
+    "equalSize": true,
+    "max": 255,
+    "mean": 1.5507251924827197
+  },
+  {
+    "name": "organisateur-820.png",
+    "equalSize": true,
+    "max": 255,
+    "mean": 0.13053438447967675
+  },
+  {
+    "name": "organisateur-390.png",
+    "equalSize": true,
+    "max": 255,
+    "mean": 0.24500226395365662
+  },
+  {
+    "name": "404-1440.png",
+    "equalSize": true,
+    "max": 0,
+    "mean": 0
+  },
+  {
+    "name": "404-820.png",
+    "equalSize": true,
+    "max": 0,
+    "mean": 0
+  },
+  {
+    "name": "404-390.png",
+    "equalSize": true,
+    "max": 0,
+    "mean": 0
+  }
+]

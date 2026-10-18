@@ -1,0 +1,52 @@
+{
+  "audit": [
+    {
+      "w": 1440,
+      "initial": "27/36 inscrits",
+      "final": {
+        "count": "33/36 inscrits",
+        "remaining": "3 équipes restantes",
+        "ratio": "91.6667%",
+        "transition": "width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "transform": "matrix(1.19106, -0.146243, 0.146243, 1.19106, -70, -36)",
+        "filter": "drop-shadow(rgba(0, 0, 0, 0.55) 0px 34px 40px) drop-shadow(rgba(215, 255, 0, 0.22) 0px 0px 30px)",
+        "ariaHidden": "true"
+      },
+      "reduced": "0s",
+      "errors": []
+    },
+    {
+      "w": 820,
+      "initial": "27/36 inscrits",
+      "final": {
+        "count": "33/36 inscrits",
+        "remaining": "3 équipes restantes",
+        "ratio": "91.6667%",
+        "transition": "width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "transform": "matrix(1.19106, -0.146243, 0.146243, 1.19106, -70, -36)",
+        "filter": "drop-shadow(rgba(0, 0, 0, 0.55) 0px 34px 40px) drop-shadow(rgba(215, 255, 0, 0.22) 0px 0px 30px)",
+        "ariaHidden": "true"
+      },
+      "reduced": "0s",
+      "errors": []
+    },
+    {
+      "w": 390,
+      "initial": "27/36 inscrits",
+      "final": {
+        "count": "33/36 inscrits",
+        "remaining": "3 équipes restantes",
+        "ratio": "91.6667%",
+        "transition": "width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)",
+        "transform": "matrix(1.19106, -0.146243, 0.146243, 1.19106, -18, -18)",
+        "filter": "drop-shadow(rgba(0, 0, 0, 0.55) 0px 34px 40px) drop-shadow(rgba(215, 255, 0, 0.22) 0px 0px 30px)",
+        "ariaHidden": "true"
+      },
+      "reduced": "0s",
+      "errors": []
+    }
+  ],
+  "widthsChecked": 1601,
+  "overflow": [],
+  "polygonCandidates": []
+}

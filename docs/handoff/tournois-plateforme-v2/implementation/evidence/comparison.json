@@ -1,0 +1,86 @@
+[
+  {
+    "name": "home-1440-hero",
+    "sameSize": true,
+    "maxChannelDifference": 255,
+    "meanChannelDifference": 137.94050173611112,
+    "changedChannels": 3036717
+  },
+  {
+    "name": "home-1440-how",
+    "sameSize": true,
+    "maxChannelDifference": 0,
+    "meanChannelDifference": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "organisateur-1440-showcase",
+    "sameSize": true,
+    "maxChannelDifference": 163,
+    "meanChannelDifference": 0.01488811119873817,
+    "changedChannels": 786
+  },
+  {
+    "name": "organisateur-1440-full",
+    "sameSize": true,
+    "maxChannelDifference": 239,
+    "meanChannelDifference": 0.005496707759011195,
+    "changedChannels": 2601
+  },
+  {
+    "name": "home-820-hero",
+    "sameSize": true,
+    "maxChannelDifference": 0,
+    "meanChannelDifference": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "home-820-how",
+    "sameSize": true,
+    "maxChannelDifference": 0,
+    "meanChannelDifference": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "organisateur-820-showcase",
+    "sameSize": true,
+    "maxChannelDifference": 162,
+    "meanChannelDifference": 0.022358473584735847,
+    "changedChannels": 600
+  },
+  {
+    "name": "organisateur-820-full",
+    "sameSize": true,
+    "maxChannelDifference": 239,
+    "meanChannelDifference": 0.007371667612024958,
+    "changedChannels": 1745
+  },
+  {
+    "name": "home-390-hero",
+    "sameSize": true,
+    "maxChannelDifference": 255,
+    "meanChannelDifference": 103.75915436262001,
+    "changedChannels": 692556
+  },
+  {
+    "name": "home-390-how",
+    "sameSize": true,
+    "maxChannelDifference": 0,
+    "meanChannelDifference": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "organisateur-390-showcase",
+    "sameSize": true,
+    "maxChannelDifference": 162,
+    "meanChannelDifference": 0.011596400394477317,
+    "changedChannels": 144
+  },
+  {
+    "name": "organisateur-390-full",
+    "sameSize": true,
+    "maxChannelDifference": 229,
+    "meanChannelDifference": 0.008736408293930418,
+    "changedChannels": 1069
+  }
+]

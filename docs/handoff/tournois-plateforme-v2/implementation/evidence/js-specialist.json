@@ -1,0 +1,53 @@
+{
+  "validation": "Chrome headless, in-memory page.route script.js demoPayload replacement; source fixture unchanged",
+  "cases": {
+    "states": {
+      "cards": 4,
+      "creationLast": true,
+      "statuses": [
+        "1 équipe restante",
+        "Complet",
+        "Inscriptions closes"
+      ],
+      "counts": [
+        "15/16 inscrits",
+        "16/16 inscrits",
+        "15/16 inscrits",
+        "15 inscrits"
+      ],
+      "progressBars": 3,
+      "links": 0,
+      "tickerItems": 2,
+      "tickerCopies": 1,
+      "date": "1 SEPT",
+      "pageErrors": []
+    },
+    "max": {
+      "inputUpcoming": 6,
+      "generated": 5,
+      "creationLast": true,
+      "tickerHidden": true,
+      "pageErrors": []
+    },
+    "recentOnly": {
+      "visible": true,
+      "generated": 0,
+      "creation": true,
+      "tickerItems": 2,
+      "pageErrors": []
+    },
+    "empty": {
+      "hidden": true,
+      "creationPreserved": true,
+      "tickerHidden": true,
+      "pageErrors": []
+    }
+  },
+  "demoPayloadSHA256": "4af3babd2194962d9fa7147965a9e583ce5a9ebfdf168c4e54f96138df958ade",
+  "checks": {
+    "syntax": "PASS",
+    "npmTest": "15/15 PASS",
+    "validationCacheRpcDemo": "byte-identical to HEAD",
+    "legacyTicket": "byte-identical to HEAD"
+  }
+}

@@ -1,0 +1,3 @@
+PASS visibility gate, preserved remaining delay, 6 steps, one-shot, cleanup
+PASS initial reduced motion
+PASS dynamic reduced motion and cleanup
