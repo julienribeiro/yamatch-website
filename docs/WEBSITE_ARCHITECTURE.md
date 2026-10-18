@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-10-17 (HOW V2 coded three-card journey, progressive reveal and FAQ-only parallax; participant V2 split hero, shared fixed navigation pill, decorative app cards and screenshot-carousel removal; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
+Last sync: 2026-10-18 (participant public tournament grid and recent ticker; HOW V2 coded three-card journey, progressive reveal and FAQ-only parallax; participant V2 split hero, shared fixed navigation pill, decorative app cards and screenshot-carousel removal; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -593,7 +593,7 @@ Closed panels use the shared grid collapse, not `hidden`, preserving the CSS 300
 
 ### Public tournament rails (`section.showcase#derniers-tournois`) — added 2026-10-15
 
-**Placement and visibility.** The homepage inserts « À l’affiche et déjà joués » between the participant journey and FAQ (`data-showcase-variant="participant"`). `/organisateur/` inserts « Les derniers tournois » between feature cards and the management demo (variant `organizer`). Both sections start `hidden`; no JavaScript, malformed data, an empty relevant list or a request failure leaves no placeholder. **One valid relevant ticket is sufficient; there is no three-tournament minimum or statistics-based visibility threshold.** The participant rail concatenates up to six `upcoming` entries then nine `recent` entries, preserving server order. The organiser rail uses only the first six valid `recent` entries: upcoming-only data keeps that section hidden. No aggregate statistics or organiser wall is rendered.
+**Placement and visibility.** The participant homepage now renders the light-gray court section headed « Ça smash près de chez toi » between HOW and FAQ (`data-showcase-variant="participant"`). `/organisateur/` retains « Les derniers tournois » between feature cards and the management demo (variant `organizer`). Both start `hidden`: no JavaScript, invalid/empty data or a request failure exposes no placeholder. **One valid relevant tournament is sufficient.** Participant V2 inserts up to five upcoming tournaments in server order before the static creation card, and up to nine recent tournaments in a separate ticker. Recent-only data shows the creation card plus ticker; upcoming-only data hides the ticker. The creation card alone never makes an empty section visible. Organizer still uses only its first six valid recent tournaments; upcoming-only data keeps it hidden. Aggregate statistics are not rendered or used as visibility thresholds.
 
 **Data boundary.** The independent final IIFE in `website/script.js` posts `{}` to the production `/rest/v1/rpc/get_public_showcase` endpoint using the public publishable key shared with `/tournament/`, with `credentials: 'omit'`. The request has a 10-second abort timer where `AbortController` is available and one shared promise per page. The RPC is maintained in the app repository at `yamatch/supabase/migrations/20261015214227_public_showcase.sql`. Backend deployment was verified on staging and production on 2026-10-15, including production HTTP 200 and anonymous SQL smoke checks. This records backend verification, not publication of these website changes.
 
@@ -601,11 +601,45 @@ The payload must contain `recent` and `upcoming` arrays and six non-negative int
 
 **Loading and cache.** A zero-height, `aria-hidden` sentinel before each hidden section triggers loading within a `600px 0px` IntersectionObserver root margin, then disconnects and removes itself. Without IntersectionObserver, loading starts immediately. Valid payloads with tickets are cached in `sessionStorage` under `yamatch.showcase.v1`, with `{ savedAt, payload }` and a ten-minute TTL. A fresh, revalidated cache is reused without a background refresh; expired, future-dated or corrupt entries are ignored. Storage failure is harmless. Render exceptions hide and clear the section. Rendering or hiding a previously visible section dispatches `yamatch:showcase-layout`; the homepage floating-card controller remeasures its cached geometry on that event and removes the listener on cleanup.
 
-**Ticket content.** Tickets are semantic list items containing articles, `h3` titles under the rail's `h2`, and dated `time` elements formatted in French/UTC. Upcoming tickets display registration count, optional capacity/progress bar and « Inscriptions ouvertes », « Inscriptions closes » or « Complet ». Their real-data CTA links to `/tournament/?id=…`, with the title in its accessible name. Completed tickets show the positive team count and have no CTA. Organiser name/logo and city/team-size metadata appear only when available.
+**Participant tickets (`appTicket`).** Semantic list items contain articles, H3 titles, French/UTC `<time>` dates and optional `city • N×N` metadata. Dates use an unpadded day and uppercase abbreviated month without dots. Counts read « N/M inscrits » or « N inscrits » without capacity. With capacity, open tickets show remaining teams and a clamped progress bar; full takes label precedence (« Complet »), otherwise closed tickets show « Inscriptions closes ». Without capacity, status and progress are omitted. Full tickets retain the default teal gradient even when registrations are closed. Only closed, non-full tickets receive `.is-closed` and a black header; “Complet” therefore takes precedence for both label and palette. Real CTAs link to `/tournament/?id=…`, with the tournament title in visually hidden accessible text: « S’inscrire » when open with room, « Voir le tournoi » otherwise. Neither price nor custom palette is invented from absent RPC fields. Muted full/closed statuses use `--tp-white-90` rather than the SPEC’s 80% white: review found the latter insufficient on the teal gradient, so this intentional adjustment serves the AA acceptance criterion.
 
-**Demo mode.** Only explicit `?showcase=demo` selects local fictitious data; it bypasses network/cache loading and labels the preview « Aperçu démo — données fictives, non publiées ». Names include « Démo » and fictitious cities. Demo tickets have no tournament CTA. A live-data failure never falls back to demo content.
+```text
+section.showcase.tp-band#derniers-tournois[data-showcase-variant="participant"][hidden]
+├── svg.tp-court--desktop + svg.tp-court--mobile (decorative)
+├── .tp-content[data-showcase-rail-block]
+│   ├── header.tp-header → badge, h2#showcaseRailTitle, introduction
+│   └── ol.tp-cards[data-showcase-rail]
+│       ├── generated li[data-showcase-generated] × 0–5
+│       └── li[data-showcase-create] → static creation ticket
+└── .tp-ticker[role="region"][tabindex="0"][hidden]
+    ├── .tp-ticker-label
+    └── ul.tp-track[data-showcase-ticker] → recent items + hidden duplicates
+```
 
-**Layout and interaction.** Shared CSS §10.7 uses native horizontal grid scrolling and mandatory start-aligned scroll snap, isolated from the phone carousel state machine. `--showcase-gutter` aligns the rail with page/container margins; `--showcase-card-width: clamp(268px, 24vw, 312px)` controls desktop columns. Tickets use `--showcase-ticket-bg`, glow/strong-glow and on-dark palette tokens; `--showcase-ticket-stub: 64px` and `--showcase-ticket-notch: 11px` set the dashed stub and masked edge notches. The section has fluid 64–120px block padding and clipped horizontal overflow. At ≤767px, gutter becomes `--mobile-hero-card-margin`, columns become `min(82%, 300px)`, gap becomes 12px (16px desktop), and arrow controls hide in favour of native swipe. The rail remains focusable for keyboard scrolling. Desktop 44px arrow buttons scroll by one card plus gap; boundary `aria-disabled` preserves focus and suppresses movement. Scroll/resize updates are animation-frame batched. Reduced motion selects immediate scrolling and disables button/CTA transitions.
+**Static creation card.** `li[data-showcase-create]` remains last in `ol.tp-cards`; rendering clears only generated siblings and inserts tickets before it. Its « Créer mon tournoi → » link points to `organisateur/`. Organizer rendering continues to use the historical `ticket()` implementation, optional organiser metadata and native rail controls; participant rendering never calls `wireRailNav()`.
+
+**Recent ticker (`renderTicker`).** The focusable `.tp-ticker[role="region"]` is labelled « Tournois déjà joués ». It renders up to nine names, UTC dates, optional cities and positive team counts, then duplicates these list items with `.tp-ticker-copy[aria-hidden="true"]`. Missing city/zero count omit their separator. Decorative trophy SVGs are not interactive. The ticker is hidden without recent entries; duplicate items do not add focus targets.
+
+**Demo mode.** Only explicit `?showcase=demo` selects local fictitious data; it bypasses network/cache loading and labels the preview « Aperçu démo — données fictives, non publiées ». Names include « Démo » and fictitious cities. Participant demo tickets preserve the visual CTA using an inert `span[aria-disabled="true"]` rather than a link to a fictitious ID; organizer demo tickets retain their existing no-CTA behaviour. The static creation card still links to the real organiser page. A live-data failure never falls back to demo content.
+
+**Participant layout and interaction (CSS §10.7).** Scoped `tp-*` rules create a rounded light-gray band, white radial glow and decorative horizontal/vertical court SVGs. The section keeps `#derniers-tournois` and reserves `--hero-header-space + 16px` for fixed-header anchor clearance. Its 1392 px maximum width, 24 px desktop gutters and 40 px radius contain a 3-column grid (2 columns at 768–1023 px, 1 below 768 px). Mobile uses the existing inline-margin token, 28 px radius and 16 px card gaps. Ticket geometry matches the app: 281 px height, 175 px head, 16 px tear, 24 px radius and 9 px side notches centred at 183 px. Narrow containers ≤300 px adapt date, text and footer spacing without changing data. Participant previous/next arrows and the old footer app link are absent.
+
+The lime ticker animates `tpScroll` from 0 to −50% over 40 seconds, linearly and indefinitely. Hover and focus within pause it. Reduced motion disables animation, hides duplicates and enables manual horizontal scrolling; the label becomes sticky. The fixed label has local `z-index: 1` above the moving text, with widths 196 px desktop/tablet and 150 px mobile.
+
+| Participant tokens (`:root`) | Value / purpose |
+|---|---|
+| `--tp-band-bg`, `--tp-band-glow` | Shared light gray plus white radial glow |
+| `--tp-court-line`, `--tp-court-net` | Dark ink at .045 / .09 opacity |
+| `--tp-radius`, `--tp-content-pad` | 40 px / `clamp(24px,4.5vw,72px)`; mobile 28 / 16 px |
+| `--tp-title-size`, `--tp-intro-size` | `clamp(2.5rem,5.3vw,4.75rem)` / 1.125rem; tablet title 3.75rem; mobile 2.5 / 1rem |
+| `--tp-ticket-head`, `--tp-ticket-head-closed`, `--tp-ticket-foot` | Black→teal radial gradient; black closed header; dark foot |
+| `--tp-ticket-height`, `--tp-ticket-notch-y`, `--tp-ticket-radius`, `--tp-date-radius` | 281 / 183 / 24 / 17 px |
+| `--tp-body-size`, `--tp-name-size`, `--tp-day-size`, `--tp-cta-size` | .875 / 1.375 / 1.875 / 1.125rem |
+| `--tp-small-size`, `--tp-compact-size` | .8125 / .75rem |
+| `--tp-ticker-title-size`, `--tp-ticker-meta-size`, `--tp-ticker-duration` | 1.625rem (mobile 1.375rem) / 1rem / 40s |
+| `--tp-white-*`, `--tp-black-*` | Tokenized translucent ticket ink, borders and progress tracks |
+
+**Organizer layout remains unchanged.** Shared CSS §10.7 uses native horizontal grid scrolling and mandatory start-aligned scroll snap, isolated from the phone carousel state machine. `--showcase-gutter` aligns the rail with page/container margins; `--showcase-card-width: clamp(268px, 24vw, 312px)` controls desktop columns. Tickets use `--showcase-ticket-bg`, glow/strong-glow and on-dark palette tokens; `--showcase-ticket-stub: 64px` and `--showcase-ticket-notch: 11px` set the dashed stub and masked edge notches. The section has fluid 64–120px block padding and clipped horizontal overflow. At ≤767px, gutter becomes `--mobile-hero-card-margin`, columns become `min(82%, 300px)`, gap becomes 12px (16px desktop), and arrow controls hide in favour of native swipe. The rail remains focusable for keyboard scrolling. Desktop 44px arrow buttons scroll by one card plus gap; boundary `aria-disabled` preserves focus and suppresses movement. Scroll/resize updates are animation-frame batched. Reduced motion selects immediate scrolling and disables button/CTA transitions.
 
 ### Historical carousel (`.screens-rail`, removed from homepage)
 
@@ -925,6 +959,10 @@ The following shared/legacy rules remain available for other consumers. Particip
 ---
 
 ## Recent design decisions (with rationale)
+
+### Participant tournament section V2 (2026-10-18)
+
+Replaced the participant public rail with an app-ticket grid, final static creation card and recent-tournament ticker on a light-gray court background. Kept data loading, validation, cache and organizer rendering unchanged; demo tournament CTAs are inert visual spans. See [implementation notes](handoff/tournois-plateforme-v2/implementation/README.md).
 
 ### Screenshot carousel removed (2026-10-17)
 

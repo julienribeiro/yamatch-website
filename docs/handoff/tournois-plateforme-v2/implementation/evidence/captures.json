@@ -1,0 +1,89 @@
+[
+  {
+    "name": "home",
+    "w": 1440,
+    "errors": [],
+    "geometry": {
+      "width": 1392,
+      "rootOverflow": false,
+      "h2": 1,
+      "h3": 4,
+      "tickets": [
+        281,
+        281,
+        281,
+        281
+      ]
+    }
+  },
+  {
+    "name": "organisateur",
+    "w": 1440,
+    "errors": [],
+    "geometry": {
+      "width": 1440,
+      "rootOverflow": false,
+      "h2": 1,
+      "h3": 4,
+      "tickets": []
+    }
+  },
+  {
+    "name": "home",
+    "w": 820,
+    "errors": [],
+    "geometry": {
+      "width": 772,
+      "rootOverflow": false,
+      "h2": 1,
+      "h3": 4,
+      "tickets": [
+        281,
+        281,
+        281,
+        281
+      ]
+    }
+  },
+  {
+    "name": "organisateur",
+    "w": 820,
+    "errors": [],
+    "geometry": {
+      "width": 820,
+      "rootOverflow": false,
+      "h2": 1,
+      "h3": 4,
+      "tickets": []
+    }
+  },
+  {
+    "name": "home",
+    "w": 390,
+    "errors": [],
+    "geometry": {
+      "width": 350,
+      "rootOverflow": false,
+      "h2": 1,
+      "h3": 4,
+      "tickets": [
+        281,
+        281,
+        281,
+        281
+      ]
+    }
+  },
+  {
+    "name": "organisateur",
+    "w": 390,
+    "errors": [],
+    "geometry": {
+      "width": 390,
+      "rootOverflow": false,
+      "h2": 1,
+      "h3": 4,
+      "tickets": []
+    }
+  }
+]

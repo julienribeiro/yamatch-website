@@ -761,21 +761,60 @@
         </div>
     </section>
 
-    <!-- Rail alimenté par script.js, masqué jusqu’à réception de données valides. -->
-    <section class="showcase" id="derniers-tournois" data-showcase data-showcase-variant="participant" aria-labelledby="showcaseRailTitle" hidden>
-        <div class="showcase-block" data-showcase-rail-block>
-            <div class="showcase-block-head">
-                <h2 class="showcase-block-title" id="showcaseRailTitle">À l’affiche et déjà joués</h2>
-                <div class="showcase-nav">
-                    <button type="button" data-showcase-prev aria-controls="showcaseRail" aria-label="Tournois précédents">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M15 5l-7 7 7 7"/></svg>
-                    </button>
-                    <button type="button" data-showcase-next aria-controls="showcaseRail" aria-label="Tournois suivants">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true" focusable="false"><path d="M9 5l7 7-7 7"/></svg>
-                    </button>
-                </div>
-            </div>
-            <ul class="showcase-rail" id="showcaseRail" role="list" tabindex="0" aria-labelledby="showcaseRailTitle" data-showcase-rail></ul>
+    <!-- Tournois alimentés par script.js, masqués jusqu’à réception de données valides. -->
+    <section class="showcase tp-band" id="derniers-tournois" data-showcase data-showcase-variant="participant" aria-labelledby="showcaseRailTitle" hidden>
+        <svg class="tp-court tp-court--desktop" viewBox="0 0 1392 900" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true" focusable="false">
+            <rect x="120" y="90" width="1152" height="620" rx="4"/>
+            <line class="tp-court-net" x1="696" y1="60" x2="696" y2="740"/>
+            <line x1="504" y1="90" x2="504" y2="710"/>
+            <line x1="888" y1="90" x2="888" y2="710"/>
+        </svg>
+        <svg class="tp-court tp-court--mobile" viewBox="0 0 390 1200" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true" focusable="false">
+            <rect x="30" y="60" width="330" height="1080" rx="4"/>
+            <line class="tp-court-net" x1="10" y1="600" x2="380" y2="600"/>
+            <line x1="30" y1="420" x2="360" y2="420"/>
+            <line x1="30" y1="780" x2="360" y2="780"/>
+        </svg>
+        <div class="tp-content" data-showcase-rail-block>
+            <header class="tp-header">
+                <p class="tp-eyebrow"><span class="tp-eyebrow-dot" aria-hidden="true"></span>Les tournois sur Yamatch</p>
+                <h2 class="tp-title" id="showcaseRailTitle"><span class="tp-title-slant"><span class="tp-title-accent">Ça smash</span><br>près de <br class="tp-mobile-break">chez toi</span></h2>
+                <p class="tp-intro">Des tournois qui se remplissent, des équipes qui se chambrent et des smashs qui claquent. Choisis ton terrain, ramène ta team.</p>
+            </header>
+            <ol class="tp-cards" id="showcaseRail" role="list" aria-labelledby="showcaseRailTitle" data-showcase-rail>
+                <li data-showcase-create>
+                    <article class="tp-ticket tp-ticket--create" aria-labelledby="tpCreateTitle">
+                        <div class="tp-head">
+                            <span class="tp-date" aria-hidden="true">
+                                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+                            </span>
+                            <div class="tp-info">
+                                <h3 class="tp-name" id="tpCreateTitle">Ton prochain tournoi</h3>
+                                <p class="tp-meta">Organisé par toi</p>
+                            </div>
+                            <span class="tp-chevron" aria-hidden="true">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 6l6 6-6 6"/></svg>
+                            </span>
+                            <div class="tp-counts">
+                                <span class="tp-count">0/16 inscrits</span>
+                                <span class="tp-status"><span class="tp-status-dot" aria-hidden="true"></span>À toi de jouer</span>
+                            </div>
+                            <span class="tp-progress" aria-hidden="true"></span>
+                        </div>
+                        <div class="tp-tear" aria-hidden="true"></div>
+                        <div class="tp-foot">
+                            <span class="tp-expand" aria-hidden="true">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
+                            </span>
+                            <a class="tp-cta is-secondary" href="organisateur/">Créer mon tournoi <span aria-hidden="true">→</span></a>
+                        </div>
+                    </article>
+                </li>
+            </ol>
+        </div>
+        <div class="tp-ticker" role="region" aria-label="Tournois déjà joués" tabindex="0" hidden>
+            <span class="tp-ticker-label"><span>Ça s’est joué</span></span>
+            <ul class="tp-track" data-showcase-ticker></ul>
         </div>
     </section>
 

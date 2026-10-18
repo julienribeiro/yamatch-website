@@ -1,0 +1,65 @@
+[
+  {
+    "name": "hero-1440",
+    "sameSize": true,
+    "max": 41,
+    "mean": 0.008113811728395062,
+    "changedChannels": 4998
+  },
+  {
+    "name": "organisateur-1440-full",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "organisateur-1440-showcase",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "hero-820",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "organisateur-820-full",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "organisateur-820-showcase",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "hero-390",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "organisateur-390-full",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  },
+  {
+    "name": "organisateur-390-showcase",
+    "sameSize": true,
+    "max": 0,
+    "mean": 0,
+    "changedChannels": 0
+  }
+]

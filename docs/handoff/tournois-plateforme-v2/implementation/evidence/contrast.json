@@ -1,0 +1,2473 @@
+{
+  "method": "Conservative analytical gradient colour at bounding-box corners; rgba text composited over local gradient. Larger than actual glyph extent.",
+  "intro": 6.86775975478676,
+  "blackLime": 18.193414580879914,
+  "whiteBlack": 21,
+  "results": [
+    {
+      "width": 1440,
+      "minimum": 4.883709973653863,
+      "failures": [],
+      "values": [
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              37.28125,
+              35
+            ],
+            [
+              71.71875,
+              35
+            ],
+            [
+              37.28125,
+              65
+            ],
+            [
+              71.71875,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.324753315069527
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              39.515625,
+              68
+            ],
+            [
+              69.484375,
+              68
+            ],
+            [
+              39.515625,
+              82
+            ],
+            [
+              69.484375,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.894758267695468
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              363.46875,
+              22
+            ],
+            [
+              105,
+              79.1875
+            ],
+            [
+              363.46875,
+              79.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.426775661484176
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              105,
+              82.1875
+            ],
+            [
+              363.46875,
+              82.1875
+            ],
+            [
+              105,
+              102.1875
+            ],
+            [
+              363.46875,
+              102.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.1364107805722545
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              105.78125,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              105.78125,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.637089672793626
+        },
+        {
+          "selector": "tp-status",
+          "color": "rgb(215, 255, 0)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              239.578125,
+              112
+            ],
+            [
+              387.46875,
+              112
+            ],
+            [
+              239.578125,
+              128.796875
+            ],
+            [
+              387.46875,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 4.883709973653863
+        },
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              45.890625,
+              35
+            ],
+            [
+              63.109375,
+              35
+            ],
+            [
+              45.890625,
+              65
+            ],
+            [
+              63.109375,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.779838454581988
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              39.265625,
+              68
+            ],
+            [
+              69.71875,
+              68
+            ],
+            [
+              39.265625,
+              82
+            ],
+            [
+              69.71875,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.8829618339604
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              363.46875,
+              22
+            ],
+            [
+              105,
+              79.1875
+            ],
+            [
+              363.46875,
+              79.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.426775661484176
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              105,
+              82.1875
+            ],
+            [
+              363.46875,
+              82.1875
+            ],
+            [
+              105,
+              102.1875
+            ],
+            [
+              363.46875,
+              102.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.1364107805722545
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              102.71875,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              102.71875,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.637089672793626
+        },
+        {
+          "selector": "tp-status",
+          "color": "rgb(215, 255, 0)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              233.234375,
+              112
+            ],
+            [
+              387.46875,
+              112
+            ],
+            [
+              233.234375,
+              128.796875
+            ],
+            [
+              387.46875,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 4.883709973653863
+        },
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              37.28125,
+              35
+            ],
+            [
+              71.71875,
+              35
+            ],
+            [
+              37.28125,
+              65
+            ],
+            [
+              71.71875,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.324753315069527
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              39.265625,
+              68
+            ],
+            [
+              69.71875,
+              68
+            ],
+            [
+              39.265625,
+              82
+            ],
+            [
+              69.71875,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.8829618339604
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              363.46875,
+              22
+            ],
+            [
+              105,
+              50.59375
+            ],
+            [
+              363.46875,
+              50.59375
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.426775661484176
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              105,
+              53.59375
+            ],
+            [
+              363.46875,
+              53.59375
+            ],
+            [
+              105,
+              73.59375
+            ],
+            [
+              363.46875,
+              73.59375
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.9946240254213565
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              111.40625,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              111.40625,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.637089672793626
+        },
+        {
+          "selector": "tp-status is-muted",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 407.46875,
+          "points": [
+            [
+              329.65625,
+              112
+            ],
+            [
+              387.46875,
+              112
+            ],
+            [
+              329.65625,
+              128.796875
+            ],
+            [
+              387.46875,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 4.912841035009287
+        }
+      ]
+    },
+    {
+      "width": 820,
+      "minimum": 6.404542119610563,
+      "failures": [],
+      "values": [
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              37.28125,
+              35
+            ],
+            [
+              71.71875,
+              35
+            ],
+            [
+              37.28125,
+              65
+            ],
+            [
+              71.71875,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.340629657594972
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              39.515625,
+              68
+            ],
+            [
+              69.484375,
+              68
+            ],
+            [
+              39.515625,
+              82
+            ],
+            [
+              69.484375,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 7.776414889565167
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              295.109375,
+              22
+            ],
+            [
+              105,
+              79.1875
+            ],
+            [
+              295.109375,
+              79.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.391367222041886
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              105,
+              82.1875
+            ],
+            [
+              295.109375,
+              82.1875
+            ],
+            [
+              105,
+              102.1875
+            ],
+            [
+              295.109375,
+              102.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.107494449392153
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              105.78125,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              105.78125,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 7.463082190626963
+        },
+        {
+          "selector": "tp-status",
+          "color": "rgb(215, 255, 0)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              171.21875,
+              112
+            ],
+            [
+              319.109375,
+              112
+            ],
+            [
+              171.21875,
+              128.796875
+            ],
+            [
+              319.109375,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.4656642069170385
+        },
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              45.890625,
+              35
+            ],
+            [
+              63.109375,
+              35
+            ],
+            [
+              45.890625,
+              65
+            ],
+            [
+              63.109375,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.938207960470455
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              39.265625,
+              68
+            ],
+            [
+              69.71875,
+              68
+            ],
+            [
+              39.265625,
+              82
+            ],
+            [
+              69.71875,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 7.760638633809197
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              295.109375,
+              22
+            ],
+            [
+              105,
+              79.1875
+            ],
+            [
+              295.109375,
+              79.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.391367222041886
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              105,
+              82.1875
+            ],
+            [
+              295.109375,
+              82.1875
+            ],
+            [
+              105,
+              102.1875
+            ],
+            [
+              295.109375,
+              102.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.107494449392153
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              102.71875,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              102.71875,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 7.463082190626963
+        },
+        {
+          "selector": "tp-status",
+          "color": "rgb(215, 255, 0)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              164.875,
+              112
+            ],
+            [
+              319.109375,
+              112
+            ],
+            [
+              164.875,
+              128.796875
+            ],
+            [
+              319.109375,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.4656642069170385
+        },
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              37.28125,
+              35
+            ],
+            [
+              71.71875,
+              35
+            ],
+            [
+              37.28125,
+              65
+            ],
+            [
+              71.71875,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.340629657594972
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              39.265625,
+              68
+            ],
+            [
+              69.71875,
+              68
+            ],
+            [
+              39.265625,
+              82
+            ],
+            [
+              69.71875,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 7.760638633809197
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              295.109375,
+              22
+            ],
+            [
+              105,
+              79.1875
+            ],
+            [
+              295.109375,
+              79.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.391367222041886
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              105,
+              82.1875
+            ],
+            [
+              295.109375,
+              82.1875
+            ],
+            [
+              105,
+              102.1875
+            ],
+            [
+              295.109375,
+              102.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.107494449392153
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              111.40625,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              111.40625,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 7.463082190626963
+        },
+        {
+          "selector": "tp-status is-muted",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 339.109375,
+          "points": [
+            [
+              261.296875,
+              112
+            ],
+            [
+              319.109375,
+              112
+            ],
+            [
+              261.296875,
+              128.796875
+            ],
+            [
+              319.109375,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.404542119610563
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "minimum": 6.9591481576198415,
+      "failures": [],
+      "values": [
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 318,
+          "points": [
+            [
+              37.28125,
+              35
+            ],
+            [
+              71.71875,
+              35
+            ],
+            [
+              37.28125,
+              65
+            ],
+            [
+              71.71875,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 9.078147854804135
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 318,
+          "points": [
+            [
+              39.515625,
+              68
+            ],
+            [
+              69.484375,
+              68
+            ],
+            [
+              39.515625,
+              82
+            ],
+            [
+              69.484375,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.46961221527548
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 318,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              274,
+              22
+            ],
+            [
+              105,
+              79.1875
+            ],
+            [
+              274,
+              79.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 9.094964737477381
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 318,
+          "points": [
+            [
+              105,
+              82.1875
+            ],
+            [
+              274,
+              82.1875
+            ],
+            [
+              105,
+              102.1875
+            ],
+            [
+              274,
+              102.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.830275481436852
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 318,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              105.78125,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              105.78125,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.147886520976883
+        },
+        {
+          "selector": "tp-status",
+          "color": "rgb(215, 255, 0)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 318,
+          "points": [
+            [
+              150.109375,
+              112
+            ],
+            [
+              298,
+              112
+            ],
+            [
+              150.109375,
+              128.796875
+            ],
+            [
+              298,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 7.058946544480749
+        },
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 318,
+          "points": [
+            [
+              45.890625,
+              35
+            ],
+            [
+              63.109375,
+              35
+            ],
+            [
+              45.890625,
+              65
+            ],
+            [
+              63.109375,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 9.718276036811094
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 318,
+          "points": [
+            [
+              39.265625,
+              68
+            ],
+            [
+              69.71875,
+              68
+            ],
+            [
+              39.265625,
+              82
+            ],
+            [
+              69.71875,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.45258855921922
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 318,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              274,
+              22
+            ],
+            [
+              105,
+              79.1875
+            ],
+            [
+              274,
+              79.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 9.094964737477381
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 318,
+          "points": [
+            [
+              105,
+              82.1875
+            ],
+            [
+              274,
+              82.1875
+            ],
+            [
+              105,
+              102.1875
+            ],
+            [
+              274,
+              102.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.830275481436852
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 318,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              102.71875,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              102.71875,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.147886520976883
+        },
+        {
+          "selector": "tp-status",
+          "color": "rgb(215, 255, 0)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 318,
+          "points": [
+            [
+              143.765625,
+              112
+            ],
+            [
+              298,
+              112
+            ],
+            [
+              143.765625,
+              128.796875
+            ],
+            [
+              298,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 7.058946544480749
+        },
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 318,
+          "points": [
+            [
+              37.28125,
+              35
+            ],
+            [
+              71.71875,
+              35
+            ],
+            [
+              37.28125,
+              65
+            ],
+            [
+              71.71875,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 9.078147854804135
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 318,
+          "points": [
+            [
+              39.265625,
+              68
+            ],
+            [
+              69.71875,
+              68
+            ],
+            [
+              39.265625,
+              82
+            ],
+            [
+              69.71875,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.45258855921922
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 318,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              274,
+              22
+            ],
+            [
+              105,
+              79.1875
+            ],
+            [
+              274,
+              79.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 9.094964737477381
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 318,
+          "points": [
+            [
+              105,
+              82.1875
+            ],
+            [
+              274,
+              82.1875
+            ],
+            [
+              105,
+              102.1875
+            ],
+            [
+              274,
+              102.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.830275481436852
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 318,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              111.40625,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              111.40625,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.147886520976883
+        },
+        {
+          "selector": "tp-status is-muted",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 318,
+          "points": [
+            [
+              240.1875,
+              112
+            ],
+            [
+              298,
+              112
+            ],
+            [
+              240.1875,
+              128.796875
+            ],
+            [
+              298,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.9591481576198415
+        }
+      ]
+    },
+    {
+      "width": 320,
+      "minimum": 8.644120936901272,
+      "failures": [],
+      "values": [
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 248,
+          "points": [
+            [
+              22.78125,
+              28.5
+            ],
+            [
+              57.21875,
+              28.5
+            ],
+            [
+              22.78125,
+              58.5
+            ],
+            [
+              57.21875,
+              58.5
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.370909009392863
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 248,
+          "points": [
+            [
+              25.015625,
+              61.5
+            ],
+            [
+              54.984375,
+              61.5
+            ],
+            [
+              25.015625,
+              75.5
+            ],
+            [
+              54.984375,
+              75.5
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 9.843510385932042
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 18,
+          "weight": "700",
+          "headWidth": 248,
+          "points": [
+            [
+              80,
+              22
+            ],
+            [
+              220,
+              22
+            ],
+            [
+              80,
+              68.78125
+            ],
+            [
+              220,
+              68.78125
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.455099010750274
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 248,
+          "points": [
+            [
+              80,
+              71.78125
+            ],
+            [
+              220,
+              71.78125
+            ],
+            [
+              80,
+              91.78125
+            ],
+            [
+              220,
+              91.78125
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.240047945497137
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 12,
+          "weight": "400",
+          "headWidth": 248,
+          "points": [
+            [
+              12,
+              112
+            ],
+            [
+              85.53125,
+              112
+            ],
+            [
+              12,
+              126.390625
+            ],
+            [
+              85.53125,
+              126.390625
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.246838548164689
+        },
+        {
+          "selector": "tp-status",
+          "color": "rgb(215, 255, 0)",
+          "font": 12,
+          "weight": "700",
+          "headWidth": 248,
+          "points": [
+            [
+              107.375,
+              112
+            ],
+            [
+              236,
+              112
+            ],
+            [
+              107.375,
+              126.390625
+            ],
+            [
+              236,
+              126.390625
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.877380088100088
+        },
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 248,
+          "points": [
+            [
+              31.390625,
+              28.5
+            ],
+            [
+              48.609375,
+              28.5
+            ],
+            [
+              31.390625,
+              58.5
+            ],
+            [
+              48.609375,
+              58.5
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 11.042509055148102
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 248,
+          "points": [
+            [
+              24.765625,
+              61.5
+            ],
+            [
+              55.21875,
+              61.5
+            ],
+            [
+              24.765625,
+              75.5
+            ],
+            [
+              55.21875,
+              75.5
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 9.824809400108283
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 18,
+          "weight": "700",
+          "headWidth": 248,
+          "points": [
+            [
+              80,
+              22
+            ],
+            [
+              220,
+              22
+            ],
+            [
+              80,
+              68.78125
+            ],
+            [
+              220,
+              68.78125
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.455099010750274
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 248,
+          "points": [
+            [
+              80,
+              71.78125
+            ],
+            [
+              220,
+              71.78125
+            ],
+            [
+              80,
+              91.78125
+            ],
+            [
+              220,
+              91.78125
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.240047945497137
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 12,
+          "weight": "400",
+          "headWidth": 248,
+          "points": [
+            [
+              12,
+              112
+            ],
+            [
+              82.90625,
+              112
+            ],
+            [
+              12,
+              126.390625
+            ],
+            [
+              82.90625,
+              126.390625
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.246838548164689
+        },
+        {
+          "selector": "tp-status",
+          "color": "rgb(215, 255, 0)",
+          "font": 12,
+          "weight": "700",
+          "headWidth": 248,
+          "points": [
+            [
+              101.9375,
+              112
+            ],
+            [
+              236,
+              112
+            ],
+            [
+              101.9375,
+              126.390625
+            ],
+            [
+              236,
+              126.390625
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.877380088100088
+        },
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 248,
+          "points": [
+            [
+              22.78125,
+              28.5
+            ],
+            [
+              57.21875,
+              28.5
+            ],
+            [
+              22.78125,
+              58.5
+            ],
+            [
+              57.21875,
+              58.5
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.370909009392863
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 248,
+          "points": [
+            [
+              24.765625,
+              61.5
+            ],
+            [
+              55.21875,
+              61.5
+            ],
+            [
+              24.765625,
+              75.5
+            ],
+            [
+              55.21875,
+              75.5
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 9.824809400108283
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 18,
+          "weight": "700",
+          "headWidth": 248,
+          "points": [
+            [
+              80,
+              22
+            ],
+            [
+              220,
+              22
+            ],
+            [
+              80,
+              68.78125
+            ],
+            [
+              220,
+              68.78125
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.455099010750274
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 248,
+          "points": [
+            [
+              80,
+              71.78125
+            ],
+            [
+              220,
+              71.78125
+            ],
+            [
+              80,
+              91.78125
+            ],
+            [
+              220,
+              91.78125
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.240047945497137
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 12,
+          "weight": "400",
+          "headWidth": 248,
+          "points": [
+            [
+              12,
+              112
+            ],
+            [
+              90.359375,
+              112
+            ],
+            [
+              12,
+              126.390625
+            ],
+            [
+              90.359375,
+              126.390625
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 10.246838548164689
+        },
+        {
+          "selector": "tp-status is-muted",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 12,
+          "weight": "700",
+          "headWidth": 248,
+          "points": [
+            [
+              186.453125,
+              112
+            ],
+            [
+              236,
+              112
+            ],
+            [
+              186.453125,
+              126.390625
+            ],
+            [
+              236,
+              126.390625
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 8.644120936901272
+        }
+      ]
+    },
+    {
+      "width": 1920,
+      "minimum": 4.979192891900218,
+      "failures": [],
+      "values": [
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              37.28125,
+              35
+            ],
+            [
+              71.71875,
+              35
+            ],
+            [
+              37.28125,
+              65
+            ],
+            [
+              71.71875,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.448523706431542
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              39.515625,
+              68
+            ],
+            [
+              69.484375,
+              68
+            ],
+            [
+              39.515625,
+              82
+            ],
+            [
+              69.484375,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.0096824936873485
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              358.65625,
+              22
+            ],
+            [
+              105,
+              79.1875
+            ],
+            [
+              358.65625,
+              79.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.549007050611541
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              105,
+              82.1875
+            ],
+            [
+              358.65625,
+              82.1875
+            ],
+            [
+              105,
+              102.1875
+            ],
+            [
+              358.65625,
+              102.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.257041185240021
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              105.78125,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              105.78125,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.747665226712626
+        },
+        {
+          "selector": "tp-status",
+          "color": "rgb(215, 255, 0)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              234.765625,
+              112
+            ],
+            [
+              382.65625,
+              112
+            ],
+            [
+              234.765625,
+              128.796875
+            ],
+            [
+              382.65625,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 4.979507444842378
+        },
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 402.671875,
+          "points": [
+            [
+              45.890625,
+              35
+            ],
+            [
+              63.109375,
+              35
+            ],
+            [
+              45.890625,
+              65
+            ],
+            [
+              63.109375,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.912761199317249
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 402.671875,
+          "points": [
+            [
+              39.265625,
+              68
+            ],
+            [
+              69.71875,
+              68
+            ],
+            [
+              39.265625,
+              82
+            ],
+            [
+              69.71875,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.997248669154261
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 402.671875,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              358.671875,
+              22
+            ],
+            [
+              105,
+              79.1875
+            ],
+            [
+              358.671875,
+              79.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.548606324357925
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 402.671875,
+          "points": [
+            [
+              105,
+              82.1875
+            ],
+            [
+              358.671875,
+              82.1875
+            ],
+            [
+              105,
+              102.1875
+            ],
+            [
+              358.671875,
+              102.1875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.2566452776196435
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 402.671875,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              102.71875,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              102.71875,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.747302149635698
+        },
+        {
+          "selector": "tp-status",
+          "color": "rgb(215, 255, 0)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 402.671875,
+          "points": [
+            [
+              228.4375,
+              112
+            ],
+            [
+              382.671875,
+              112
+            ],
+            [
+              228.4375,
+              128.796875
+            ],
+            [
+              382.671875,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 4.979192891900218
+        },
+        {
+          "selector": "tp-day",
+          "color": "rgb(255, 255, 255)",
+          "font": 30,
+          "weight": "700",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              37.28125,
+              35
+            ],
+            [
+              71.71875,
+              35
+            ],
+            [
+              37.28125,
+              65
+            ],
+            [
+              71.71875,
+              65
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.448523706431542
+        },
+        {
+          "selector": "tp-month",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              39.265625,
+              68
+            ],
+            [
+              69.71875,
+              68
+            ],
+            [
+              39.265625,
+              82
+            ],
+            [
+              69.71875,
+              82
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.997625024824394
+        },
+        {
+          "selector": "tp-name",
+          "color": "rgb(255, 255, 255)",
+          "font": 22,
+          "weight": "700",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              105,
+              22
+            ],
+            [
+              358.65625,
+              22
+            ],
+            [
+              105,
+              50.59375
+            ],
+            [
+              358.65625,
+              50.59375
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.549007050611541
+        },
+        {
+          "selector": "tp-meta",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              105,
+              53.59375
+            ],
+            [
+              358.65625,
+              53.59375
+            ],
+            [
+              105,
+              73.59375
+            ],
+            [
+              358.65625,
+              73.59375
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 6.109979258357751
+        },
+        {
+          "selector": "tp-count",
+          "color": "rgb(255, 255, 255)",
+          "font": 14,
+          "weight": "400",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              20,
+              112
+            ],
+            [
+              111.40625,
+              112
+            ],
+            [
+              20,
+              128.796875
+            ],
+            [
+              111.40625,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.747665226712626
+        },
+        {
+          "selector": "tp-status is-muted",
+          "color": "rgba(255, 255, 255, 0.9)",
+          "font": 14,
+          "weight": "700",
+          "headWidth": 402.65625,
+          "points": [
+            [
+              324.84375,
+              112
+            ],
+            [
+              382.65625,
+              112
+            ],
+            [
+              324.84375,
+              128.796875
+            ],
+            [
+              382.65625,
+              128.796875
+            ]
+          ],
+          "closed": false,
+          "minimumConservativeContrast": 5.003750546237589
+        }
+      ]
+    }
+  ]
+}

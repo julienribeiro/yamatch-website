@@ -892,6 +892,7 @@
 
     var MAX_RECENT = 9;
     var MAX_UPCOMING = 6;
+    var MAX_UPCOMING_V2 = 5;
     var MAX_ORGANIZER_RAIL = 6;
     var MAX_STAT_VALUE = 10000000;
     var MAX_TEXT_LENGTH = 120;
@@ -1255,6 +1256,131 @@
         return item;
     }
 
+    // Participant tickets share only normalized data with the organiser rail.
+    var ticketDayFormatter = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', timeZone: 'UTC' });
+    var ticketMonthFormatter = new Intl.DateTimeFormat('fr-FR', { month: 'short', timeZone: 'UTC' });
+    var tickerDateFormatter = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+
+    function participantDate(value) {
+        var parts = DATE_PATTERN.exec(value);
+        return new Date(Date.UTC(+parts[1], +parts[2] - 1, +parts[3]));
+    }
+
+    function participantIcon(pathData, size) {
+        var svg = document.createElementNS(SVG_NS, 'svg');
+        svg.setAttribute('viewBox', '0 0 24 24');
+        svg.setAttribute('width', String(size));
+        svg.setAttribute('height', String(size));
+        svg.setAttribute('fill', 'none');
+        svg.setAttribute('stroke', 'currentColor');
+        svg.setAttribute('stroke-width', '2.2');
+        svg.setAttribute('stroke-linecap', 'round');
+        svg.setAttribute('stroke-linejoin', 'round');
+        svg.setAttribute('aria-hidden', 'true');
+        svg.setAttribute('focusable', 'false');
+        var path = document.createElementNS(SVG_NS, 'path');
+        path.setAttribute('d', pathData);
+        svg.appendChild(path);
+        return svg;
+    }
+
+    function appTicket(t, demo) {
+        var full = t.maxTeams !== null && t.teamsCount >= t.maxTeams;
+        var closed = !t.registrationsOpen;
+        var item = el('li');
+        item.setAttribute('data-showcase-generated', '');
+        var card = el('article', 'tp-ticket' + (closed && !full ? ' is-closed' : '') + (full ? ' is-full' : ''));
+        var head = el('div', 'tp-head');
+        var date = participantDate(t.date);
+        var time = el('time', 'tp-date');
+        time.setAttribute('datetime', t.date);
+        time.setAttribute('aria-label', formatDate(t.date));
+        time.appendChild(el('span', 'tp-day', ticketDayFormatter.format(date)));
+        time.appendChild(el('span', 'tp-month', ticketMonthFormatter.format(date).replace(/\./g, '').toLocaleUpperCase('fr-FR')));
+        head.appendChild(time);
+        var info = el('div', 'tp-info');
+        info.appendChild(el('h3', 'tp-name', t.title));
+        var meta = [];
+        if (t.city) meta.push(t.city);
+        if (t.playersPerTeam) meta.push(t.playersPerTeam + '×' + t.playersPerTeam);
+        if (meta.length) info.appendChild(el('p', 'tp-meta', meta.join(' • ')));
+        head.appendChild(info);
+        var chevron = el('span', 'tp-chevron');
+        chevron.setAttribute('aria-hidden', 'true');
+        chevron.appendChild(participantIcon('M9 6l6 6-6 6', 14));
+        head.appendChild(chevron);
+        var counts = el('div', 'tp-counts');
+        counts.appendChild(el('span', 'tp-count', formatNumber(t.teamsCount) +
+            (t.maxTeams !== null ? '/' + formatNumber(t.maxTeams) : '') + ' inscrits'));
+        if (t.maxTeams !== null) {
+            var status = el('span', 'tp-status' + (full || closed ? ' is-muted' : ''));
+            // Full takes precedence in both the label and the gradient head palette.
+            if (full || closed) {
+                status.textContent = full ? 'Complet' : 'Inscriptions closes';
+            } else {
+                var dot = el('span', 'tp-status-dot');
+                dot.setAttribute('aria-hidden', 'true');
+                status.appendChild(dot);
+                status.appendChild(document.createTextNode(countLabel(t.maxTeams - t.teamsCount, 'équipe restante', 'équipes restantes')));
+            }
+            counts.appendChild(status);
+            var progress = el('span', 'tp-progress');
+            progress.setAttribute('aria-hidden', 'true');
+            var fill = el('span', 'tp-progress-fill');
+            fill.style.setProperty('--tp-fill', String(Math.min(1, t.teamsCount / t.maxTeams)));
+            progress.appendChild(fill);
+            head.appendChild(progress);
+        }
+        head.appendChild(counts);
+        card.appendChild(head);
+        var tear = el('div', 'tp-tear');
+        tear.setAttribute('aria-hidden', 'true');
+        card.appendChild(tear);
+        var foot = el('div', 'tp-foot');
+        var expand = el('span', 'tp-expand');
+        expand.setAttribute('aria-hidden', 'true');
+        expand.appendChild(participantIcon('M6 9l6 6 6-6', 20));
+        foot.appendChild(expand);
+        // Demo preserves the visual CTA without navigating to a fictitious id.
+        var link = el(demo ? 'span' : 'a', 'tp-cta' + (full || closed ? ' is-secondary' : ''), full || closed ? 'Voir le tournoi' : 'S’inscrire');
+        if (demo) link.setAttribute('aria-disabled', 'true');
+        else link.href = '/tournament/?id=' + encodeURIComponent(t.id);
+        link.appendChild(srText(NBSP + ': ' + t.title));
+        foot.appendChild(link);
+        card.appendChild(foot);
+        item.appendChild(card);
+        return item;
+    }
+
+    function renderTicker(section, recent) {
+        var track = section.querySelector('[data-showcase-ticker]');
+        var ticker = track && track.closest('.tp-ticker');
+        if (!track || !ticker) throw new Error('showcase_ticker_missing');
+        clear(track);
+        ticker.hidden = !recent.length;
+        for (var copy = 0; copy < 2; copy++) {
+            recent.slice(0, MAX_RECENT).forEach(function (t) {
+                var item = el('li', 'tp-ticker-item' + (copy ? ' tp-ticker-copy' : ''));
+                if (copy) item.setAttribute('aria-hidden', 'true');
+                item.appendChild(el('span', 'tp-ticker-title', t.title));
+                var parts = [];
+                if (t.city) parts.push(t.city);
+                parts.push(tickerDateFormatter.format(participantDate(t.date)));
+                if (t.teamsCount > 0) parts.push(countLabel(t.teamsCount, 'équipe', 'équipes'));
+                item.appendChild(el('span', 'tp-ticker-meta', parts.join(' · ')));
+                item.appendChild(participantIcon('M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3', 16));
+                track.appendChild(item);
+            });
+        }
+    }
+
+    function clearParticipant(rail) {
+        if (!rail) return;
+        Array.from(rail.children).forEach(function (child) {
+            if (!child.hasAttribute('data-showcase-create')) rail.removeChild(child);
+        });
+    }
+
     function gauge(t) {
         var wrap = el('div', 'showcase-gauge');
         var full = t.maxTeams !== null && t.teamsCount >= t.maxTeams;
@@ -1321,7 +1447,18 @@
     function hideSection(section) {
         var wasVisible = !section.hidden;
         section.hidden = true;
-        clear(section.querySelector('[data-showcase-rail]'));
+        var rail = section.querySelector('[data-showcase-rail]');
+        if (section.getAttribute('data-showcase-variant') === 'organizer') {
+            clear(rail);
+        } else {
+            clearParticipant(rail);
+            var track = section.querySelector('[data-showcase-ticker]');
+            if (track) {
+                clear(track);
+                var ticker = track.closest('.tp-ticker');
+                if (ticker) ticker.hidden = true;
+            }
+        }
         if (wasVisible) window.dispatchEvent(new Event('yamatch:showcase-layout'));
     }
 
@@ -1333,11 +1470,10 @@
 
         var items = variant === 'organizer'
             ? model.recent.slice(0, MAX_ORGANIZER_RAIL).map(function (t) { return ticket(t, 'played', demo); })
-            : model.upcoming.map(function (t) { return ticket(t, 'upcoming', demo); })
-                .concat(model.recent.map(function (t) { return ticket(t, 'played', demo); }));
+            : model.upcoming.slice(0, MAX_UPCOMING_V2).map(function (t) { return appTicket(t, demo); });
 
-        // The rail is the section's only content: nothing to show, no section.
-        if (!items.length) {
+        // A creation card alone never makes an empty participant section visible.
+        if (variant === 'organizer' ? !items.length : !hasTickets(model)) {
             hideSection(section);
             return;
         }
@@ -1347,10 +1483,18 @@
             section.insertBefore(note, section.firstElementChild);
         }
 
-        clear(rail);
-        items.forEach(function (node) { rail.appendChild(node); });
+        if (variant === 'organizer') {
+            clear(rail);
+            items.forEach(function (node) { rail.appendChild(node); });
+        } else {
+            var create = rail.querySelector('[data-showcase-create]');
+            if (!create) throw new Error('showcase_creation_missing');
+            clearParticipant(rail);
+            items.forEach(function (node) { rail.insertBefore(node, create); });
+            renderTicker(section, model.recent);
+        }
         section.hidden = false;
-        wireRailNav(block, rail);
+        if (variant === 'organizer') wireRailNav(block, rail);
         window.dispatchEvent(new Event('yamatch:showcase-layout'));
     }
 
