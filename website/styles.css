@@ -176,6 +176,10 @@
     --hero-glass-bg: rgba(255,255,255,.12);
     --hero-glass-bg-hover: rgba(255,255,255,.20);
     --hero-glass-border: rgba(255,255,255,.22);
+    --badge-radar-duration: 3.2s;
+    --badge-radar-inset: -4px;
+    --badge-radar-sweep: conic-gradient(transparent 0deg 210deg, rgba(16,24,40,.4) 310deg, var(--color-accent) 355deg, transparent 360deg);
+    --badge-radar-mask: radial-gradient(circle, transparent 55%, #000 58%);
     --hero-eyebrow-halo: 0 0 0 4px rgba(215,255,0,.22);
     --hero-phone-shadow: drop-shadow(0 40px 60px rgba(0,0,0,.55));
     --hero-store-height: 50px;
@@ -262,7 +266,8 @@
     --hero-header-fallback: rgba(255,255,255,.96);
     --hero-header-motion: 300ms cubic-bezier(.2,.8,.2,1);
     --hero-gutter: 24px;
-    --hero-header-top: 16px;
+    --hero-header-height: 76px;
+    --hero-header-radius: 0px;
     --hero-header-space: 84px;
     --hero-card-radius: clamp(24px,3vw,40px);
     --hero-font-display: 'Frick 0.3', var(--font-heading);
@@ -1017,17 +1022,21 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
 }
 .hero-header {
     position: fixed;
-    top: var(--hero-header-top);
-    left: var(--hero-gutter);
-    width: calc(100% - 2 * var(--hero-gutter));
-    min-height: 60px;
-    padding: 7px 12px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-height: var(--hero-header-height);
+    padding: 7px calc(var(--hero-gutter) + 12px);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    border: 1px solid transparent;
-    border-radius: var(--radius-pill);
+    border: 0 solid var(--hero-header-border);
+    border-bottom-width: 1px;
+    border-radius: var(--hero-header-radius);
+    background: var(--hero-header-bg);
+    -webkit-backdrop-filter: var(--hero-header-backdrop);
+    backdrop-filter: var(--hero-header-backdrop);
     /* Same layer as the former fixed wordmark; above hero/carousel, below QR. */
     z-index: 50;
     transition: background-color var(--hero-header-motion), border-color var(--hero-header-motion), backdrop-filter var(--hero-header-motion);
@@ -1081,7 +1090,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
 }
 .hero-card.hero-card--photo::before { clip-path: none; background-position: 62% center; }
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .hero-header.is-condensed { background: var(--hero-header-fallback); }
+    .hero-header, .hero-header.is-condensed { background: var(--hero-header-fallback); }
 }
 .hero-card--photo .hero-card-inner--split {
     display: grid;
@@ -1286,7 +1295,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
         --hero-phone-width: 230px;
         --hero-phone-scale: .5556;
         --hero-gutter: var(--mobile-hero-card-margin);
-        --hero-header-top: 8px;
+        --hero-header-height: 68px;
         --hero-logo-height: 12.88px;
         --hero-header-space: 80px;
         --hero-card-radius: 28px;
@@ -1296,7 +1305,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     }
     .hero:has(.hero-header) { padding: var(--hero-header-space) 0 var(--mobile-hero-card-margin-block); }
     .hero-card.hero-card--photo { margin-block: 0; min-height: calc(100svh - var(--hero-header-space) - var(--mobile-hero-card-margin-block)); }
-    .hero-header { padding-inline: 8px; gap: 8px; }
+    .hero-header { padding-inline: calc(var(--hero-gutter) + 8px); gap: 8px; }
     .hero-nav { gap: 0; }
     .hero-nav-link, .hero-nav-cta-long { display: none; }
     .hero-nav-cta-short { display: inline; }
@@ -4697,7 +4706,35 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent 9px,var(-
 /* ==========================================================================
    19. REDUCED MOTION
    ========================================================================== */
+/* Decorative live sweep: only the three participant section badge pictograms.
+   The absolute ring rotates independently; badge/text geometry remains fixed. */
+.hero-card--photo .hero-eyebrow-dot,
+.how-quest .how-eyebrow-dot,
+[data-showcase-variant="participant"] .tp-eyebrow-dot { position: relative; }
+
+.hero-card--photo .hero-eyebrow-dot::after,
+.how-quest .how-eyebrow-dot::after,
+[data-showcase-variant="participant"] .tp-eyebrow-dot::after {
+    content: "";
+    position: absolute;
+    inset: var(--badge-radar-inset);
+    border-radius: var(--radius-pill);
+    background: var(--badge-radar-sweep);
+    -webkit-mask-image: var(--badge-radar-mask);
+    mask-image: var(--badge-radar-mask);
+    pointer-events: none;
+    animation: badge-radar-sweep var(--badge-radar-duration) linear infinite;
+}
+
+@keyframes badge-radar-sweep { to { rotate: 1turn; } }
+
 @media (prefers-reduced-motion: reduce) {
+    .hero-card--photo .hero-eyebrow-dot::after,
+    .how-quest .how-eyebrow-dot::after,
+    [data-showcase-variant="participant"] .tp-eyebrow-dot::after {
+        animation: none !important;
+    }
+
     .hero-header,
     .hero-header *,
     .hero-card--photo,
