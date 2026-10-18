@@ -1,5 +1,6 @@
 /* Écrans illustratifs : sources docs/handoff/app-screens. Servi hors build:css. */
 :root {
+  --ym-hero-progress-shimmer-duration:3500ms;
   --ym-hero-ticket-float-duration:6s;
   --ym-hero-ticket-float-distance:-4px;
   --ym-quest-scroll-max:36px;
@@ -409,7 +410,7 @@
 
 
 /* Le header accompagne le contenu à mi-vitesse, sans collision avec les filtres. */
-.hero-phone .ym-screen--discovery .ym-disc-ticket-relief,
+.hero-phone .ym-screen--discovery .ym-disc-ticket-relief{translate:0 var(--ym-disc-scroll,0px)}
 .hero-phone .ym-screen--discovery .ym-disc-ticket-placeholder,
 .hero-phone .ym-screen--discovery .ym-disc-orga,
 .hero-phone .ym-screen--discovery .ym-disc-filters,
@@ -466,4 +467,20 @@
 }
 @media (prefers-reduced-motion:reduce){
   .hero-phone .ym-disc-ticket-relief>.ym-disc-ticket{animation:none;translate:0 0}
+}
+
+.hero-phone .ym-disc-ticket-relief .ym-disc-remaining i{box-shadow:var(--hero-led-shadow-static);animation:heroBadgeLed var(--hero-led-duration) ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){
+  .hero-phone .ym-disc-ticket-relief .ym-disc-remaining i{animation:none;scale:1;background:var(--ym-accent);box-shadow:var(--hero-led-shadow-static)}
+}
+
+/* Même voile blanc que la TournamentCard de l’app, borné au remplissage réel. */
+.hero-phone .ym-disc-ticket-relief [data-hero-progress]{position:relative;overflow:hidden;background:var(--ym-text-white)}
+.hero-phone .ym-disc-ticket-relief [data-hero-progress]::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,var(--ym-disc-white-70) 30%,var(--ym-disc-white-70) 70%,transparent 100%);animation:ym-hero-progress-shimmer var(--ym-hero-progress-shimmer-duration) linear infinite}
+@keyframes ym-hero-progress-shimmer{
+  from{translate:-100% 0}
+  to{translate:100% 0}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-phone .ym-disc-ticket-relief [data-hero-progress]::after{animation:none;content:none}
 }

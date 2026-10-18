@@ -211,6 +211,8 @@
     --hero-pop-placeholder-radius: 24px;
     --hero-pop-gauge-transition: 600ms cubic-bezier(.2,.8,.2,1);
     /* Participant journey V2. */
+    --how-phone-rest-top: 330px;
+    --how-phone-gap-optical: 3.34px;
     --how-card-radius: 32px;
     --how-card-min-height: 640px;
     --how-card-dark-bg: var(--showcase-ticket-glow), var(--showcase-ticket-bg);
@@ -228,10 +230,10 @@
     --how-phone-shadow-lime: drop-shadow(0 30px 50px rgba(0,0,0,.35));
 
     --how-tag-border: rgba(255,255,255,.18);
-    --how-float-radius: 20px;
-    --how-avatar-size: 38px;
-    --how-caption-size: .6875rem;
-    --how-score-size: 1.5rem;
+
+
+
+
     --how-reveal-duration: 480ms;
     --how-reveal-easing: cubic-bezier(.2,.8,.2,1);
 
@@ -1599,7 +1601,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
 .quest-organiser-link a:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 3px; box-shadow: 0 0 0 6px var(--color-text-primary); }
 /* --- 10.3 Cards and copy --- */
 .quest-steps { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; margin: 0; padding: 0; list-style: none; }
-.quest-step { position: relative; min-width: 0; min-height: var(--how-card-min-height); border-radius: var(--how-card-radius); overflow: hidden; clip-path: inset(0 round var(--how-card-radius)); background: var(--how-card-dark-bg); color: var(--color-text-white); }
+.quest-step { position: relative; display: grid; grid-template-rows: max-content 1fr; min-width: 0; min-height: var(--how-card-min-height); border-radius: var(--how-card-radius); overflow: hidden; clip-path: inset(0 round var(--how-card-radius)); background: var(--how-card-dark-bg); color: var(--color-text-white); }
 .quest-step--lime { background: var(--color-accent); color: var(--color-text-black); }
 .quest-step-copy { position: relative; /* Copy above the phone illustration. */ z-index: 1; display: flex; flex-direction: column; gap: 14px; padding: 32px 32px 0; }
 .quest-step-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
@@ -1611,28 +1613,13 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
 .quest-step-title { margin: 4px 0 0; font: 700 var(--how-step-title-size)/1.15 var(--font-body); letter-spacing: -.01em; color: inherit; }
 .quest-step-body { margin: 0; font-size: var(--how-body-size); line-height: 1.55; color: var(--how-ink-muted-dark); }
 .quest-step--lime .quest-step-body { color: var(--how-ink-muted-lime); }
-/* --- 10.4 Coded phones and decorative cards --- */
-.quest-step-phone { position: absolute; left: 50%; top: 330px; translate: -50% 0; rotate: -3deg; filter: var(--how-phone-shadow); pointer-events: none; }
+/* --- 10.4 Coded phones --- */
+/* The absolute phone uses the remaining grid row as its containing block.
+   Half its free space minus half the former bottom reserve halves the visual
+   text gap; optical correction accounts for the unchanged 3deg rotation. */
+.quest-step-phone { position: absolute; grid-row: 2; left: 50%; top: max(16px, calc(50% - (var(--how-card-min-height) - var(--how-phone-rest-top)) / 2 + var(--how-phone-gap-optical))); translate: -50% 0; rotate: -3deg; filter: var(--how-phone-shadow); pointer-events: none; }
 .quest-step--lime .quest-step-phone { rotate: 3deg; filter: var(--how-phone-shadow-lime); }
 .quest-step-phone .ym-phone-slot { --ym-phone-scale: var(--how-phone-scale); }
-.quest-step-float { position: absolute; /* Decorative overlays sit above phone and its shadow. */ z-index: 2; pointer-events: none; box-shadow: var(--hero-float-shadow); }
-.quest-step-float--location { top: 410px; left: 24px; display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: var(--radius-pill); background: var(--color-text-white); color: var(--color-text-primary); font-size: var(--how-tag-size); font-weight: 600; rotate: -4deg; }
-.quest-step-float--location svg { width: 16px; height: 16px; }
-.quest-step-float--team, .quest-step-float--score { top: 420px; right: 18px; width: 220px; padding: 14px; border-radius: var(--how-float-radius); background: var(--color-text-primary); color: var(--color-text-white); rotate: -3deg; display: flex; flex-direction: column; gap: 10px; }
-.quest-step-float--score { top: 410px; width: 210px; background: var(--color-text-white); color: var(--color-text-primary); rotate: 4deg; gap: 8px; }
-/* Journey-only overrides keep FAQ decoration styles unchanged. */
-.quest-step-float .floating-card__team-eyebrow, .quest-step-float .floating-card__score-eyebrow { margin: 0; font-size: var(--how-caption-size); font-weight: 700; letter-spacing: .08em; color: var(--how-ink-muted-dark); }
-.quest-step-float .floating-card__score-eyebrow { color: var(--how-intro-ink); }
-.quest-step-float .floating-card__team-grid { display: flex; justify-content: space-between; gap: 4px; }
-.quest-step-float .floating-card__team-avatar { width: var(--how-avatar-size); height: var(--how-avatar-size); border: 0; }
-.quest-step-float .floating-card__team-avatar--me { font-size: var(--how-caption-size); }
-.quest-step-float .floating-card__team-caption { font-size: var(--how-caption-size); color: var(--color-text-white); }
-.quest-step-float .floating-card__score-row { margin: 0; }
-.quest-step-float .floating-card__score-team { font-size: var(--how-tag-size); font-weight: 600; letter-spacing: 0; color: var(--color-medium-gray); }
-.quest-step-float .floating-card__score-value { font: 400 var(--how-score-size)/1 var(--hero-font-display); color: var(--color-medium-gray); }
-.quest-step-float .floating-card__score-row--winning .floating-card__score-team, .quest-step-float .floating-card__score-row--winning .floating-card__score-value { color: var(--color-text-primary); }
-.quest-step-float .floating-card__score-badge { align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; margin: 0; padding: 5px 10px; font-size: var(--how-tag-size); text-transform: none; letter-spacing: 0; }
-.quest-step-float .floating-card__score-badge svg { width: 14px; height: 14px; }
 /* --- 10.5 Progressive reveal: content is visible without JavaScript. --- */
 .how-quest.is-enhanced .quest-step { transition: opacity var(--how-reveal-duration) var(--how-reveal-easing), translate var(--how-reveal-duration) var(--how-reveal-easing); }
 .how-quest.is-enhanced .quest-step:nth-child(2) { transition-delay: 80ms; }
@@ -1647,7 +1634,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     .quest-steps { grid-template-columns: minmax(0,1fr); }
 }
 @media (max-width: 767px) {
-    :root { --how-card-radius: 28px; --how-card-min-height: 560px;  --how-step-title-size: 1.5rem; --how-body-size: .9375rem; --how-intro-size: 1rem; --how-tag-size: .75rem; --how-phone-scale: .5072; --how-float-radius: 18px; --how-avatar-size: 34px; --how-caption-size: .625rem; --how-score-size: 1.25rem; }
+    :root { --how-card-radius: 28px; --how-card-min-height: 560px;  --how-step-title-size: 1.5rem; --how-body-size: .9375rem; --how-intro-size: 1rem; --how-tag-size: .75rem; --how-phone-scale: .5072;     }
     .how-quest { padding: 56px var(--mobile-hero-card-margin) 40px; }
     .how-quest-header { gap: 16px; padding-inline: 4px; margin-bottom: 28px; }
     .how-quest-copy { gap: 16px; }
@@ -1658,10 +1645,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     .quest-step-copy { gap: 10px; padding: 24px 24px 0; }
     .quest-step-tag { gap: 6px; padding: 5px 10px; }
     .quest-step-title { margin-top: 2px; line-height: 1.2; }
-    .quest-step-phone { top: 290px; }
-    .quest-step-float--location { top: 340px; left: 16px; gap: 6px; padding: 8px 12px; }
-    .quest-step-float--team { top: 380px; right: 12px; width: 196px; padding: 12px; }
-    .quest-step-float--score { top: 370px; right: 12px; width: 180px; padding: 12px; gap: 6px; }
+    :root { --how-phone-rest-top: 290px; --how-phone-gap-optical: 2.6px; }
 }
 @media (prefers-reduced-motion: reduce) {
     .how-quest.is-enhanced .quest-step, .how-quest.is-enhanced .quest-step-phone { opacity: 1 !important; translate: 0 !important; transition: none !important; animation: none !important; }
