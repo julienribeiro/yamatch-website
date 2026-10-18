@@ -298,7 +298,7 @@ Decorative row rendered above the legal links. Flex row (`justify-content: cente
 
 **Layout.** CSS §7.7 scopes content to `.hero-card--photo` and navigation to `.hero-header`; shared 404 and organiser rules remain independent. Desktop uses a 1.15fr / .85fr grid, left-aligned text and a phone cropped by the rounded card. At ≤1023 px it stacks text then a 520 px visual; organiser navigation stays visible. At ≤767 px the H1 and badge remain left-aligned on the same edge; the lede and nav text links hide, stores share equal widths at 46 px minimum height, and the coded phone is 230 px wide without an external score card. The separate mobile inline/block tokens remain; V2 reserves header space above the card rather than applying the older equal top/bottom card margins.
 
-**Straight, left-aligned hero title.** The photo hero’s `.hero-title-slant` now uses `transform: none`: no skew or line-to-line horizontal offset is applied. Frick, title sizes, copy and accent colors are unchanged. The hero copy and H1 are left-aligned at every breakpoint, including mobile. `--hero-copy-text-inset` is 0 px everywhere, so the Volleyball badge and white lede share the title’s left edge; the lede keeps its 46ch cap and remains hidden on mobile. Store-button alignment is unchanged. HOW, tournament and Stories titles retain their existing slant; the reset is scoped to `.hero-card--photo`.
+**Straight, left-aligned hero title.** The photo hero’s `.hero-title-slant` now uses `transform: none`: no skew or line-to-line horizontal offset is applied. Frick, title sizes, copy and accent colors are unchanged. The hero copy and H1 are left-aligned at every breakpoint, including mobile. `--hero-copy-text-inset` is 0 px everywhere, so the Volleyball badge and white lede share the title’s left edge; the lede keeps its 46ch cap and remains hidden on mobile. Store-button alignment is unchanged. The hero reset is scoped to `.hero-card--photo`; the four section H2s use the shared tilted-pill system described below.
 
 **Images.** Existing mutually exclusive high-priority WebP photo preloads remain: `hero-volley-mixed.webp` (1672 × 941) for ≥768 px and `hero-volley-mixed-mobile.webp` (1122 × 1402) for ≤767 px. The photo modifier disables the old scroll-driven `::before` clip, while the card itself uses `clip-path: inset(0 round var(--hero-card-radius))` and overflow clipping to contain the coded phone and its chrome. Side/bottom gradients improve desktop readability; a vertical gradient serves tablet/mobile. [HERO_IMAGE_PROMPT.md](HERO_IMAGE_PROMPT.md) records photo provenance. The phone is a coded discovery illustration, initially derived from `docs/handoff/app-screens/screens/discovery.html` and subsequently updated from the current Flutter components described below instead of using a raster capture. Its hero integration intentionally adds two wrappers for the first-ticket relief; the source fragment remains unchanged by this effect. Its `.hero-phone` wrapper exposes one French-labelled `role="img"`; the `.ym-phone-slot` hides the entire decorative frame and screen from assistive technology. The slot reserves scaled frame dimensions, so no phone-image preload or intrinsic image attributes are needed. `app-screens.css` loads after `styles.min.css`; the photo preloads remain. Source SVGs carry decorative accessibility attributes before the fragment is copied into the homepage. Cards are decorative illustration, not live tournament data.
 
@@ -429,7 +429,7 @@ section.how-quest#how-it-works[aria-labelledby="howQuestTitle"]
         └── article.quest-step → copy + ranking phone + score float
 ```
 
-Each `.quest-step-copy` keeps the number, tag, H3 and existing participant paragraph. The H2 uses Frick with a lime highlight on “ça marche”. The founder removed the organiser CTA from this section header; the existing flex header now contains only `.how-quest-copy`. The organiser CTA in the fixed page header and the footer link remain. All copy is static HTML, available without JavaScript. Heading hierarchy and `#how-it-works` remain intact.
+Each `.quest-step-copy` keeps the number, tag, H3 and existing participant paragraph. The H2 reads “Comment ça marche, en 3 étapes”, with “3 étapes” inside the shared tilted lime pill. The founder removed the organiser CTA from this section header; the existing flex header now contains only `.how-quest-copy`. The organiser CTA in the fixed page header and the footer link remain. All copy is static HTML, available without JavaScript. Heading hierarchy and `#how-it-works` remain intact.
 
 **Coded screens.** Each `.quest-step-phone[role="img"][aria-label]` exposes one French-labelled illustration and contains an `aria-hidden` `.ym-phone-slot` with `.ym-phone` and a coded `tournament`, `confirmation` or `ranking` illustration refreshed from the current Flutter reference recorded below. Shared `app-screens.css` adds those screen styles to discovery; it stays outside `build:css` and uses local fonts. No PNG phone capture or interactive booking/payment control is introduced.
 
@@ -448,11 +448,11 @@ Geometry and the cap are cached at initialization, resize, `pageshow`, font read
 | `--how-card-radius`, `--how-card-min-height` | 32 px / 640 px → 28 px / 560 px |
 | `--how-card-dark-bg` | shared showcase ticket glow + background |
 | `--how-ink-muted-dark`, `--how-ink-muted-lime`, `--how-intro-ink` | white 78%, black 78%, `#4A5565` |
-| `--how-title-size`, `--how-numeral-size` | `clamp(3rem,5.8vw,5.25rem)` → `clamp(2.5rem,12.3vw,3rem)`; numeral `clamp(2.75rem,3.9vw,3.5rem)` |
+| `--how-numeral-size` | `clamp(2.75rem,3.9vw,3.5rem)`; H2 uses shared section-title tokens |
 | `--how-step-title-size`, `--how-body-size`, `--how-intro-size`, `--how-tag-size` | 1.875/1/1.125/.8125rem → 1.5/.9375/1/.75rem |
 | `--how-phone-scale` | .6522 → .5072 |
 | `--how-phone-shadow`, `--how-phone-shadow-lime` | 30 px / 50 px drop shadows, black .6 / .35 |
-| `--how-highlight-radius`, `--how-tag-border` | .08em; white 18% |
+| `--how-tag-border` | White 18% |
 | `--how-float-radius`, `--how-avatar-size` | 20/38 px → 18/34 px |
 | `--how-caption-size`, `--how-score-size` | .6875/1.5rem → .625/1.25rem |
 | `--how-reveal-duration`, `--how-reveal-easing` | 480 ms; `cubic-bezier(.2,.8,.2,1)` |
@@ -617,7 +617,7 @@ section.stories#temoignages[aria-labelledby="storiesTitle"][hidden]
 | `--stories-band-bg`, `--stories-court-line`, `--stories-court-net` | shared light gray and `--tp-court-line` / `--tp-court-net` |
 | `--stories-card-w`, `--stories-card-h`, `--stories-card-radius` | 250 / 444 / 24 px → 220 / 390 / 22 px |
 | `--stories-band-radius`, `--stories-content-pad` | 40 px / `clamp(24px,4.5vw,72px)` → 28 / 16 px |
-| `--stories-title-size`, `--stories-quote-size` | 4.75 / 1.375rem → `clamp(2.25rem,11.28vw,2.75rem)` / 1.25rem |
+| `--stories-quote-size` | 1.375rem → 1.25rem; H2 uses shared section-title tokens |
 | `--stories-shade` | transparent-to-black .85 vertical gradient |
 | `--stories-placeholder`, `--stories-shadow`, `--stories-progress-muted` | `#2E333A`; 18/40 px dark-ink .18 shadow; white .4 |
 
@@ -654,7 +654,7 @@ section.showcase.tp-band#derniers-tournois[data-showcase-variant="participant"][
 
 **Demo mode.** Only explicit `?showcase=demo` selects local fictitious data; it bypasses network/cache loading and labels the preview « Aperçu démo — données fictives, non publiées ». Names include « Démo » and fictitious cities. Participant demo tickets preserve the visual CTA using an inert `span[aria-disabled="true"]` rather than a link to a fictitious ID; organizer demo tickets retain their existing no-CTA behaviour. The static creation card still links to the real organiser page. A live-data failure never falls back to demo content.
 
-**Participant layout and interaction (CSS §10.7).** Scoped `tp-*` rules create a rounded light-gray band, white radial glow and decorative horizontal/vertical court SVGs. The section keeps `#derniers-tournois` and reserves `--hero-header-space + 16px` for fixed-header anchor clearance. Its 1392 px maximum width, 24 px desktop gutters and 40 px radius contain a 3-column grid (2 columns at 768–1023 px, 1 below 768 px). Mobile uses the existing inline-margin token, 28 px radius and 16 px card gaps. Ticket geometry matches the app: 281 px height, 175 px head, 16 px tear, 24 px radius and 9 px side notches centred at 183 px. Narrow containers ≤300 px adapt date, text and footer spacing without changing data. Participant previous/next arrows and the old footer app link are absent.
+**Participant layout and interaction (CSS §10.7).** Scoped `tp-*` rules create a rounded light-gray band, white radial glow and decorative horizontal/vertical court SVGs. The section keeps `#derniers-tournois` and reserves `--hero-header-space + 16px` for fixed-header anchor clearance. Its 1392 px maximum width, 24 px desktop gutters and 40 px radius contain a 3-column grid (2 columns at 768–1023 px, 1 below 768 px). Mobile uses the existing inline-margin token, 28 px radius and 16 px card gaps. Tickets now follow the current Flutter `tournament_card` / ticket-background reference at app commit `4f6d88fe` (matching the relevant `origin/main` source), with content-driven height rather than a fixed 281 px box. The header uses 20/20/24 px padding, a 72 px minimum date tile with 16 px radius, a 28 px Roboto day, 22 px Roboto title, 14 px Inter metadata and a bare 20 px chevron. Counts follow with a 16 px gap; the 6 px progress bar follows after 8 px. The tear is 16 px high with a .6 px dashed line; 8 px side notches sit at `calc(100% - 86px)`, with an 8.5 px mask edge. The ticket radius stays 24 px. Footer padding is 6/20/12 px with a 10 px gap, a 56 px icon circle and a minimum 60 px CTA in 18 px Inter. Narrow containers ≤300 px reduce inline padding, text and footer icon size without changing data or the date tile minimum. The creation ticket shares this geometry and keeps its lime header. Participant previous/next arrows and the old footer app link are absent.
 
 The lime ticker animates `tpScroll` from 0 to −50% over 40 seconds, linearly and indefinitely. Hover and focus within pause it. Reduced motion disables animation, hides duplicates and enables manual horizontal scrolling; the label becomes sticky. The fixed label has local `z-index: 1` above the moving text, with widths 196 px desktop/tablet and 150 px mobile.
 
@@ -663,10 +663,12 @@ The lime ticker animates `tpScroll` from 0 to −50% over 40 seconds, linearly a
 | `--tp-band-bg`, `--tp-band-glow` | Shared light gray plus white radial glow |
 | `--tp-court-line`, `--tp-court-net` | Dark ink at .045 / .09 opacity |
 | `--tp-radius`, `--tp-content-pad` | 40 px / `clamp(24px,4.5vw,72px)`; mobile 28 / 16 px |
-| `--tp-title-size`, `--tp-intro-size` | `clamp(2.5rem,5.3vw,4.75rem)` / 1.125rem; tablet title 3.75rem; mobile 2.5 / 1rem |
-| `--tp-ticket-head`, `--tp-ticket-head-closed`, `--tp-ticket-foot` | Black→teal radial gradient; black closed header; dark foot |
-| `--tp-ticket-height`, `--tp-ticket-notch-y`, `--tp-ticket-radius`, `--tp-date-radius` | 281 / 183 / 24 / 17 px |
-| `--tp-body-size`, `--tp-name-size`, `--tp-day-size`, `--tp-cta-size` | .875 / 1.375 / 1.875 / 1.125rem |
+| `--tp-intro-size` | 1.125rem → 1rem mobile; H2 uses shared section-title tokens |
+| `--tp-ticket-head`, `--tp-ticket-head-closed`, `--tp-ticket-foot` | Dimension-relative `circle closest-side` radial gradient, black 0% → teal 300%; black closed header; dark foot |
+| `--tp-ticket-contrast-shade` | Uniform black 35% gradient layered over the teal header for text contrast; creation lime and closed black remain unchanged |
+| `--tp-ticket-notch-y`, `--tp-ticket-notch-radius`, `--tp-ticket-notch-edge` | `calc(100% - 86px)` / 8 / 8.5 px; ticket height follows content |
+| `--tp-ticket-radius`, `--tp-date-radius` | 24 / 16 px |
+| `--tp-body-size`, `--tp-name-size`, `--tp-day-size`, `--tp-cta-size` | .875 / 1.375 / 1.75 / 1.125rem |
 | `--tp-small-size`, `--tp-compact-size` | .8125 / .75rem |
 | `--tp-ticker-title-size`, `--tp-ticker-meta-size`, `--tp-ticker-duration` | 1.625rem (mobile 1.375rem) / 1rem / 40s |
 | `--tp-white-*`, `--tp-black-*` | Tokenized translucent ticket ink, borders and progress tracks |
@@ -791,6 +793,8 @@ The single `[data-hero-clock]` status label uses `Intl.DateTimeFormat('fr-FR', {
 **Hero discovery relief — Pop A2.** The original first ticket remains inside `.ym-disc-viewport` as `.ym-disc-ticket--original` with `visibility:hidden`; an `aria-hidden` placeholder reserves its visual location at left 18 px / top 218 px, 353 × 281 px, radius 24 px, dark ink .08 fill and a 2 px dashed .25 border. The decorative copy sits in the sibling `.ym-disc-ticket-relief[aria-hidden="true"]` at the same base position, local `z-index:4`, `transform-origin:center`, with no pointer interaction. The phone’s existing accessible label and 414 × 868 frame remain unchanged.
 
 Tokens live in `styles.css :root` and are consumed through `--ym-hero-pop-*` aliases in `app-screens.css`. `--hero-pop-transform` is `translate(-70px, -36px) rotate(-7deg) scale(1.2)` desktop/tablet; mobile reduces translation to −18/−18 px. `--hero-pop-shadow` combines `drop-shadow(0 34px 40px rgba(0,0,0,.55))` and `drop-shadow(0 0 30px rgba(215,255,0,.22))`. Placeholder tokens are `--hero-pop-placeholder-bg`, `--hero-pop-placeholder-border` and `--hero-pop-placeholder-radius`; `--hero-pop-gauge-transition` is `600ms cubic-bezier(.2,.8,.2,1)`. The hero card still clips the overall composition. HOW screens and the current Flutter discovery layout remain unchanged.
+
+**Gentle floating ticket.** Only `.hero-phone .ym-disc-ticket-relief > .ym-disc-ticket` receives `ym-hero-ticket-float`: an infinite `ease-in-out` cycle with `--ym-hero-ticket-float-duration:6s` and `--ym-hero-ticket-float-distance:-4px`, declared in `app-screens.css :root`. The child translates from 0 to −4 logical app pixels and back; its parent retains the Pop A2 pose, shadow and independent scroll translation. The gauge controller is unchanged. Reduced motion disables the animation and resets the child translation to zero. No extra JavaScript or timer is introduced.
 
 **Illustrative registration sequence.** A guarded, hero-copy-only controller updates `[data-hero-registrations]`, `[data-hero-remaining]` and `[data-hero-progress]`. Constants are `INITIAL_COUNT=27`, `FINAL_COUNT=33`, `CAPACITY=36`, `STEP_MS=1400`. Once `section.hero` intersects (IntersectionObserver threshold 0, phone fallback if the section is absent, immediate start without IO), one timeout adds one registration per step, ending at 33/36 and 3 teams remaining; the bar width is count/capacity. Labels use `textContent` and singular handling for one remaining team. This is illustrative, not live registration data; there is no live region or external request.
 
@@ -976,6 +980,12 @@ Historical `.screens-rail` CSS retains `overflow: visible`, but no homepage elem
 | `.faq-answer-inner p` | padding-bottom | 300ms | `cubic-bezier(0.2, 0.8, 0.2, 1)` |
 | `.toast` | transform, opacity | 300ms | `cubic-bezier(0.4, 0, 0.2, 1)` |
 
+### Shared participant section titles — founder decision 2026-10-18
+
+Four homepage H2s opt into `.section-title` with an inline `.title-pill`: “Comment ça marche, en **3 étapes**”, “Ça smash **près de chez toi**”, “Vu dans **les stories**” and “Questions **fréquentes**” (bold here identifies the pill). Existing IDs remain; Stories stays hidden under S1. H1, eyebrows and step numerals are unchanged; organiser and 404 headings do not opt in.
+
+Headings use Inter 700, normal case, primary text color and no skew. Root tokens are `--section-title-size:clamp(2.25rem,4.6vw,3.5rem)`, `--section-title-line-height:1.02`, `--section-title-tracking:-.045em` and `--section-title-weight:700`. The inline-block pill keeps its text on one line, with lime `--title-pill-bg`, black text, `--title-pill-padding:.02em .28em .08em`, `--title-pill-radius:.4em`, `--title-pill-rotate:-3deg` and `--title-pill-margin:.08em` on its inline start. The old HOW/Stories/tournament H2 size tokens are removed; other typography remains independent. At widths ≤359 px, the tournament H2 borrows the section’s inline padding via an expanded width and negative inline-start margin, keeping its non-wrapping pill inside the band at 320 px. Historical handoff images retain the previous headings.
+
 ### Participant badge LED (CSS only)
 
 Only `.hero-card--photo .hero-eyebrow-dot`, `.how-quest .how-eyebrow-dot` and participant `.tp-eyebrow-dot` receive the gentle LED animation (Volleyball, Parcours, Tournois). `heroBadgeLed` runs for `--hero-led-duration:2.4s` with `ease-in-out`, indefinitely. At 0%/100%, the dot uses lime, scale 1.15 and `--hero-led-shadow-on` (10 px blur, 3 px spread, lime 65%). At 50%, it uses `--hero-led-off:#3D4A12`, scale .8 and the transparent zero-size `--hero-led-shadow-off`. These tokens live in `:root`. The dots animate without changing badge/text layout; no pseudo-element or JavaScript is involved. Under reduced motion, animation stops and the dot stays lime at scale 1 with `--hero-led-shadow-static` (8 px blur, 2 px spread, lime 50%). Stories and organiser indicators are excluded.
@@ -988,6 +998,7 @@ Only `.hero-card--photo .hero-eyebrow-dot`, `.how-quest .how-eyebrow-dot` and pa
 | `.hero-title`, `.hero-subtitle` | `titleEntrance` | `opacity`, `translate` (vertical), `filter: blur` | Scale 1.04 → 1 for the title. Staggered delay. |
 | `.ym-orga-detail:not([hidden])` | `ym-orga-detail-in` | transform: translateY(101% → 0) | 350ms entry; closing restores `hidden` immediately. |
 | `.ym-orga-fl`, `.ym-orga-fl2` | `ym-orga-bob` | translate: 0 → −6px → 0 | 4s / 5s infinite; second variant has −2s delay. |
+| `.hero-phone .ym-disc-ticket-relief > .ym-disc-ticket` | `ym-hero-ticket-float` | `translate`: 0 → −4 px → 0 | 6s ease-in-out infinite; zero translation under reduced motion |
 | Three participant eyebrow dots | `heroBadgeLed` | `scale`, `background`, `box-shadow` | 2.4s ease-in-out infinite; static lime glow under reduced motion |
 | Former `.hero-card-waves path` | `waveDraw` (removed 2026-10-15) | — | Historical SVG stroke entrance; replaced by the static photograph. |
 

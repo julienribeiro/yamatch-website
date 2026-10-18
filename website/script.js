@@ -1511,7 +1511,7 @@
         head.appendChild(info);
         var chevron = el('span', 'tp-chevron');
         chevron.setAttribute('aria-hidden', 'true');
-        chevron.appendChild(participantIcon('M9 6l6 6-6 6', 14));
+        chevron.appendChild(participantIcon('M9 6l6 6-6 6', 20));
         head.appendChild(chevron);
         var counts = el('div', 'tp-counts');
         counts.appendChild(el('span', 'tp-count', formatNumber(t.teamsCount) +
@@ -1543,7 +1543,7 @@
         var foot = el('div', 'tp-foot');
         var expand = el('span', 'tp-expand');
         expand.setAttribute('aria-hidden', 'true');
-        expand.appendChild(participantIcon('M6 9l6 6 6-6', 20));
+        expand.appendChild(participantIcon('M6 9l6 6 6-6', 24));
         foot.appendChild(expand);
         // Demo preserves the visual CTA without navigating to a fictitious id.
         var link = el(demo ? 'span' : 'a', 'tp-cta' + (full || closed ? ' is-secondary' : ''), full || closed ? 'Voir le tournoi' : 'S’inscrire');

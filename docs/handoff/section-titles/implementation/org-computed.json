@@ -1,0 +1,452 @@
+[
+  {
+    "width": 1440,
+    "identical": true,
+    "states": [
+      [
+        {
+          "text": "Ton tournoi de volley, prêt en 1 minute",
+          "font": "\"Frick 0.3\", Roboto, system-ui, -apple-system, sans-serif",
+          "size": "88px",
+          "weight": "400",
+          "color": "rgb(215, 255, 0)",
+          "transform": "none",
+          "position": [
+            107.515625,
+            197.578125,
+            1224.953125,
+            167.1875
+          ]
+        },
+        {
+          "text": "Organiser un tournoi, c’est simple comme bonjour",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "48px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            60,
+            1129.265625,
+            1200,
+            103.65625
+          ]
+        },
+        {
+          "text": "Les derniers tournois",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "24px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "text": "Tout ton tournoi dans ta poche",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "48px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            60,
+            2244.78125,
+            800,
+            52.796875
+          ]
+        },
+        {
+          "text": "Questions d’organisateurs",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "48px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            60,
+            3329.59375,
+            1320,
+            52.796875
+          ]
+        }
+      ],
+      [
+        {
+          "text": "Ton tournoi de volley, prêt en 1 minute",
+          "font": "\"Frick 0.3\", Roboto, system-ui, -apple-system, sans-serif",
+          "size": "88px",
+          "weight": "400",
+          "color": "rgb(215, 255, 0)",
+          "transform": "none",
+          "position": [
+            107.515625,
+            197.578125,
+            1224.953125,
+            167.1875
+          ]
+        },
+        {
+          "text": "Organiser un tournoi, c’est simple comme bonjour",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "48px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            60,
+            1129.265625,
+            1200,
+            103.65625
+          ]
+        },
+        {
+          "text": "Les derniers tournois",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "24px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "text": "Tout ton tournoi dans ta poche",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "48px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            60,
+            2244.78125,
+            800,
+            52.796875
+          ]
+        },
+        {
+          "text": "Questions d’organisateurs",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "48px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            60,
+            3329.59375,
+            1320,
+            52.796875
+          ]
+        }
+      ]
+    ]
+  },
+  {
+    "width": 820,
+    "identical": true,
+    "states": [
+      [
+        {
+          "text": "Ton tournoi de volley, prêt en 1 minute",
+          "font": "\"Frick 0.3\", Roboto, system-ui, -apple-system, sans-serif",
+          "size": "53.3px",
+          "weight": "400",
+          "color": "rgb(215, 255, 0)",
+          "transform": "none",
+          "position": [
+            63.125,
+            157.75,
+            693.75,
+            101.25
+          ]
+        },
+        {
+          "text": "Organiser un tournoi, c’est simple comme bonjour",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "36.9px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            36.890625,
+            963.96875,
+            746.21875,
+            79.6875
+          ]
+        },
+        {
+          "text": "Les derniers tournois",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "18px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "text": "Tout ton tournoi dans ta poche",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "36.9px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            36.890625,
+            1798.5625,
+            746.21875,
+            40.59375
+          ]
+        },
+        {
+          "text": "Questions d’organisateurs",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "36.9px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            36.890625,
+            2877.609375,
+            746.21875,
+            40.59375
+          ]
+        }
+      ],
+      [
+        {
+          "text": "Ton tournoi de volley, prêt en 1 minute",
+          "font": "\"Frick 0.3\", Roboto, system-ui, -apple-system, sans-serif",
+          "size": "53.3px",
+          "weight": "400",
+          "color": "rgb(215, 255, 0)",
+          "transform": "none",
+          "position": [
+            63.125,
+            157.75,
+            693.75,
+            101.25
+          ]
+        },
+        {
+          "text": "Organiser un tournoi, c’est simple comme bonjour",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "36.9px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            36.890625,
+            963.96875,
+            746.21875,
+            79.6875
+          ]
+        },
+        {
+          "text": "Les derniers tournois",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "18px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "text": "Tout ton tournoi dans ta poche",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "36.9px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            36.890625,
+            1798.5625,
+            746.21875,
+            40.59375
+          ]
+        },
+        {
+          "text": "Questions d’organisateurs",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "36.9px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            36.890625,
+            2877.609375,
+            746.21875,
+            40.59375
+          ]
+        }
+      ]
+    ]
+  },
+  {
+    "width": 390,
+    "identical": true,
+    "states": [
+      [
+        {
+          "text": "Ton tournoi de volley, prêt en 1 minute",
+          "font": "\"Frick 0.3\", Roboto, system-ui, -apple-system, sans-serif",
+          "size": "34.125px",
+          "weight": "400",
+          "color": "rgb(215, 255, 0)",
+          "transform": "none",
+          "position": [
+            40,
+            192.203125,
+            310,
+            97.21875
+          ]
+        },
+        {
+          "text": "Organiser un tournoi, c’est simple comme bonjour",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "21.45px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            20,
+            964,
+            350,
+            46.3125
+          ]
+        },
+        {
+          "text": "Les derniers tournois",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "18px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "text": "Tout ton tournoi dans ta poche",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "21.45px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            20,
+            1725.4375,
+            350,
+            23.59375
+          ]
+        },
+        {
+          "text": "Questions d’organisateurs",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "21.45px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            20,
+            2735.515625,
+            350,
+            23.59375
+          ]
+        }
+      ],
+      [
+        {
+          "text": "Ton tournoi de volley, prêt en 1 minute",
+          "font": "\"Frick 0.3\", Roboto, system-ui, -apple-system, sans-serif",
+          "size": "34.125px",
+          "weight": "400",
+          "color": "rgb(215, 255, 0)",
+          "transform": "none",
+          "position": [
+            40,
+            192.203125,
+            310,
+            97.21875
+          ]
+        },
+        {
+          "text": "Organiser un tournoi, c’est simple comme bonjour",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "21.45px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            20,
+            964,
+            350,
+            46.3125
+          ]
+        },
+        {
+          "text": "Les derniers tournois",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "18px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "text": "Tout ton tournoi dans ta poche",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "21.45px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            20,
+            1725.4375,
+            350,
+            23.59375
+          ]
+        },
+        {
+          "text": "Questions d’organisateurs",
+          "font": "Roboto, system-ui, -apple-system, sans-serif",
+          "size": "21.45px",
+          "weight": "700",
+          "color": "rgb(16, 24, 40)",
+          "transform": "none",
+          "position": [
+            20,
+            2735.515625,
+            350,
+            23.59375
+          ]
+        }
+      ]
+    ]
+  }
+]

@@ -58,9 +58,7 @@ sont transmis.**
 - **En-tête** (aligné à gauche, padding 64 / 72 px) :
   - badge blanc bordé `#E0E0E0` : point noir avec halo lime, texte « Les
     tournois sur Yamatch » ;
-  - H2 Frick incliné (`skewX(-12deg)`), 76 px, majuscules, noir :
-    « **ÇA SMASH** » surligné en lime (fond lime, rayon .08em), puis
-    retour à la ligne et « PRÈS DE CHEZ TOI » ;
+  - **18 octobre 2026 — Titre : style pastille penchée, décision founder.** H2 Inter 700, casse normale : « Ça smash » puis « près de chez toi » dans une pastille lime inclinée de −3°. Taille `clamp(2.25rem,4.6vw,3.5rem)`, interligne 1.02, approche −.045em ; cette décision remplace le titre Frick des visuels historiques et leurs tailles H2 à tous les breakpoints ;
   - introduction 18 px `#4A5565`.
 - **Cartes** : grille 3 colonnes, gap 20 px. Ce sont les tournois à venir,
   puis **toujours** la carte « Ton prochain tournoi » en dernier.
@@ -133,10 +131,12 @@ rester seule sur sa ligne. Titre H2 environ 60 px.
 
 ## 4. Contenus (copie exacte, registre « tu »)
 
+**18 octobre 2026 — Titre : style pastille penchée, décision founder.** Utiliser `.section-title` et `span.title-pill` ; conserver `showcaseRailTitle`.
+
 | Élément | Texte |
 |---|---|
 | Badge | `Les tournois sur Yamatch` |
-| H2 (garder `id="showcaseRailTitle"`) | `Ça smash près de chez toi` (« Ça smash » surligné) |
+| H2 (garder `id="showcaseRailTitle"`) | `Ça smash près de chez toi` (« près de chez toi » dans `span.title-pill`) |
 | Introduction | `Des tournois qui se remplissent, des équipes qui se chambrent et des smashs qui claquent. Choisis ton terrain, ramène ta team.` |
 | CTA ticket ouvert / complet ou fermé | `S’inscrire` / `Voir le tournoi` |
 | Statuts | `N équipes restantes` · `1 équipe restante` · `Complet` · `Inscriptions closes` |

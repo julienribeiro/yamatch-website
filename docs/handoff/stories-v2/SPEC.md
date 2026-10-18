@@ -58,8 +58,7 @@ formats et la règle d'accord écrit.
   c'est acceptable.
 - **En-tête** (flex, aligné en bas, `space-between`) :
   - à gauche : badge blanc bordé `#E0E0E0` (point noir, halo lime) « Ils
-    jouent sur Yamatch », puis le H2 Frick incliné 76 px, en majuscules,
-    noir : « VU DANS » / « **LES STORIES** » surligné lime ;
+    jouent sur Yamatch », puis le H2 « Vu dans » avec « les stories » dans une pastille lime inclinée de −3°. **18 octobre 2026 — Titre : style pastille penchée, décision founder.** Inter 700, casse normale, taille `clamp(2.25rem,4.6vw,3.5rem)`, interligne 1.02, approche −.045em ; cette décision prime les titres des visuels historiques à tous les breakpoints ;
   - à droite : pill `#101828` 48 px avec l'icône Instagram en SVG et le texte
     « @yamatch_app », lien `https://www.instagram.com/yamatch_app/`
     (`target="_blank" rel="noopener"`, nom accessible « Yamatch sur
@@ -112,6 +111,8 @@ trois stories visibles, plus une qui dépasse.
 
 ## 6. Structure HTML proposée
 
+**18 octobre 2026 — Titre : style pastille penchée, décision founder.** Le H2 utilise `.section-title` et `span.title-pill`. La section reste masquée tant que la règle S1 n’est pas satisfaite.
+
 ```html
 <section class="stories" id="temoignages" aria-labelledby="storiesTitle">
   <div class="stories-band">
@@ -119,7 +120,7 @@ trois stories visibles, plus une qui dépasse.
     <div class="stories-head">
       <div>
         <p class="stories-eyebrow"><span aria-hidden="true"></span>Ils jouent sur Yamatch</p>
-        <h2 id="storiesTitle" class="stories-title"><span>Vu dans<br><mark>les stories</mark></span></h2>
+        <h2 id="storiesTitle" class="stories-title section-title">Vu dans <span class="title-pill">les stories</span></h2>
       </div>
       <a class="stories-insta" href="https://www.instagram.com/yamatch_app/" target="_blank" rel="noopener" aria-label="Yamatch sur Instagram (nouvel onglet)">…@yamatch_app</a>
     </div>
