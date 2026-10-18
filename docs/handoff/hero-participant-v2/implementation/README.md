@@ -26,3 +26,7 @@ Les règles et tokens actuels sont documentés dans [WEBSITE_ARCHITECTURE.md](..
 ## Ajustements de revue
 
 Les cibles de navigation mesurent au minimum 44 × 44 px. Les ancres FAQ et parcours réservent la hauteur du header plus 16 px afin de rester visibles sous la pill. Le petit texte Google Play est blanc opaque ; celui de l’App Store reste noir sur lime. Le rapport séparé `VALIDATION.md` est établi par le reviewer après ses vérifications.
+
+## Actualisation Pop A2 — 18 octobre 2026
+
+Le ticket discovery est désormais présenté comme une copie décorative détachée ; son original est masqué et son emplacement marqué en pointillés. La jauge illustrative progresse une fois de 27 à 33 inscriptions sur 36, puis s’arrête. Elle conserve sa progression quand l’onglet est masqué, passe directement à l’état final en mouvement réduit et reste à 27 sans JavaScript. Aucun compteur réel ni annonce live n’est ajouté. Les autres ajustements du hero (H1 droit, header pleine largeur, discovery actualisé) sont conservés. Voir [le contrat Pop A2](pop-a2/README.md) et les validations de cette étape, distinctes des anciennes captures du dossier.

@@ -308,22 +308,9 @@
 </div>
 <div class="ym-island" aria-hidden="true"></div>
 
-  <!-- MainTabHeader : titre + cloche -->
+  <!-- MainTabHeader : titre + choix de la vue -->
   <div class="ym-disc-header">
-    <span class="ym-disc-title">Prochains tournois</span>
-    <svg class="ym-disc-bell" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>
-  </div>
-
-  <!-- Barre de filtres : sport + zone + toggle vue -->
-  <div class="ym-disc-filters">
-    <div class="ym-disc-sport">
-      <span>Volleyball</span>
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
-    </div>
-    <div class="ym-disc-location">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9z"/><circle cx="12" cy="9" r="2.5"/></svg>
-      <span>Paris</span>
-    </div>
+    <span class="ym-disc-title">Accueil</span>
     <div class="ym-disc-toggle">
       <span class="ym-disc-toggle__seg ym-disc-toggle__seg--on">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
@@ -334,17 +321,64 @@
     </div>
   </div>
 
-  <!-- Card « Envie d'organiser un tournoi ? » -->
+  <!-- Barre de filtres : sport + zone -->
+  <div class="ym-disc-filters">
+    <div class="ym-disc-sport">
+      <span>Volleyball</span>
+    </div>
+    <div class="ym-disc-location">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 2.88-2.88 7.19-5 9.88C9.92 16.21 7 11.85 7 9z"/><circle cx="12" cy="9" r="2.5"/></svg>
+      <span>Paris</span>
+    </div>
+  </div>
+
+  <!-- Card ticket tournoi -->
+  <div class="ym-disc-ticket ym-disc-ticket--original" aria-hidden="true">
+    <div class="ym-disc-ticket__head">
+      <div class="ym-disc-date"><span class="ym-disc-date__day">17</span><span class="ym-disc-date__month">MAI</span></div>
+      <div class="ym-disc-info">
+        <div class="ym-disc-info__name">Tournoi de la jeunesse</div>
+        <div class="ym-disc-info__place">Milly la forêt<span class="ym-disc-sep">•</span>52 km</div>
+      </div>
+      <span class="ym-disc-chev">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+      </span>
+      <div class="ym-disc-progress-row">
+        <span>27/36 inscrits</span>
+        <span class="ym-disc-remaining"><i></i>9 équipes restantes</span>
+      </div>
+      <div class="ym-disc-bar"><span></span></div>
+    </div>
+    <div class="ym-disc-ticket__tear"></div>
+    <div class="ym-disc-ticket__foot">
+      <span class="ym-disc-expand">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+      </span>
+      <span class="ym-disc-pay">Payer<span class="ym-disc-sep">•</span>45€/eq.</span>
+    </div>
+  </div>
+
+  <div class="ym-disc-ticket-placeholder" aria-hidden="true"></div>
+
+  <!-- Acquisition organisateur : état participant sans simulation -->
   <div class="ym-disc-orga">
     <div class="ym-disc-orga__row">
-      <span class="ym-disc-orga__icon">
-        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11.23 6c-1.66 0-3.22.66-4.36 1.73C6.54 6.73 5.61 6 4.5 6 3.12 6 2 7.12 2 8.5S3.12 11 4.5 11c.21 0 .41-.03.61-.08-.05.25-.09.51-.1.78-.18 3.68 2.95 6.68 6.68 6.27 2.55-.28 4.68-2.26 5.19-4.77.15-.71.15-1.4.06-2.06-.09-.6.38-1.13.99-1.13H22V6H11.23zM4.5 9c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zm6.5 6c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z"/><circle cx="11" cy="12" r="2"/></svg>
-      </span>
-      <span class="ym-disc-orga__title">Envie d'organiser un tournoi ?</span>
+      <span class="ym-disc-orga__icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m12 3 2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5ZM20 2v4m-2-2h4"/></svg></span>
+      <div class="ym-disc-orga__headings">
+        <span class="ym-disc-orga__eyebrow">Plus de sport, moins de galère</span>
+        <span class="ym-disc-orga__title">Pas encore organisateur ?</span>
+      </div>
     </div>
-    <svg class="ym-disc-orga__close" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-    <p class="ym-disc-orga__text">Créez et gérez vos tournois directement sur Yamatch</p>
-    <span class="ym-disc-orga__cta">Devenir organisateur</span>
+    <p class="ym-disc-orga__text">Teste la gestion d’un tournoi fictif façon Yamatch avec autant d’équipes que tu le souhaites</p>
+    <div class="ym-disc-orga__features">
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Poules équilibrées</span></span>
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 6h3c5 0 7 12 12 12h3m-4-4 4 4-4 4M3 18h3c2 0 3-2 4-4m4-4c1-2 2-4 4-4h3m-4-4 4 4-4 4"/></svg><span>Remix des équipes</span></span>
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 8h12v5h-5a6 6 0 1 1-7-5Z"/><circle cx="9" cy="14" r="2"/><path d="M3 7 1 5m8 0V2"/></svg><span>Arbitres assignés automatiquement</span></span>
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m3 17 6-6 4 3 8-10"/></svg><span>Classement en direct</span></span>
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 9 2 7v8h3l2 4h3v-3h5v3h3l2-6h2V9h-3l-2-4-4 2H9a5 5 0 0 0-5 2Z"/><path d="M10 10h4m3 1h.01"/></svg><span>100% gratuit</span></span>
+      <span class="ym-disc-orga__feature"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V6a4 4 0 0 1 7-3M12 14v3"/></svg><span>Sans engagement</span></span>
+    </div>
+    <span class="ym-disc-orga__cta">Essayer, ça prend 2 min</span>
   </div>
 
   <!-- 2e card tournoi (coupée en bas) -->
@@ -364,16 +398,19 @@
   <div class="ym-disc-nav">
     <span class="ym-disc-nav__item ym-disc-nav__item--on">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z"/></svg>
+      <span class="ym-disc-nav__label">Accueil</span>
     </span>
     <span class="ym-disc-nav__item">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5.5 4.5h13a2.5 2.5 0 0 1 2.5 2.5v2.1a3 3 0 0 0 0 5.8V17a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17v-2.1a3 3 0 0 0 0-5.8V7a2.5 2.5 0 0 1 2.5-2.5z"/></svg>
+      <span class="ym-disc-nav__label">Mes tournois</span>
     </span>
     <span class="ym-disc-nav__item">
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v1c0 .55.45 1 1 1h14c.55 0 1-.45 1-1v-1c0-2.66-5.33-4-8-4z"/></svg>
+      <span class="ym-disc-nav__label">Profil</span>
     </span>
   </div>
 </div>
-<div class="ym-disc-ticket-relief">
+<div class="ym-disc-ticket-relief" aria-hidden="true">
   <!-- Card ticket tournoi -->
   <div class="ym-disc-ticket">
     <div class="ym-disc-ticket__head">
@@ -386,10 +423,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
       </span>
       <div class="ym-disc-progress-row">
-        <span>27/36 inscrits</span>
-        <span class="ym-disc-remaining"><i></i>9 équipes restantes</span>
+        <span data-hero-registrations>27/36 inscrits</span>
+        <span class="ym-disc-remaining"><i></i><span data-hero-remaining>9 équipes restantes</span></span>
       </div>
-      <div class="ym-disc-bar"><span></span></div>
+      <div class="ym-disc-bar"><span data-hero-progress></span></div>
     </div>
     <div class="ym-disc-ticket__tear"></div>
     <div class="ym-disc-ticket__foot">

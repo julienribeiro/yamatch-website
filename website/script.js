@@ -30,21 +30,149 @@
     // any future ad-hoc notification (inline handler, console, future block).
     window.yamatchToast = showToast;
 
-    // The participant header condenses as one pill; its logo keeps native #top navigation.
+    // Share one scroll frame between the participant header and its decorative app content.
     {
         const header = document.querySelector('.hero-header');
-        if (header) {
+        const phone = document.querySelector('.hero-phone');
+        const relief = phone && phone.querySelector('.ym-disc-ticket-relief');
+        const appHeader = phone && phone.querySelector('.ym-disc-header');
+        const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+        const CONTENT_SCROLL_FACTOR = 0.12;
+        if (header || phone) {
             let rafId = null;
+            let maxContentScroll = 0;
+            let lastContentScroll = null;
             const updateCondensed = () => {
                 rafId = null;
-                header.classList.toggle('is-condensed', window.scrollY > 30);
+                const scrollY = Math.max(0, window.scrollY);
+                if (header) header.classList.toggle('is-condensed', scrollY > 30);
+                if (phone) {
+                    const offset = motionQuery.matches ? 0 : Math.min(maxContentScroll, scrollY * CONTENT_SCROLL_FACTOR);
+                    const value = offset.toFixed(2) + 'px';
+                    if (value !== lastContentScroll) {
+                        phone.style.setProperty('--ym-disc-scroll', value);
+                        lastContentScroll = value;
+                    }
+                }
             };
             const scheduleCondensed = () => {
                 if (rafId === null) rafId = requestAnimationFrame(updateCondensed);
             };
+            const measurePhone = () => {
+                if (phone && relief && appHeader) {
+                    const configuredMax = parseFloat(getComputedStyle(phone).getPropertyValue('--ym-disc-scroll-max')) || 0;
+                    // Bound the underlying content, not the intentionally popped-out decorative copy.
+                    // CSS owns the relief's transform; layout offsets exclude that transform and scroll translation.
+                    const clearance = relief.offsetTop - appHeader.offsetTop - appHeader.offsetHeight;
+                    maxContentScroll = Math.max(0, Math.min(configuredMax, clearance));
+                }
+                scheduleCondensed();
+            };
             window.addEventListener('scroll', scheduleCondensed, { passive: true });
-            window.addEventListener('pageshow', scheduleCondensed);
-            updateCondensed();
+            window.addEventListener('pageshow', measurePhone);
+            window.addEventListener('resize', measurePhone, { passive: true });
+            if (typeof motionQuery.addEventListener === 'function') {
+                motionQuery.addEventListener('change', scheduleCondensed);
+            } else if (typeof motionQuery.addListener === 'function') {
+                motionQuery.addListener(scheduleCondensed);
+            }
+            if (phone && 'ResizeObserver' in window) {
+                const observer = new ResizeObserver(measurePhone);
+                observer.observe(phone);
+                if (relief) observer.observe(relief);
+                if (appHeader) observer.observe(appHeader);
+            }
+            if (document.fonts) document.fonts.ready.then(measurePhone);
+            measurePhone();
+        }
+    }
+
+    // Decorative sample registrations: one visible hero run, with a single pausable timeout.
+    {
+        const hero = document.querySelector('section.hero');
+        const phone = document.querySelector('.hero-phone');
+        const ticket = phone && phone.querySelector('.ym-disc-ticket-relief');
+        const countNode = ticket && ticket.querySelector('[data-hero-registrations]');
+        const remainingNode = ticket && ticket.querySelector('[data-hero-remaining]');
+        const progress = ticket && ticket.querySelector('[data-hero-progress]');
+        if (countNode && remainingNode && progress) {
+            const INITIAL_COUNT = 27;
+            const FINAL_COUNT = 33;
+            const CAPACITY = 36;
+            const STEP_MS = 1400;
+            const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+            let count = INITIAL_COUNT;
+            let started = false;
+            let timer = null;
+            let observer = null;
+            let remainingDelay = STEP_MS;
+            let deadline = 0;
+            const renderCount = () => {
+                const remaining = CAPACITY - count;
+                countNode.textContent = count + '/' + CAPACITY + ' inscrits';
+                remainingNode.textContent = remaining + (remaining === 1 ? ' équipe restante' : ' équipes restantes');
+                progress.style.width = (count / CAPACITY * 100) + '%';
+            };
+            const cleanup = () => {
+                if (timer !== null) clearTimeout(timer);
+                timer = null;
+                if (observer) observer.disconnect();
+                observer = null;
+                document.removeEventListener('visibilitychange', onVisibilityChange);
+                if (typeof motionQuery.removeEventListener === 'function') {
+                    motionQuery.removeEventListener('change', onMotionChange);
+                } else if (typeof motionQuery.removeListener === 'function') {
+                    motionQuery.removeListener(onMotionChange);
+                }
+            };
+            const scheduleStep = () => {
+                if (!started || document.hidden || count >= FINAL_COUNT || timer !== null) return;
+                deadline = performance.now() + remainingDelay;
+                timer = setTimeout(() => {
+                    timer = null;
+                    if (document.hidden) { remainingDelay = 0; return; }
+                    count += 1;
+                    renderCount();
+                    remainingDelay = STEP_MS;
+                    if (count === FINAL_COUNT) cleanup();
+                    else scheduleStep();
+                }, remainingDelay);
+            };
+            const onVisibilityChange = () => {
+                if (document.hidden && timer !== null) {
+                    remainingDelay = Math.max(0, deadline - performance.now());
+                    clearTimeout(timer);
+                    timer = null;
+                } else if (!document.hidden) scheduleStep();
+            };
+            const onMotionChange = () => {
+                if (!motionQuery.matches) return;
+                count = FINAL_COUNT;
+                renderCount();
+                cleanup();
+            };
+            const start = () => {
+                if (started) return;
+                started = true;
+                if (observer) observer.disconnect();
+                observer = null;
+                scheduleStep();
+            };
+            if (motionQuery.matches) onMotionChange();
+            else {
+                document.addEventListener('visibilitychange', onVisibilityChange);
+                if (typeof motionQuery.addEventListener === 'function') {
+                    motionQuery.addEventListener('change', onMotionChange);
+                } else if (typeof motionQuery.addListener === 'function') {
+                    motionQuery.addListener(onMotionChange);
+                }
+                if ('IntersectionObserver' in window) {
+                    observer = new IntersectionObserver((entries) => {
+                        if (entries.some((entry) => entry.isIntersecting)) start();
+                    }, { threshold: 0 });
+                    observer.observe(hero || phone);
+                } else start();
+            }
         }
     }
 

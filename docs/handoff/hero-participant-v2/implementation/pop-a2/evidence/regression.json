@@ -1,0 +1,68 @@
+{
+  "sourceAfterHeroIdentical": true,
+  "comparisons": [
+    {
+      "name": "how",
+      "w": 1440,
+      "sameSize": true,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "name": "tournois",
+      "w": 1440,
+      "sameSize": true,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "name": "faq",
+      "w": 1440,
+      "sameSize": true,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "name": "how",
+      "w": 820,
+      "sameSize": true,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "name": "tournois",
+      "w": 820,
+      "sameSize": true,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "name": "faq",
+      "w": 820,
+      "sameSize": true,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "name": "how",
+      "w": 390,
+      "sameSize": true,
+      "max": 0,
+      "mean": 0
+    },
+    {
+      "name": "tournois",
+      "w": 390,
+      "sameSize": true,
+      "max": 20,
+      "mean": 0.00002820102702247664
+    },
+    {
+      "name": "faq",
+      "w": 390,
+      "sameSize": true,
+      "max": 0,
+      "mean": 0
+    }
+  ]
+}

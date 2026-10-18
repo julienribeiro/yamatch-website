@@ -1,7 +1,19 @@
 /* Écrans illustratifs : sources docs/handoff/app-screens. Servi hors build:css. */
 :root {
-  --ym-hero-ticket-scale:1.22;
-  --ym-hero-ticket-shadow:drop-shadow(0 14px 18px rgba(0,0,0,.38));
+  --ym-disc-scroll-max:36px;
+  --ym-disc-current-filter-shadow:0 2px 6px rgba(0,0,0,.05);
+  --ym-disc-current-icon-tile:rgba(215,255,0,.12);
+  --ym-disc-current-feature-bg:rgba(255,255,255,.06);
+  --ym-disc-current-card-shadow:0 10px 15px rgba(0,0,0,.10),0 4px 6px rgba(0,0,0,.10);
+  --ym-disc-current-nav-fill:rgba(0,0,0,.34);
+  --ym-disc-current-label:rgba(255,255,255,.85);
+  --ym-disc-current-toggle-ink:rgba(255,255,255,.4);
+  --ym-hero-pop-transform:var(--hero-pop-transform);
+  --ym-hero-pop-shadow:var(--hero-pop-shadow);
+  --ym-hero-pop-placeholder-bg:var(--hero-pop-placeholder-bg);
+  --ym-hero-pop-placeholder-border:var(--hero-pop-placeholder-border);
+  --ym-hero-pop-placeholder-radius:var(--hero-pop-placeholder-radius);
+  --ym-hero-pop-gauge-transition:var(--hero-pop-gauge-transition);
   --ym-accent:#D7FF00;
   --ym-accent-gradient-end:#C5F000;
   --ym-dark-bg:#1A1A1A;
@@ -422,5 +434,63 @@
 /* Seule la carte au premier plan sort du cadre ; le reste de l’écran reste découpé. */
 .hero-phone .ym-screen--discovery{overflow:visible}
 .hero-phone .ym-screen--discovery .ym-disc-viewport{position:absolute;inset:0;overflow:hidden;border-radius:inherit}
-.hero-phone .ym-screen--discovery .ym-disc-ticket-relief{position:absolute;left:18px;top:218px;width:353px;height:281px;z-index:1;scale:var(--ym-hero-ticket-scale);transform-origin:center;filter:var(--ym-hero-ticket-shadow);pointer-events:none}
+.hero-phone .ym-screen--discovery .ym-disc-ticket-relief{position:absolute;left:18px;top:218px;width:353px;height:281px;z-index:4;transform:var(--ym-hero-pop-transform);transform-origin:center;filter:var(--ym-hero-pop-shadow);pointer-events:none}
 .hero-phone .ym-screen--discovery .ym-disc-ticket-relief>.ym-disc-ticket{position:relative;left:0;top:0;width:100%;height:100%}
+
+/* Accueil participant : composants app actuels (MainTabHeader, PillToggle, OrganizerCtaCard, BottomNavBar). */
+.hero-phone .ym-screen--discovery .ym-disc-header{left:20px;right:20px;top:74px}
+.hero-phone .ym-screen--discovery .ym-disc-toggle{width:88px;height:44px;padding:0}
+.hero-phone .ym-screen--discovery .ym-disc-toggle__seg{width:36px;height:36px;margin:0 4px;color:var(--ym-disc-current-toggle-ink)}
+.hero-phone .ym-screen--discovery .ym-disc-toggle__seg--on{color:var(--ym-text-primary)}
+.hero-phone .ym-screen--discovery .ym-disc-toggle__seg:not(.ym-disc-toggle__seg--on) svg{width:20px;height:20px;color:inherit}
+.hero-phone .ym-screen--discovery .ym-disc-filters{left:20px;right:20px;top:136px;height:48px;padding:4px;background:var(--ym-light-gray);border-color:var(--ym-light-bg);box-shadow:var(--ym-disc-current-filter-shadow)}
+.hero-phone .ym-screen--discovery .ym-disc-sport{width:auto;height:38px;padding:10px 14px;justify-content:center;background:var(--ym-accent)}
+.hero-phone .ym-screen--discovery .ym-disc-location{padding-left:8px;gap:6px}
+.hero-phone .ym-screen--discovery .ym-disc-orga{height:auto;padding:20px;background:var(--ym-dark-bg);box-shadow:var(--ym-disc-current-card-shadow)}
+.hero-phone .ym-screen--discovery .ym-disc-orga__icon{width:40px;height:40px;border-radius:var(--ym-radius-12);background:var(--ym-disc-current-icon-tile);color:var(--ym-accent)}
+.hero-phone .ym-screen--discovery .ym-disc-orga__icon svg{width:20px;height:20px}
+.hero-phone .ym-screen--discovery .ym-disc-orga__headings{flex:1;min-width:0}
+.hero-phone .ym-screen--discovery .ym-disc-orga__eyebrow{display:block;font-size:var(--ym-fs-caption);font-weight:300;letter-spacing:.2px;color:var(--ym-accent);margin-bottom:2px}
+.hero-phone .ym-screen--discovery .ym-disc-orga__title{display:block;line-height:1.25}
+.hero-phone .ym-screen--discovery .ym-disc-orga__text{margin-top:16px;line-height:1.5;color:var(--ym-disc-white-70);letter-spacing:normal}
+.hero-phone .ym-screen--discovery .ym-disc-orga__features{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.hero-phone .ym-screen--discovery .ym-disc-orga__feature{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:var(--ym-radius-12);background:var(--ym-disc-current-feature-bg);font-size:var(--ym-fs-caption);color:var(--ym-text-white)}
+.hero-phone .ym-screen--discovery .ym-disc-orga__feature svg{width:16px;height:16px;flex:none;color:var(--ym-accent)}
+.hero-phone .ym-screen--discovery .ym-disc-orga__cta{position:static;height:52px;margin-top:16px;font-size:var(--ym-fs-button)}
+.hero-phone .ym-screen--discovery .ym-disc-nav{left:50%;top:auto;bottom:52px;width:max-content;height:62px;padding:3px;translate:-50% 0;background:var(--ym-disc-current-nav-fill);z-index:2}
+.hero-phone .ym-screen--discovery .ym-disc-nav__item{width:auto;height:54px;padding:8px 20px;flex-direction:column;gap:2px;border-radius:var(--ym-radius-pill);background:transparent}
+.hero-phone .ym-screen--discovery .ym-disc-nav__item--on{background:var(--ym-light-bg)}
+.hero-phone .ym-screen--discovery .ym-disc-nav__item svg{flex:none;width:24px;height:26px}
+.hero-phone .ym-screen--discovery .ym-disc-nav__item:nth-child(2) svg{width:18px}
+.hero-phone .ym-screen--discovery .ym-disc-nav__label{font-size:var(--ym-fs-nav-label);line-height:1;font-weight:400;color:var(--ym-disc-current-label);white-space:nowrap}
+.hero-phone .ym-screen--discovery .ym-disc-nav__item--on .ym-disc-nav__label{font-weight:600;color:var(--ym-dark-surface)}
+
+
+/* Le header accompagne le contenu à mi-vitesse, sans collision avec les filtres. */
+.hero-phone .ym-screen--discovery .ym-disc-ticket-relief,
+.hero-phone .ym-screen--discovery .ym-disc-ticket-placeholder,
+.hero-phone .ym-screen--discovery .ym-disc-orga,
+.hero-phone .ym-screen--discovery .ym-disc-filters,
+.hero-phone .ym-screen--discovery .ym-disc-ticket--next{translate:0 calc(-1 * var(--ym-disc-scroll,0px))}
+.hero-phone .ym-screen--discovery .ym-disc-header,
+.hero-phone .ym-screen--discovery .ym-disc-filters{z-index:3}
+.hero-phone .ym-screen--discovery .ym-disc-header{translate:0 calc(-.5 * var(--ym-disc-scroll,0px))}
+@media (prefers-reduced-motion:reduce){
+  .hero-phone .ym-screen--discovery .ym-disc-header,
+  .hero-phone .ym-screen--discovery .ym-disc-ticket-relief,
+  .hero-phone .ym-screen--discovery .ym-disc-ticket-placeholder,
+.hero-phone .ym-screen--discovery .ym-disc-orga,
+  .hero-phone .ym-screen--discovery .ym-disc-filters,
+.hero-phone .ym-screen--discovery .ym-disc-ticket--next{translate:0 0}
+}
+
+/* Le tournoi suivant reste après la carte acquisition, hors du viewport illustré. */
+.hero-phone .ym-screen--discovery .ym-disc-ticket--next{top:calc(100% + var(--ym-disc-scroll-max))}
+
+/* L’original conserve sa géométrie ; sa silhouette rend visible l’emplacement libéré. */
+.hero-phone .ym-screen--discovery .ym-disc-ticket--original{visibility:hidden}
+.hero-phone .ym-screen--discovery .ym-disc-ticket-placeholder{position:absolute;left:18px;top:218px;width:353px;height:281px;border-radius:var(--ym-hero-pop-placeholder-radius);background:var(--ym-hero-pop-placeholder-bg);border:var(--ym-hero-pop-placeholder-border)}
+.hero-phone .ym-screen--discovery [data-hero-progress]{transition:width var(--ym-hero-pop-gauge-transition)}
+@media (prefers-reduced-motion:reduce){
+  .hero-phone .ym-screen--discovery [data-hero-progress]{transition:none}
+}

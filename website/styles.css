@@ -190,10 +190,17 @@
     --hero-store-label-size: 1rem;
     --hero-copy-pad: clamp(24px, 5vw, 80px);
     --hero-copy-gap: 28px;
-    /* Positive skew starts at the first line; supporting copy shares that edge. */
+    /* Upright participant heading and supporting copy share the left edge. */
     --hero-copy-text-inset: 0px;
     --hero-phone-width: 360px;
     --hero-phone-scale: .8696;
+    /* Pop A2: logical app coordinates, consumed only by the hero discovery. */
+    --hero-pop-transform: translate(-70px, -36px) rotate(-7deg) scale(1.2);
+    --hero-pop-shadow: drop-shadow(0 34px 40px rgba(0,0,0,.55)) drop-shadow(0 0 30px rgba(215,255,0,.22));
+    --hero-pop-placeholder-bg: rgba(16,24,40,.08);
+    --hero-pop-placeholder-border: 2px dashed rgba(16,24,40,.25);
+    --hero-pop-placeholder-radius: 24px;
+    --hero-pop-gauge-transition: 600ms cubic-bezier(.2,.8,.2,1);
     /* Participant journey V2. */
     --how-card-radius: 32px;
     --how-card-min-height: 640px;
@@ -1132,7 +1139,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     line-height: .92;
     text-align: left;
 }
-.hero-card--photo .hero-title-slant { transform: skewX(12deg); transform-origin: left top; }
+.hero-card--photo .hero-title-slant { transform: none; }
 .hero-card--photo .br-mobile-only { display: inline; }
 .hero-card--photo .hero-title-accent { color: var(--color-accent); }
 .hero-card--photo .hero-eyebrow {
@@ -1305,10 +1312,10 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
         --hero-store-label-size: clamp(.75rem, 3.85vw, .9375rem);
         --hero-copy-pad: 20px;
         --hero-copy-gap: 18px;
-        /* The mobile title remains centered inside its wider copy column. */
-        --hero-copy-text-inset: calc(var(--hero-title-size) * .3);
+        --hero-copy-text-inset: 0px;
         --hero-phone-width: 230px;
         --hero-phone-scale: .5556;
+        --hero-pop-transform: translate(-18px, -18px) rotate(-7deg) scale(1.2);
         --hero-gutter: var(--mobile-hero-card-margin);
         --hero-header-height: 68px;
         --hero-logo-height: 12.88px;
@@ -1329,11 +1336,11 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     .hero-card--photo .hero-float--ticket, .hero-card--photo .hero-float--badge, .hero-card--photo .hero-score-label { display: none; }
     .hero-card--photo .hero-float--score { top: 70px; right: -6px; width: auto; padding: 10px 12px; rotate: 4deg; }
     .hero-card--photo .hero-copy {
-        align-items: center;
+        align-items: flex-start;
         padding-block: 36px 0;
-        text-align: center;
+        text-align: left;
     }
-    .hero-card--photo .hero-title { text-align: center; }
+    .hero-card--photo .hero-title { text-align: left; }
     .hero-card--photo .hero-title-accent { display: block; }
     .hero-card--photo .hero-eyebrow { align-self: flex-start; gap: 8px; padding: 6px 12px 6px 9px; letter-spacing: 0; }
     .hero-card--photo .hero-eyebrow-dot { width: 7px; height: 7px; box-shadow: none; }
