@@ -1,5 +1,15 @@
 /* Écrans illustratifs : sources docs/handoff/app-screens. Servi hors build:css. */
 :root {
+  --ym-quest-scroll-max:36px;
+  --ym-rank-scroll-top:191px;
+  --ym-rank-tabs-shadow:0 6px 16px rgba(0,0,0,.08);
+  --ym-rank-scope-border:rgba(26,26,26,.25);
+  --ym-rank-scope-ink:rgba(26,26,26,.55);
+  --ym-conf-badge-shadow:0 12px 24px rgba(0,0,0,.16),0 2px 6px rgba(0,0,0,.12);
+  --ym-conf-badge-ring:rgba(215,255,0,.22);
+  --ym-conf-date-border:rgba(255,255,255,.35);
+  --ym-conf-meta:rgba(255,255,255,.75);
+  --ym-conf-summary-shadow:0 10px 15px rgba(0,0,0,.1),0 4px 6px rgba(0,0,0,.1);
   --ym-disc-scroll-max:36px;
   --ym-disc-current-filter-shadow:0 2px 6px rgba(0,0,0,.05);
   --ym-disc-current-icon-tile:rgba(215,255,0,.12);
@@ -228,27 +238,27 @@
 .ym-screen--tournament{
   background:var(--ym-light-bg);
 }
-.ym-screen--tournament .ym-trn-header{position:absolute;top:0;left:0;right:0;height:229px;padding:77px 16px 0;
+.ym-screen--tournament .ym-trn-header{position:absolute;top:0;left:0;right:0;height:222px;padding:70px 16px 16px;
   /* RadialGradient(center, radius 1.5 × côté court) */
   background:radial-gradient(circle 344px at 50% 50%,var(--ym-trn-grad-start),var(--ym-trn-grad-end));color:var(--ym-text-white)}
 .ym-screen--tournament .ym-trn-titlerow{display:flex;align-items:center;gap:12px}
 .ym-screen--tournament .ym-trn-back{flex:none;width:34px;height:34px;border-radius:var(--ym-radius-50percent);display:flex;align-items:center;justify-content:center;
   background:var(--ym-trn-white-20);box-shadow:var(--ym-step-shadow-1);color:var(--ym-text-white)}
-.ym-screen--tournament .ym-trn-titles{min-width:0}
+.ym-screen--tournament .ym-trn-titles{min-width:0;flex:1}
 .ym-screen--tournament .ym-trn-title{font-family:var(--ym-font-heading);font-size:var(--ym-fs-title);font-weight:700;line-height:1.2}
 .ym-screen--tournament .ym-trn-subtitle{margin-top:4px;font-size:var(--ym-fs-body);color:var(--ym-trn-white-90);line-height:1.3;letter-spacing:.02em}
 .ym-screen--tournament .ym-trn-dot{margin:0 10px}
-.ym-screen--tournament .ym-trn-statsrow{margin-top:20px;display:flex;justify-content:space-between;align-items:center}
-.ym-screen--tournament .ym-trn-date{width:50px;height:50px;border-radius:var(--ym-radius-12);box-shadow:var(--ym-step-shadow-2);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ym-screen--tournament .ym-trn-statsrow{margin-top:20px;display:flex;gap:8px;align-items:center}
+.ym-screen--tournament .ym-trn-date{width:52px;height:52px;border-radius:var(--ym-radius-12);box-shadow:var(--ym-step-shadow-2);display:flex;flex-direction:column;align-items:center;justify-content:center}
 .ym-screen--tournament .ym-trn-date__day{font-family:var(--ym-font-heading);font-size:var(--ym-fs-title);font-weight:700;line-height:1}
 .ym-screen--tournament .ym-trn-date__month{font-size:var(--ym-fs-caption);color:var(--ym-trn-white-90);line-height:1;margin-top:2px}
-.ym-screen--tournament .ym-trn-regs{text-align:right}
+.ym-screen--tournament .ym-trn-regs{text-align:right;margin-left:auto}
 .ym-screen--tournament .ym-trn-regs__count{font-size:var(--ym-fs-body);color:var(--ym-trn-white-70);letter-spacing:.02em}
 .ym-screen--tournament .ym-trn-regs__left{margin-top:4px;font-size:var(--ym-fs-body);font-weight:700;color:var(--ym-accent);display:flex;align-items:center;justify-content:flex-end;gap:6px}
 .ym-screen--tournament .ym-trn-regs__pulse{width:8px;height:8px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent)}
 .ym-screen--tournament .ym-trn-progress{margin-top:10px;height:6px;border-radius:var(--ym-radius-3);background:var(--ym-trn-white-30);overflow:hidden}
 .ym-screen--tournament .ym-trn-progress__fill{display:block;width:75%;height:100%;border-radius:var(--ym-radius-3);background:linear-gradient(90deg,var(--ym-text-white) 45%,var(--ym-trn-progress-fill-end))}
-.ym-screen--tournament .ym-trn-body{position:absolute;top:257px;left:18px;right:18px}
+.ym-screen--tournament .ym-trn-body{position:absolute;top:250px;left:20px;right:20px}
 .ym-screen--tournament .ym-trn-card{background:var(--ym-dark-bg);border-radius:var(--ym-radius-card);padding:20px 20px 40px;color:var(--ym-text-white)}
 .ym-screen--tournament .ym-trn-label{font-size:var(--ym-fs-caption);font-weight:600;letter-spacing:.4px;color:var(--ym-medium-gray);margin-bottom:8px}
 .ym-screen--tournament .ym-trn-pair{display:flex;gap:12px;margin-bottom:12px}
@@ -264,117 +274,43 @@
 .ym-screen--tournament .ym-trn-address{flex:1;font-size:var(--ym-fs-body);font-weight:500;line-height:1.4;letter-spacing:.02em}
 .ym-screen--tournament .ym-trn-glass{flex:none;margin-left:-4px;width:34px;height:34px;border-radius:var(--ym-radius-50percent);display:flex;align-items:center;justify-content:center;background:var(--ym-trn-white-20);box-shadow:var(--ym-step-shadow-1)}
 .ym-screen--tournament .ym-trn-row--org{height:60px;margin-bottom:0}
-.ym-screen--tournament .ym-trn-bottombar{position:absolute;left:0;right:0;bottom:0;top:719px;background:var(--ym-light-bg);padding:12px 18px 0}
-.ym-screen--tournament .ym-trn-cta{height:58px;border-radius:var(--ym-radius-pill);background:var(--ym-accent);display:flex;align-items:center;justify-content:center;font-size:var(--ym-fs-body-large);font-weight:700;color:var(--ym-text-primary);letter-spacing:.01em}
+.ym-screen--tournament .ym-trn-bottombar{position:absolute;left:0;right:0;bottom:0;min-height:110px;background:var(--ym-light-bg);padding:8px 30px 34px;display:flex;align-items:center;gap:12px}
+.ym-screen--tournament .ym-trn-cta{flex:1;min-width:0;height:52px;border-radius:var(--ym-radius-pill);background:var(--ym-accent);display:flex;align-items:center;justify-content:center;font-size:var(--ym-fs-button);font-weight:700;color:var(--ym-text-primary)}
 .ym-screen--tournament .ym-trn-cta__dot{margin:0 12px}
 .ym-screen--tournament .ym-trn-cancel{margin-top:9px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:var(--ym-fs-caption);color:var(--ym-dark-gray);letter-spacing:.005em}
 
-/* Écran « confirmation » — BookingConfirmationScreen (capture de référence screen_3).
-   Couleurs locales absentes de app-tokens.css : */
-.ym-screen--confirmation{
-  background:linear-gradient(180deg,var(--ym-light-bg) 30%,var(--ym-onboarding-bg-end) 82%);
-}
+.ym-screen--tournament .ym-trn-more{width:34px;height:34px;flex:none;display:grid;place-items:center;border-radius:var(--ym-radius-50percent);background:var(--ym-trn-white-20);box-shadow:var(--ym-step-shadow-1)}
+.ym-screen--tournament .ym-trn-price{min-width:52px;height:52px;padding:0 8px;border:1.5px solid var(--ym-trn-white-30);border-radius:var(--ym-radius-12);display:flex;flex-direction:column;justify-content:center;align-items:center;gap:2px}
+.ym-screen--tournament .ym-trn-price__value{font-family:var(--ym-font-heading);font-size:var(--ym-fs-title);font-weight:700;line-height:1}
+.ym-screen--tournament .ym-trn-price__unit{font-size:var(--ym-fs-caption);line-height:1}
+.ym-screen--tournament .ym-trn-bar-info{flex:1;min-width:0;padding-left:15px}
+.ym-screen--tournament .ym-trn-bar-price{font-size:var(--ym-fs-bottom-bar-value);font-weight:700;line-height:1}
+.ym-screen--tournament .ym-trn-bar-price>span{font-size:var(--ym-fs-caption);font-weight:400;color:var(--ym-dark-gray)}
+.ym-screen--tournament .ym-trn-bar-caption{margin-top:2px;font-size:var(--ym-fs-caption);color:var(--ym-text-primary);display:flex;align-items:center;gap:6px}
+.ym-screen--tournament .ym-trn-bar-caption>span{width:6px;height:6px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent)}
 
-/* ---------- Header ---------- */
-.ym-screen--confirmation .ym-conf-header{
-  position:absolute;top:0;left:0;right:0;height:244px;
-  background:
-    radial-gradient(120% 70% at 50% 0%,var(--ym-conf-header-glow) 0%,transparent 70%),
-    linear-gradient(180deg,var(--ym-conf-header-top) 0%,var(--ym-conf-header-bottom) 100%);
-  text-align:center;color:var(--ym-text-white);
-}
-.ym-screen--confirmation .ym-conf-hero{
-  position:absolute;left:50%;top:74px;width:82px;height:82px;margin-left:-41px;
-  border-radius:var(--ym-radius-50percent);background:var(--ym-conf-halo);display:grid;place-items:center;
-}
-.ym-screen--confirmation .ym-conf-hero__disc{
-  width:42px;height:42px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent);
-  display:grid;place-items:center;color:var(--ym-dark-surface);
-}
-.ym-screen--confirmation .ym-conf-title{
-  position:absolute;left:0;right:0;top:167px;
-  font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-title);
-  line-height:30px;letter-spacing:.1px;
-}
-.ym-screen--confirmation .ym-conf-subtitle{
-  position:absolute;left:0;right:0;top:201px;
-  font-size:var(--ym-fs-message-body);line-height:20px;letter-spacing:.35px;
-  color:var(--ym-conf-subtitle);
-}
-
-/* ---------- Toast ---------- */
-.ym-screen--confirmation .ym-conf-toast{
-  position:absolute;z-index:40;top:65px;left:9px;right:10px;
-  border-radius:var(--ym-radius-999);overflow:hidden;background:var(--ym-dark-bg);
-}
-.ym-screen--confirmation .ym-conf-toast__row{
-  display:flex;align-items:center;gap:8px;padding:9px 10px 8px 11px;
-}
-.ym-screen--confirmation .ym-conf-toast__check{
-  width:20px;height:20px;border-radius:var(--ym-radius-50percent);flex:none;
-  background:var(--ym-conf-toast-accent);color:var(--ym-dark-surface);
-  display:grid;place-items:center;
-}
-.ym-screen--confirmation .ym-conf-toast__msg{
-  flex:1;font-size:var(--ym-fs-caption);font-weight:600;color:var(--ym-text-white);
-}
-.ym-screen--confirmation .ym-conf-toast__close{
-  width:16px;height:16px;border-radius:var(--ym-radius-50percent);flex:none;background:var(--ym-conf-glass);
-  color:var(--ym-text-white);display:grid;place-items:center;
-}
-.ym-screen--confirmation .ym-conf-toast__bar{position:relative;height:3px;background:var(--ym-conf-toast-track)}
-.ym-screen--confirmation .ym-conf-toast__fill{position:absolute;inset:0 auto 0 0;width:71%;background:var(--ym-conf-toast-accent)}
-
-/* ---------- Corps ---------- */
-.ym-screen--confirmation .ym-conf-body{position:absolute;top:244px;left:0;right:0;padding:28px 18px 0}
-.ym-screen--confirmation .ym-conf-recap{
-  background:var(--ym-conf-card);border:1px solid var(--ym-divider);border-radius:var(--ym-radius-20);
-  padding:20px 21px 18px;
-}
-.ym-screen--confirmation .ym-conf-recap__title{
-  font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-subtitle);
-  line-height:24px;margin-bottom:14px;
-}
-.ym-screen--confirmation .ym-conf-row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-.ym-screen--confirmation .ym-conf-row__label{font-size:var(--ym-fs-message-body);color:var(--ym-medium-gray);line-height:20px;letter-spacing:.3px}
-.ym-screen--confirmation .ym-conf-row__value{display:flex;flex-direction:column;align-items:flex-end;text-align:right}
-.ym-screen--confirmation .ym-conf-row__main{font-size:var(--ym-fs-message-body);font-weight:600;line-height:20px;letter-spacing:.2px}
-.ym-screen--confirmation .ym-conf-row__sub{font-size:var(--ym-fs-caption);color:var(--ym-medium-gray);line-height:16.5px;margin-top:3px;letter-spacing:.4px}
-.ym-screen--confirmation .ym-conf-row__sub--address{max-width:250px;margin-top:2px;letter-spacing:.3px}
-.ym-screen--confirmation .ym-conf-fields{display:flex;gap:13px;margin:12px 0 15px}
-.ym-screen--confirmation .ym-conf-field{
-  flex:1;height:59px;background:var(--ym-light-bg);border:1px solid var(--ym-divider);
-  border-radius:var(--ym-radius-12);padding:10px 12px;display:flex;flex-direction:column;
-}
-.ym-screen--confirmation .ym-conf-field__label{font-size:var(--ym-fs-caption);color:var(--ym-medium-gray);line-height:16px;letter-spacing:.4px}
-.ym-screen--confirmation .ym-conf-field__value{font-size:var(--ym-fs-message-body);font-weight:600;line-height:22px;margin-top:3px;letter-spacing:.4px}
-.ym-screen--confirmation .ym-conf-divider{height:1px;background:var(--ym-divider);margin:12px 0 15px}
-.ym-screen--confirmation .ym-conf-total{display:flex;justify-content:space-between;align-items:center}
-.ym-screen--confirmation .ym-conf-total__label{font-size:var(--ym-fs-message-body);line-height:20px;letter-spacing:.2px}
-.ym-screen--confirmation .ym-conf-total__value{font-size:var(--ym-fs-button);font-weight:700}
-
-.ym-screen--confirmation .ym-conf-info{
-  margin-top:13px;background:var(--ym-light-bg);border:1px solid var(--ym-onboarding-border);
-  border-radius:var(--ym-radius-input);padding:14px 14px 16px 16px;display:flex;gap:12px;align-items:flex-start;
-}
-.ym-screen--confirmation .ym-conf-info__icon{flex:none;color:var(--ym-dark-gray);margin-top:2px}
-.ym-screen--confirmation .ym-conf-info__text{font-size:var(--ym-fs-body);line-height:19.5px;color:var(--ym-dark-gray);letter-spacing:.15px}
-
-/* ---------- Barre basse (ScreenBottomBar) ---------- */
-.ym-screen--confirmation .ym-conf-bottom{
-  position:absolute;left:0;right:0;bottom:0;top:692px;background:var(--ym-light-bg);
-  padding:13px 18px 0;
-}
-.ym-screen--confirmation .ym-conf-cta{
-  height:58px;border-radius:var(--ym-radius-pill);background:var(--ym-accent);
-  display:grid;place-items:center;
-  font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-subtitle);
-  color:var(--ym-dark-surface);
-}
-.ym-screen--confirmation .ym-conf-link{
-  margin-top:21px;text-align:center;font-size:var(--ym-fs-message-body);
-  font-weight:500;color:var(--ym-text-primary);letter-spacing:.3px;
-}
+/* BookingConfirmationScreen → SuccessScreen : état final statique, sans toast. */
+.ym-screen--confirmation{background:var(--ym-accent);color:var(--ym-text-primary)}
+.ym-screen--confirmation .ym-conf-hero{position:absolute;top:154px;left:50%;margin-left:-42px;width:84px;height:84px;border-radius:var(--ym-radius-50percent);background:var(--ym-dark-surface);box-shadow:var(--ym-conf-badge-shadow);display:grid;place-items:center;color:var(--ym-accent)}
+.ym-screen--confirmation .ym-conf-hero::before{content:"";position:absolute;inset:5px;border:1px solid var(--ym-conf-badge-ring);border-radius:inherit}
+.ym-screen--confirmation .ym-conf-hero svg{width:36px;height:36px}
+.ym-screen--confirmation .ym-conf-label{position:absolute;left:32px;right:32px;top:274px;text-align:center;font-size:var(--ym-fs-caption);font-weight:600;letter-spacing:.4px}
+.ym-screen--confirmation .ym-conf-title{position:absolute;left:32px;right:32px;top:296px;text-align:center;font-family:var(--ym-font-heading);font-size:var(--ym-fs-display);font-weight:700;line-height:1.2;color:var(--ym-dark-surface)}
+.ym-screen--confirmation .ym-conf-subtitle{position:absolute;left:32px;right:32px;top:371px;text-align:center;font-size:var(--ym-fs-button);line-height:1.2}
+.ym-screen--confirmation .ym-conf-summary{position:absolute;left:20px;right:20px;top:441px;padding:20px;background:var(--ym-dark-surface);border-radius:var(--ym-radius-card);box-shadow:var(--ym-conf-summary-shadow);color:var(--ym-text-white);display:flex;flex-wrap:wrap;align-items:flex-start;column-gap:14px}
+.ym-screen--confirmation .ym-conf-summary-row{display:flex;align-items:flex-start;gap:14px;width:100%}
+.ym-screen--confirmation .ym-conf-date{min-width:52px;min-height:56px;padding:4px 8px;background:var(--ym-dark-bg);border:1px solid var(--ym-conf-date-border);border-radius:var(--ym-radius-12);text-align:center;display:flex;flex-direction:column}
+.ym-screen--confirmation .ym-conf-date__day{font-family:var(--ym-font-heading);font-size:var(--ym-fs-display);font-weight:700;line-height:1.2}
+.ym-screen--confirmation .ym-conf-date__month{font-size:var(--ym-fs-caption);font-weight:600}
+.ym-screen--confirmation .ym-conf-summary-content{flex:1;min-width:0}
+.ym-screen--confirmation .ym-conf-summary-name{font-family:var(--ym-font-heading);font-size:var(--ym-fs-subtitle);font-weight:700;line-height:1.2}
+.ym-screen--confirmation .ym-conf-summary-meta{margin-top:4px;font-size:var(--ym-fs-body);color:var(--ym-conf-meta);line-height:1.2}
+.ym-screen--confirmation .ym-conf-summary-status{width:100%;margin-top:16px;padding-top:16px;border-top:1px dashed var(--ym-trn-white-20);font-size:var(--ym-fs-body);font-weight:600;color:var(--ym-accent);display:flex;align-items:center;gap:6px}
+.ym-screen--confirmation .ym-conf-summary-status>span{content:"";width:7px;height:7px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent);flex:none}
+.ym-screen--confirmation .ym-conf-bottom{position:absolute;left:20px;right:20px;bottom:34px;padding-top:12px;background:var(--ym-accent)}
+.ym-screen--confirmation .ym-conf-cta,.ym-screen--confirmation .ym-conf-link{height:52px;display:grid;place-items:center;font-size:var(--ym-fs-button);font-weight:600;border-radius:var(--ym-radius-pill)}
+.ym-screen--confirmation .ym-conf-cta{background:var(--ym-dark-surface);color:var(--ym-accent)}
+.ym-screen--confirmation .ym-conf-link{margin-top:4px;color:var(--ym-dark-surface)}
 
 /* Écran « Suivre mon tournoi » — onglet Rang, classement global.
    Style : MyTournamentDayScreen + SegmentedPillBar + ClassementPanel
@@ -382,30 +318,30 @@
 .ym-screen--ranking{
   background:linear-gradient(180deg,var(--ym-light-bg) 0%,var(--ym-light-bg) 22%,var(--ym-onboarding-bg-end) 100%);
 }
-.ym-screen--ranking .ym-rank-header{position:absolute;top:78px;left:19px;right:19px;display:flex;align-items:flex-start;gap:14px}
+.ym-screen--ranking .ym-rank-header{position:absolute;top:62px;left:20px;right:20px;display:flex;align-items:center;gap:16px}
 .ym-screen--ranking .ym-rank-back{flex:none;width:33px;height:33px;border-radius:var(--ym-radius-50percent);background:var(--ym-light-gray);border:1px solid var(--ym-divider);display:flex;align-items:center;justify-content:center;margin-top:0}
 .ym-screen--ranking .ym-rank-back svg{width:20px;height:20px;fill:var(--ym-text-primary)}
-.ym-screen--ranking .ym-rank-title{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-title);line-height:1;color:var(--ym-text-primary);margin-top:-5px;letter-spacing:-.005em}
-.ym-screen--ranking .ym-rank-subtitle{font-size:var(--ym-fs-body);color:var(--ym-medium-gray);margin-top:12px;letter-spacing:.02em}
-.ym-screen--ranking .ym-rank-pillbar{position:absolute;top:145px;left:15px;width:359px;height:46px;padding:4px;border-radius:var(--ym-radius-pill);background:var(--ym-glass-light);box-shadow:var(--ym-step-shadow-3);display:flex}
+.ym-screen--ranking .ym-rank-title{font-family:var(--ym-font-heading);font-weight:700;font-size:var(--ym-fs-title);line-height:1.2;color:var(--ym-text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ym-screen--ranking .ym-rank-subtitle{font-size:var(--ym-fs-body);color:var(--ym-medium-gray);margin-top:4px;letter-spacing:normal}
+.ym-screen--ranking .ym-rank-pillbar{position:absolute;top:133px;left:16px;width:358px;height:46px;padding:4px;border-radius:var(--ym-radius-pill);background:var(--ym-light-gray);border:1px solid var(--ym-light-bg);box-shadow:var(--ym-rank-tabs-shadow);display:flex}
 .ym-screen--ranking .ym-rank-pill{flex:1;display:flex;align-items:center;justify-content:center;border-radius:var(--ym-radius-pill);font-size:var(--ym-fs-body);color:var(--ym-medium-gray)}
 .ym-screen--ranking .ym-rank-pill--active{background:var(--ym-accent);color:var(--ym-dark-bg);font-weight:700}
-.ym-screen--ranking .ym-rank-scopes{position:absolute;top:214px;left:19px;display:flex;gap:8px}
-.ym-screen--ranking .ym-rank-scope{height:34px;padding:0 18px;border-radius:var(--ym-radius-pill);display:flex;align-items:center;font-size:var(--ym-fs-message-body);font-weight:600;color:var(--ym-subtitle-gray);background:var(--ym-surface-muted);border:1px solid var(--ym-medium-gray)}
-.ym-screen--ranking .ym-rank-scope--active{background:var(--ym-accent);border-color:var(--ym-rank-accent-border);color:var(--ym-dark-bg)}
-.ym-screen--ranking .ym-rank-sort{position:absolute;top:268px;left:21px;display:flex;align-items:center;gap:6px;font-size:var(--ym-fs-caption);color:var(--ym-medium-gray);letter-spacing:.03em}
+.ym-screen--ranking .ym-rank-scopes{position:absolute;top:203px;left:20px;display:flex;gap:8px}
+.ym-screen--ranking .ym-rank-scope{height:34px;padding:8px 20px;border-radius:var(--ym-radius-pill);display:flex;align-items:center;font-size:var(--ym-fs-body);font-weight:600;color:var(--ym-rank-scope-ink);background:var(--ym-light-gray);border:.8px solid var(--ym-rank-scope-border)}
+.ym-screen--ranking .ym-rank-scope--active{background:var(--ym-accent);border-color:var(--ym-rank-scope-border);color:var(--ym-dark-bg)}
+.ym-screen--ranking .ym-rank-sort{position:absolute;top:257px;left:20px;display:flex;align-items:center;gap:6px;font-size:var(--ym-fs-caption);color:var(--ym-medium-gray);letter-spacing:.03em}
 .ym-screen--ranking .ym-rank-sort svg{width:13px;height:13px;fill:var(--ym-medium-gray)}
-.ym-screen--ranking .ym-rank-card{position:absolute;top:298px;left:19px;width:351px;background:var(--ym-light-bg);border:1px solid var(--ym-light-gray);border-radius:var(--ym-radius-input);overflow:hidden}
+.ym-screen--ranking .ym-rank-card{position:absolute;top:285px;left:20px;width:350px;background:var(--ym-light-bg);border:1px solid var(--ym-light-gray);border-radius:var(--ym-radius-input);overflow:hidden}
 /* Le reset marketing retire le padding natif des cellules présent dans la référence. */
 .ym-screen--ranking th,.ym-screen--ranking td{padding:1px}
-.ym-screen--ranking .ym-rank-table{width:100%;border-collapse:collapse;table-layout:fixed}
-.ym-screen--ranking .ym-rank-table th{height:43px;font-weight:500;font-size:var(--ym-fs-body);color:var(--ym-medium-gray);border-bottom:1px solid var(--ym-light-gray)}
-.ym-screen--ranking .ym-rank-table td{height:54px;font-weight:600;font-size:var(--ym-rank-fs-row);color:var(--ym-text-primary);border-bottom:1px solid var(--ym-light-gray)}
+.ym-screen--ranking .ym-rank-table{width:573px;border-collapse:collapse;table-layout:fixed}
+.ym-screen--ranking .ym-rank-table th{height:44px;font-weight:500;font-size:var(--ym-fs-body);color:var(--ym-medium-gray);border-bottom:1px solid var(--ym-light-gray)}
+.ym-screen--ranking .ym-rank-table td{height:56px;font-weight:500;font-size:var(--ym-fs-caption);color:var(--ym-text-primary);border-bottom:1px solid var(--ym-light-gray)}
 .ym-screen--ranking .ym-rank-table tr:last-child td{border-bottom:0}
-.ym-screen--ranking .ym-rank-c-rank{width:57px;text-align:center;padding:0 0 0 3px}
-.ym-screen--ranking .ym-rank-c-team{width:104px;text-align:left;white-space:nowrap}
+.ym-screen--ranking .ym-rank-c-rank{width:59px;text-align:center;padding:0 0 0 3px}
+.ym-screen--ranking .ym-rank-c-team{width:106px;text-align:left;white-space:nowrap}
 .ym-screen--ranking th.ym-rank-c-team{padding-left:4px}
-.ym-screen--ranking .ym-rank-c-stat{width:47.5px;text-align:center}
+.ym-screen--ranking .ym-rank-c-stat{width:50px;text-align:center}
 .ym-screen--ranking .ym-rank-row td:first-child{position:relative}
 .ym-screen--ranking .ym-rank-row td:first-child::before{content:"";position:absolute;left:0;top:0;bottom:-1px;width:3px}
 .ym-screen--ranking .ym-rank-row--q td:first-child::before{background:var(--ym-success)}
@@ -418,7 +354,11 @@
 .ym-screen--ranking .ym-rank-trend{width:14px;height:14px}
 .ym-screen--ranking .ym-rank-trend--up{fill:var(--ym-success)}
 .ym-screen--ranking .ym-rank-trend--down{fill:var(--ym-error)}
-.ym-screen--ranking .ym-rank-team{font-weight:600}
+.ym-screen--ranking .ym-rank-titles{min-width:0;flex:1}
+.ym-screen--ranking .ym-rank-team{font-weight:600;font-size:var(--ym-fs-caption);display:inline-block;max-width:94px;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
+.ym-screen--ranking .ym-rank-team-level{display:block;max-width:98px;overflow:hidden;text-overflow:ellipsis;margin-top:2px;font-size:var(--ym-fs-avatar-label);color:var(--ym-medium-gray)}
+.ym-screen--ranking .ym-rank-c-points{width:58px;text-align:center}
+.ym-screen--ranking .ym-rank-c-form{width:150px;text-align:center}
 .ym-screen--ranking .ym-rank-dot{display:inline-block;width:7px;height:7px;border-radius:var(--ym-radius-50percent);background:var(--ym-accent);margin-left:10px;vertical-align:1px}
 .ym-screen--ranking .ym-rank-legend{position:absolute;top:794px;left:19px;width:351px;padding:12px 14px 14px;border-radius:var(--ym-radius-input);background:var(--ym-light-gray)}
 .ym-screen--ranking .ym-rank-legend-title{font-size:var(--ym-fs-caption);font-weight:600;color:var(--ym-dark-gray);letter-spacing:.02em}
@@ -493,4 +433,25 @@
 .hero-phone .ym-screen--discovery [data-hero-progress]{transition:width var(--ym-hero-pop-gauge-transition)}
 @media (prefers-reduced-motion:reduce){
   .hero-phone .ym-screen--discovery [data-hero-progress]{transition:none}
+}
+
+/* Le cadre et les commandes restent fixes pendant le déplacement illustratif du contenu. */
+.quest-step-phone .ym-screen--tournament .ym-trn-body,
+.quest-step-phone .ym-screen--confirmation .ym-conf-hero,
+.quest-step-phone .ym-screen--confirmation .ym-conf-label,
+.quest-step-phone .ym-screen--confirmation .ym-conf-title,
+.quest-step-phone .ym-screen--confirmation .ym-conf-subtitle,
+.quest-step-phone .ym-screen--confirmation .ym-conf-summary,
+.quest-step-phone .ym-screen--ranking .ym-rank-scroll-viewport>div{translate:0 calc(-1 * var(--ym-quest-scroll,0px))}
+.quest-step-phone .ym-screen--tournament .ym-trn-header,
+.quest-step-phone .ym-screen--tournament .ym-trn-bottombar{z-index:1}
+.quest-step-phone .ym-screen--ranking .ym-rank-scroll-viewport{position:absolute;inset:0;clip-path:inset(var(--ym-rank-scroll-top) 0 0)}
+@media (prefers-reduced-motion:reduce){
+.quest-step-phone .ym-screen--tournament .ym-trn-body,
+.quest-step-phone .ym-screen--confirmation .ym-conf-hero,
+.quest-step-phone .ym-screen--confirmation .ym-conf-label,
+.quest-step-phone .ym-screen--confirmation .ym-conf-title,
+.quest-step-phone .ym-screen--confirmation .ym-conf-subtitle,
+.quest-step-phone .ym-screen--confirmation .ym-conf-summary,
+.quest-step-phone .ym-screen--ranking .ym-rank-scroll-viewport>div{translate:0 0}
 }

@@ -1,0 +1,479 @@
+[
+  {
+    "width": 1440,
+    "name": "volleyball",
+    "state": "on",
+    "box": [
+      96,
+      245.625,
+      111.171875,
+      36.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "1.15",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.65) 0px 0px 10px 3px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 1440,
+    "name": "volleyball",
+    "state": "off",
+    "box": [
+      96,
+      245.625,
+      111.171875,
+      36.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "0.8",
+    "color": "rgb(61, 74, 18)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 1440,
+    "name": "volleyball",
+    "state": "reduced",
+    "scale": "1",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.5) 0px 0px 8px 2px",
+    "animation": "none"
+  },
+  {
+    "width": 1440,
+    "name": "parcours",
+    "state": "on",
+    "box": [
+      67.1875,
+      433,
+      172.6875,
+      34.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "1.15",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.65) 0px 0px 10px 3px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 1440,
+    "name": "parcours",
+    "state": "off",
+    "box": [
+      67.1875,
+      433,
+      172.6875,
+      34.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "0.8",
+    "color": "rgb(61, 74, 18)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 1440,
+    "name": "parcours",
+    "state": "reduced",
+    "scale": "1",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.5) 0px 0px 8px 2px",
+    "animation": "none"
+  },
+  {
+    "width": 1440,
+    "name": "tournois",
+    "state": "on",
+    "box": [
+      88.796875,
+      431.421875,
+      215.265625,
+      36.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "1.15",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.65) 0px 0px 10px 3px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 1440,
+    "name": "tournois",
+    "state": "off",
+    "box": [
+      88.796875,
+      431.421875,
+      215.265625,
+      36.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "0.8",
+    "color": "rgb(61, 74, 18)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 1440,
+    "name": "tournois",
+    "state": "reduced",
+    "scale": "1",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.5) 0px 0px 8px 2px",
+    "animation": "none"
+  },
+  {
+    "width": 820,
+    "name": "volleyball",
+    "state": "on",
+    "box": [
+      65,
+      168.515625,
+      111.171875,
+      36.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "1.15",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.65) 0px 0px 10px 3px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 820,
+    "name": "volleyball",
+    "state": "off",
+    "box": [
+      65,
+      168.515625,
+      111.171875,
+      36.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "0.8",
+    "color": "rgb(61, 74, 18)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 820,
+    "name": "volleyball",
+    "state": "reduced",
+    "scale": "1",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.5) 0px 0px 8px 2px",
+    "animation": "none"
+  },
+  {
+    "width": 820,
+    "name": "parcours",
+    "state": "on",
+    "box": [
+      48.59375,
+      573,
+      172.6875,
+      34.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "1.15",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.65) 0px 0px 10px 3px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 820,
+    "name": "parcours",
+    "state": "off",
+    "box": [
+      48.59375,
+      573,
+      172.6875,
+      34.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "0.8",
+    "color": "rgb(61, 74, 18)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 820,
+    "name": "parcours",
+    "state": "reduced",
+    "scale": "1",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.5) 0px 0px 8px 2px",
+    "animation": "none"
+  },
+  {
+    "width": 820,
+    "name": "tournois",
+    "state": "on",
+    "box": [
+      60.890625,
+      571.921875,
+      215.265625,
+      36.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "1.15",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.65) 0px 0px 10px 3px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 820,
+    "name": "tournois",
+    "state": "off",
+    "box": [
+      60.890625,
+      571.921875,
+      215.265625,
+      36.1875
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "0.8",
+    "color": "rgb(61, 74, 18)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 820,
+    "name": "tournois",
+    "state": "reduced",
+    "scale": "1",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.5) 0px 0px 8px 2px",
+    "animation": "none"
+  },
+  {
+    "width": 390,
+    "name": "volleyball",
+    "state": "on",
+    "box": [
+      40,
+      132.53125,
+      94.390625,
+      29.59375
+    ],
+    "dot": [
+      7,
+      7
+    ],
+    "aria": "true",
+    "scale": "1.15",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.65) 0px 0px 10px 3px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 390,
+    "name": "volleyball",
+    "state": "off",
+    "box": [
+      40,
+      132.53125,
+      94.390625,
+      29.59375
+    ],
+    "dot": [
+      7,
+      7
+    ],
+    "aria": "true",
+    "scale": "0.8",
+    "color": "rgb(61, 74, 18)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 390,
+    "name": "volleyball",
+    "state": "reduced",
+    "scale": "1",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.5) 0px 0px 8px 2px",
+    "animation": "none"
+  },
+  {
+    "width": 390,
+    "name": "parcours",
+    "state": "on",
+    "box": [
+      24,
+      408,
+      148.03125,
+      27.59375
+    ],
+    "dot": [
+      7,
+      7
+    ],
+    "aria": "true",
+    "scale": "1.15",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.65) 0px 0px 10px 3px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 390,
+    "name": "parcours",
+    "state": "off",
+    "box": [
+      24,
+      408,
+      148.03125,
+      27.59375
+    ],
+    "dot": [
+      7,
+      7
+    ],
+    "aria": "true",
+    "scale": "0.8",
+    "color": "rgb(61, 74, 18)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 390,
+    "name": "parcours",
+    "state": "reduced",
+    "scale": "1",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.5) 0px 0px 8px 2px",
+    "animation": "none"
+  },
+  {
+    "width": 390,
+    "name": "tournois",
+    "state": "on",
+    "box": [
+      36,
+      404.828125,
+      203.03125,
+      34.890625
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "1.15",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.65) 0px 0px 10px 3px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 390,
+    "name": "tournois",
+    "state": "off",
+    "box": [
+      36,
+      404.828125,
+      203.03125,
+      34.890625
+    ],
+    "dot": [
+      8,
+      8
+    ],
+    "aria": "true",
+    "scale": "0.8",
+    "color": "rgb(61, 74, 18)",
+    "shadow": "rgba(0, 0, 0, 0) 0px 0px 0px 0px",
+    "animation": "heroBadgeLed",
+    "duration": "2.4s",
+    "pseudo": "none"
+  },
+  {
+    "width": 390,
+    "name": "tournois",
+    "state": "reduced",
+    "scale": "1",
+    "color": "rgb(215, 255, 0)",
+    "shadow": "rgba(215, 255, 0, 0.5) 0px 0px 8px 2px",
+    "animation": "none"
+  }
+]

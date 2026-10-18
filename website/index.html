@@ -299,7 +299,7 @@
 <div class="ym-app ym-screen ym-screen--discovery">
 <div class="ym-disc-viewport">
 <div class="ym-statusbar" aria-hidden="true">
-  <span class="ym-statusbar__time">09:15</span>
+  <span class="ym-statusbar__time" data-hero-clock>09:15</span>
   <span class="ym-statusbar__icons">
     <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
     <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 2.4c2.3 0 4.4.9 6 2.4l1.1-1.2A10.2 10.2 0 0 0 8 .8 10.2 10.2 0 0 0 .9 3.6L2 4.8a8.6 8.6 0 0 1 6-2.4zm0 3.3c1.4 0 2.7.5 3.7 1.4l1.1-1.2A7 7 0 0 0 8 4.1a7 7 0 0 0-4.8 1.8l1.1 1.2c1-.9 2.3-1.4 3.7-1.4zM8 9a1.6 1.6 0 0 0-1.2.5L8 11.2l1.2-1.7A1.6 1.6 0 0 0 8 9z"/></svg>
@@ -335,10 +335,10 @@
   <!-- Card ticket tournoi -->
   <div class="ym-disc-ticket ym-disc-ticket--original" aria-hidden="true">
     <div class="ym-disc-ticket__head">
-      <div class="ym-disc-date"><span class="ym-disc-date__day">17</span><span class="ym-disc-date__month">MAI</span></div>
+      <div class="ym-disc-date"><span class="ym-disc-date__day" data-hero-tournament-day>1</span><span class="ym-disc-date__month" data-hero-tournament-month>NOV</span></div>
       <div class="ym-disc-info">
         <div class="ym-disc-info__name">Tournoi de la jeunesse</div>
-        <div class="ym-disc-info__place">Milly la forêt<span class="ym-disc-sep">•</span>52 km</div>
+        <div class="ym-disc-info__place">Paris<span class="ym-disc-sep">·</span>5&nbsp;km</div>
       </div>
       <span class="ym-disc-chev">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
@@ -414,10 +414,10 @@
   <!-- Card ticket tournoi -->
   <div class="ym-disc-ticket">
     <div class="ym-disc-ticket__head">
-      <div class="ym-disc-date"><span class="ym-disc-date__day">17</span><span class="ym-disc-date__month">MAI</span></div>
+      <div class="ym-disc-date"><span class="ym-disc-date__day" data-hero-tournament-day>1</span><span class="ym-disc-date__month" data-hero-tournament-month>NOV</span></div>
       <div class="ym-disc-info">
         <div class="ym-disc-info__name">Tournoi de la jeunesse</div>
-        <div class="ym-disc-info__place">Milly la forêt<span class="ym-disc-sep">•</span>52 km</div>
+        <div class="ym-disc-info__place">Paris<span class="ym-disc-sep">·</span>5&nbsp;km</div>
       </div>
       <span class="ym-disc-chev">
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
@@ -496,9 +496,11 @@
       <div class="ym-trn-title">Tournoi de la jeunesse</div>
       <div class="ym-trn-subtitle">Milly la forêt<span class="ym-trn-dot">•</span>52&nbsp;km</div>
     </div>
+    <span class="ym-trn-more" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span>
   </div>
   <div class="ym-trn-statsrow">
     <div class="ym-trn-date"><span class="ym-trn-date__day">17</span><span class="ym-trn-date__month">MAI</span></div>
+    <div class="ym-trn-price"><span class="ym-trn-price__value">45€</span><span class="ym-trn-price__unit">par équipe</span></div>
     <div class="ym-trn-regs">
       <div class="ym-trn-regs__count">27/36 inscrits</div>
       <div class="ym-trn-regs__left"><span class="ym-trn-regs__pulse"></span>9 équipes restantes</div>
@@ -513,7 +515,7 @@
     <div class="ym-trn-pair">
       <div class="ym-trn-row ym-trn-row--compact">
         <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg></span>
-        <div class="ym-trn-texts"><div class="ym-trn-row__label">Coup d'envoi</div><div class="ym-trn-row__value">13h38</div></div>
+        <div class="ym-trn-texts"><div class="ym-trn-row__label">Coup d’envoi</div><div class="ym-trn-row__value">13h38</div></div>
       </div>
       <div class="ym-trn-row ym-trn-row--compact">
         <span class="ym-trn-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" focusable="false"><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z"/></svg></span>
@@ -542,8 +544,11 @@
 </div>
 
 <div class="ym-trn-bottombar">
-  <div class="ym-trn-cta">Payer<span class="ym-trn-cta__dot">•</span>45€/eq.</div>
-  <div class="ym-trn-cancel"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true" focusable="false"><path d="M16.59 7.58 10 14.17l-3.59-3.58L5 12l5 5 8-8zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg>Annulation gratuite jusqu'à 48h avant le tournoi</div>
+  <div class="ym-trn-bar-info">
+    <div class="ym-trn-bar-price">45&nbsp;€ <span>/ équipe</span></div>
+    <div class="ym-trn-bar-caption"><span aria-hidden="true"></span>9 restantes</div>
+  </div>
+  <div class="ym-trn-cta">Payer</div>
 </div>
 </div>
                             </div>
@@ -564,7 +569,7 @@
                         <div class="ym-phone-slot" aria-hidden="true">
                             <div class="ym-phone">
 <div class="ym-app ym-screen ym-screen--confirmation">
-<div class="ym-statusbar ym-statusbar--light" aria-hidden="true">
+<div class="ym-statusbar" aria-hidden="true">
   <span class="ym-statusbar__time">09:19</span>
   <span class="ym-statusbar__icons">
     <svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor" aria-hidden="true" focusable="false"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg>
@@ -576,70 +581,26 @@
 
   <div class="ym-conf-header">
     <div class="ym-conf-hero" aria-hidden="true">
-      <div class="ym-conf-hero__disc">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-      </div>
+      <div class="ym-conf-hero__disc"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m5 12 4 4L19 6"/></svg></div>
     </div>
-    <div class="ym-conf-title">Réservation confirmée !</div>
-    <div class="ym-conf-subtitle">Ta place est réservée pour ce tournoi</div>
+    <div class="ym-conf-label">INSCRIPTION CONFIRMÉE</div>
+    <div class="ym-conf-title">Rendez-vous sur le terrain !</div>
+    <div class="ym-conf-subtitle">Invite tes coéquipiers pour préparer le tournoi.</div>
   </div>
-
-  <div class="ym-conf-toast" role="status">
-    <div class="ym-conf-toast__row">
-      <span class="ym-conf-toast__check" aria-hidden="true">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-      </span>
-      <span class="ym-conf-toast__msg">E-mail de confirmation envoyé</span>
-      <span class="ym-conf-toast__close" aria-hidden="true">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-      </span>
+  <div class="ym-conf-summary">
+    <div class="ym-conf-summary-row">
+      <div class="ym-conf-date"><span class="ym-conf-date__day">17</span><span class="ym-conf-date__month">MAI</span></div>
+      <div class="ym-conf-summary-content">
+        <div class="ym-conf-summary-name">Tournoi de la jeunesse</div>
+        <div class="ym-conf-summary-meta">Volleyball · 4×4</div>
+        <div class="ym-conf-summary-meta">Milly la forêt · 13h38</div>
+      </div>
     </div>
-    <div class="ym-conf-toast__bar"><span class="ym-conf-toast__fill"></span></div>
+    <div class="ym-conf-summary-status"><span aria-hidden="true"></span>Place réservée</div>
   </div>
-
-  <div class="ym-conf-body">
-    <div class="ym-conf-recap">
-      <div class="ym-conf-recap__title">Récapitulatif</div>
-      <div class="ym-conf-row">
-        <span class="ym-conf-row__label">Tournoi</span>
-        <span class="ym-conf-row__value">
-          <span class="ym-conf-row__main">Tournoi de la jeunesse</span>
-          <span class="ym-conf-row__sub">Volleyball · 4 × 4</span>
-        </span>
-      </div>
-      <div class="ym-conf-fields">
-        <div class="ym-conf-field">
-          <span class="ym-conf-field__label">Date</span>
-          <span class="ym-conf-field__value">19/05/2026</span>
-        </div>
-        <div class="ym-conf-field">
-          <span class="ym-conf-field__label">Heure</span>
-          <span class="ym-conf-field__value">09h18</span>
-        </div>
-      </div>
-      <div class="ym-conf-row ym-conf-row--place">
-        <span class="ym-conf-row__label">Lieu</span>
-        <span class="ym-conf-row__value">
-          <span class="ym-conf-row__main">Milly la forêt</span>
-          <span class="ym-conf-row__sub ym-conf-row__sub--address">Gymnase Henri Chapu, Rue Henri Chapu, Fontainebleau (77300)</span>
-        </span>
-      </div>
-      <div class="ym-conf-divider"></div>
-      <div class="ym-conf-total">
-        <span class="ym-conf-total__label">Montant payé</span>
-        <span class="ym-conf-total__value">45&nbsp;€</span>
-      </div>
-    </div>
-
-    <div class="ym-conf-info">
-      <svg class="ym-conf-info__icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M11 7h2v2h-2zm0 4h2v6h-2zm1-9C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-      <span class="ym-conf-info__text">Tu peux annuler ta réservation jusqu'à 48h avant la date du tournoi. Passé ce délai, aucun remboursement ne sera possible.</span>
-    </div>
-  </div>
-
   <div class="ym-conf-bottom">
-    <div class="ym-conf-cta">Associer mon équipe</div>
-    <div class="ym-conf-link">Voir mes tournois</div>
+    <div class="ym-conf-cta">Inviter mon équipe</div>
+    <div class="ym-conf-link">Voir mes tournois à venir</div>
   </div>
 </div>
                             </div>
@@ -694,18 +655,18 @@
       <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.41 7.41 14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
     </div>
     <div class="ym-rank-titles">
-      <div class="ym-rank-title">Suivre mon tournoi</div>
-      <div class="ym-rank-subtitle">Tournoi de la Concorde</div>
+      <div class="ym-rank-title">Tournoi de la jeunesse</div>
+      <div class="ym-rank-subtitle">Suivre mon tournoi</div>
     </div>
   </div>
   <div class="ym-rank-pillbar">
     <span class="ym-rank-pill">QG</span>
     <span class="ym-rank-pill">Matchs</span>
-    <span class="ym-rank-pill ym-rank-pill--active">Rang</span>
-    <span class="ym-rank-pill">Arbre</span>
+    <span class="ym-rank-pill ym-rank-pill--active">Classement</span>
   </div>
+  <div class="ym-rank-scroll-viewport">
   <div class="ym-rank-scopes">
-    <span class="ym-rank-scope ym-rank-scope--active">Global</span>
+    <span class="ym-rank-scope ym-rank-scope--active">Tableau général</span>
     <span class="ym-rank-scope">Par poule</span>
   </div>
   <div class="ym-rank-sort">
@@ -715,48 +676,48 @@
   <div class="ym-rank-card">
     <table class="ym-rank-table">
       <thead>
-        <tr><th class="ym-rank-c-rank">#</th><th class="ym-rank-c-team">Équipe</th><th class="ym-rank-c-stat">MJ</th><th class="ym-rank-c-stat">V</th><th class="ym-rank-c-stat">D</th><th class="ym-rank-c-stat">N</th></tr>
+        <tr><th class="ym-rank-c-rank">#</th><th class="ym-rank-c-team">Équipe</th><th class="ym-rank-c-stat">MJ</th><th class="ym-rank-c-stat">V</th><th class="ym-rank-c-stat">D</th><th class="ym-rank-c-stat">N</th><th class="ym-rank-c-points">Pts</th><th class="ym-rank-c-form">5 derniers matchs</th></tr>
       </thead>
       <tbody>
         <tr class="ym-rank-row ym-rank-row--q">
           <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">1</span><svg class="ym-rank-trend ym-rank-trend--up" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 14l5-5 5 5z"/></svg></span></td>
-          <td class="ym-rank-c-team"><span class="ym-rank-team">Nantes Nautiq...</span></td>
-          <td class="ym-rank-c-stat">5</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">2</td><td class="ym-rank-c-stat">0</td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Nantes Nautiq...</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">5</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">2</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
         </tr>
         <tr class="ym-rank-row ym-rank-row--q">
           <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">2</span><svg class="ym-rank-trend ym-rank-trend--up" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 14l5-5 5 5z"/></svg></span></td>
-          <td class="ym-rank-c-team"><span class="ym-rank-team">Lyon Lions</span></td>
-          <td class="ym-rank-c-stat">5</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">0</td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Lyon Lions</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">5</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
         </tr>
         <tr class="ym-rank-row ym-rank-row--q">
           <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">3</span><svg class="ym-rank-trend ym-rank-trend--down" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5z"/></svg></span></td>
-          <td class="ym-rank-c-team"><span class="ym-rank-team">Toulouse Ti...</span><span class="ym-rank-dot" aria-hidden="true"></span></td>
-          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">0</td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Toulouse Ti...</span><span class="ym-rank-dot" aria-hidden="true"></span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
         </tr>
         <tr class="ym-rank-row ym-rank-row--o ym-rank-row--q ym-rank-row--me">
           <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">4</span><svg class="ym-rank-trend ym-rank-trend--down" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5z"/></svg></span></td>
-          <td class="ym-rank-c-team"><span class="ym-rank-team">Beach Boys</span><span class="ym-rank-dot" aria-hidden="true"></span></td>
-          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">0</td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Beach Boys</span><span class="ym-rank-dot" aria-hidden="true"></span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
         </tr>
         <tr class="ym-rank-row ym-rank-row--o">
           <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos">5</span><svg class="ym-rank-trend ym-rank-trend--down" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 10l5 5 5-5z"/></svg></span></td>
-          <td class="ym-rank-c-team"><span class="ym-rank-team">Bordeaux Blast</span></td>
-          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">0</td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Bordeaux Blast</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
         </tr>
         <tr class="ym-rank-row ym-rank-row--o">
           <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos ym-rank-pos--solo">6</span></span></td>
-          <td class="ym-rank-c-team"><span class="ym-rank-team">Nice Néons</span></td>
-          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Nice Néons</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
         </tr>
         <tr class="ym-rank-row ym-rank-row--o">
           <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos ym-rank-pos--solo">7</span></span></td>
-          <td class="ym-rank-c-team"><span class="ym-rank-team">Marseille Mar...</span></td>
-          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Marseille Mar...</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
         </tr>
         <tr class="ym-rank-row ym-rank-row--o">
           <td class="ym-rank-c-rank"><span class="ym-rank-rankcell"><span class="ym-rank-pos ym-rank-pos--solo">8</span></span></td>
-          <td class="ym-rank-c-team"><span class="ym-rank-team">Strasbourg St...</span></td>
-          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">0</td>
+          <td class="ym-rank-c-team"><span class="ym-rank-team">Strasbourg St...</span><span class="ym-rank-team-level">Niveau non renseigné</span></td>
+          <td class="ym-rank-c-stat">4</td><td class="ym-rank-c-stat">1</td><td class="ym-rank-c-stat">3</td><td class="ym-rank-c-stat">0</td><td class="ym-rank-c-points"></td><td class="ym-rank-c-form"></td>
         </tr>
       </tbody>
     </table>
@@ -769,6 +730,7 @@
       <span class="ym-rank-legend-item"><span class="ym-rank-slot ym-rank-slot--draw"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 13H5v-2h14v2z"/></svg></span>Nul</span>
       <span class="ym-rank-legend-item"><span class="ym-rank-slot ym-rank-slot--none"></span>Non joué</span>
     </div>
+  </div>
   </div>
 </div>
                             </div>

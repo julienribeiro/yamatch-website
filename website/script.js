@@ -30,7 +30,7 @@
     // any future ad-hoc notification (inline handler, console, future block).
     window.yamatchToast = showToast;
 
-    // Share one scroll frame between the participant header and its decorative app content.
+    // Share one scroll frame between the participant header and all decorative app content.
     {
         const header = document.querySelector('.hero-header');
         const phone = document.querySelector('.hero-phone');
@@ -38,7 +38,10 @@
         const appHeader = phone && phone.querySelector('.ym-disc-header');
         const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
         const CONTENT_SCROLL_FACTOR = 0.12;
-        if (header || phone) {
+        const questPhones = Array.from(document.querySelectorAll('.quest-step-phone'), (node) => ({
+            node, step: node.closest('.quest-step'), start: 0, range: 1, max: 0, last: null,
+        }));
+        if (header || phone || questPhones.length) {
             let rafId = null;
             let maxContentScroll = 0;
             let lastContentScroll = null;
@@ -54,6 +57,14 @@
                         lastContentScroll = value;
                     }
                 }
+                questPhones.forEach((item) => {
+                    const progress = Math.max(0, Math.min(1, (scrollY - item.start) / item.range));
+                    const value = (motionQuery.matches ? 0 : progress * item.max).toFixed(2) + 'px';
+                    if (value !== item.last) {
+                        item.node.style.setProperty('--ym-quest-scroll', value);
+                        item.last = value;
+                    }
+                });
             };
             const scheduleCondensed = () => {
                 if (rafId === null) rafId = requestAnimationFrame(updateCondensed);
@@ -66,6 +77,17 @@
                     const clearance = relief.offsetTop - appHeader.offsetTop - appHeader.offsetHeight;
                     maxContentScroll = Math.max(0, Math.min(configuredMax, clearance));
                 }
+                questPhones.forEach((item) => {
+                    // Offset geometry deliberately ignores the one-shot entrance and decorative rotation.
+                    let top = 0;
+                    for (let node = item.node; node; node = node.offsetParent) top += node.offsetTop;
+                    const visibleHeight = item.step
+                        ? Math.min(item.node.offsetHeight, Math.max(0, item.step.clientHeight - item.node.offsetTop))
+                        : item.node.offsetHeight;
+                    item.start = top - window.innerHeight;
+                    item.range = Math.max(1, window.innerHeight + visibleHeight);
+                    item.max = Math.max(0, parseFloat(getComputedStyle(item.node).getPropertyValue('--ym-quest-scroll-max')) || 0);
+                });
                 scheduleCondensed();
             };
             window.addEventListener('scroll', scheduleCondensed, { passive: true });
@@ -76,14 +98,68 @@
             } else if (typeof motionQuery.addListener === 'function') {
                 motionQuery.addListener(scheduleCondensed);
             }
-            if (phone && 'ResizeObserver' in window) {
+            if ('ResizeObserver' in window) {
                 const observer = new ResizeObserver(measurePhone);
-                observer.observe(phone);
+                if (phone) observer.observe(phone);
                 if (relief) observer.observe(relief);
                 if (appHeader) observer.observe(appHeader);
+                questPhones.forEach((item) => {
+                    observer.observe(item.node);
+                    if (item.step) observer.observe(item.step);
+                });
+                const heroSection = document.querySelector('section.hero');
+                const howSection = document.querySelector('.how-quest');
+                if (heroSection) observer.observe(heroSection);
+                if (howSection) observer.observe(howSection);
             }
             if (document.fonts) document.fonts.ready.then(measurePhone);
             measurePhone();
+        }
+    }
+
+    // Local visitor time and an illustrative tournament fourteen calendar days ahead.
+    {
+        const phone = document.querySelector('.hero-phone');
+        const clock = phone && phone.querySelector('[data-hero-clock]');
+        const days = phone ? Array.from(phone.querySelectorAll('[data-hero-tournament-day]')) : [];
+        const months = phone ? Array.from(phone.querySelectorAll('[data-hero-tournament-month]')) : [];
+        if (clock || days.length || months.length) {
+            const MINUTE_MS = 60000;
+            const TOURNAMENT_DAYS_AHEAD = 14;
+            const timeFormatter = new Intl.DateTimeFormat('fr-FR', {
+                hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+            });
+            const monthFormatter = new Intl.DateTimeFormat('fr-FR', { month: 'short' });
+            let timer = null;
+            let suspended = false;
+            const clearClockTimer = () => {
+                if (timer !== null) clearTimeout(timer);
+                timer = null;
+            };
+            const updateClockAndDate = () => {
+                clearClockTimer();
+                if (document.hidden || suspended) return;
+                const now = new Date();
+                if (clock) clock.textContent = timeFormatter.format(now);
+                // Calendar arithmetic preserves the visitor's local date across daylight-saving changes.
+                const tournamentDate = new Date(now.getTime());
+                tournamentDate.setDate(tournamentDate.getDate() + TOURNAMENT_DAYS_AHEAD);
+                const day = String(tournamentDate.getDate());
+                const month = monthFormatter.format(tournamentDate).replace(/\./g, '').toLocaleUpperCase('fr-FR');
+                days.forEach((node) => { node.textContent = day; });
+                months.forEach((node) => { node.textContent = month; });
+                timer = setTimeout(updateClockAndDate, MINUTE_MS - now.getTime() % MINUTE_MS);
+            };
+            document.addEventListener('visibilitychange', updateClockAndDate);
+            window.addEventListener('pagehide', () => {
+                suspended = true;
+                clearClockTimer();
+            });
+            window.addEventListener('pageshow', () => {
+                suspended = false;
+                updateClockAndDate();
+            });
+            updateClockAndDate();
         }
     }
 
