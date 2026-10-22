@@ -1313,6 +1313,15 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
     from { opacity: 0; transform: translateY(40px); }
     to { opacity: 1; transform: translateY(0); }
 }
+@media (min-width: 1024px) {
+    .hero:has(.hero-header) { padding-bottom: var(--hero-gutter); }
+    .hero-card.hero-card--photo {
+        /* Fit below navigation with the same bottom and side gutter. Keep
+           natural content growth for short windows and enlarged text. */
+        min-height: calc(100vh - var(--hero-header-space) - var(--hero-gutter));
+        min-height: calc(100svh - var(--hero-header-space) - var(--hero-gutter));
+    }
+}
 @media (max-width: 1023px) {
     :root { --hero-title-size: 3.5rem; }
     .hero-card--photo::before {
@@ -1361,9 +1370,9 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
         padding-block: 36px 0;
         text-align: left;
     }
-    .hero-card--photo .hero-title { text-align: left; }
+    .hero-card--photo .hero-title { align-self: center; text-align: center; }
     .hero-card--photo .hero-title-accent { display: block; }
-    .hero-card--photo .hero-eyebrow { align-self: flex-start; gap: 8px; padding: 6px 12px 6px 9px; letter-spacing: 0; }
+    .hero-card--photo .hero-eyebrow { align-self: center; gap: 8px; padding: 6px 12px 6px 9px; letter-spacing: 0; }
     .hero-card--photo .hero-eyebrow-dot { width: 7px; height: 7px; }
     .hero-card--photo .hero-lede { display: none; }
     .hero-card--photo .hero-buttons { width: 100%; gap: 8px; }
@@ -3624,6 +3633,11 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
        the panel's intrinsic width). No max-width: the JS-injected SVG
        expands to fill `.qr-widget-code` so the panel width is the QR
        width + 2 × padding. */
+}
+
+@media (min-width: 1024px) {
+    /* Match the desktop hero's bottom gutter while remaining viewport-fixed. */
+    .qr-widget { bottom: var(--hero-gutter); }
 }
 
 /* Backdrop-filter fallback — bump opacity so the panel stays legible
