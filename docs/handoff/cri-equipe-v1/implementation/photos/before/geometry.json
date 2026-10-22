@@ -1,0 +1,548 @@
+{
+  "phase": "before",
+  "results": [
+    {
+      "width": 1440,
+      "pageWidth": 1440,
+      "rail": {
+        "left": 24,
+        "right": 1416,
+        "clientWidth": 1392,
+        "scrollWidth": 1392
+      },
+      "cards": [
+        {
+          "width": 337.5,
+          "height": 588.75,
+          "top": 274.34375,
+          "bottom": 863.09375,
+          "glyphs": [
+            {
+              "left": 24.482975006103516,
+              "right": 171.22018814086914,
+              "top": 486.25,
+              "bottom": 536.25
+            },
+            {
+              "left": 16.671524047851562,
+              "right": 229.09622192382812,
+              "top": 523,
+              "bottom": 573
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 339.1228942871094,
+            "top": 493.25,
+            "bottom": 566.75,
+            "scrollWidth": 306,
+            "clientWidth": 306,
+            "fontSize": "41.76px"
+          },
+          "photo": {
+            "src": "assets/organisateurs/02-partage-paiement-v2.webp",
+            "alt": "Un groupe d’amis assis sur le sable regarde ensemble un téléphone",
+            "naturalWidth": 1086,
+            "naturalHeight": 1448,
+            "widthAttribute": "1086",
+            "heightAttribute": "1448",
+            "objectFit": "cover",
+            "objectPosition": "50% 50%",
+            "loaded": true
+          }
+        },
+        {
+          "width": 337.5,
+          "height": 588.75,
+          "top": 310.34375,
+          "bottom": 899.09375,
+          "glyphs": [
+            {
+              "left": 24.48297119140625,
+              "right": 217.86083984375,
+              "top": 486.25,
+              "bottom": 536.25
+            },
+            {
+              "left": 16.6715087890625,
+              "right": 186.03369140625,
+              "top": 523,
+              "bottom": 573
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 339.1229248046875,
+            "top": 493.25,
+            "bottom": 566.75,
+            "scrollWidth": 306,
+            "clientWidth": 306,
+            "fontSize": "41.76px"
+          },
+          "photo": {
+            "src": "assets/hero-volley/hero-volley-mixed-mobile.webp",
+            "alt": "Une joueuse attaque au-dessus du filet face à deux contreurs",
+            "naturalWidth": 1122,
+            "naturalHeight": 1402,
+            "widthAttribute": "1122",
+            "heightAttribute": "1402",
+            "objectFit": "cover",
+            "objectPosition": "35% 50%",
+            "loaded": true
+          }
+        },
+        {
+          "width": 337.5,
+          "height": 588.75,
+          "top": 274.34375,
+          "bottom": 863.09375,
+          "glyphs": [
+            {
+              "left": 24.48297119140625,
+              "right": 171.22021484375,
+              "top": 486.25,
+              "bottom": 536.25
+            },
+            {
+              "left": 16.6715087890625,
+              "right": 248.84619140625,
+              "top": 523,
+              "bottom": 573
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 339.1229248046875,
+            "top": 493.25,
+            "bottom": 566.75,
+            "scrollWidth": 306,
+            "clientWidth": 306,
+            "fontSize": "41.76px"
+          },
+          "photo": {
+            "src": "assets/organisateurs/04-poules-v2.webp",
+            "alt": "Une joueuse en sweat gris consulte une tablette au bord des terrains de beach-volley",
+            "naturalWidth": 1086,
+            "naturalHeight": 1448,
+            "widthAttribute": "1086",
+            "heightAttribute": "1448",
+            "objectFit": "cover",
+            "objectPosition": "50% 50%",
+            "loaded": true
+          }
+        },
+        {
+          "width": 337.5,
+          "height": 588.75,
+          "top": 310.34375,
+          "bottom": 899.09375,
+          "glyphs": [
+            {
+              "left": 24.4830322265625,
+              "right": 279.12646484375,
+              "top": 486.25,
+              "bottom": 536.25
+            },
+            {
+              "left": 16.6715087890625,
+              "right": 231.26806640625,
+              "top": 523,
+              "bottom": 573
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 339.1229248046875,
+            "top": 493.25,
+            "bottom": 566.75,
+            "scrollWidth": 306,
+            "clientWidth": 306,
+            "fontSize": "41.76px"
+          },
+          "photo": {
+            "src": "assets/organisateurs/07-classement-v2.webp",
+            "alt": "Une équipe mixte éclate de rire dans un gymnase, l’un d’eux brandit un trophée",
+            "naturalWidth": 1086,
+            "naturalHeight": 1448,
+            "widthAttribute": "1086",
+            "heightAttribute": "1448",
+            "objectFit": "cover",
+            "objectPosition": "50% 50%",
+            "loaded": true
+          }
+        }
+      ],
+      "cta": {
+        "top": 935.09375,
+        "bottom": 988.6875
+      },
+      "ctaGap": 36
+    },
+    {
+      "width": 820,
+      "pageWidth": 820,
+      "rail": {
+        "left": 0,
+        "right": 820,
+        "clientWidth": 820,
+        "scrollWidth": 1319
+      },
+      "cards": [
+        {
+          "width": 308.796875,
+          "height": 538.671875,
+          "top": 295.828125,
+          "bottom": 834.5,
+          "glyphs": [
+            {
+              "left": 24.243850708007812,
+              "right": 164.82156372070312,
+              "top": 439.296875,
+              "bottom": 487.296875
+            },
+            {
+              "left": 16.764514923095703,
+              "right": 220.24847793579102,
+              "top": 474.484375,
+              "bottom": 522.484375
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 309.75555419921875,
+            "top": 446.296875,
+            "bottom": 516.671875,
+            "scrollWidth": 277,
+            "clientWidth": 277,
+            "fontSize": "40px"
+          },
+          "photo": {
+            "src": "assets/organisateurs/02-partage-paiement-v2.webp",
+            "alt": "Un groupe d’amis assis sur le sable regarde ensemble un téléphone",
+            "naturalWidth": 1086,
+            "naturalHeight": 1448,
+            "widthAttribute": "1086",
+            "heightAttribute": "1448",
+            "objectFit": "cover",
+            "objectPosition": "50% 50%",
+            "loaded": true
+          }
+        },
+        {
+          "width": 308.796875,
+          "height": 538.671875,
+          "top": 295.828125,
+          "bottom": 834.5,
+          "glyphs": [
+            {
+              "left": 24.24383544921875,
+              "right": 209.493408203125,
+              "top": 439.296875,
+              "bottom": 487.296875
+            },
+            {
+              "left": 16.7645263671875,
+              "right": 179.01409912109375,
+              "top": 474.484375,
+              "bottom": 522.484375
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 309.75555419921875,
+            "top": 446.296875,
+            "bottom": 516.671875,
+            "scrollWidth": 277,
+            "clientWidth": 277,
+            "fontSize": "40px"
+          },
+          "photo": {
+            "src": "assets/hero-volley/hero-volley-mixed-mobile.webp",
+            "alt": "Une joueuse attaque au-dessus du filet face à deux contreurs",
+            "naturalWidth": 1122,
+            "naturalHeight": 1402,
+            "widthAttribute": "1122",
+            "heightAttribute": "1402",
+            "objectFit": "cover",
+            "objectPosition": "35% 50%",
+            "loaded": true
+          }
+        },
+        {
+          "width": 308.796875,
+          "height": 538.671875,
+          "top": 295.828125,
+          "bottom": 834.5,
+          "glyphs": [
+            {
+              "left": 24.24383544921875,
+              "right": 164.821533203125,
+              "top": 439.296875,
+              "bottom": 487.296875
+            },
+            {
+              "left": 16.7645263671875,
+              "right": 239.17034912109375,
+              "top": 474.484375,
+              "bottom": 522.484375
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 309.75555419921875,
+            "top": 446.296875,
+            "bottom": 516.671875,
+            "scrollWidth": 277,
+            "clientWidth": 277,
+            "fontSize": "40px"
+          },
+          "photo": {
+            "src": "assets/organisateurs/04-poules-v2.webp",
+            "alt": "Une joueuse en sweat gris consulte une tablette au bord des terrains de beach-volley",
+            "naturalWidth": 1086,
+            "naturalHeight": 1448,
+            "widthAttribute": "1086",
+            "heightAttribute": "1448",
+            "objectFit": "cover",
+            "objectPosition": "50% 50%",
+            "loaded": true
+          }
+        },
+        {
+          "width": 308.796875,
+          "height": 538.671875,
+          "top": 295.828125,
+          "bottom": 834.5,
+          "glyphs": [
+            {
+              "left": 24.24383544921875,
+              "right": 268.180908203125,
+              "top": 439.296875,
+              "bottom": 487.296875
+            },
+            {
+              "left": 16.7645263671875,
+              "right": 222.34228515625,
+              "top": 474.484375,
+              "bottom": 522.484375
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 309.755615234375,
+            "top": 446.296875,
+            "bottom": 516.671875,
+            "scrollWidth": 277,
+            "clientWidth": 277,
+            "fontSize": "40px"
+          },
+          "photo": {
+            "src": "assets/organisateurs/07-classement-v2.webp",
+            "alt": "Une équipe mixte éclate de rire dans un gymnase, l’un d’eux brandit un trophée",
+            "naturalWidth": 1086,
+            "naturalHeight": 1448,
+            "widthAttribute": "1086",
+            "heightAttribute": "1448",
+            "objectFit": "cover",
+            "objectPosition": "50% 50%",
+            "loaded": true
+          }
+        }
+      ],
+      "cta": {
+        "top": 878.5,
+        "bottom": 932.09375
+      },
+      "ctaGap": 44
+    },
+    {
+      "width": 390,
+      "pageWidth": 390,
+      "rail": {
+        "left": 0,
+        "right": 390,
+        "clientWidth": 390,
+        "scrollWidth": 1084
+      },
+      "cards": [
+        {
+          "width": 252,
+          "height": 439.59375,
+          "top": 395.71875,
+          "bottom": 835.3125,
+          "glyphs": [
+            {
+              "left": 24.536113739013672,
+              "right": 171.72643661499023,
+              "top": 336.84375,
+              "bottom": 386.84375
+            },
+            {
+              "left": 16.698089599609375,
+              "right": 229.79466247558594,
+              "top": 373.71875,
+              "bottom": 423.71875
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 253.676025390625,
+            "top": 343.84375,
+            "bottom": 417.59375,
+            "scrollWidth": 220,
+            "clientWidth": 220,
+            "fontSize": "41.9048px"
+          },
+          "photo": {
+            "src": "assets/organisateurs/02-partage-paiement-v2.webp",
+            "alt": "Un groupe d’amis assis sur le sable regarde ensemble un téléphone",
+            "naturalWidth": 1086,
+            "naturalHeight": 1448,
+            "widthAttribute": "1086",
+            "heightAttribute": "1448",
+            "objectFit": "cover",
+            "objectPosition": "50% 50%",
+            "loaded": true
+          }
+        },
+        {
+          "width": 252,
+          "height": 439.59375,
+          "top": 395.71875,
+          "bottom": 835.3125,
+          "glyphs": [
+            {
+              "left": 24.536102294921875,
+              "right": 218.5233154296875,
+              "top": 336.84375,
+              "bottom": 386.84375
+            },
+            {
+              "left": 16.698089599609375,
+              "right": 186.591552734375,
+              "top": 373.71875,
+              "bottom": 423.71875
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 253.676025390625,
+            "top": 343.84375,
+            "bottom": 417.59375,
+            "scrollWidth": 220,
+            "clientWidth": 220,
+            "fontSize": "41.9048px"
+          },
+          "photo": {
+            "src": "assets/hero-volley/hero-volley-mixed-mobile.webp",
+            "alt": "Une joueuse attaque au-dessus du filet face à deux contreurs",
+            "naturalWidth": 1122,
+            "naturalHeight": 1402,
+            "widthAttribute": "1122",
+            "heightAttribute": "1402",
+            "objectFit": "cover",
+            "objectPosition": "35% 50%",
+            "loaded": true
+          }
+        },
+        {
+          "width": 252,
+          "height": 439.59375,
+          "top": 395.71875,
+          "bottom": 835.3125,
+          "glyphs": [
+            {
+              "left": 23.931640625,
+              "right": 159.68743896484375,
+              "top": 342.6875,
+              "bottom": 389.6875
+            },
+            {
+              "left": 16.7147216796875,
+              "right": 231.439208984375,
+              "top": 376.640625,
+              "bottom": 423.640625
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 252.43389892578125,
+            "top": 349.6875,
+            "bottom": 417.59375,
+            "scrollWidth": 220,
+            "clientWidth": 220,
+            "fontSize": "38.5965px"
+          },
+          "photo": {
+            "src": "assets/organisateurs/04-poules-v2.webp",
+            "alt": "Une joueuse en sweat gris consulte une tablette au bord des terrains de beach-volley",
+            "naturalWidth": 1086,
+            "naturalHeight": 1448,
+            "widthAttribute": "1086",
+            "heightAttribute": "1448",
+            "objectFit": "cover",
+            "objectPosition": "50% 50%",
+            "loaded": true
+          }
+        },
+        {
+          "width": 252,
+          "height": 439.59375,
+          "top": 395.71875,
+          "bottom": 835.3125,
+          "glyphs": [
+            {
+              "left": 23.51318359375,
+              "right": 238.1280517578125,
+              "top": 349.65625,
+              "bottom": 391.65625
+            },
+            {
+              "left": 16.93060302734375,
+              "right": 197.77984619140625,
+              "top": 380.625,
+              "bottom": 422.625
+            }
+          ],
+          "clipped": false,
+          "quote": {
+            "left": 18,
+            "right": 251.165283203125,
+            "top": 355.65625,
+            "bottom": 417.59375,
+            "scrollWidth": 220,
+            "clientWidth": 220,
+            "fontSize": "35.2px"
+          },
+          "photo": {
+            "src": "assets/organisateurs/07-classement-v2.webp",
+            "alt": "Une équipe mixte éclate de rire dans un gymnase, l’un d’eux brandit un trophée",
+            "naturalWidth": 1086,
+            "naturalHeight": 1448,
+            "widthAttribute": "1086",
+            "heightAttribute": "1448",
+            "objectFit": "cover",
+            "objectPosition": "50% 50%",
+            "loaded": true
+          }
+        }
+      ],
+      "cta": {
+        "top": 863.3125,
+        "bottom": 916.90625
+      },
+      "ctaGap": 28
+    }
+  ]
+}

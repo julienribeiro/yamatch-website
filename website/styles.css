@@ -179,13 +179,15 @@
     --shouts-glass-border: rgba(255,255,255,.16);
     --shouts-scrim: linear-gradient(180deg, rgba(5,9,5,.1) 30%, rgba(5,9,5,.9) 100%);
     --shouts-card-radius: 28px;
+    --shouts-card-aspect: 9 / 15.7;
     --shouts-stagger: 36px;
-    --shouts-quote-size: clamp(30px, 2.9vw, 42px);
+    --shouts-quote-size: clamp(28px, 2.6vw, 40px);
+    --shouts-quote-weight: 800;
+    --shouts-quote-leading: 1.04;
+    --shouts-quote-skew: -6deg;
     --shouts-quote-shadow: 0 6px 24px rgba(0,0,0,.35);
     --shouts-gutter: clamp(20px,5vw,40px);
-    --shouts-quote-fit: 5.25;
-    --shouts-quote-fit-finale: 5.7;
-    --shouts-quote-fit-story: 6.25;
+    --shouts-quote-fit: 7.4;
     --shouts-photo-transition: 500ms cubic-bezier(.2,.8,.2,1);
 
     /* Participant V2 tokens: never alter shared hero defaults. */
@@ -328,6 +330,8 @@
     --tp-compact-size: .75rem;
     --tp-cta-compact-size: 1rem;
     --tp-content-pad: clamp(24px,4.5vw,72px);
+    --tp-calendar-container-max: 1392px;
+    --tp-calendar-wide-gutter: calc(max(16px, (100% - var(--tp-calendar-container-max)) / 2) + var(--tp-content-pad));
     --tp-calendar-card-width: 340px;
     --tp-calendar-line: rgba(16,24,40,.22);
     /* Past month lettering needs 3:1 on white; decorative borders stay softer. */
@@ -353,6 +357,7 @@
     --hero-header-fallback: rgba(255,255,255,.96);
     --hero-header-motion: 300ms cubic-bezier(.2,.8,.2,1);
     --hero-gutter: 24px;
+    --home-section-gutter: var(--hero-gutter);
     --hero-header-height: 76px;
     --hero-header-radius: 0px;
     --hero-header-space: 84px;
@@ -2951,7 +2956,7 @@ body:has(.hero-header) :is(#faq, #how-it-works, #moments) {
 
 /* --- 10.7 Participant V3: unframed monthly calendar, isolated from organiser --- */
 /* External desktop gap keeps the existing FAQ decoration clear of the rail. */
-.showcase.tp-band[data-showcase-variant="participant"] { max-width: 1392px; width: calc(100% - 32px); margin: 0 auto var(--tp-calendar-next-section-gap); padding: 56px 0 24px; background: transparent; scroll-margin-top: calc(var(--hero-header-space) + 16px); }
+.showcase.tp-band[data-showcase-variant="participant"] { max-width: var(--tp-calendar-container-max); width: calc(100% - 32px); margin: 0 auto var(--tp-calendar-next-section-gap); padding: 56px 0 24px; background: transparent; scroll-margin-top: calc(var(--hero-header-space) + 16px); }
 [data-showcase-variant="participant"] .tp-content { display: flex; flex-direction: column; gap: 32px; min-width: 0; }
 [data-showcase-variant="participant"] .tp-header { padding-inline: var(--tp-content-pad); display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr); gap: 20px 64px; align-items: end; }
 [data-showcase-variant="participant"] .tp-heading { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; min-width: 0; }
@@ -3020,6 +3025,14 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
 [data-showcase-variant="participant"] .tp-ticket.is-past .tp-progress { background: var(--color-light-gray); }
 [data-showcase-variant="participant"] .tp-ticket.is-past .tp-progress-fill { background: var(--color-text-primary); }
 [data-showcase-variant="participant"] .showcase-demo-note { margin: 0 var(--tp-content-pad) 24px; max-width: calc(100% - 2 * var(--tp-content-pad)); font-size: var(--tp-compact-size); }
+@media (min-width: 768px) {
+    /* Extend the scrollport to the page edges while retaining the content's alignment. */
+    .showcase.tp-band[data-showcase-variant="participant"] { max-width: none; width: 100%; }
+    [data-showcase-variant="participant"] .tp-header { padding-inline: var(--tp-calendar-wide-gutter); }
+    [data-showcase-variant="participant"] .tp-calendar { padding-inline: var(--tp-calendar-wide-gutter); scroll-padding-inline: var(--tp-calendar-wide-gutter); }
+    [data-showcase-variant="participant"] .tp-scroll-progress { margin-inline: var(--tp-calendar-wide-gutter); }
+    [data-showcase-variant="participant"] .showcase-demo-note { margin-inline: var(--tp-calendar-wide-gutter); max-width: calc(100% - 2 * var(--tp-calendar-wide-gutter)); }
+}
 @media (max-width: 1023px) {
     [data-showcase-variant="participant"] .tp-header { grid-template-columns: minmax(0,1fr); }
 }
@@ -3151,7 +3164,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
 .shouts-title.section-title { margin-top: 16px; color: var(--color-text-white); }
 .shouts-lede { flex: 0 1 360px; max-width: 360px; margin: 0; color: var(--shouts-ink-muted); font-size: 1.0625rem; line-height: 1.5; }
 .shouts-rail { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; margin: 40px 0 0; padding: 0 0 var(--shouts-stagger); list-style: none; }
-.shout { position: relative; aspect-ratio: 9/14; min-width: 0; border-radius: var(--shouts-card-radius); overflow: hidden; isolation: isolate; container-type: inline-size; }
+.shout { position: relative; aspect-ratio: var(--shouts-card-aspect); min-width: 0; border-radius: var(--shouts-card-radius); overflow: hidden; isolation: isolate; container-type: inline-size; }
 .shout:nth-child(even) { translate: 0 var(--shouts-stagger); }
 /* Negative layers stay inside the isolated card, below its readable copy. */
 .shout-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
@@ -3160,9 +3173,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
 .shout-context { position: absolute; left: 18px; top: 18px; max-width: calc(100% - 36px); display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border: 1px solid var(--shouts-glass-border); border-radius: var(--radius-pill); background: var(--shouts-glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font: 600 .75rem/1.3 var(--font-body); }
 .shout-context-avatar { flex: none; width: 24px; height: 24px; object-fit: cover; border-radius: var(--radius-pill); }
 /* Fit the fixed two-line phrases, including their slant, inside narrow cards. */
-.shout-quote { position: absolute; left: 18px; right: 14px; bottom: 22px; margin: 0; font: 400 min(var(--shouts-quote-size),calc((100cqw - 32px)/var(--shouts-quote-fit)))/.88 var(--hero-font-display); color: var(--color-accent); text-transform: uppercase; transform: skewX(-12deg); transform-origin: left bottom; text-shadow: var(--shouts-quote-shadow); }
-.shout:nth-child(3) .shout-quote { --shouts-quote-fit: var(--shouts-quote-fit-finale); }
-.shout:nth-child(4) .shout-quote { --shouts-quote-fit: var(--shouts-quote-fit-story); }
+.shout-quote { position: absolute; left: 18px; right: 14px; bottom: 22px; margin: 0; font: var(--shouts-quote-weight) min(var(--shouts-quote-size),calc((100cqw - 32px)/var(--shouts-quote-fit)))/var(--shouts-quote-leading) var(--font-body); color: var(--color-accent); text-transform: none; transform: skewX(var(--shouts-quote-skew)); transform-origin: left bottom; text-shadow: var(--shouts-quote-shadow); }
 .shouts-cta { display: flex; justify-content: center; margin-top: 36px; }
 .shouts-cta-link { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 48px; padding: 14px 22px; border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-text-black); font-weight: 700; text-decoration: none; }
 .shouts-cta-link:hover { background: var(--color-text-white); color: var(--color-text-black); }
@@ -3172,7 +3183,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
     .shout:hover .shout-photo { scale: 1.04; }
 }
 @media (max-width: 1023px) {
-    :root { --shouts-quote-size: 40px; }
+    :root { --shouts-quote-size: 38px; }
     .shouts-rail { display: flex; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--shouts-gutter); gap: 12px; margin: 32px calc(-1 * var(--shouts-gutter)) 0; padding: 0 var(--shouts-gutter) 8px; scrollbar-width: none; }
     .shouts-rail::-webkit-scrollbar { display: none; }
     .shout { flex: 0 0 40%; scroll-snap-align: start; }
@@ -3180,7 +3191,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
     .shouts-rail:focus-visible { outline-offset: -3px; }
 }
 @media (max-width: 767px) {
-    :root { --shouts-gutter: var(--mobile-hero-card-margin); --shouts-quote-size: 46px; }
+    :root { --shouts-gutter: var(--mobile-hero-card-margin); --shouts-quote-size: 40px; }
     .shouts-header { display: block; }
     .shouts-lede { margin-top: 14px; }
     .shout { flex-basis: 72%; }
@@ -3226,6 +3237,20 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
     .stories .stories-court--desktop { display: none; }
     .stories .stories-court--mobile { display: block; }
 }
+
+/* Homepage outer edges follow the photo hero. Prose limits stay local, and
+   scrollports still reach the viewport edges. Other routes retain their grid. */
+body:not(.org-page):not(.error-page):has(.hero-header) :is(.how-quest, .shouts, .faq, .footer) { padding-inline: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) :is(.how-quest-inner, .shouts-inner) { max-width: none; }
+body:not(.org-page):not(.error-page):has(.hero-header) .how-quest-header { padding-inline: 0; }
+body:not(.org-page):not(.error-page):has(.hero-header) .shouts { --shouts-gutter: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) .stories { margin-inline: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) .stories .stories-band { max-width: none; }
+body:not(.org-page):not(.error-page):has(.hero-header) .showcase[data-showcase-variant="participant"] { width: 100%; max-width: none; }
+body:not(.org-page):not(.error-page):has(.hero-header) .tp-header { padding-inline: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) .tp-calendar { margin-inline: 0; padding-inline: var(--home-section-gutter); scroll-padding-inline: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) :is(.tp-scroll-progress, .showcase-demo-note) { margin-inline: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) .showcase-demo-note { max-width: calc(100% - 2 * var(--home-section-gutter)); }
 
 /* ==========================================================================
    11. FAQ ACCORDION
