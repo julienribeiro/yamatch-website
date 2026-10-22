@@ -28,5 +28,3 @@ Use case: photorealistic-natural. Asset type: portrait photograph for a French a
 ### moment-04.webp
 
 Use case: photorealistic-natural. Asset type: portrait photograph for a French amateur volleyball community website card. Create a candid editorial lifestyle sports photograph, tall portrait aspect ratio approximately 9:16. A mixed group of four clearly adult amateur volleyball teammates aged 23 to 29, ethnically diverse women and men, together laughing after a local tournament in a modest indoor gym. One person holds a small simple golden trophy at chest height, others stand shoulder-to-shoulder, authentic relaxed joyful moment, no exaggerated victory poses. Plain unbranded sports clothes, natural youthful adult faces with realistic skin texture and plausible hands, arms and trophy. Volleyball net in soft background. Compose faces and trophy within upper two-thirds; bottom third quiet clothing and floor for later overlay text. Natural gym lighting with photographic grain, not glamorous models, no minors and no middle-aged adults. No text, logos, watermarks, overlays or numbers. Generate one photograph only.
-
-
