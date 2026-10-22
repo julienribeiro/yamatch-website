@@ -2932,6 +2932,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
 [data-showcase-variant="participant"] .tp-expand { flex: none; width: 56px; height: 56px; border-radius: var(--radius-pill); background: var(--color-text-black); border: .6px solid var(--tp-white-10); display: flex; align-items: center; justify-content: center; }
 [data-showcase-variant="participant"] .tp-cta { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 60px; padding: 10px 12px; border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-text-black); font: 700 var(--tp-cta-size)/1.15 var(--font-body); text-align: center; text-decoration: none; transition: translate var(--transition); }
 [data-showcase-variant="participant"] .tp-cta.is-secondary, [data-showcase-variant="participant"] .tp-ticket--create .tp-cta { background: var(--color-text-white); }
+[data-showcase-variant="participant"] .tp-ticket.is-full .tp-cta { background: var(--color-light-gray); }
 [data-showcase-variant="participant"] .tp-cta[href]:hover { translate: 0 -1px; color: var(--color-text-black); }
 /* Inset focus stays inside the masked ticket instead of being clipped at its edge. */
 [data-showcase-variant="participant"] .tp-cta:focus-visible { outline: 3px solid var(--color-text-black); outline-offset: -6px; box-shadow: 0 0 0 3px var(--color-accent); }

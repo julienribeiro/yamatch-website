@@ -10,6 +10,8 @@ Les cartes de mois vide « Aucun tournoi en… / Créer le premier » sont suppr
 
 À la fin du rail mobile, la liste du dernier mois est alignée à droite (`justify-content:flex-end`) pour garder la carte de création entièrement visible. Géométrie vérifiée : à 320 px, carte de x=19,56 à 275,56 (256 px) ; à 390 px, x=45,56 à 345,56 (300 px). Captures du viewport : [320 px](after/home-320-end-viewport.png), [390 px](after/home-390-end-viewport.png). Les 16 scénarios ont été régénérés après ce correctif, sans débordement entre 320 et 1920 px.
 
+Le bouton « Voir le tournoi » des billets participants **complets** utilise désormais `--color-light-gray` (`#F3F4F6`), à la demande du founder. Les billets joués ou clos sans être complets gardent leur bouton blanc ; les ouverts non complets gardent le lime, et la création reste inchangée. Règle limitée à `.tp-ticket.is-full .tp-cta` dans la variante participant. Captures : [desktop](after/full-cta-1440.png), [mobile](after/full-cta-390.png). Texte noir : contraste calculé 19,08:1 par le spécialiste CSS.
+
 ## Limite D3
 
 La page lit uniquement des colonnes publiques de `tournaments`. Elle ne connaît ni le nombre d’inscrits, ni les places restantes, ni le podium. Elle affiche « Jusqu’à N équipes » sans jauge. `is_closed` signifie clôture manuelle du tournoi, jamais « Complet ». L’état complet de la maquette ne peut donc pas être reproduit avec ce contrat anonyme ; une RPC publique dédiée relève d’un lot backend séparé. Le calendrier dispose, lui, des compteurs fournis par `get_public_showcase`.
@@ -26,7 +28,7 @@ Les 14 colonnes ajoutées ont été vérifiées individuellement HTTP 200 en ano
 | 2 | Sans cadre/fond/terrain/ticker | Vérifié dans DOM/CSS et captures : section transparente, aucun SVG terrain ni ticker participant |
 | 3 | Styles mois, position initiale, accès passé | Vérifié : [géométrie](after/calendar-layout-qa.json), [passé desktop](after/home-1440-past.png), [mobile](after/home-390-past.png), tests calendrier ; initial currentLeft = railLeft + padding |
 | 4 | Billets joués blancs, équipes/Terminé | Vérifié par captures passé et test calendrier « classement vient des listes » ; zéro équipe omis |
-| 5 | CTA unique, route, palette | Vérifié par tests calendrier : 9 joués + 6 à venir, H4, un CTA, plein/clos secondaires et démo inerte ; plus de rond à chevron généré, plus création préservé |
+| 5 | CTA unique, route, palette | Tests calendrier : 9 joués + 6 à venir, H4, un CTA et démo inerte. Palette vérifiée par CSS et captures : complet gris clair, clos/joué blancs, ouvert non complet lime ; plus de rond à chevron généré, plus création préservé |
 | 6 | Repère Aujourd’hui | Vérifié par tests et [scénarios](after/calendar-scenarios-qa.json), Europe/Paris, entre listes jouées/à venir ; absent si aucun mois courant |
 | 7 | Mois vides et création finale | **Critère initial remplacé par la correction founder ci-dessus.** Titres/compteurs jusqu’à mois en cours + 2 conservés ; aucune carte « Aucun tournoi / Créer le premier » ; carte « Ton prochain tournoi » unique et dernière. Tests calendrier renforcés et captures [fin du rail](after/home-1440-end.png) |
 | 8 | Masquage vide, RPC/cache/démo | Tests calendrier PASS pour vide/invalide/exception, nettoyage et démo ; transport/RPC/cache inchangés à la comparaison source |
