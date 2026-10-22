@@ -4,6 +4,12 @@
 
 Implémentation et vérifications techniques terminées : **25/25 tests, build CSS et build complet réussis**. Revue indépendante finale **PASS le 22/10/2026**, sur les sept catégories du reviewer, après correction du contraste et du retour à la ligne des villes longues. La réserve D3 reste documentée : le statut complet et les compteurs de la page tournoi nécessitent un lot backend séparé. Livraison en PR draft, sans déploiement.
 
+## Correction founder après le SPEC initial
+
+Les cartes de mois vide « Aucun tournoi en… / Créer le premier » sont supprimées à la demande du founder. Cette décision remplace uniquement la case vide prévue aux §3.3 et §9 du SPEC historique, qui reste conservé. **D2 demeure inchangée** : les groupes de mois vont au moins jusqu’au mois en cours + 2, avec titre et compteur. L’unique carte de création « Ton prochain tournoi », avec son rond « + », reste tout à la fin du rail. Les tests vérifient zéro `.tp-empty`, une seule carte de création, sa dernière position et la plage des mois, y compris au passage d’année.
+
+À la fin du rail mobile, la liste du dernier mois est alignée à droite (`justify-content:flex-end`) pour garder la carte de création entièrement visible. Géométrie vérifiée : à 320 px, carte de x=19,56 à 275,56 (256 px) ; à 390 px, x=45,56 à 345,56 (300 px). Captures du viewport : [320 px](after/home-320-end-viewport.png), [390 px](after/home-390-end-viewport.png). Les 16 scénarios ont été régénérés après ce correctif, sans débordement entre 320 et 1920 px.
+
 ## Limite D3
 
 La page lit uniquement des colonnes publiques de `tournaments`. Elle ne connaît ni le nombre d’inscrits, ni les places restantes, ni le podium. Elle affiche « Jusqu’à N équipes » sans jauge. `is_closed` signifie clôture manuelle du tournoi, jamais « Complet ». L’état complet de la maquette ne peut donc pas être reproduit avec ce contrat anonyme ; une RPC publique dédiée relève d’un lot backend séparé. Le calendrier dispose, lui, des compteurs fournis par `get_public_showcase`.
@@ -22,7 +28,7 @@ Les 14 colonnes ajoutées ont été vérifiées individuellement HTTP 200 en ano
 | 4 | Billets joués blancs, équipes/Terminé | Vérifié par captures passé et test calendrier « classement vient des listes » ; zéro équipe omis |
 | 5 | CTA unique, route, palette | Vérifié par tests calendrier : 9 joués + 6 à venir, H4, un CTA, plein/clos secondaires et démo inerte ; plus de rond à chevron généré, plus création préservé |
 | 6 | Repère Aujourd’hui | Vérifié par tests et [scénarios](after/calendar-scenarios-qa.json), Europe/Paris, entre listes jouées/à venir ; absent si aucun mois courant |
-| 7 | Mois vides et création finale | Vérifié sur quatre scénarios à 1440/390 : sans joués, sans à venir, mois vides, passage d’année ; `creationLast:true` partout, [fin du rail](after/home-1440-end.png) |
+| 7 | Mois vides et création finale | **Critère initial remplacé par la correction founder ci-dessus.** Titres/compteurs jusqu’à mois en cours + 2 conservés ; aucune carte « Aucun tournoi / Créer le premier » ; carte « Ton prochain tournoi » unique et dernière. Tests calendrier renforcés et captures [fin du rail](after/home-1440-end.png) |
 | 8 | Masquage vide, RPC/cache/démo | Tests calendrier PASS pour vide/invalide/exception, nettoyage et démo ; transport/RPC/cache inchangés à la comparaison source |
 | 9 | Organisateur identique | [Avant](before/organisateur-1440-section.png) / [après](after/organisateur-1440-section.png) : sections 1440/390 et full 1440 identiques selon comparaison SHA du spécialiste ; full 390 même hauteur 4181 px, seulement 10 pixels à ±1/255 |
 | 10 | Page à venir/complet/joué, erreurs et deep link | **Vérifié avec réserve D3 : complet non observable.** [À venir](after/page-tournoi-a-venir-1440.png), [joué](after/page-tournoi-termine-1440.png), [capacité inconnue](after/page-tournoi-complet-capacite-inconnue-390.png), [annulé](after/page-tournoi-annule-390.png). 9 tests page PASS ; [16 mesures/captures](after/page-tournament-qa.json) couvrent aussi clos, invalide, introuvable et erreur. `joinTournament` identique à HEAD selon spécialiste |

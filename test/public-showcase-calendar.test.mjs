@@ -59,14 +59,17 @@ test('calendrier conserve 9 joués + 6 à venir, billets H4, CTA unique et créa
   assert.equal(h.rail.querySelectorAll('[data-showcase-create]').length, 1);
   assert.equal(h.rail.querySelectorAll('[data-showcase-generated]').length, 15);
 });
-test('Paris détermine mois/jour, UTC les dates, et passage d’année inclut deux mois vides', () => {
+test('Paris détermine mois/jour, UTC les dates, et conserve deux mois futurs sans carte vide', () => {
   const h = harness('2026-12-31T23:30:00Z');
   const model = h.normalizePayload(payload([row('played', '2026-12-31')], [row('next', '2027-01-03')]));
   h.renderCalendar(h.rail, model, false);
   assert.deepEqual(h.rail.querySelectorAll('h3').map(node => node.textContent), ['décembre 2026', 'janvier 2027', 'février 2027', 'mars 2027']);
   assert.equal(h.rail.querySelector('.tp-today').textContent, 'Aujourd’hui · 1');
   assert.equal(h.rail.querySelector('.tp-month.is-current').querySelector('h3').textContent, 'janvier 2027');
-  assert.equal(h.rail.querySelectorAll('.tp-empty').length, 2);
+  assert.equal(h.rail.querySelectorAll('.tp-empty').length, 0);
+  assert.equal(h.rail.querySelectorAll('[data-showcase-create]').length, 1);
+  assert.equal(h.rail.children.at(-1).querySelector('ol').children.at(-1).firstChild, h.creation);
+  assert.doesNotMatch(h.rail.textContent, /Aucun tournoi|Créer le premier/);
   assert.equal(h.rail.querySelector('.tp-ticket.is-past').querySelector('time').getAttribute('datetime'), '2026-12-31');
 });
 test('le classement vient des listes, repère entre joués et à venir, tri et zéro équipe omis', () => {
@@ -84,7 +87,10 @@ test('absence de joués, absence d’à venir, mois passés vides omis et repli 
   const h = harness();
   h.renderCalendar(h.rail, h.normalizePayload(payload([], [row('next', '2026-12-01')])), false);
   assert.equal(h.rail.querySelectorAll('.tp-month.is-past').length, 0);
-  assert.equal(h.rail.querySelectorAll('.tp-empty').length, 1);
+  assert.equal(h.rail.querySelectorAll('.tp-empty').length, 0);
+  assert.deepEqual(h.rail.querySelectorAll('h3').map(node => node.textContent), ['octobre 2026', 'novembre 2026', 'décembre 2026']);
+  assert.equal(h.rail.querySelectorAll('[data-showcase-create]').length, 1);
+  assert.equal(h.rail.children.at(-1).querySelector('ol').children.at(-1).firstChild, h.creation);
   h.render(h.section, h.normalizePayload(payload([row('past', '2026-07-10')], [])), false);
   assert.deepEqual(h.rail.querySelectorAll('h3').map(node => node.textContent), ['juillet 2026', 'novembre 2026', 'décembre 2026']);
   h.rail.scrollLeft = 0;

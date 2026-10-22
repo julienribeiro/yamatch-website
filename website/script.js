@@ -1626,14 +1626,6 @@
                 cards.appendChild(appTicket(entry.tournament, demo, entry.past));
             });
             if (key === current && !markerAdded) todayMarker();
-            if (key > current && !entries.length) {
-                var empty = el('li', 'tp-empty');
-                empty.appendChild(el('p', null, 'Aucun tournoi en ' + name + ' pour l’instant.'));
-                var link = el('a', null, 'Créer le premier →');
-                link.href = '/organisateur/';
-                empty.appendChild(link);
-                cards.appendChild(empty);
-            }
             if (index === keys.length - 1) {
                 var creationItem = el('li');
                 creationItem.appendChild(create);
