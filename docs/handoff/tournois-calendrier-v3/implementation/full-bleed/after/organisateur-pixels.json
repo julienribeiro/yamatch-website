@@ -1,0 +1,23 @@
+[
+  {
+    "width": 1440,
+    "heightBefore": 5151,
+    "heightAfter": 5151,
+    "changedPixels": 418107,
+    "maxChannelDelta": 62
+  },
+  {
+    "width": 820,
+    "heightBefore": 4550,
+    "heightAfter": 4550,
+    "changedPixels": 43844,
+    "maxChannelDelta": 8
+  },
+  {
+    "width": 390,
+    "heightBefore": 4337,
+    "heightAfter": 4337,
+    "changedPixels": 252357,
+    "maxChannelDelta": 255
+  }
+]

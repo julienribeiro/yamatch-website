@@ -1,0 +1,119 @@
+{
+  "phase": "after",
+  "results": [
+    {
+      "route": "home",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "rail": {
+        "left": 0,
+        "right": 1440,
+        "width": 1440,
+        "clientWidth": 1440,
+        "scrollWidth": 3645,
+        "paddingLeft": "88.7969px",
+        "paddingRight": "88.7969px",
+        "scrollLeft": 790
+      },
+      "section": {
+        "width": 1440,
+        "overflow": "clip"
+      }
+    },
+    {
+      "route": "organisateur",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "rail": {
+        "left": 0,
+        "right": 1440,
+        "width": 1440,
+        "clientWidth": 1440,
+        "scrollWidth": 1536,
+        "paddingLeft": "120px",
+        "paddingRight": "120px",
+        "scrollLeft": 0
+      },
+      "section": {
+        "width": 1440,
+        "overflow": "clip"
+      }
+    },
+    {
+      "route": "home",
+      "width": 820,
+      "scrollWidth": 820,
+      "rail": {
+        "left": 0,
+        "right": 820,
+        "width": 820,
+        "clientWidth": 820,
+        "scrollWidth": 3193,
+        "paddingLeft": "52.8906px",
+        "paddingRight": "52.8906px",
+        "scrollLeft": 591
+      },
+      "section": {
+        "width": 820,
+        "overflow": "clip"
+      }
+    },
+    {
+      "route": "organisateur",
+      "width": 820,
+      "scrollWidth": 820,
+      "rail": {
+        "left": 0,
+        "right": 820,
+        "width": 820,
+        "clientWidth": 820,
+        "scrollWidth": 1194,
+        "paddingLeft": "36.8906px",
+        "paddingRight": "36.8906px",
+        "scrollLeft": 0
+      },
+      "section": {
+        "width": 820,
+        "overflow": "clip"
+      }
+    },
+    {
+      "route": "home",
+      "width": 390,
+      "scrollWidth": 390,
+      "rail": {
+        "left": 0,
+        "right": 390,
+        "width": 390,
+        "clientWidth": 390,
+        "scrollWidth": 2867,
+        "paddingLeft": "16px",
+        "paddingRight": "16px",
+        "scrollLeft": 584
+      },
+      "section": {
+        "width": 358,
+        "overflow": "visible"
+      }
+    },
+    {
+      "route": "organisateur",
+      "width": 390,
+      "scrollWidth": 390,
+      "rail": {
+        "left": 0,
+        "right": 390,
+        "width": 390,
+        "clientWidth": 390,
+        "scrollWidth": 1224,
+        "paddingLeft": "20px",
+        "paddingRight": "20px",
+        "scrollLeft": 0
+      },
+      "section": {
+        "width": 390,
+        "overflow": "clip"
+      }
+    }
+  ]
+}
