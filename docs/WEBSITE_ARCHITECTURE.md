@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-10-22 (desktop participant hero viewport sizing and matching bottom/side gutters, mobile title and Volleyball badge centring; Stories S1 hidden shell and asset requirements; participant public tournament grid and recent ticker; HOW V2 coded three-card journey, progressive reveal and FAQ-only parallax; participant V2 split hero, shared fixed full-width navigation bar, decorative app cards and screenshot-carousel removal; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
+Last sync: 2026-10-22 (draft monthly tournament calendar V3 and public detail page with D3 occupancy limitation; desktop participant hero viewport sizing and matching bottom/side gutters, mobile title and Volleyball badge centring; Stories S1 hidden shell and asset requirements; HOW V2 coded three-card journey, progressive reveal and FAQ-only parallax; participant V2 split hero, shared fixed full-width navigation bar, decorative app cards and screenshot-carousel removal; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -378,6 +378,19 @@ The OAuth bridge `/auth/callback/` follows the same fallback logic but forwards 
 
 This mirrors the `/download/` page's own UA-detection logic — same regexes, same two store URLs — so the download and bridge pages agree on which platform gets which link.
 
+**Public tournament page (`tournament/index.html`, V3 draft, 2026-10-22):**
+
+Implemented locally on `claude/beautiful-meitner-4wzp5k`; this does not establish production publication. `/tournament/?id=…`, direct paths, the 404 bridge and `#openInApp` remain supported. Shared `styles.css` §10.7 supplies isolated `td-*` styles; the page no longer has inline CSS. A back link leads to `/#derniers-tournois`. The date/status hero precedes practical information (`dl`), plain-text description, equipment chips and optional organiser name/initials. The action panel is sticky on desktop and static below 1024 px. Unknown facts and empty sections are omitted; description whitespace is preserved. The organiser label uses `--tp-intro-ink` for readable contrast against its light-grey card. `.td-meta` uses `max-width:100%`, `min-width:0` and `overflow-wrap:anywhere`, so long unbroken city names wrap inside the hero instead of being clipped.
+
+The anonymous production `tournaments` request selects 21 public columns: it retains `title,players_per_team,gender,location,price_per_team,status` and adds `date,start_time,address,levels,is_free,max_teams,description,terrain,has_buvette,has_accessible_parking,has_prizes,organizer_name,registrations_closed,is_closed,gradient_colors`. The initial 14 added columns were independently verified HTTP 200 on the published tournament `cf5faa8c-117a-4b9a-a3f9-522045d7e578`; the implementation report records verification evidence. The subsequent `gradient_colors` addition was also verified anonymously on that published tournament: the exact app palette is opaque ARGB `[4278190080,4288755383]` (black/violet). No participant data, contact columns or GPS coordinates are selected. Fetched text uses `textContent`. Dates format in UTC; comparison with today uses Europe/Paris. Known levels are presented in the SPEC order; unknown values disappear. `is_free: true` displays « Gratuit »; other prices retain the existing rounding/zero-hiding behavior.
+
+**D3 limitation:** no anonymous occupancy count or podium is available through this request. The page displays « Jusqu’à N équipes » for valid capacity, with no occupancy bar, remaining-place claim or podium. It cannot infer **Complet** from capacity or `is_closed`: that field means manual closure of the tournament, not fullness. Cancellation takes precedence; `status: finished`, manual closure or a date before today renders the finished state. `registrations_closed: true` renders closed registration for a future tournament; explicitly false registration and tournament-closure flags render open registration. Missing flags produce « À venir ». Played tournaments offer « Voir les prochains tournois » and the app-ranking note; cancelled tournaments preserve the cancellation note and disable registration. Backend RPC work for occupancy/fullness remains a separate D3 task.
+
+Invalid identifiers fail before fetching; an empty array alone means not found. Technical failures retain retry, a 10-second AbortController timeout and the loading guard. The app scheme, visibility-aware 1.5-second platform-store fallback and download link remain unchanged. `test/tournament-page.test.mjs` covers these contracts and the V3 fields/states; real installed-app handoff still requires device verification.
+
+<details>
+<summary>Historical public tournament page contract (superseded by V3 on this branch)</summary>
+
 **Public tournament page (`tournament/index.html`, updated 2026-09-27):**
 
 - The page reads `?id=` (or the direct path) and fetches `title,players_per_team,gender,location,price_per_team,status` from **PROD** `https://kxwmjjgtnrhcpgopevzb.supabase.co/rest/v1/tournaments`, using the public publishable key matching the Flutter PROD configuration. No session or privileged key is required; existing RLS governs visibility.
@@ -387,6 +400,8 @@ This mirrors the `/download/` page's own UA-detection logic — same regexes, sa
 - **Télécharger Yamatch** always links to `/download/`, independently of the fetch and app action. The page explains: « Après installation, rouvre le lien reçu pour retrouver ce tournoi. » The custom scheme and 1.5-second store fallback remain unchanged. There is no deferred deep linking or automatic return after installation.
 - `test/tournament-page.test.mjs` exercises the PROD configuration guard, success rendering, app/store navigation, actual absence versus technical failures, timeout/retry and duplicate taps, direct paths, cancellation, zero price and invalid links. Browser/device installation flows still require physical testing.
 
+
+</details>
 
 ---
 
@@ -628,6 +643,49 @@ section.stories#temoignages[aria-labelledby="storiesTitle"][hidden]
 
 **Video work is not implemented.** No video was supplied, so no controller or story-specific JavaScript is added. Future video activation must implement the SPEC §5 requirements: H.264 ≤1.5 MB/10 seconds with WebP poster, `muted loop playsinline preload="none"`, a 44 × 44 pause/play button, autoplay only at ≥60% visibility, pause outside view, at most one playing video, no reduced-motion autoplay, and poster-only fallback without JS. These behaviours, populated-media layout/contrast and image layout-shift checks require real content and a new review before activation. Current validation covers the empty hidden state only.
 
+### Public tournament calendar V3 (`section.showcase#derniers-tournois`) — draft 2026-10-22
+
+**Status and boundary.** Implemented on `claude/beautiful-meitner-4wzp5k`, not deployed. See [handoff and acceptance evidence](handoff/tournois-calendrier-v3/implementation/README.md). The participant variant replaces V2's court band and ticker with an unframed monthly calendar; the organiser variant retains its existing tickets, gauge and native arrow navigation.
+
+**Data/loading contract.** The independent final IIFE still calls production `get_public_showcase` with `{}`, the public publishable key, omitted credentials and a ten-second abort timeout. The same payload validation, six statistics (validated but not displayed), `yamatch.showcase.v1` session cache with ten-minute TTL, shared request promise, 600 px lazy-loading sentinel and explicit `?showcase=demo` remain. All valid normalized participant entries are rendered: at most nine recent and six upcoming. A single valid entry reveals the section; the creation card alone never does. Empty/error/render-failure states hide and clear it. `yamatch:showcase-layout` continues to notify dependent layout measurement. Live failures never substitute demo data.
+
+**Month grouping.** `renderCalendar()` derives played/upcoming exclusively from RPC lists. Dates are read in UTC; Europe/Paris determines the current month and day marker. Month keys are year × 12 + month index, including year rollover; entries sort by date, with played entries before upcoming ones inside the current month. Empty past months are omitted. Future months extend through at least current + 2, including intervening empty months. Current month is included when it has entries or upcoming entries exist. Each month is a labelled `role="group"` with an H3 (year included for assistive technology), a count and an ordered list of H4-titled tickets. The real-text « Aujourd’hui » marker separates current-month played/upcoming entries. Founder correction after the initial SPEC removes the empty-month cards and their « Aucun tournoi… / Créer le premier » copy. D2 is unchanged: future month headings/counts still extend through current + 2. Only the static « Ton prochain tournoi » creation card, retaining its plus circle, offers creation and remains unique at the last position in the last month. On mobile, the last month’s card list uses `justify-content:flex-end`, keeping the creation card fully visible at maximum scroll offset (verified at 320 and 390 px).
+
+**App palette enrichment (founder correction).** Real participant upcoming cards receive one optional anonymous `GET /rest/v1/tournaments?select=id,gradient_colors&id=in.(…)` batch for their validated IDs, with omitted credentials and a 5-second abort timeout. This is rendering enrichment after the existing RPC/cache model has rendered; it does not alter the RPC, normalization, cached payload, lazy loading or demo fixtures. Demo, organiser and played-only renders make no palette request. Failed, timed-out, malformed or unknown palette responses retain the default teal surface and all ticket links. The request captures the current card nodes so a late response cannot recolour a subsequent render.
+
+`gradient_colors` must be exactly two opaque unsigned ARGB integers matching one of the app's 18 presets. `tournamentTheme()` maps only these pairs to an allowlisted `data-tournament-theme` slug; raw response colors are never written to CSS. Both `script.js` and the detail page contain the same 18-pair table, protected by an equality test. CSS `:root` owns `--tournament-gradient-{slug}` tokens and scoped attribute selectors supply the ticket/hero gradient. Panthères 2026 uses `violet` (`FF000000` → `FFA136B7`), not `fuchsia`. Played ticket heads remain white, closed non-full heads black, and terminal detail heroes neutral. The existing 35% contrast veil remains on calendar tickets and nine detail palettes, including violet/Panthères. Detail-only `--td-theme-shade-{45,50,55,60}` tokens increase the veil for luminous presets: 45% coral/lavender, 50% teal/lime/mint/emerald and the unrecognized-palette teal fallback, 55% amber/lagoon, 60% saffron. These tiers preserve AA for date, metadata and the translucent closed badge without adding local backing panels. Source endpoints match the app; rendered pixels are not claimed identical. See the [palette audit](handoff/tournois-calendrier-v3/implementation/PALETTE_AUDIT.md).
+
+**Tickets.** `appTicket(t, demo, past)` preserves ticket geometry and optional metadata. Played tickets have white heads, a trophy/« Terminé », positive team counts only and a fully filled decorative progress bar. Upcoming tickets preserve capacity/full/registration-closed rules; full takes precedence over closed. Every real footer has one full-width « Voir le tournoi » link to `/tournament/?id=…` with a hidden title suffix; the footer chevron circle is removed from generated tickets. Full-ticket CTAs use `--color-light-gray` (founder adjustment, 2026-10-22); played and closed-but-not-full CTAs remain white, and open non-full CTAs remain lime. The creation CTA remains white. Missing capacity omits the status and occupancy bar, as before. Demo CTAs remain inert spans, explicitly marked disabled, with fictitious-data labelling. The creation card retains its real organiser link.
+
+```text
+section.showcase.tp-band#derniers-tournois[hidden]
+└── .tp-content[data-showcase-rail-block]
+    ├── header.tp-header → badge, H2, introduction
+    ├── .tp-calendar[data-showcase-rail][tabindex="0"]
+    │   └── .tp-month[role="group"] → H3, count, ol.tp-month-cards
+    │       └── tickets / today marker / unique final creation card
+    └── .tp-scroll-progress[aria-hidden="true"] → [data-showcase-progress]
+```
+
+**Layout and interaction.** CSS §10.7 is scoped to the participant variant. The transparent section has max-width 1392 px, 16 px outer gutters, 56/24 px block padding (32 px top on mobile), no court SVG, rounded frame or ticker. Header columns are 1.1fr/.9fr with a 64 px gap, stacking below 1024 px; badge is gray with a black dot. The keyboard-focusable horizontal rail uses proximity snap and contained horizontal overscroll. Month headings use Frick, −11° skew and a protected inset; past/future names are outlines and the current month is solid. Counts retain normal readable text. Month separators are dashed; cards are 340 px, gap 16 px. Mobile rail extends to viewport edges with −16 px margins and 16 px padding; cards use `min(300px,80vw)`. Empty months retain their heading/count only, without a placeholder card or creation CTA.
+
+`wireCalendarProgress()` aligns the current month immediately, or the first future month, with no animated scroll; font readiness repeats alignment only before user interaction. Passive scroll, resize and ResizeObserver updates batch through requestAnimationFrame; cleanup disconnects listeners and cancels pending work before rerender. The 4 px decorative progress indicator uses visible/total width and scroll fraction through `--tp-scroll-size` and `--tp-scroll-offset`. Reduced motion keeps scrolling immediate. No participant arrow controls or ticker animation remain.
+
+| New calendar tokens (`:root`) | Contract |
+|---|---|
+| `--tp-calendar-card-width` | 340 px; `min(300px,80vw)` mobile |
+| `--tp-calendar-month-size` | `clamp(3rem,6vw,5.25rem)`; 3rem mobile |
+| `--tp-calendar-line` | Dark ink at .22 opacity for decorative separators/borders |
+| `--tp-calendar-past-month-ink` | Dark ink at .55 opacity for past-month lettering, at least 3:1 on white |
+| `--tp-calendar-progress-radius` | 4 px |
+| `--tp-calendar-next-section-gap` | 144 px external gap protects FAQ decoration; 0 mobile |
+| `--tp-content-pad` | `clamp(24px,4.5vw,72px)`; 0 mobile (rail has its own 16 px padding) |
+
+Ticket colors, dimensions and AA-adjusted muted white remain inherited from V2. The new detail page uses separate `--td-*` radius and decorative-ink tokens. The participant badge no longer participates in the gentle LED animation; hero and HOW retain theirs.
+
+<details>
+<summary>Historical participant V2 rail/ticker contract (superseded on this branch; organiser details remain applicable)</summary>
+
 ### Public tournament rails (`section.showcase#derniers-tournois`) — added 2026-10-15
 
 **Placement and visibility.** The participant homepage now renders the light-gray court section headed « Ça smash près de chez toi » between HOW and FAQ (`data-showcase-variant="participant"`). `/organisateur/` retains « Les derniers tournois » between feature cards and the management demo (variant `organizer`). Both start `hidden`: no JavaScript, invalid/empty data or a request failure exposes no placeholder. **One valid relevant tournament is sufficient.** Participant V2 inserts up to five upcoming tournaments in server order before the static creation card, and up to nine recent tournaments in a separate ticker. Recent-only data shows the creation card plus ticker; upcoming-only data hides the ticker. The creation card alone never makes an empty section visible. Organizer still uses only its first six valid recent tournaments; upcoming-only data keeps it hidden. Aggregate statistics are not rendered or used as visibility thresholds.
@@ -679,6 +737,9 @@ The lime ticker animates `tpScroll` from 0 to −50% over 40 seconds, linearly a
 | `--tp-white-*`, `--tp-black-*` | Tokenized translucent ticket ink, borders and progress tracks |
 
 **Organizer layout remains unchanged.** Shared CSS §10.7 uses native horizontal grid scrolling and mandatory start-aligned scroll snap, isolated from the phone carousel state machine. `--showcase-gutter` aligns the rail with page/container margins; `--showcase-card-width: clamp(268px, 24vw, 312px)` controls desktop columns. Tickets use `--showcase-ticket-bg`, glow/strong-glow and on-dark palette tokens; `--showcase-ticket-stub: 64px` and `--showcase-ticket-notch: 11px` set the dashed stub and masked edge notches. The section has fluid 64–120px block padding and clipped horizontal overflow. At ≤767px, gutter becomes `--mobile-hero-card-margin`, columns become `min(82%, 300px)`, gap becomes 12px (16px desktop), and arrow controls hide in favour of native swipe. The rail remains focusable for keyboard scrolling. Desktop 44px arrow buttons scroll by one card plus gap; boundary `aria-disabled` preserves focus and suppresses movement. Scroll/resize updates are animation-frame batched. Reduced motion selects immediate scrolling and disables button/CTA transitions.
+
+
+</details>
 
 ### Historical carousel (`.screens-rail`, removed from homepage)
 
@@ -995,7 +1056,7 @@ Headings use Inter 700, normal case, primary text color and no skew. Root tokens
 
 ### Participant badge LED (CSS only)
 
-The three section badges `.hero-card--photo .hero-eyebrow-dot`, `.how-quest .how-eyebrow-dot` and participant `.tp-eyebrow-dot` receive the gentle LED animation (Volleyball, Parcours, Tournois). The hero ticket’s remaining-team dot also reuses this animation, as described above. `heroBadgeLed` runs for `--hero-led-duration:2.4s` with `ease-in-out`, indefinitely. At 0%/100%, the dot uses lime, scale 1.15 and `--hero-led-shadow-on` (10 px blur, 3 px spread, lime 65%). At 50%, it uses `--hero-led-off:#3D4A12`, scale .8 and the transparent zero-size `--hero-led-shadow-off`. These tokens live in `:root`. The dots animate without changing badge/text layout; no pseudo-element or JavaScript is involved. Under reduced motion, animation stops and the dot stays lime at scale 1 with `--hero-led-shadow-static` (8 px blur, 2 px spread, lime 50%). Stories and organiser indicators are excluded.
+The two section badges `.hero-card--photo .hero-eyebrow-dot` and `.how-quest .how-eyebrow-dot` receive the gentle LED animation (Volleyball, Parcours). The V3 participant `.tp-eyebrow-dot` is static black and excluded from this animation. The hero ticket’s remaining-team dot also reuses this animation, as described above. `heroBadgeLed` runs for `--hero-led-duration:2.4s` with `ease-in-out`, indefinitely. At 0%/100%, the dot uses lime, scale 1.15 and `--hero-led-shadow-on` (10 px blur, 3 px spread, lime 65%). At 50%, it uses `--hero-led-off:#3D4A12`, scale .8 and the transparent zero-size `--hero-led-shadow-off`. These tokens live in `:root`. The dots animate without changing badge/text layout; no pseudo-element or JavaScript is involved. Under reduced motion, animation stops and the dot stays lime at scale 1 with `--hero-led-shadow-static` (8 px blur, 2 px spread, lime 50%). Stories and organiser indicators are excluded.
 
 ## CSS keyframe animations inventory
 

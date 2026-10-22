@@ -1,0 +1,758 @@
+[
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 1,
+    "ratio": 2.264010146091538,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 0.65,
+    "ratio": 4.664913814890471,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 1,
+    "ratio": 4.937794251280594,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 8.476868211771965,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 1,
+    "ratio": 4.8644112713992875,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 8.381242768088693,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 1,
+    "ratio": 4.682177179027694,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 8.11388917753873,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 1,
+    "ratio": 1.9667594973824158,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 0.65,
+    "ratio": 4.1391713247359805,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 1,
+    "ratio": 4.628111093693585,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 8.037776364529101,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 1,
+    "ratio": 3.6875434052003246,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 6.83356832745008,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 1,
+    "ratio": 2.2805437824589014,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 0.65,
+    "ratio": 4.685104399384157,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 1,
+    "ratio": 2.656388577658372,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 0.65,
+    "ratio": 5.331752276309873,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 1,
+    "ratio": 2.3332997464803475,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 0.65,
+    "ratio": 4.782135000170729,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 1,
+    "ratio": 5.7303032161808165,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 9.288101774602792,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 1,
+    "ratio": 3.209706886871034,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 6.223316717299081,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 1,
+    "ratio": 2.3845734746462015,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 0.65,
+    "ratio": 4.879223004042836,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 1,
+    "ratio": 1.5981871969529342,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 0.65,
+    "ratio": 3.4594125013179897,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 1,
+    "ratio": 2.894787214040814,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 0.65,
+    "ratio": 5.665827759963127,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 1,
+    "ratio": 4.246356788636682,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 7.6695100563803855,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 1,
+    "ratio": 5.908265323582698,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 9.492553972781542,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 1,
+    "ratio": 1.7741289224209993,
+    "text": "OCT"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 0.65,
+    "ratio": 3.7999369095995617,
+    "text": "OCT"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 1,
+    "ratio": 7.720451847572152,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 0.65,
+    "ratio": 11.14790613641769,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 1,
+    "ratio": 11.315042845378699,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 13.758599848289677,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 1,
+    "ratio": 11.445882201659629,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 13.83451809460766,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 1,
+    "ratio": 11.17943414947524,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 13.637116886134601,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 1,
+    "ratio": 7.059739574236266,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 0.65,
+    "ratio": 10.559974981570486,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 1,
+    "ratio": 10.866071636674016,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 13.43141757561224,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 1,
+    "ratio": 10.030455119201099,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 12.888816064293051,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 1,
+    "ratio": 7.735516948348065,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 0.65,
+    "ratio": 11.150650781818735,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 1,
+    "ratio": 8.513657330813649,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 0.65,
+    "ratio": 11.81350616081391,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 1,
+    "ratio": 7.860306982876997,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 0.65,
+    "ratio": 11.265093675154779,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 1,
+    "ratio": 12.114674607361223,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 14.191801592564902,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 1,
+    "ratio": 9.502734142772859,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 12.588236641195861,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 1,
+    "ratio": 7.987465767715311,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 0.65,
+    "ratio": 11.384207411638164,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 1,
+    "ratio": 6.151493963638924,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 0.65,
+    "ratio": 9.692657813166404,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 1,
+    "ratio": 8.834835488143256,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 0.65,
+    "ratio": 12.016219107799106,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 1,
+    "ratio": 10.88387873401892,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 13.523695138054093,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 1,
+    "ratio": 12.28366961830147,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 14.300048113585765,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 1,
+    "ratio": 6.629565890100495,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 0.65,
+    "ratio": 10.176291787426068,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 1,
+    "ratio": 8.691614865775918,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 0.65,
+    "ratio": 11.92653350230012,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 1,
+    "ratio": 12.050051450168558,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 14.188981892070885,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 1,
+    "ratio": 12.209178517259101,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 14.277822619049685,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 1,
+    "ratio": 11.957080035356942,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 14.1031832634605,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 1,
+    "ratio": 8.026738782968115,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 0.65,
+    "ratio": 11.389782483169633,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 1,
+    "ratio": 11.622900245882073,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 13.89558333839172,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 1,
+    "ratio": 10.905602653405584,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 13.459860602184746,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 1,
+    "ratio": 8.703604421790674,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 0.65,
+    "ratio": 11.926287307195166,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 1,
+    "ratio": 9.47616757040508,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 0.65,
+    "ratio": 12.526961736003535,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 1,
+    "ratio": 8.830040736096887,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 0.65,
+    "ratio": 12.031945951427153,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 1,
+    "ratio": 12.788037401145816,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 14.569528179280535,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 1,
+    "ratio": 10.434222886709835,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 13.216761710574595,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 1,
+    "ratio": 8.959502631340435,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 0.65,
+    "ratio": 12.143583826568497,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 1,
+    "ratio": 7.09416884613656,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 0.65,
+    "ratio": 10.585872548950844,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 1,
+    "ratio": 9.771995741778825,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 0.65,
+    "ratio": 12.694448567253328,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 1,
+    "ratio": 11.715981854364546,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 14.023541113978563,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 1,
+    "ratio": 12.94071633839679,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 14.663275046426524,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 1,
+    "ratio": 7.592734127832006,
+    "text": "Sannois • 4×4 • Mixte"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 0.65,
+    "ratio": 11.040968998527585,
+    "text": "Sannois • 4×4 • Mixte"
+  }
+]

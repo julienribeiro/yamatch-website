@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Maquette de référence — section tournois « Mois géants » v3 + page tournoi.
+     Données d'exemple. Navigation : #t-<id> ouvre une page tournoi, #calendrier revient.
+     Le sélecteur « 1 / 3 / 6 tournois » est un outil d'aperçu, à NE PAS implémenter. -->
+<title>Calendrier des tournois Yamatch</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+@font-face{font-family:'Frick 0.3';src:url('../../../../website/fonts/Frick0.3-Regular.woff2') format('woff2');font-weight:400;font-display:swap}@font-face{font-family:'Inter';src:url('../../../../website/fonts/Inter-Variable.woff2') format('woff2');font-weight:100 900;font-display:swap}@font-face{font-family:'Roboto';src:url('../../../../website/fonts/Roboto-Variable.woff2') format('woff2');font-weight:100 900;font-display:swap}
+/* Layout: section sans cadre posée sur la page blanche — titre, puis rail horizontal découpé par mois géants ; chaque billet ouvre une page tournoi dédiée. Thème clair unique comme le site. */
+:root {
+    color-scheme: light;
+    --color-accent: #D7FF00;
+    --color-light-gray: #F3F4F6;
+    --color-medium-gray: #6A7282;
+    --color-text-primary: #101828;
+    --color-text-white: #FFFFFF;
+    --color-text-black: #000000;
+    --color-divider: #E0E0E0;
+    --line-soft: rgba(16,24,40,.22);
+    --page-bg: #FFFFFF;
+    --font-heading: 'Roboto', system-ui, -apple-system, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+    --hero-font-display: 'Frick 0.3', 'Roboto', system-ui, sans-serif;
+    --radius-pill: 100px;
+    --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    --section-title-size: clamp(2.25rem, 4.6vw, 3.5rem);
+
+    --tp-intro-ink: #4A5565;
+    --tp-ticket-head: radial-gradient(circle closest-side at 50% 50%,#000 0%,#36B7AA 300%);
+    --tp-ticket-contrast-shade: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35));
+    --tp-ticket-head-closed: #000;
+    --tp-ticket-foot: #1A1A1A;
+    --tp-ticket-notch-y: calc(100% - 86px);
+    --tp-ticket-notch-radius: 8px;
+    --tp-ticket-notch-edge: 8.5px;
+    --tp-ticket-radius: 24px;
+    --tp-date-radius: 16px;
+    --tp-white-90: rgba(255,255,255,.9);
+    --tp-white-70: rgba(255,255,255,.7);
+    --tp-white-30: rgba(255,255,255,.3);
+    --tp-white-20: rgba(255,255,255,.2);
+    --tp-white-10: rgba(255,255,255,.1);
+    --tp-black-75: rgba(0,0,0,.75);
+    --tp-black-40: rgba(0,0,0,.4);
+    --tp-black-15: rgba(0,0,0,.15);
+    --tp-body-size: .875rem;
+    --tp-name-size: 1.375rem;
+    --tp-day-size: 1.75rem;
+    --tp-intro-size: 1.125rem;
+    --tp-cta-size: 1.125rem;
+    --tp-small-size: .8125rem;
+    --tp-compact-size: .75rem;
+    --tp-ticker-meta-size: 1rem;
+    --tp-content-pad: clamp(24px,4.5vw,72px);
+    --card-w: 340px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--page-bg); color: var(--color-text-primary); font-family: var(--font-body); -webkit-font-smoothing: antialiased; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; }
+a:focus-visible, button:focus-visible, [tabindex="0"]:focus-visible { outline: 3px solid var(--color-text-black); outline-offset: 2px; }
+
+/* ---------- Barre d'aperçu ---------- */
+.pv { max-width: 1392px; margin: 0 auto 8px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; font-size: .8125rem; color: var(--color-medium-gray); }
+.pv strong { color: var(--color-text-primary); }
+.pv-seg { display: inline-flex; padding: 4px; border-radius: var(--radius-pill); background: var(--color-light-gray); gap: 2px; }
+.pv-seg button { border: 0; background: transparent; padding: 8px 12px; border-radius: var(--radius-pill); font: 600 .8125rem/1 var(--font-body); color: var(--color-medium-gray); cursor: pointer; }
+.pv-seg button[aria-pressed="true"] { background: var(--color-text-black); color: var(--color-accent); }
+.note { max-width: 1392px; margin: 24px auto 0; font-size: .75rem; color: var(--color-medium-gray); }
+
+/* ---------- Section calendrier, sans cadre ---------- */
+.cal { max-width: 1392px; margin: 0 auto; padding-block: 56px 24px; display: flex; flex-direction: column; gap: 32px; }
+.head { padding-inline: var(--tp-content-pad); display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 20px 64px; align-items: end; }
+.head > div { display: flex; flex-direction: column; align-items: flex-start; gap: 18px; }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; margin: 0; padding: 8px 14px 8px 10px; border-radius: var(--radius-pill); background: var(--color-light-gray); font-size: var(--tp-body-size); font-weight: 600; line-height: 1.3; }
+.eyebrow i { width: 8px; height: 8px; border-radius: 50%; background: var(--color-text-black); }
+.h2 { margin: 0; font: 700 var(--section-title-size)/1.02 var(--font-body); letter-spacing: -.045em; text-wrap: balance; }
+.pill { display: inline-block; white-space: nowrap; padding: .02em .28em .08em; margin-inline-start: .08em; border-radius: .4em; background: var(--color-accent); color: var(--color-text-black); rotate: -3deg; }
+.intro { margin: 0; font-size: var(--tp-intro-size); line-height: 1.55; color: var(--tp-intro-ink); max-width: 44ch; }
+.disp { font-family: var(--hero-font-display); font-weight: 400; text-transform: uppercase; display: inline-block; transform: skewX(-11deg); }
+
+.rail { display: flex; align-items: stretch; padding: 8px var(--tp-content-pad) 10px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none; scroll-snap-type: x proximity; scroll-padding-inline: var(--tp-content-pad); }
+.rail::-webkit-scrollbar { display: none; }
+.month { flex: none; display: flex; flex-direction: column; gap: 16px; padding-right: 28px; margin-right: 28px; border-right: 1px dashed var(--color-divider); scroll-snap-align: start; }
+.month:last-child { border-right: 0; margin-right: 0; }
+.mhead { display: flex; align-items: baseline; gap: 12px; white-space: nowrap; padding-left: 6px; }
+.mname { font-size: clamp(3rem, 6vw, 5.25rem); line-height: .9; color: transparent; -webkit-text-stroke: 1.5px var(--line-soft); padding-inline: .14em .1em; }
+.month.is-up .mname { -webkit-text-stroke-color: var(--color-text-primary); }
+.month.is-now .mname { color: var(--color-text-primary); -webkit-text-stroke: 0; }
+.mcount { font-size: var(--tp-small-size); font-weight: 700; color: var(--color-medium-gray); }
+.month.is-now .mcount { background: var(--color-accent); color: var(--color-text-black); padding: 5px 9px; border-radius: var(--radius-pill); }
+.items { display: flex; gap: 16px; align-items: flex-end; flex: 1; }
+.today { flex: none; align-self: stretch; width: 2px; background: var(--color-text-black); position: relative; margin-inline: 44px 20px; }
+.today span { position: absolute; top: 0; left: -8px; translate: -100% 0; writing-mode: vertical-rl; rotate: 180deg; padding: 12px 7px; border-radius: var(--radius-pill); background: var(--color-text-black); color: var(--color-accent); font: 700 var(--tp-small-size)/1 var(--font-body); white-space: nowrap; }
+.empty { width: 240px; flex: none; align-self: stretch; min-height: 220px; border-radius: 24px; border: 2px dashed var(--line-soft); display: flex; flex-direction: column; justify-content: center; gap: 12px; padding: 22px; }
+.empty p { margin: 0; font-weight: 700; font-size: 1.0625rem; line-height: 1.3; }
+.empty a { align-self: flex-start; padding: 10px 16px; border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-text-black); font-weight: 700; text-decoration: none; font-size: .9375rem; }
+.progress { margin: 0 var(--tp-content-pad); height: 4px; border-radius: 4px; background: var(--color-light-gray); position: relative; }
+.progress i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--color-text-black); }
+.tk { width: var(--card-w); flex: none; container-type: inline-size; }
+
+/* ---- Billets : copie verbatim de website/styles.css §10.7 (appTicket) ---- */
+[data-showcase-variant="participant"] .tp-ticket { height: auto; align-self: start; border-radius: var(--tp-ticket-radius); overflow: hidden; background: var(--tp-ticket-foot); color: var(--color-text-white); display: flex; flex-direction: column;
+-webkit-mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-ticket-notch-radius),var(--color-text-black) var(--tp-ticket-notch-edge)) left/51% 100% no-repeat,radial-gradient(circle at 100% var(--tp-ticket-notch-y),transparent var(--tp-ticket-notch-radius),var(--color-text-black) var(--tp-ticket-notch-edge)) right/51% 100% no-repeat;
+mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-ticket-notch-radius),var(--color-text-black) var(--tp-ticket-notch-edge)) left/51% 100% no-repeat,radial-gradient(circle at 100% var(--tp-ticket-notch-y),transparent var(--tp-ticket-notch-radius),var(--color-text-black) var(--tp-ticket-notch-edge)) right/51% 100% no-repeat; }
+[data-showcase-variant="participant"] .tp-head { position: relative; flex: none; display: grid; grid-template-columns: minmax(72px, auto) minmax(0, 1fr); column-gap: 16px; padding: 20px 20px 24px; background: var(--tp-ticket-contrast-shade), var(--tp-ticket-head); }
+[data-showcase-variant="participant"] .tp-ticket.is-closed .tp-head { background: var(--tp-ticket-head-closed); }
+[data-showcase-variant="participant"] .tp-date { grid-column: 1; grid-row: 1; align-self: center; min-width: 72px; min-height: 72px; padding-inline: 8px; border: 1.87px solid var(--tp-white-30); border-radius: var(--tp-date-radius); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+[data-showcase-variant="participant"] .tp-day { font: 700 var(--tp-day-size)/1 var(--font-heading); }
+[data-showcase-variant="participant"] .tp-month { margin-top: 2px; font-size: var(--tp-body-size); color: var(--tp-white-90); }
+[data-showcase-variant="participant"] .tp-info { grid-column: 2; grid-row: 1; align-self: center; min-width: 0; }
+[data-showcase-variant="participant"] .tp-name { margin: 0; font: 700 var(--tp-name-size)/1.3 var(--font-heading); color: inherit; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; }
+[data-showcase-variant="participant"] .tp-meta { margin: 4px 0 0; font-size: var(--tp-body-size); line-height: 20px; color: var(--tp-white-90); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+[data-showcase-variant="participant"] .tp-chevron { position: absolute; right: 12px; top: 12px; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+[data-showcase-variant="participant"] .tp-counts { grid-column: 1 / -1; grid-row: 2; margin-top: 16px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 4px 12px; font-size: var(--tp-body-size); line-height: 1.2; }
+[data-showcase-variant="participant"] .tp-count { flex: none; }
+[data-showcase-variant="participant"] .tp-status { display: inline-flex; align-items: center; gap: 6px; font-weight: 700; color: var(--color-accent); text-align: right; }
+[data-showcase-variant="participant"] .tp-status.is-muted { color: var(--tp-white-90); }
+[data-showcase-variant="participant"] .tp-status-dot { width: 8px; height: 8px; flex: none; border-radius: var(--radius-pill); background: currentColor; }
+[data-showcase-variant="participant"] .tp-progress { grid-column: 1 / -1; grid-row: 3; margin-top: 8px; height: 6px; border-radius: var(--radius-pill); background: var(--tp-white-20); overflow: hidden; }
+[data-showcase-variant="participant"] .tp-progress-fill { display: block; width: calc(clamp(0,var(--tp-fill,0),1) * 100%); height: 100%; border-radius: var(--radius-pill); background: var(--color-text-white); }
+[data-showcase-variant="participant"] .tp-ticket.is-full .tp-progress-fill { background: var(--color-medium-gray); }
+[data-showcase-variant="participant"] .tp-tear { height: 16px; flex: none; background: linear-gradient(90deg,var(--tp-white-20) 6px,transparent 6px) 0 50%/10px .6px repeat-x; }
+[data-showcase-variant="participant"] .tp-foot { display: flex; align-items: center; gap: 10px; padding: 6px 20px 12px; }
+[data-showcase-variant="participant"] .tp-expand { flex: none; width: 56px; height: 56px; border-radius: var(--radius-pill); background: var(--color-text-black); border: .6px solid var(--tp-white-10); display: flex; align-items: center; justify-content: center; }
+[data-showcase-variant="participant"] .tp-cta { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 60px; padding: 10px 12px; border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-text-black); font: 700 var(--tp-cta-size)/1.15 var(--font-body); text-align: center; text-decoration: none; transition: translate var(--transition); }
+[data-showcase-variant="participant"] .tp-cta.is-secondary, [data-showcase-variant="participant"] .tp-ticket--create .tp-cta { background: var(--color-text-white); }
+[data-showcase-variant="participant"] .tp-cta[href]:hover { translate: 0 -1px; color: var(--color-text-black); }
+/* Inset focus stays inside the masked ticket instead of being clipped at its edge. */
+[data-showcase-variant="participant"] .tp-cta:focus-visible { outline: 3px solid var(--color-text-black); outline-offset: -6px; box-shadow: 0 0 0 3px var(--color-accent); }
+[data-showcase-variant="participant"] .tp-ticket--create .tp-head { background: var(--color-accent); color: var(--color-text-black); }
+[data-showcase-variant="participant"] .tp-ticket--create .tp-date { border: 2px dashed var(--tp-black-40); }
+[data-showcase-variant="participant"] .tp-ticket--create .tp-meta { color: var(--tp-black-75); }
+[data-showcase-variant="participant"] .tp-ticket--create .tp-status { color: var(--color-text-black); }
+[data-showcase-variant="participant"] .tp-ticket--create .tp-progress { background: var(--tp-black-15); }
+[data-showcase-variant="participant"] .tp-ticket--create .tp-expand { color: var(--color-accent); }
+[data-showcase-variant="participant"] .tp-ticket svg { display: block; flex: none; }
+@container (max-width: 300px) {
+[data-showcase-variant="participant"] .tp-head { padding-inline: 12px; column-gap: 12px; }
+[data-showcase-variant="participant"] .tp-name { font-size: var(--tp-cta-size); }
+[data-showcase-variant="participant"] .tp-counts { font-size: var(--tp-compact-size); gap: 4px 8px; }
+[data-showcase-variant="participant"] .tp-foot { padding-inline: 12px; gap: 8px; }
+[data-showcase-variant="participant"] .tp-expand { width: 44px; height: 44px; }
+[data-showcase-variant="participant"] .tp-cta { font-size: var(--tp-ticker-meta-size); gap: 6px; }
+}
+
+
+/* ---------- Ajustements demandés sur les billets ---------- */
+/* Le bouton rond à chevron disparaît : « Voir le tournoi » occupe toute la largeur. */
+[data-showcase-variant="participant"] .tp-ticket:not(.tp-ticket--create) .tp-expand { display: none; }
+[data-showcase-variant="participant"] .tp-ticket .tp-cta { cursor: pointer; }
+/* Tournoi joué : même billet, tête blanche au lieu du dégradé. */
+[data-showcase-variant="participant"] .tp-ticket.is-past .tp-head { background: var(--color-text-white); color: var(--color-text-primary); box-shadow: inset 0 0 0 1px var(--color-divider); }
+[data-showcase-variant="participant"] .tp-ticket.is-past .tp-date { border-color: var(--line-soft); }
+[data-showcase-variant="participant"] .tp-ticket.is-past .tp-month,
+[data-showcase-variant="participant"] .tp-ticket.is-past .tp-meta { color: var(--color-medium-gray); }
+[data-showcase-variant="participant"] .tp-ticket.is-past .tp-status { color: var(--color-text-primary); }
+[data-showcase-variant="participant"] .tp-ticket.is-past .tp-progress { background: var(--color-light-gray); }
+[data-showcase-variant="participant"] .tp-ticket.is-past .tp-progress-fill { background: var(--color-text-primary); }
+
+/* ================= Page tournoi ================= */
+.tpage { max-width: 1160px; margin: 0 auto; padding-block: 28px 24px; display: flex; flex-direction: column; gap: 32px; }
+.back { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px 0 12px; border-radius: var(--radius-pill); background: var(--color-light-gray); color: var(--color-text-primary); font: 600 .9375rem/1 var(--font-body); text-decoration: none; border: 0; cursor: pointer; }
+.hero { border-radius: 32px; padding: clamp(24px, 4vw, 48px); background: var(--tp-ticket-contrast-shade), var(--tp-ticket-head); color: var(--color-text-white); display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 20px 32px; align-items: center; position: relative; overflow: hidden; }
+.hero.is-past { background: var(--color-light-gray); color: var(--color-text-primary); }
+.hero.is-full { background: var(--tp-ticket-contrast-shade), var(--tp-ticket-head); }
+.hero-date { width: 116px; height: 116px; border-radius: 26px; border: 2px solid var(--tp-white-30); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
+.hero.is-past .hero-date { border-color: var(--line-soft); }
+.hero-date b { font: 700 3rem/1 var(--font-heading); }
+.hero-date span { margin-top: 4px; font-size: 1rem; letter-spacing: .06em; opacity: .9; }
+.hero-text { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
+.hero-badge { padding: 6px 12px; border-radius: var(--radius-pill); font: 700 var(--tp-small-size)/1 var(--font-body); background: var(--color-accent); color: var(--color-text-black); display: inline-flex; align-items: center; gap: 6px; }
+.hero-badge.is-muted { background: var(--tp-white-20); color: var(--color-text-white); }
+.hero.is-past .hero-badge { background: var(--color-text-black); color: var(--color-text-white); }
+.hero h1 { margin: 0; font: 700 clamp(2rem, 4.4vw, 3.5rem)/1.05 var(--font-heading); letter-spacing: -.02em; text-wrap: balance; overflow-wrap: anywhere; }
+.hero-meta { margin: 0; font-size: 1.0625rem; opacity: .9; }
+.hero-ghost { position: absolute; right: -10px; bottom: -18px; font-size: clamp(4rem, 12vw, 9rem); line-height: .8; color: transparent; -webkit-text-stroke: 1.5px var(--tp-white-20); pointer-events: none; }
+.hero.is-past .hero-ghost { -webkit-text-stroke-color: rgba(16,24,40,.1); }
+.hero-text { position: relative; z-index: 1; }
+
+.body { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 32px; align-items: start; }
+.infos { display: flex; flex-direction: column; gap: 28px; min-width: 0; }
+.infos h2 { margin: 0 0 4px; font: 700 1.375rem/1.2 var(--font-heading); }
+.facts { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 28px; }
+.fact { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 2px 14px; padding: 16px 0; border-bottom: 1px solid var(--color-divider); align-items: center; }
+.fact .ic { grid-row: span 2; width: 40px; height: 40px; border-radius: 12px; background: var(--color-light-gray); display: grid; place-items: center; }
+.fact dt { font-size: var(--tp-small-size); color: var(--color-medium-gray); }
+.fact dd { margin: 0; font-weight: 700; font-size: 1rem; overflow-wrap: anywhere; }
+.about { margin: 0; font-size: 1rem; line-height: 1.6; color: var(--tp-intro-ink); max-width: 62ch; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips span { padding: 8px 12px; border-radius: var(--radius-pill); background: var(--color-light-gray); font-size: var(--tp-small-size); font-weight: 600; }
+.org { display: flex; align-items: center; gap: 14px; padding: 16px; border-radius: 20px; background: var(--color-light-gray); }
+.org .av { width: 52px; height: 52px; border-radius: 50%; background: var(--color-text-black); color: var(--color-accent); display: grid; place-items: center; font: 700 1.125rem/1 var(--font-heading); flex: none; }
+.org b { display: block; }
+.org small { color: var(--color-medium-gray); font-size: var(--tp-small-size); }
+
+.panel { position: sticky; top: 16px; border-radius: 28px; background: var(--color-text-black); color: var(--color-text-white); padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+.panel h2 { margin: 0; font: 700 1.25rem/1.2 var(--font-heading); }
+.price { display: flex; align-items: baseline; gap: 8px; }
+.price b { font: 400 2.75rem/1 var(--hero-font-display); transform: skewX(-11deg); display: inline-block; color: var(--color-accent); }
+.price span { color: var(--tp-white-70); font-size: var(--tp-small-size); }
+.fill-row { display: flex; justify-content: space-between; font-size: var(--tp-body-size); }
+.fill-row b { color: var(--color-accent); }
+.fill { height: 8px; border-radius: 8px; background: var(--tp-white-20); overflow: hidden; }
+.fill i { display: block; height: 100%; border-radius: 8px; background: var(--color-text-white); }
+.cta { display: flex; align-items: center; justify-content: center; min-height: 60px; border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-text-black); font: 700 1.125rem/1 var(--font-body); text-decoration: none; text-align: center; padding: 0 16px; }
+.cta.is-secondary { background: var(--color-text-white); }
+.panel small { color: var(--tp-white-70); font-size: var(--tp-compact-size); line-height: 1.5; }
+.podium { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.podium li { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: var(--tp-white-10); }
+.podium .r { font: 400 1.5rem/1 var(--hero-font-display); transform: skewX(-11deg); width: 28px; color: var(--color-accent); }
+.podium li:not(:first-child) .r { color: var(--color-text-white); }
+.example { font-size: .6875rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--color-medium-gray); }
+
+@media (max-width: 1023px) {
+  .head { grid-template-columns: minmax(0,1fr); }
+  .body { grid-template-columns: minmax(0, 1fr); }
+  .panel { position: static; }
+}
+@media (max-width: 767px) {
+  :root { --tp-intro-size: 1rem; --tp-content-pad: 0px; --card-w: min(300px, 80vw); }
+  .cal { padding-top: 32px; }
+  .rail { margin-inline: -16px; padding-inline: 16px; scroll-padding-inline: 16px; }
+  .mname { font-size: 3rem; }
+  .empty { width: 200px; }
+  .hero { grid-template-columns: minmax(0,1fr); }
+  .hero-date { width: 84px; height: 84px; border-radius: 20px; }
+  .hero-date b { font-size: 2.25rem; }
+  .facts { grid-template-columns: minmax(0,1fr); }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<div class="pv">
+  <span><strong>Mois géants · v2</strong> — sans cadre, tournois joués en billets blancs, une page par tournoi</span>
+  <div class="pv-seg" role="group" aria-label="Nombre de tournois à venir">
+    <button type="button" id="n1" data-count="1" aria-pressed="false">1 tournoi</button>
+    <button type="button" id="n3" data-count="3" aria-pressed="true">3 tournois</button>
+    <button type="button" id="n6" data-count="6" aria-pressed="false">6 tournois</button>
+  </div>
+</div>
+
+<main id="view"></main>
+<p class="note">Aujourd’hui = 22 octobre 2026. Seuls le Tournoi des Panthères et les tournois joués viennent du site actuel. Les autres tournois, heures, adresses, prix, organisateurs et descriptions sont des exemples.</p>
+
+<script>
+(function () {
+  var TODAY = new Date('2026-10-22T12:00:00');
+  var ALL = [
+    { id: 'mi-juillet', title: 'Le tournoi de mi-juillet', date: '2026-07-28', time: '10:00', city: 'Eaubonne', address: 'Gymnase Georges-Hébert, Eaubonne', ppt: 4, teams: 3, max: 8, open: false, price: 30, gender: 'Mixte', level: 'Loisir', org: 'Eaubonne Volley Club', podium: ['Les Bloqueurs', 'Smash Bros', 'Team Réception'] },
+    { id: 'ete', title: 'Tournoi de l’été', date: '2026-08-07', time: '14:00', city: 'Sannois', address: 'Parc municipal, Sannois', ppt: 4, teams: 7, max: 12, open: false, price: 25, gender: 'Mixte', level: 'Tous niveaux', org: 'Les Panthères de Sannois', podium: ['Sable Chaud', 'Les Panthères B', 'Ace Ventura'] },
+    { id: 'rentree', title: 'Tournoi de la rentrée', date: '2026-09-07', time: '09:30', city: 'Eaubonne', address: 'Gymnase Georges-Hébert, Eaubonne', ppt: 4, teams: 7, max: 12, open: false, price: 30, gender: 'Mixte', level: 'Loisir', org: 'Eaubonne Volley Club', podium: ['Les Bloqueurs', 'Contre-Attaque', 'Smash Bros'] },
+    { id: 'pantheres-2026', title: 'Tournoi Des Panthères 2026', date: '2026-10-24', time: '09:00', city: 'Sannois', address: 'Gymnase Jean-Moulin, Sannois', ppt: 4, teams: 18, max: 18, open: true, price: 40, gender: 'Mixte', level: 'Confirmé', org: 'Les Panthères de Sannois' },
+    { id: 'beach-night', title: 'Beach Night de la Toussaint', date: '2026-10-31', time: '19:00', city: 'Cergy', address: 'Base de loisirs, Cergy', ppt: 2, teams: 9, max: 16, open: true, price: 20, gender: 'Mixte', level: 'Tous niveaux', org: 'Cergy Beach Club' },
+    { id: 'coupe-copains', title: 'Coupe des Copains', date: '2026-11-07', time: '13:30', city: 'Ermont', address: 'Complexe sportif Gaston-Rébuffat, Ermont', ppt: 3, teams: 6, max: 12, open: true, price: 24, gender: 'Mixte', level: 'Loisir', org: 'Ermont Sports' },
+    { id: 'indoor-masters', title: 'Indoor Masters du Val-d’Oise', date: '2026-11-14', time: '09:00', city: 'Argenteuil', address: 'Palais des sports, Argenteuil', ppt: 6, teams: 10, max: 10, open: false, price: 60, gender: 'Masculin', level: 'Confirmé', org: 'VO Volley' },
+    { id: 'mixte-dimanche', title: 'Mixte du dimanche', date: '2026-11-22', time: '10:00', city: 'Montmorency', address: 'Gymnase des Champeaux, Montmorency', ppt: 4, teams: 3, max: 16, open: true, price: 32, gender: 'Mixte', level: 'Loisir', org: 'Montmo’ Volley' },
+    { id: 'noel', title: 'Tournoi de Noël', date: '2026-12-13', time: '10:00', city: 'Franconville', address: 'Gymnase Jean-Jaurès, Franconville', ppt: 4, teams: 11, max: 20, open: true, price: 36, gender: 'Mixte', level: 'Tous niveaux', org: 'Franconville VB' }
+  ];
+  var MONTHS = ['JANV','FÉVR','MARS','AVR','MAI','JUIN','JUIL','AOÛT','SEPT','OCT','NOV','DÉC'];
+  var MLONG = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+  var WDAYS = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+  function D(s) { return new Date(s + 'T12:00:00'); }
+  function isPast(t) { return D(t.date) < TODAY; }
+  function ICON(p, s, w) { return '<svg width="' + s + '" height="' + s + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + (w || 2.2) + '" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="' + p + '"/></svg>'; }
+  var TROPHY = 'M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3';
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function euros(n) { return n + ' €'; }
+
+  /* Balisage du billet = appTicket() de script.js ; seules différences : tête blanche (joué) et CTA unique. */
+  function ticket(t) {
+    var past = isPast(t), full = t.teams >= t.max, closed = !t.open, d = D(t.date);
+    var status = past ? '<span class="tp-status">' + ICON(TROPHY, 14) + 'Terminé</span>'
+      : (full || closed) ? '<span class="tp-status is-muted">' + (full ? 'Complet' : 'Inscriptions closes') + '</span>'
+      : '<span class="tp-status"><span class="tp-status-dot" aria-hidden="true"></span>' + (t.max - t.teams) + ' équipe' + (t.max - t.teams > 1 ? 's restantes' : ' restante') + '</span>';
+    var count = past ? t.teams + ' équipes' : t.teams + '/' + t.max + ' inscrits';
+    var cls = 'tp-ticket' + (past ? ' is-past' : '') + (!past && closed && !full ? ' is-closed' : '') + (!past && full ? ' is-full' : '');
+    var cta = 'tp-cta' + (past || full || closed ? ' is-secondary' : '');
+    return '<div class="tk"><article class="' + cls + '">' +
+      '<div class="tp-head">' +
+        '<time class="tp-date" datetime="' + t.date + '"><span class="tp-day">' + d.getDate() + '</span><span class="tp-month">' + MONTHS[d.getMonth()] + '</span></time>' +
+        '<div class="tp-info"><h3 class="tp-name">' + esc(t.title) + '</h3><p class="tp-meta">' + esc(t.city) + ' • ' + t.ppt + '×' + t.ppt + '</p></div>' +
+        '<span class="tp-chevron" aria-hidden="true">' + ICON('M9 6l6 6-6 6', 20) + '</span>' +
+        '<span class="tp-progress" aria-hidden="true"><span class="tp-progress-fill" style="--tp-fill:' + (past ? 1 : Math.min(1, t.teams / t.max)) + '"></span></span>' +
+        '<div class="tp-counts"><span class="tp-count">' + count + '</span>' + status + '</div>' +
+      '</div><div class="tp-tear" aria-hidden="true"></div>' +
+      '<div class="tp-foot"><span class="tp-expand" aria-hidden="true">' + ICON('M6 9l6 6 6-6', 24) + '</span>' +
+        '<a class="' + cta + '" href="#t-' + t.id + '">Voir le tournoi</a></div></article></div>';
+  }
+  var CREATE = '<div class="tk"><article class="tp-ticket tp-ticket--create"><div class="tp-head">' +
+    '<span class="tp-date" aria-hidden="true">' + ICON('M12 5v14M5 12h14', 30, 2.6) + '</span>' +
+    '<div class="tp-info"><h3 class="tp-name">Ton prochain tournoi</h3><p class="tp-meta">Organisé par toi</p></div>' +
+    '<span class="tp-chevron" aria-hidden="true">' + ICON('M9 6l6 6-6 6', 20, 2.6) + '</span>' +
+    '<div class="tp-counts"><span class="tp-count">0/16 inscrits</span><span class="tp-status"><span class="tp-status-dot" aria-hidden="true"></span>À toi de jouer</span></div>' +
+    '<span class="tp-progress" aria-hidden="true"></span></div><div class="tp-tear" aria-hidden="true"></div>' +
+    '<div class="tp-foot"><span class="tp-expand" aria-hidden="true">' + ICON('M12 5v14M5 12h14', 24, 2.6) + '</span>' +
+    '<a class="tp-cta is-secondary" href="#organisateur">Créer mon tournoi <span aria-hidden="true">→</span></a></div></article></div>';
+
+  var view = document.getElementById('view'), count = 3, savedScroll = null;
+  function list() { var past = ALL.filter(isPast), up = ALL.filter(function (t) { return !isPast(t); }); return past.concat(up.slice(0, count)); }
+
+  /* ---------- Calendrier ---------- */
+  function renderCal() {
+    var items = list(), up = items.filter(function (t) { return !isPast(t); });
+    var last = up.length ? D(up[up.length - 1].date) : TODAY;
+    var endM = Math.max(last.getMonth(), TODAY.getMonth() + 2), h = '';
+    for (var m = 6; m <= endM; m++) {
+      var ps = items.filter(function (t) { return isPast(t) && D(t.date).getMonth() === m; });
+      var us = items.filter(function (t) { return !isPast(t) && D(t.date).getMonth() === m; });
+      var isNow = m === TODAY.getMonth(), isUp = m > TODAY.getMonth(), n = ps.length + us.length;
+      if (!n && !isUp && !isNow) continue;
+      h += '<div class="month' + (isNow ? ' is-now' : isUp ? ' is-up' : '') + '"' + (isNow ? ' data-now' : '') + '>' +
+        '<div class="mhead"><span class="mname disp">' + MLONG[m] + '</span><span class="mcount">' + (isNow ? 'Ce mois-ci · ' : '') + (n ? n + ' tournoi' + (n > 1 ? 's' : '') : 'Rien encore') + '</span></div><div class="items">';
+      ps.forEach(function (t) { h += ticket(t); });
+      if (isNow) h += '<span class="today"><span>Aujourd’hui · ' + TODAY.getDate() + '</span></span>';
+      us.forEach(function (t) { h += ticket(t); });
+      if (isUp && !us.length) h += '<div class="empty"><p>Aucun tournoi en ' + MLONG[m].toLowerCase() + ' pour l’instant.</p><a href="#organisateur">Créer le premier →</a></div>';
+      if (m === endM) h += CREATE;
+      h += '</div></div>';
+    }
+    view.innerHTML = '<section class="cal" data-showcase-variant="participant" aria-labelledby="calTitle">' +
+      '<header class="head"><div><p class="eyebrow"><i></i>Les tournois sur Yamatch</p><h2 class="h2" id="calTitle">Ça smash <span class="pill">près de chez toi</span></h2></div>' +
+      '<p class="intro">Des tournois qui se remplissent, des équipes qui se chambrent et des smashs qui claquent. Choisis ton terrain, ramène ta team.</p></header>' +
+      '<div class="rail" tabindex="0" aria-label="Tournois par mois">' + h + '</div>' +
+      '<div class="progress" aria-hidden="true"><i></i></div></section>';
+    var rail = view.querySelector('.rail'), bar = view.querySelector('.progress i');
+    function sync() { var max = rail.scrollWidth - rail.clientWidth, f = rail.clientWidth / rail.scrollWidth; bar.style.width = (f * 100) + '%'; bar.style.left = (max > 0 ? rail.scrollLeft / max * (1 - f) * 100 : 0) + '%'; }
+    rail.addEventListener('scroll', function () { savedScroll = rail.scrollLeft; sync(); }, { passive: true });
+    var now = rail.querySelector('[data-now]');
+    rail.scrollLeft = savedScroll !== null ? savedScroll : (now ? Math.max(0, now.offsetLeft - rail.firstElementChild.offsetLeft) : 0);
+    sync();
+  }
+
+  /* ---------- Page tournoi ---------- */
+  function renderPage(t) {
+    var past = isPast(t), full = t.teams >= t.max, closed = !t.open, d = D(t.date);
+    var dateLong = WDAYS[d.getDay()] + ' ' + d.getDate() + ' ' + MLONG[d.getMonth()].toLowerCase() + ' ' + d.getFullYear();
+    var badge = past ? ICON(TROPHY, 14) + 'Terminé' : full ? 'Complet' : closed ? 'Inscriptions closes' : '<span class="tp-status-dot" style="width:8px;height:8px;border-radius:50%;background:currentColor"></span>Inscriptions ouvertes';
+    var fact = function (ic, k, v) { return '<div class="fact"><span class="ic">' + ICON(ic, 20) + '</span><dt>' + k + '</dt><dd>' + v + '</dd></div>'; };
+    var facts = fact('M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z', 'Date', dateLong.charAt(0).toUpperCase() + dateLong.slice(1)) +
+      fact('M12 7v5l3 2M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z', 'Coup d’envoi', t.time.replace(':', ' h ')) +
+      fact('M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12zM12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z', 'Lieu', esc(t.address)) +
+      fact('M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M10 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM21 20v-2a4 4 0 0 0-3-3.9M16 2.1a4 4 0 0 1 0 7.8', 'Format', t.ppt + '×' + t.ppt + ' · ' + t.gender) +
+      fact('M12 2l3 6.5 7 .9-5.2 4.8 1.4 7L12 17.8 5.8 21.2l1.4-7L2 9.4l7-.9z', 'Niveau', t.level) +
+      fact('M3 7h18v10H3zM7 12h.01M17 12h.01M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z', 'Prix par équipe', euros(t.price));
+    var panel;
+    if (past) {
+      panel = '<div class="panel"><h2>Tournoi terminé</h2><div class="price"><b>' + t.teams + '</b><span>équipes ont joué</span></div>' +
+        '<small>Le classement final se consulte dans l’app Yamatch.</small><a class="cta" href="#calendrier">Voir les prochains tournois</a></div>';
+    } else {
+      panel = '<div class="panel"><h2>' + (full || closed ? 'Ce tournoi affiche complet' : 'Réserve ta place') + '</h2>' +
+        '<div class="price"><b>' + euros(t.price) + '</b><span>par équipe</span></div>' +
+        '<div><div class="fill-row"><span>' + t.teams + '/' + t.max + ' équipes inscrites</span>' + (full || closed ? '' : '<b>' + (t.max - t.teams) + ' place' + (t.max - t.teams > 1 ? 's' : '') + '</b>') + '</div><div class="fill" style="margin-top:8px"><i style="width:' + Math.min(100, t.teams / t.max * 100) + '%"></i></div></div>' +
+        '<a class="cta' + (full || closed ? ' is-secondary' : '') + '" href="#">' + (full || closed ? 'Rejoindre la liste d’attente' : 'S’inscrire dans l’app') + '</a>' +
+        '<small>L’inscription et le paiement se font dans l’app Yamatch, disponible sur iPhone et Android.</small></div>';
+    }
+    var initials = t.org.split(/\s+/).filter(function (w) { return /^[A-ZÀ-Ý]/.test(w); }).slice(0, 2).map(function (w) { return w.charAt(0); }).join('');
+    view.innerHTML = '<article class="tpage" aria-labelledby="pageTitle">' +
+      '<a class="back" href="#calendrier">' + ICON('M15 6l-6 6 6 6', 20, 2.4) + 'Tous les tournois</a>' +
+      '<header class="hero' + (past ? ' is-past' : '') + '">' +
+        '<div class="hero-date"><b>' + d.getDate() + '</b><span>' + MONTHS[d.getMonth()] + '</span></div>' +
+        '<div class="hero-text"><span class="hero-badge' + (!past && (full || closed) ? ' is-muted' : '') + '">' + badge + '</span><h1 id="pageTitle">' + esc(t.title) + '</h1><p class="hero-meta">' + esc(t.city) + ' • ' + t.ppt + '×' + t.ppt + ' • ' + esc(t.gender) + '</p></div>' +
+        '<span class="hero-ghost disp" aria-hidden="true">' + MLONG[d.getMonth()] + '</span>' +
+      '</header>' +
+      '<div class="body"><div class="infos">' +
+        '<section><h2>Infos pratiques</h2><dl class="facts">' + facts + '</dl></section>' +
+        '<section><h2>Le tournoi</h2><p class="about">' + (past ? 'Merci aux ' + t.teams + ' équipes venues smasher à ' + esc(t.city) + '. ' : '') + 'Phases de poules le matin, phase finale l’après-midi, consolante pour que tout le monde joue jusqu’au bout. Buvette sur place, ballons fournis.</p></section>' +
+        '<div class="chips"><span>Vestiaires</span><span>Buvette</span><span>Parking</span><span>Arbitrage par les équipes</span></div>' +
+        '<div class="org"><span class="av">' + esc(initials || 'Y') + '</span><div><small>Organisé par</small><b>' + esc(t.org) + '</b></div></div>' +
+      '</div>' + panel + '</div></article>';
+    window.scrollTo(0, 0);
+    view.querySelector('.back').focus({ preventScroll: true });
+  }
+
+  function route() {
+    var h = (location.hash || '').slice(1);
+    if (h.indexOf('t-') === 0) {
+      var t = ALL.filter(function (x) { return x.id === h.slice(2); })[0];
+      if (t) { document.title = t.title + ' · Yamatch'; return renderPage(t); }
+    }
+    document.title = 'Calendrier des tournois Yamatch';
+    renderCal();
+  }
+  addEventListener('hashchange', route);
+  [].forEach.call(document.querySelectorAll('.pv-seg button'), function (b) {
+    b.addEventListener('click', function () {
+      [].forEach.call(document.querySelectorAll('.pv-seg button'), function (o) { o.setAttribute('aria-pressed', String(o === b)); });
+      count = +b.dataset.count; savedScroll = null;
+      if (location.hash.indexOf('#t-') === 0) location.hash = 'calendrier'; else renderCal();
+    });
+  });
+  route();
+})();
+</script>
+
+</body>
+</html>

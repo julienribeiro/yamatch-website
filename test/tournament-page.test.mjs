@@ -12,12 +12,20 @@ const flush = () => new Promise(resolve => setImmediate(resolve));
 function browser(fetch, search = '?id=' + id, pathname = '/tournament/') {
   const timers = new Map();
   const elements = {};
-  for (const name of ['tournamentTitle', 'tournamentBody', 'tournamentCancelledNote', 'tournamentPriceWrap', 'tournamentPrice', 'openInApp', 'retryTournament']) {
+  function element(tag = 'div') {
     const attrs = new Map(); const listeners = new Map();
-    elements[name] = { style: {}, hidden: true, textContent: '', setAttribute: (k,v) => attrs.set(k,v), getAttribute: k => attrs.get(k), removeAttribute: k => attrs.delete(k), addEventListener: (k,v) => listeners.set(k,v), click: () => listeners.get('click')?.({ preventDefault() {} }) };
+    let text = '';
+    return { tagName: tag, style: {}, hidden: true, className: '', children: [],
+      get textContent() { return text + this.children.map(child => child.textContent).join(''); },
+      set textContent(value) { text = String(value); this.children = []; },
+      get firstChild() { return this.children[0] || null; },
+      appendChild(child) { this.children.push(child); return child; },
+      insertBefore(child) { this.children.unshift(child); return child; },
+      setAttribute: (k,v) => attrs.set(k,v), getAttribute: k => attrs.get(k), removeAttribute: k => attrs.delete(k), addEventListener: (k,v) => listeners.set(k,v), click: () => listeners.get('click')?.({ preventDefault() {} }) };
   }
+  for (const match of html.matchAll(/id="([^"]+)"/g)) elements[match[1]] = element();
   const window = { location: { search, pathname }, setTimeout: (fn,ms) => { timers.set(ms,fn); return ms; }, clearTimeout: ms => timers.delete(ms), addEventListener() {}, removeEventListener() {} };
-  const document = { getElementById: name => elements[name], visibilityState: 'visible', addEventListener() {}, removeEventListener() {} };
+  const document = { getElementById: name => elements[name], createElement: element, createElementNS: (_, tag) => element(tag), visibilityState: 'visible', addEventListener() {}, removeEventListener() {} };
   vm.runInNewContext(script, { window, document, navigator: { userAgent: 'iPhone' }, URLSearchParams, AbortController, fetch });
   return { elements, timers, window };
 }
@@ -34,7 +42,7 @@ test('le tournoi PROD est rendu et ouvre app puis store ; téléchargement indé
   await flush();
   assert.match(requested.url, /^https:\/\/kxwmjjgtnrhcpgopevzb.supabase.co\/rest\/v1\/tournaments/);
   assert.equal(b.elements.tournamentTitle.textContent, 'Open Volley');
-  assert.equal(b.elements.tournamentBody.textContent, '4v4 · Mixte · Eaubonne');
+  assert.equal(b.elements.tournamentBody.textContent, 'Eaubonne • 4×4 • Mixte');
   assert.equal(b.elements.tournamentPrice.textContent, '40 €');
   assert.equal(b.timers.has(10000), false);
   b.elements.openInApp.click();
@@ -77,4 +85,100 @@ test('path direct, annulé et gratuit restent compatibles ; lien invalide ne fet
   assert.equal(b.elements.openInApp.getAttribute('aria-disabled'), 'true');
   const invalid = browser(() => { throw new Error('unexpected fetch'); }, '?id=%3Cbad%3E');
   assert.equal(invalid.elements.tournamentBody.textContent, 'Lien de tournoi invalide ou expiré.');
+});
+
+const publicDetails = { ...tournament, date: '2099-10-24', start_time: '09:00:00', address: 'Gymnase des sports', levels: ['national', 'loisir', 'unexpected', 'preNational'], is_free: false, max_teams: 16, description: '<script>alert(1)</script>\n\nSeconde ligne', terrain: 'Indoor', has_buvette: true, has_accessible_parking: true, has_prizes: true, organizer_name: 'Volley Club', registrations_closed: false, is_closed: false };
+test('détails publics: formats, niveaux ordonnés, équipements, texte brut et capacité sans compte inventé', async () => {
+  let requested;
+  const b = browser(url => { requested = new URL(url); return response([publicDetails]); }); await flush();
+  assert.equal(b.elements.tournamentStatus.textContent, 'Inscriptions ouvertes');
+  assert.equal(b.elements.tournamentCapacity.textContent, 'Jusqu’à 16 équipes');
+  assert.equal(b.elements.openInApp.textContent, 'S’inscrire dans l’app');
+  assert.match(b.elements.tournamentFacts.textContent, /9 h 00/);
+  assert.match(b.elements.tournamentFacts.textContent, /Loisir · Pré-National · National/);
+  assert.doesNotMatch(b.elements.tournamentFacts.textContent, /unexpected/);
+  assert.equal(b.elements.tournamentDescription.textContent, publicDetails.description);
+  assert.equal(b.elements.tournamentDescription.children.length, 0);
+  assert.equal(b.elements.tournamentEquipment.children.length, 4);
+  assert.equal(b.elements.tournamentOrganizerInitials.textContent, 'VC');
+  assert.equal(b.elements.tournamentHero.getAttribute('aria-busy'), 'false');
+  assert.doesNotMatch(requested.searchParams.get('select'), /organizer_(?:phone|email|instagram)|(?:^|,)(?:lat|lng)(?:,|$)|participant/);
+  assert.doesNotMatch(html, /class="(?:td-fill|td-podium)"/);
+});
+test('D3: aucune capacité ne prouve complet, fermeture inscriptions distincte de clôture tournoi', async () => {
+  for (const max_teams of [1, 16, 100]) {
+    const b = browser(() => response([{ ...publicDetails, max_teams }])); await flush();
+    assert.equal(b.elements.tournamentStatus.textContent, 'Inscriptions ouvertes');
+    assert.doesNotMatch(b.elements.tournamentPanelTitle.textContent, /complet/i);
+  }
+  const closed = browser(() => response([{ ...publicDetails, registrations_closed: true }])); await flush();
+  assert.equal(closed.elements.tournamentStatus.textContent, 'Inscriptions closes');
+  assert.equal(closed.elements.openInApp.className, 'td-cta is-secondary');
+  assert.equal(closed.elements.openInApp.textContent, 'Voir dans l’app');
+  const finished = browser(() => response([{ ...publicDetails, is_closed: true }])); await flush();
+  assert.equal(finished.elements.tournamentPanelTitle.textContent, 'Tournoi terminé');
+});
+test('joué par date ou statut: pas d’inscription, aucun décompte/podium; annulé prioritaire', async () => {
+  for (const changes of [{ status: 'finished' }, { date: '2020-01-01' }]) {
+    const b = browser(() => response([{ ...publicDetails, ...changes }])); await flush();
+    assert.equal(b.elements.tournamentStatus.textContent, 'Terminé');
+    assert.equal(b.elements.tournamentPanelTitle.textContent, 'Tournoi terminé');
+    assert.equal(b.elements.tournamentCapacity.hidden, true);
+    assert.equal(b.elements.tournamentPriceWrap.hidden, true);
+    assert.equal(b.elements.openInApp.hidden, true);
+    assert.equal(b.elements.openInApp.getAttribute('aria-disabled'), 'true');
+    assert.equal(b.elements.nextTournaments.hidden, false);
+    b.elements.openInApp.click(); assert.equal(b.window.location.href, undefined);
+  }
+  const cancelled = browser(() => response([{ ...publicDetails, status: 'cancelled', date: '2020-01-01' }])); await flush();
+  assert.equal(cancelled.elements.tournamentPanelTitle.textContent, 'Tournoi annulé');
+  assert.equal(cancelled.elements.tournamentStatus.hidden, true);
+  assert.equal(cancelled.elements.tournamentCancelledNote.hidden, false);
+});
+test('champs absents omis, gratuit explicite, date/heure invalides jamais affichées', async () => {
+  const empty = browser(() => response([{ title: 'Minimal', status: 'published', date: '2099-02-30', start_time: '25:70:00' }])); await flush();
+  assert.equal(empty.elements.tournamentDate.hidden, true);
+  assert.equal(empty.elements.tournamentFactsSection.hidden, true);
+  assert.equal(empty.elements.tournamentAboutSection.hidden, true);
+  assert.equal(empty.elements.tournamentOrganizer.hidden, true);
+  assert.equal(empty.elements.tournamentStatus.textContent, 'À venir');
+  const free = browser(() => response([{ ...publicDetails, is_free: true, price_per_team: 0 }])); await flush();
+  assert.equal(free.elements.tournamentPrice.textContent, 'Gratuit');
+  assert.equal(free.elements.tournamentPriceWrap.hidden, false);
+  const malformedPath = browser(() => { throw new Error('unexpected fetch'); }, '', '/tournament/%invalid');
+  assert.equal(malformedPath.elements.tournamentBody.textContent, 'Lien de tournoi invalide ou expiré.');
+});
+
+test('palette Panthères publique violette, terminal neutre et aucune couleur arbitraire injectée', async () => {
+  let url;
+  const colors = [0xFF000000, 0xFFA136B7];
+  const b = browser(request => { url = new URL(request); return response([{ ...publicDetails, gradient_colors: colors }]); }); await flush();
+  assert.equal(b.elements.tournamentHero.getAttribute('data-tournament-theme'), 'violet');
+  assert.ok(url.searchParams.get('select').split(',').includes('gradient_colors'));
+  for (const gradient_colors of [null, [], [0xFF000000], [0xFF000000, 0xFFA136B7, 0], ['0xFF000000', '0xFFA136B7'], [0x7F000000, 0xFFA136B7], [0xFF000000, 0xFFFFFFFF + 1], [0xFF000000, NaN], [0xFF000000, 0xFFA136B7 + .5], [0xFF000000, 0xFF123456], ['url(javascript:alert(1))', 'red']]) {
+    const invalid = browser(() => response([{ ...publicDetails, gradient_colors }])); await flush();
+    assert.equal(invalid.elements.tournamentHero.getAttribute('data-tournament-theme'), undefined);
+    assert.equal(invalid.elements.tournamentTitle.textContent, publicDetails.title);
+  }
+  for (const terminal of [{ status: 'finished' }, { status: 'cancelled' }, { date: '2020-01-01' }]) {
+    const b = browser(() => response([{ ...publicDetails, ...terminal, gradient_colors: colors }])); await flush();
+    assert.equal(b.elements.tournamentHero.getAttribute('data-tournament-theme'), undefined);
+    assert.match(b.elements.tournamentHero.className, /is-(?:past|cancelled)/);
+  }
+});
+
+test('les 18 paires de couleurs sont identiques entre accueil et page tournoi, et toutes reconnues', async () => {
+  const homeSource = await readFile(new URL('../website/script.js', import.meta.url), 'utf8');
+  function presets(source) {
+    const declaration = source.match(/var TOURNAMENT_THEMES = (\[[\s\S]*?\n\s*\]);/);
+    assert.ok(declaration, 'table des thèmes présente');
+    return JSON.parse(JSON.stringify(vm.runInNewContext(declaration[1])));
+  }
+  const pagePresets = presets(script);
+  assert.equal(pagePresets.length, 18);
+  assert.deepEqual(presets(homeSource), pagePresets);
+  for (const [slug, first, second] of pagePresets) {
+    const b = browser(() => response([{ ...publicDetails, gradient_colors: [first, second] }])); await flush();
+    assert.equal(b.elements.tournamentHero.getAttribute('data-tournament-theme'), slug);
+  }
 });

@@ -1,0 +1,380 @@
+[
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 0.5,
+    "ratio": 4.7300947359919014,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 5.989430196153434,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 5.895061340261616,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 5.535636382138839,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 0.45,
+    "ratio": 4.7958223434147405,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 5.440327735727845,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 4.807338590636422,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 0.5,
+    "ratio": 4.697383592095656,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 0.55,
+    "ratio": 4.813846390085556,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 0.5,
+    "ratio": 4.804775003648982,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 6.155754099387749,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 4.773414419518165,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 0.5,
+    "ratio": 4.933303882406155,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 0.4,
+    "ratio": 4.803651232892723,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 0.55,
+    "ratio": 4.818054139800936,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 5.703185730076542,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 6.353625029431863,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 0.45,
+    "ratio": 4.62098078473671,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 0.5,
+    "ratio": 9.232297545713733,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 9.925941712952193,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 10.026286196405131,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 9.752192782877755,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 0.45,
+    "ratio": 9.25150803684675,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 9.514323906381128,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 9.278230191243786,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 0.5,
+    "ratio": 9.189068639574119,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 0.55,
+    "ratio": 9.32683796018002,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 0.5,
+    "ratio": 9.282305847927349,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 10.088436585031575,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 9.400471203754565,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 0.5,
+    "ratio": 9.397462652951813,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 0.4,
+    "ratio": 9.248937980533627,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 0.55,
+    "ratio": 9.250571906292246,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 9.997932672694724,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 10.218233287263473,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 0.45,
+    "ratio": 9.160531637550568,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 0.5,
+    "ratio": 9.913075412085998,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 10.438599226953288,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 10.57545260597313,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 10.34322794184247,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 0.45,
+    "ratio": 9.925315285125256,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 10.089971825165513,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 9.950090121196874,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 0.5,
+    "ratio": 9.874044979569362,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 0.55,
+    "ratio": 9.996514813545202,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 0.5,
+    "ratio": 9.954493457992712,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 10.615603267037638,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 10.071794029020563,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 0.5,
+    "ratio": 10.054228161630041,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 0.4,
+    "ratio": 9.922107011530072,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 0.55,
+    "ratio": 9.92224192200888,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 10.562854556448357,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 10.72408406996073,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 0.45,
+    "ratio": 9.853893858037555,
+    "text": "Inscriptions closes"
+  }
+]

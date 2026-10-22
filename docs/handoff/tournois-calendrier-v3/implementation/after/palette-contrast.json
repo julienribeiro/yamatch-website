@@ -1,0 +1,758 @@
+[
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 1,
+    "ratio": 4.790324902002089,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 0.65,
+    "ratio": 8.23407526832977,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 1,
+    "ratio": 8.512189758691207,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 11.850695458991268,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 1,
+    "ratio": 8.53246568087901,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 11.859583535421978,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 1,
+    "ratio": 8.26329702658003,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 11.600114822441675,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 1,
+    "ratio": 4.2555216776336975,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 0.65,
+    "ratio": 7.5687666432062715,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 1,
+    "ratio": 8.06159967158805,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 11.426324631473467,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 1,
+    "ratio": 6.980462962019653,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 10.500528470209213,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 1,
+    "ratio": 4.810484692629351,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 0.65,
+    "ratio": 8.2475761529366,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 1,
+    "ratio": 5.4671451295926845,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 0.65,
+    "ratio": 9.025514954931356,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 1,
+    "ratio": 4.909307381606933,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 0.65,
+    "ratio": 8.373679230371698,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 1,
+    "ratio": 9.432878878345468,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 12.48092189191398,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 1,
+    "ratio": 6.369418265663803,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 10.00143835680628,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 1,
+    "ratio": 5.00828320251849,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 0.65,
+    "ratio": 8.502506004252034,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 1,
+    "ratio": 3.56238348585683,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 0.65,
+    "ratio": 6.6444193693207785,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 1,
+    "ratio": 5.803210218760593,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 0.65,
+    "ratio": 9.33429010178479,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 1,
+    "ratio": 7.82315275565541,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 11.33341558971834,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 1,
+    "ratio": 9.636768686542649,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 12.641432320269553,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 1,
+    "ratio": 3.910356906966856,
+    "text": "Complet"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 0.65,
+    "ratio": 7.134965155356111,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 1,
+    "ratio": 5.242201925582052,
+    "text": "2 équipes restantes"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 0.65,
+    "ratio": 8.763447254821726,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 1,
+    "ratio": 9.028327163386825,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 12.239572511506898,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 1,
+    "ratio": 9.067864259641384,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 12.262541007339538,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 1,
+    "ratio": 8.793693404697876,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 12.01169055487274,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 1,
+    "ratio": 4.634109188750306,
+    "text": "2 équipes restantes"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 0.65,
+    "ratio": 8.09902944238994,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 1,
+    "ratio": 8.56943869362865,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 11.828860346815187,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 1,
+    "ratio": 7.509063347006715,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 10.968078244557729,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 1,
+    "ratio": 5.252950775278562,
+    "text": "2 équipes restantes"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 0.65,
+    "ratio": 8.775190618081503,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 1,
+    "ratio": 5.962613605761025,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 0.65,
+    "ratio": 9.546469801663095,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 1,
+    "ratio": 5.374205394542745,
+    "text": "2 équipes restantes"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 0.65,
+    "ratio": 8.901607184077756,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 1,
+    "ratio": 9.940677821286666,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 12.83473327053317,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 1,
+    "ratio": 6.898961771277402,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 10.501213609294417,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 1,
+    "ratio": 5.482954959804239,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 0.65,
+    "ratio": 9.031095387769637,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 1,
+    "ratio": 3.8567643204673434,
+    "text": "2 équipes restantes"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 0.65,
+    "ratio": 7.1657093368287885,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 1,
+    "ratio": 6.303874137065909,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 0.65,
+    "ratio": 9.840114487190773,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 1,
+    "ratio": 8.371338118160928,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 11.774588037682971,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 1,
+    "ratio": 10.141545389906577,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 12.986163567114986,
+    "text": "Complet"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 1,
+    "ratio": 4.263950799216632,
+    "text": "2 équipes restantes"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 0.65,
+    "ratio": 7.665256540238895,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 1,
+    "ratio": 6.478038056431327,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 0.65,
+    "ratio": 10.030494260442213,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 1,
+    "ratio": 10.25075065317927,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 13.08905397498174,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 1,
+    "ratio": 10.338678588207632,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 13.142479543485171,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 1,
+    "ratio": 10.06215728820325,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 12.917213277449946,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 1,
+    "ratio": 5.850297727672538,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 0.65,
+    "ratio": 9.391788904746209,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 1,
+    "ratio": 9.787042789971913,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 12.718703034614496,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 1,
+    "ratio": 8.819643457903735,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 12.023687305066586,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 1,
+    "ratio": 6.496167841166826,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 0.65,
+    "ratio": 10.037591419378826,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 1,
+    "ratio": 7.24871186290531,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 0.65,
+    "ratio": 10.766947505765845,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 1,
+    "ratio": 6.613735268987395,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 0.65,
+    "ratio": 10.160406691758059,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 1,
+    "ratio": 11.117960211215301,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 13.598387594429727,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 1,
+    "ratio": 8.2368022460541,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 11.642145675478572,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 1,
+    "ratio": 6.732757281051045,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 0.65,
+    "ratio": 10.28703710855911,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 1,
+    "ratio": 4.9687320562312065,
+    "text": "2 équipes restantes"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 0.65,
+    "ratio": 8.470706432273797,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 1,
+    "ratio": 7.5890842409164305,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 0.65,
+    "ratio": 11.016208770523004,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 1,
+    "ratio": 9.69853263981315,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 12.748606918152197,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 1,
+    "ratio": 11.305438743778646,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 13.72718657019297,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 1,
+    "ratio": 5.4432182735893315,
+    "text": "Complet"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 0.65,
+    "ratio": 8.974197352173007,
+    "text": "Complet"
+  }
+]

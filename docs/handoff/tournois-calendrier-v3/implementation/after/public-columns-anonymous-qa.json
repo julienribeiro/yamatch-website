@@ -1,0 +1,79 @@
+{
+  "checkedAt": "2026-10-22T19:01:53.838Z",
+  "mode": "anonymous publishable key from public page, no session or privileged key",
+  "table": "tournaments",
+  "publishedTournamentId": "cf5faa8c-117a-4b9a-a3f9-522045d7e578",
+  "storedValues": false,
+  "results": [
+    {
+      "column": "date",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "start_time",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "address",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "levels",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "is_free",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "max_teams",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "description",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "terrain",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "has_buvette",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "has_accessible_parking",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "has_prizes",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "organizer_name",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "registrations_closed",
+      "httpStatus": 200,
+      "rowCount": 1
+    },
+    {
+      "column": "is_closed",
+      "httpStatus": 200,
+      "rowCount": 1
+    }
+  ]
+}
