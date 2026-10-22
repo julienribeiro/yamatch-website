@@ -10,6 +10,7 @@ sur la branche `claude/intelligent-gates-tdhv16` ; **rien n'est publié sur
 | `comment-ca-marche-v2/` | « Comment ça marche » (`#how-it-works`) | Implémenté sur la branche, voir `implementation/` |
 | `tournois-plateforme-v2/` | Tournois publics (`#derniers-tournois`), version terrain gris clair | Validé, **à implémenter** |
 | `stories-v2/` | Preuve sociale « Vu dans les stories » (`#temoignages`), entre « Comment ça marche » et les tournois | Validé, **à implémenter** (contenus réels requis) |
+| `cri-equipe-v1/` | Scènes de tournoi « Ça crie sur le terrain » (`#moments`), juste après « Comment ça marche » | Validé le 22/10/2026, **à implémenter** (photos provisoires) |
 | `app-screens/` | Écrans de l'app codés en HTML/CSS (kit partagé) | 4 écrans prêts |
 
 **Prochaines étapes** : `PROMPT.md` (section tournois publics), puis
