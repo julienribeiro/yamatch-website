@@ -179,6 +179,7 @@
     --shouts-glass-border: rgba(255,255,255,.16);
     --shouts-scrim: linear-gradient(180deg, rgba(5,9,5,.1) 30%, rgba(5,9,5,.9) 100%);
     --shouts-card-radius: 28px;
+    --shouts-card-aspect: 9 / 15.7;
     --shouts-stagger: 36px;
     --shouts-quote-size: clamp(30px, 2.9vw, 42px);
     --shouts-quote-shadow: 0 6px 24px rgba(0,0,0,.35);
@@ -3162,7 +3163,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
 .shouts-title.section-title { margin-top: 16px; color: var(--color-text-white); }
 .shouts-lede { flex: 0 1 360px; max-width: 360px; margin: 0; color: var(--shouts-ink-muted); font-size: 1.0625rem; line-height: 1.5; }
 .shouts-rail { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; margin: 40px 0 0; padding: 0 0 var(--shouts-stagger); list-style: none; }
-.shout { position: relative; aspect-ratio: 9/14; min-width: 0; border-radius: var(--shouts-card-radius); overflow: hidden; isolation: isolate; container-type: inline-size; }
+.shout { position: relative; aspect-ratio: var(--shouts-card-aspect); min-width: 0; border-radius: var(--shouts-card-radius); overflow: hidden; isolation: isolate; container-type: inline-size; }
 .shout:nth-child(even) { translate: 0 var(--shouts-stagger); }
 /* Negative layers stay inside the isolated card, below its readable copy. */
 .shout-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
