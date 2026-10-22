@@ -1,0 +1,777 @@
+{
+  "phase": "before",
+  "results": [
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "boxes": {
+        "hero": {
+          "left": 24,
+          "right": 1416,
+          "width": 1392,
+          "height": 892,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "how": {
+          "left": 0,
+          "right": 1440,
+          "width": 1440,
+          "height": 1105.765625,
+          "paddingLeft": "24px",
+          "paddingRight": "24px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "howHeader": {
+          "left": 24,
+          "right": 1416,
+          "width": 1392,
+          "height": 249.765625,
+          "paddingLeft": "43.2px",
+          "paddingRight": "43.2px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "howCard": {
+          "left": 24,
+          "right": 474.65625,
+          "width": 450.65625,
+          "height": 640,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "shouts": {
+          "left": 0,
+          "right": 1440,
+          "width": 1440,
+          "height": 931.5,
+          "paddingLeft": "40px",
+          "paddingRight": "40px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "shoutsInner": {
+          "left": 120,
+          "right": 1320,
+          "width": 1200,
+          "height": 723.5,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "1200px"
+        },
+        "shoutsCard": {
+          "left": 120,
+          "right": 409.5,
+          "width": 289.5,
+          "height": 450.328125,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "showcase": {
+          "left": 0,
+          "right": 1440,
+          "width": 1440,
+          "height": 757.5625,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "showcaseHeader": {
+          "left": 0,
+          "right": 1440,
+          "width": 1440,
+          "height": 171.984375,
+          "paddingLeft": "88.7969px",
+          "paddingRight": "88.7969px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "rail": {
+          "left": 0,
+          "right": 1440,
+          "width": 1440,
+          "height": 381.78125,
+          "paddingLeft": "88.7969px",
+          "paddingRight": "88.7969px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "calendarInitial": {
+          "left": 88.5625,
+          "right": 1607.5625,
+          "width": 1519,
+          "height": 363.78125,
+          "paddingLeft": "0px",
+          "paddingRight": "28px",
+          "marginLeft": "0px",
+          "marginRight": "28px",
+          "maxWidth": "none"
+        },
+        "faq": {
+          "left": 0,
+          "right": 1440,
+          "width": 1440,
+          "height": 1463.484375,
+          "paddingLeft": "60px",
+          "paddingRight": "60px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "faqHeader": {
+          "left": 60,
+          "right": 1380,
+          "width": 1320,
+          "height": 1271.484375,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "faqList": {
+          "left": 60,
+          "right": 1380,
+          "width": 1320,
+          "height": 1117,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footer": {
+          "left": 0,
+          "right": 1440,
+          "width": 1440,
+          "height": 287.03125,
+          "paddingLeft": "60px",
+          "paddingRight": "60px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footerInner": {
+          "left": 60,
+          "right": 1380,
+          "width": 1320,
+          "height": 163.03125,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footerBrand": {
+          "left": 60,
+          "right": 1380,
+          "width": 1320,
+          "height": 44,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        }
+      }
+    },
+    {
+      "width": 820,
+      "scrollWidth": 820,
+      "boxes": {
+        "hero": {
+          "left": 24,
+          "right": 796,
+          "width": 772,
+          "height": 1021.90625,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "how": {
+          "left": 0,
+          "right": 820,
+          "width": 820,
+          "height": 2348.203125,
+          "paddingLeft": "24px",
+          "paddingRight": "24px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "howHeader": {
+          "left": 24,
+          "right": 796,
+          "width": 772,
+          "height": 172.203125,
+          "paddingLeft": "24.6px",
+          "paddingRight": "24.6px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "howCard": {
+          "left": 24,
+          "right": 796,
+          "width": 772,
+          "height": 640,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "shouts": {
+          "left": 0,
+          "right": 820,
+          "width": 820,
+          "height": 838.609375,
+          "paddingLeft": "40px",
+          "paddingRight": "40px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "shoutsInner": {
+          "left": 40,
+          "right": 780,
+          "width": 740,
+          "height": 715.625,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "1200px"
+        },
+        "shoutsCard": {
+          "left": 40,
+          "right": 336,
+          "width": 296,
+          "height": 460.4375,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "showcase": {
+          "left": 0,
+          "right": 820,
+          "width": 820,
+          "height": 753.671875,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "showcaseHeader": {
+          "left": 0,
+          "right": 820,
+          "width": 820,
+          "height": 198.09375,
+          "paddingLeft": "52.8906px",
+          "paddingRight": "52.8906px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "rail": {
+          "left": 0,
+          "right": 820,
+          "width": 820,
+          "height": 351.78125,
+          "paddingLeft": "52.8906px",
+          "paddingRight": "52.8906px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "calendarInitial": {
+          "left": 52.625,
+          "right": 1571.625,
+          "width": 1519,
+          "height": 333.78125,
+          "paddingLeft": "0px",
+          "paddingRight": "28px",
+          "marginLeft": "0px",
+          "marginRight": "28px",
+          "maxWidth": "none"
+        },
+        "faq": {
+          "left": 0,
+          "right": 820,
+          "width": 820,
+          "height": 1179.015625,
+          "paddingLeft": "36.9px",
+          "paddingRight": "36.9px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "faqHeader": {
+          "left": 36.890625,
+          "right": 783.109375,
+          "width": 746.21875,
+          "height": 1047.828125,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "faqList": {
+          "left": 36.890625,
+          "right": 783.109375,
+          "width": 746.21875,
+          "height": 937,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footer": {
+          "left": 0,
+          "right": 820,
+          "width": 820,
+          "height": 312.703125,
+          "paddingLeft": "36.9px",
+          "paddingRight": "36.9px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footerInner": {
+          "left": 36.890625,
+          "right": 783.109375,
+          "width": 746.21875,
+          "height": 202.703125,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footerBrand": {
+          "left": 36.890625,
+          "right": 783.109375,
+          "width": 746.21875,
+          "height": 44,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        }
+      }
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "boxes": {
+        "hero": {
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 864,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "how": {
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "height": 2047.015625,
+          "paddingLeft": "20px",
+          "paddingRight": "20px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "howHeader": {
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 211.015625,
+          "paddingLeft": "4px",
+          "paddingRight": "4px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "howCard": {
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 560,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "shouts": {
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "height": 801.296875,
+          "paddingLeft": "20px",
+          "paddingRight": "20px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "shoutsInner": {
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 681.296875,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "1200px"
+        },
+        "shoutsCard": {
+          "left": 20,
+          "right": 272,
+          "width": 252,
+          "height": 392,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "showcase": {
+          "left": 16,
+          "right": 374,
+          "width": 358,
+          "height": 762.390625,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "1392px"
+        },
+        "showcaseHeader": {
+          "left": 16,
+          "right": 374,
+          "width": 358,
+          "height": 223.609375,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "rail": {
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "height": 339.1875,
+          "paddingLeft": "16px",
+          "paddingRight": "16px",
+          "marginLeft": "-16px",
+          "marginRight": "-16px",
+          "maxWidth": "none"
+        },
+        "calendarInitial": {
+          "left": 15.890625,
+          "right": 1374.890625,
+          "width": 1359,
+          "height": 321.1875,
+          "paddingLeft": "0px",
+          "paddingRight": "28px",
+          "marginLeft": "0px",
+          "marginRight": "28px",
+          "maxWidth": "none"
+        },
+        "faq": {
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "height": 1188.859375,
+          "paddingLeft": "20px",
+          "paddingRight": "20px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "faqHeader": {
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 1148.859375,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "faqList": {
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "height": 1004.03125,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footer": {
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "height": 305.28125,
+          "paddingLeft": "9.75px",
+          "paddingRight": "9.75px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footerInner": {
+          "left": 9.75,
+          "right": 380.25,
+          "width": 370.5,
+          "height": 213.28125,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footerBrand": {
+          "left": 9.75,
+          "right": 380.25,
+          "width": 370.5,
+          "height": 44,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        }
+      }
+    },
+    {
+      "width": 1920,
+      "scrollWidth": 1920,
+      "boxes": {
+        "hero": {
+          "left": 24,
+          "right": 1896,
+          "width": 1872,
+          "height": 892,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "how": {
+          "left": 0,
+          "right": 1920,
+          "width": 1920,
+          "height": 1105.765625,
+          "paddingLeft": "24px",
+          "paddingRight": "24px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "howHeader": {
+          "left": 264,
+          "right": 1656,
+          "width": 1392,
+          "height": 249.765625,
+          "paddingLeft": "56px",
+          "paddingRight": "56px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "howCard": {
+          "left": 264,
+          "right": 714.65625,
+          "width": 450.65625,
+          "height": 640,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "shouts": {
+          "left": 0,
+          "right": 1920,
+          "width": 1920,
+          "height": 931.5,
+          "paddingLeft": "40px",
+          "paddingRight": "40px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "shoutsInner": {
+          "left": 360,
+          "right": 1560,
+          "width": 1200,
+          "height": 723.5,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "1200px"
+        },
+        "shoutsCard": {
+          "left": 360,
+          "right": 649.5,
+          "width": 289.5,
+          "height": 450.328125,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "showcase": {
+          "left": 0,
+          "right": 1920,
+          "width": 1920,
+          "height": 757.5625,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "showcaseHeader": {
+          "left": 0,
+          "right": 1920,
+          "width": 1920,
+          "height": 171.984375,
+          "paddingLeft": "336px",
+          "paddingRight": "336px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "rail": {
+          "left": 0,
+          "right": 1920,
+          "width": 1920,
+          "height": 381.78125,
+          "paddingLeft": "336px",
+          "paddingRight": "336px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "calendarInitial": {
+          "left": 335.765625,
+          "right": 1854.765625,
+          "width": 1519,
+          "height": 363.78125,
+          "paddingLeft": "0px",
+          "paddingRight": "28px",
+          "marginLeft": "0px",
+          "marginRight": "28px",
+          "maxWidth": "none"
+        },
+        "faq": {
+          "left": 0,
+          "right": 1920,
+          "width": 1920,
+          "height": 1463.484375,
+          "paddingLeft": "60px",
+          "paddingRight": "60px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "faqHeader": {
+          "left": 60,
+          "right": 1860,
+          "width": 1800,
+          "height": 1271.484375,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "faqList": {
+          "left": 60,
+          "right": 1860,
+          "width": 1800,
+          "height": 1117,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footer": {
+          "left": 0,
+          "right": 1920,
+          "width": 1920,
+          "height": 287.03125,
+          "paddingLeft": "60px",
+          "paddingRight": "60px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footerInner": {
+          "left": 60,
+          "right": 1860,
+          "width": 1800,
+          "height": 163.03125,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        },
+        "footerBrand": {
+          "left": 60,
+          "right": 1860,
+          "width": 1800,
+          "height": 44,
+          "paddingLeft": "0px",
+          "paddingRight": "0px",
+          "marginLeft": "0px",
+          "marginRight": "0px",
+          "maxWidth": "none"
+        }
+      }
+    }
+  ]
+}

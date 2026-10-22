@@ -1,0 +1,50 @@
+[
+  {
+    "width": 1440,
+    "nodeCounts": [
+      1255,
+      1255
+    ],
+    "computedStyleDifferences": [],
+    "baselineVsAfter": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0
+    },
+    "afterRepeatNoise": {
+      "changedPixels": 17,
+      "maxChannelDelta": 1
+    }
+  },
+  {
+    "width": 820,
+    "nodeCounts": [
+      1255,
+      1255
+    ],
+    "computedStyleDifferences": [],
+    "baselineVsAfter": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0
+    },
+    "afterRepeatNoise": {
+      "changedPixels": 168,
+      "maxChannelDelta": 19
+    }
+  },
+  {
+    "width": 390,
+    "nodeCounts": [
+      1255,
+      1255
+    ],
+    "computedStyleDifferences": [],
+    "baselineVsAfter": {
+      "changedPixels": 0,
+      "maxChannelDelta": 0
+    },
+    "afterRepeatNoise": {
+      "changedPixels": 487,
+      "maxChannelDelta": 2
+    }
+  }
+]

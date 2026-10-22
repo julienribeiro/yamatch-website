@@ -355,6 +355,7 @@
     --hero-header-fallback: rgba(255,255,255,.96);
     --hero-header-motion: 300ms cubic-bezier(.2,.8,.2,1);
     --hero-gutter: 24px;
+    --home-section-gutter: var(--hero-gutter);
     --hero-header-height: 76px;
     --hero-header-radius: 0px;
     --hero-header-space: 84px;
@@ -3236,6 +3237,20 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
     .stories .stories-court--desktop { display: none; }
     .stories .stories-court--mobile { display: block; }
 }
+
+/* Homepage outer edges follow the photo hero. Prose limits stay local, and
+   scrollports still reach the viewport edges. Other routes retain their grid. */
+body:not(.org-page):not(.error-page):has(.hero-header) :is(.how-quest, .shouts, .faq, .footer) { padding-inline: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) :is(.how-quest-inner, .shouts-inner) { max-width: none; }
+body:not(.org-page):not(.error-page):has(.hero-header) .how-quest-header { padding-inline: 0; }
+body:not(.org-page):not(.error-page):has(.hero-header) .shouts { --shouts-gutter: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) .stories { margin-inline: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) .stories .stories-band { max-width: none; }
+body:not(.org-page):not(.error-page):has(.hero-header) .showcase[data-showcase-variant="participant"] { width: 100%; max-width: none; }
+body:not(.org-page):not(.error-page):has(.hero-header) .tp-header { padding-inline: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) .tp-calendar { margin-inline: 0; padding-inline: var(--home-section-gutter); scroll-padding-inline: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) :is(.tp-scroll-progress, .showcase-demo-note) { margin-inline: var(--home-section-gutter); }
+body:not(.org-page):not(.error-page):has(.hero-header) .showcase-demo-note { max-width: calc(100% - 2 * var(--home-section-gutter)); }
 
 /* ==========================================================================
    11. FAQ ACCORDION
