@@ -1,0 +1,1034 @@
+[
+  {
+    "width": 320,
+    "scrollWidth": 320,
+    "rail": {
+      "clientWidth": 320,
+      "scrollWidth": 882,
+      "snap": "x mandatory"
+    },
+    "cards": [
+      {
+        "card": {
+          "width": 201.59375,
+          "height": 313.578125,
+          "top": 476.15625
+        },
+        "quote": {
+          "left": 18,
+          "right": 199.66961669921875,
+          "width": 181.66961669921875,
+          "scrollWidth": 170,
+          "clientWidth": 170,
+          "text": "On est inscrits !"
+        },
+        "context": {
+          "left": 18,
+          "right": 175.5625,
+          "width": 157.5625,
+          "text": "Inscription validée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 201.59375,
+          "height": 313.578125,
+          "top": 476.15625
+        },
+        "quote": {
+          "left": 18,
+          "right": 199.66961669921875,
+          "width": 181.66961669921875,
+          "scrollWidth": 170,
+          "clientWidth": 170,
+          "text": "Balle de match !"
+        },
+        "context": {
+          "left": 18,
+          "right": 140.453125,
+          "width": 122.453125,
+          "text": "Set 3 · 14–13"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 201.59375,
+          "height": 313.578125,
+          "top": 476.15625
+        },
+        "quote": {
+          "left": 18,
+          "right": 198.7197265625,
+          "width": 180.7197265625,
+          "scrollWidth": 170,
+          "clientWidth": 170,
+          "text": "On est en finale !"
+        },
+        "context": {
+          "left": 18,
+          "right": 183.09375,
+          "width": 165.09375,
+          "text": "Demi-finale gagnée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 201.59375,
+          "height": 313.578125,
+          "top": 476.15625
+        },
+        "quote": {
+          "left": 18,
+          "right": 197.74334716796875,
+          "width": 179.74334716796875,
+          "scrollWidth": 170,
+          "clientWidth": 170,
+          "text": "Trop belle, celle-là !"
+        },
+        "context": {
+          "left": 18,
+          "right": 163.53125,
+          "width": 145.53125,
+          "text": "Story publiée ↗"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      }
+    ],
+    "h2": 1,
+    "cta": {
+      "href": "download/",
+      "height": 53.59375
+    },
+    "storiesHidden": true,
+    "focus": {
+      "focused": true,
+      "outline": "rgb(215, 255, 0) solid 3px"
+    },
+    "keyboard": {
+      "before": 0,
+      "after": 214
+    },
+    "reducedHover": {
+      "transform": "none",
+      "transition": "1e-05s"
+    }
+  },
+  {
+    "width": 360,
+    "scrollWidth": 360,
+    "rail": {
+      "clientWidth": 360,
+      "scrollWidth": 998,
+      "snap": "x mandatory"
+    },
+    "cards": [
+      {
+        "card": {
+          "width": 230.390625,
+          "height": 358.375,
+          "top": 454.15625
+        },
+        "quote": {
+          "left": 18,
+          "right": 230.5189971923828,
+          "width": 212.5189971923828,
+          "scrollWidth": 198,
+          "clientWidth": 198,
+          "text": "On est inscrits !"
+        },
+        "context": {
+          "left": 18,
+          "right": 175.5625,
+          "width": 157.5625,
+          "text": "Inscription validée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 230.390625,
+          "height": 358.375,
+          "top": 454.15625
+        },
+        "quote": {
+          "left": 18,
+          "right": 230.51898193359375,
+          "width": 212.51898193359375,
+          "scrollWidth": 198,
+          "clientWidth": 198,
+          "text": "Balle de match !"
+        },
+        "context": {
+          "left": 18,
+          "right": 140.453125,
+          "width": 122.453125,
+          "text": "Set 3 · 14–13"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 230.390625,
+          "height": 358.375,
+          "top": 454.15625
+        },
+        "quote": {
+          "left": 18,
+          "right": 229.40972900390625,
+          "width": 211.40972900390625,
+          "scrollWidth": 198,
+          "clientWidth": 198,
+          "text": "On est en finale !"
+        },
+        "context": {
+          "left": 18,
+          "right": 183.09375,
+          "width": 165.09375,
+          "text": "Demi-finale gagnée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 230.390625,
+          "height": 358.375,
+          "top": 454.15625
+        },
+        "quote": {
+          "left": 18,
+          "right": 228.2672119140625,
+          "width": 210.2672119140625,
+          "scrollWidth": 198,
+          "clientWidth": 198,
+          "text": "Trop belle, celle-là !"
+        },
+        "context": {
+          "left": 18,
+          "right": 163.53125,
+          "width": 145.53125,
+          "text": "Story publiée ↗"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      }
+    ],
+    "h2": 1,
+    "cta": {
+      "href": "download/",
+      "height": 53.59375
+    },
+    "storiesHidden": true,
+    "focus": {
+      "focused": true,
+      "outline": "rgb(215, 255, 0) solid 3px"
+    },
+    "keyboard": {
+      "before": 0,
+      "after": 242
+    },
+    "reducedHover": {
+      "transform": "none",
+      "transition": "1e-05s"
+    }
+  },
+  {
+    "width": 390,
+    "scrollWidth": 390,
+    "rail": {
+      "clientWidth": 390,
+      "scrollWidth": 1084,
+      "snap": "x mandatory"
+    },
+    "cards": [
+      {
+        "card": {
+          "width": 252,
+          "height": 392,
+          "top": 418.71875
+        },
+        "quote": {
+          "left": 18,
+          "right": 253.676025390625,
+          "width": 235.676025390625,
+          "scrollWidth": 220,
+          "clientWidth": 220,
+          "text": "On est inscrits !"
+        },
+        "context": {
+          "left": 18,
+          "right": 175.5625,
+          "width": 157.5625,
+          "text": "Inscription validée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 252,
+          "height": 392,
+          "top": 418.71875
+        },
+        "quote": {
+          "left": 18,
+          "right": 253.676025390625,
+          "width": 235.676025390625,
+          "scrollWidth": 220,
+          "clientWidth": 220,
+          "text": "Balle de match !"
+        },
+        "context": {
+          "left": 18,
+          "right": 140.453125,
+          "width": 122.453125,
+          "text": "Set 3 · 14–13"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 252,
+          "height": 392,
+          "top": 418.71875
+        },
+        "quote": {
+          "left": 18,
+          "right": 252.43389892578125,
+          "width": 234.43389892578125,
+          "scrollWidth": 220,
+          "clientWidth": 220,
+          "text": "On est en finale !"
+        },
+        "context": {
+          "left": 18,
+          "right": 183.09375,
+          "width": 165.09375,
+          "text": "Demi-finale gagnée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 252,
+          "height": 392,
+          "top": 418.71875
+        },
+        "quote": {
+          "left": 18,
+          "right": 251.165283203125,
+          "width": 233.165283203125,
+          "scrollWidth": 220,
+          "clientWidth": 220,
+          "text": "Trop belle, celle-là !"
+        },
+        "context": {
+          "left": 18,
+          "right": 163.53125,
+          "width": 145.53125,
+          "text": "Story publiée ↗"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      }
+    ],
+    "h2": 1,
+    "cta": {
+      "href": "download/",
+      "height": 53.59375
+    },
+    "storiesHidden": true,
+    "focus": {
+      "focused": true,
+      "outline": "rgb(215, 255, 0) solid 3px"
+    },
+    "keyboard": {
+      "before": 0,
+      "after": 264
+    },
+    "reducedHover": {
+      "transform": "none",
+      "transition": "1e-05s"
+    }
+  },
+  {
+    "width": 768,
+    "scrollWidth": 768,
+    "rail": {
+      "clientWidth": 768,
+      "scrollWidth": 1219,
+      "snap": "x mandatory"
+    },
+    "cards": [
+      {
+        "card": {
+          "width": 276.484375,
+          "height": 430.078125,
+          "top": 367.109375
+        },
+        "quote": {
+          "left": 18,
+          "right": 277.44305419921875,
+          "width": 259.44305419921875,
+          "scrollWidth": 244,
+          "clientWidth": 244,
+          "text": "On est inscrits !"
+        },
+        "context": {
+          "left": 18,
+          "right": 175.5625,
+          "width": 157.5625,
+          "text": "Inscription validée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 276.484375,
+          "height": 430.078125,
+          "top": 367.109375
+        },
+        "quote": {
+          "left": 18,
+          "right": 277.44305419921875,
+          "width": 259.44305419921875,
+          "scrollWidth": 244,
+          "clientWidth": 244,
+          "text": "Balle de match !"
+        },
+        "context": {
+          "left": 18,
+          "right": 140.453125,
+          "width": 122.453125,
+          "text": "Set 3 · 14–13"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 276.484375,
+          "height": 430.078125,
+          "top": 367.109375
+        },
+        "quote": {
+          "left": 18,
+          "right": 277.44305419921875,
+          "width": 259.44305419921875,
+          "scrollWidth": 244,
+          "clientWidth": 244,
+          "text": "On est en finale !"
+        },
+        "context": {
+          "left": 18,
+          "right": 183.09375,
+          "width": 165.09375,
+          "text": "Demi-finale gagnée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 276.484375,
+          "height": 430.078125,
+          "top": 367.109375
+        },
+        "quote": {
+          "left": 18,
+          "right": 277.1175537109375,
+          "width": 259.1175537109375,
+          "scrollWidth": 244,
+          "clientWidth": 244,
+          "text": "Trop belle, celle-là !"
+        },
+        "context": {
+          "left": 18,
+          "right": 163.53125,
+          "width": 145.53125,
+          "text": "Story publiée ↗"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      }
+    ],
+    "h2": 1,
+    "cta": {
+      "href": "download/",
+      "height": 53.59375
+    },
+    "storiesHidden": true,
+    "focus": {
+      "focused": true,
+      "outline": "rgb(215, 255, 0) solid 3px"
+    },
+    "keyboard": {
+      "before": 0,
+      "after": 288
+    },
+    "reducedHover": {
+      "transform": "none",
+      "transition": "1e-05s"
+    }
+  },
+  {
+    "width": 820,
+    "scrollWidth": 820,
+    "rail": {
+      "clientWidth": 820,
+      "scrollWidth": 1300,
+      "snap": "x mandatory"
+    },
+    "cards": [
+      {
+        "card": {
+          "width": 296,
+          "height": 460.4375,
+          "top": 354.296875
+        },
+        "quote": {
+          "left": 18,
+          "right": 296.95867919921875,
+          "width": 278.95867919921875,
+          "scrollWidth": 264,
+          "clientWidth": 264,
+          "text": "On est inscrits !"
+        },
+        "context": {
+          "left": 18,
+          "right": 175.5625,
+          "width": 157.5625,
+          "text": "Inscription validée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 296,
+          "height": 460.4375,
+          "top": 354.296875
+        },
+        "quote": {
+          "left": 18,
+          "right": 296.95867919921875,
+          "width": 278.95867919921875,
+          "scrollWidth": 264,
+          "clientWidth": 264,
+          "text": "Balle de match !"
+        },
+        "context": {
+          "left": 18,
+          "right": 140.453125,
+          "width": 122.453125,
+          "text": "Set 3 · 14–13"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 296,
+          "height": 460.4375,
+          "top": 354.296875
+        },
+        "quote": {
+          "left": 18,
+          "right": 296.95867919921875,
+          "width": 278.95867919921875,
+          "scrollWidth": 264,
+          "clientWidth": 264,
+          "text": "On est en finale !"
+        },
+        "context": {
+          "left": 18,
+          "right": 183.09375,
+          "width": 165.09375,
+          "text": "Demi-finale gagnée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 296,
+          "height": 460.4375,
+          "top": 354.296875
+        },
+        "quote": {
+          "left": 18,
+          "right": 296.958740234375,
+          "width": 278.958740234375,
+          "scrollWidth": 264,
+          "clientWidth": 264,
+          "text": "Trop belle, celle-là !"
+        },
+        "context": {
+          "left": 18,
+          "right": 163.53125,
+          "width": 145.53125,
+          "text": "Story publiée ↗"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      }
+    ],
+    "h2": 1,
+    "cta": {
+      "href": "download/",
+      "height": 53.59375
+    },
+    "storiesHidden": true,
+    "focus": {
+      "focused": true,
+      "outline": "rgb(215, 255, 0) solid 3px"
+    },
+    "keyboard": {
+      "before": 0,
+      "after": 308
+    },
+    "reducedHover": {
+      "transform": "none",
+      "transition": "1e-05s"
+    }
+  },
+  {
+    "width": 1024,
+    "scrollWidth": 1024,
+    "rail": {
+      "clientWidth": 944,
+      "scrollWidth": 944,
+      "snap": "none"
+    },
+    "cards": [
+      {
+        "card": {
+          "width": 225.5,
+          "height": 350.765625,
+          "top": 385.265625
+        },
+        "quote": {
+          "left": 18,
+          "right": 222.718994140625,
+          "width": 204.718994140625,
+          "scrollWidth": 194,
+          "clientWidth": 194,
+          "text": "On est inscrits !"
+        },
+        "context": {
+          "left": 18,
+          "right": 175.5625,
+          "width": 157.5625,
+          "text": "Inscription validée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 225.5,
+          "height": 350.765625,
+          "top": 421.265625
+        },
+        "quote": {
+          "left": 18,
+          "right": 222.718994140625,
+          "width": 204.718994140625,
+          "scrollWidth": 194,
+          "clientWidth": 194,
+          "text": "Balle de match !"
+        },
+        "context": {
+          "left": 18,
+          "right": 140.453125,
+          "width": 122.453125,
+          "text": "Set 3 · 14–13"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 225.5,
+          "height": 350.765625,
+          "top": 385.265625
+        },
+        "quote": {
+          "left": 18,
+          "right": 222.718994140625,
+          "width": 204.718994140625,
+          "scrollWidth": 194,
+          "clientWidth": 194,
+          "text": "On est en finale !"
+        },
+        "context": {
+          "left": 18,
+          "right": 183.09375,
+          "width": 165.09375,
+          "text": "Demi-finale gagnée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 225.5,
+          "height": 350.765625,
+          "top": 421.265625
+        },
+        "quote": {
+          "left": 18,
+          "right": 222.718994140625,
+          "width": 204.718994140625,
+          "scrollWidth": 194,
+          "clientWidth": 194,
+          "text": "Trop belle, celle-là !"
+        },
+        "context": {
+          "left": 18,
+          "right": 163.53125,
+          "width": 145.53125,
+          "text": "Story publiée ↗"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      }
+    ],
+    "h2": 1,
+    "cta": {
+      "href": "download/",
+      "height": 53.59375
+    },
+    "storiesHidden": true,
+    "focus": {
+      "focused": true,
+      "outline": "rgb(215, 255, 0) solid 3px"
+    },
+    "keyboard": {
+      "before": 0,
+      "after": 0
+    },
+    "reducedHover": {
+      "transform": "none",
+      "transition": "1e-05s"
+    }
+  },
+  {
+    "width": 1440,
+    "scrollWidth": 1440,
+    "rail": {
+      "clientWidth": 1200,
+      "scrollWidth": 1200,
+      "snap": "none"
+    },
+    "cards": [
+      {
+        "card": {
+          "width": 289.5,
+          "height": 450.328125,
+          "top": 343.34375
+        },
+        "quote": {
+          "left": 18,
+          "right": 291.1228942871094,
+          "width": 273.1228942871094,
+          "scrollWidth": 258,
+          "clientWidth": 258,
+          "text": "On est inscrits !"
+        },
+        "context": {
+          "left": 18,
+          "right": 175.5625,
+          "width": 157.5625,
+          "text": "Inscription validée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 289.5,
+          "height": 450.328125,
+          "top": 379.34375
+        },
+        "quote": {
+          "left": 18,
+          "right": 291.1229248046875,
+          "width": 273.1229248046875,
+          "scrollWidth": 258,
+          "clientWidth": 258,
+          "text": "Balle de match !"
+        },
+        "context": {
+          "left": 18,
+          "right": 140.453125,
+          "width": 122.453125,
+          "text": "Set 3 · 14–13"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 289.5,
+          "height": 450.328125,
+          "top": 343.34375
+        },
+        "quote": {
+          "left": 18,
+          "right": 291.1229248046875,
+          "width": 273.1229248046875,
+          "scrollWidth": 258,
+          "clientWidth": 258,
+          "text": "On est en finale !"
+        },
+        "context": {
+          "left": 18,
+          "right": 183.09375,
+          "width": 165.09375,
+          "text": "Demi-finale gagnée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 289.5,
+          "height": 450.328125,
+          "top": 379.34375
+        },
+        "quote": {
+          "left": 18,
+          "right": 290.910400390625,
+          "width": 272.910400390625,
+          "scrollWidth": 258,
+          "clientWidth": 258,
+          "text": "Trop belle, celle-là !"
+        },
+        "context": {
+          "left": 18,
+          "right": 163.53125,
+          "width": 145.53125,
+          "text": "Story publiée ↗"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      }
+    ],
+    "h2": 1,
+    "cta": {
+      "href": "download/",
+      "height": 53.59375
+    },
+    "storiesHidden": true,
+    "focus": {
+      "focused": true,
+      "outline": "rgb(215, 255, 0) solid 3px"
+    },
+    "keyboard": {
+      "before": 0,
+      "after": 0
+    },
+    "reducedHover": {
+      "transform": "none",
+      "transition": "1e-05s"
+    }
+  },
+  {
+    "width": 1920,
+    "scrollWidth": 1920,
+    "rail": {
+      "clientWidth": 1200,
+      "scrollWidth": 1200,
+      "snap": "none"
+    },
+    "cards": [
+      {
+        "card": {
+          "width": 289.5,
+          "height": 450.328125,
+          "top": 343.34375
+        },
+        "quote": {
+          "left": 18,
+          "right": 291.209228515625,
+          "width": 273.209228515625,
+          "scrollWidth": 258,
+          "clientWidth": 258,
+          "text": "On est inscrits !"
+        },
+        "context": {
+          "left": 18,
+          "right": 175.5625,
+          "width": 157.5625,
+          "text": "Inscription validée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 289.5,
+          "height": 450.328125,
+          "top": 379.34375
+        },
+        "quote": {
+          "left": 18,
+          "right": 291.209228515625,
+          "width": 273.209228515625,
+          "scrollWidth": 258,
+          "clientWidth": 258,
+          "text": "Balle de match !"
+        },
+        "context": {
+          "left": 18,
+          "right": 140.453125,
+          "width": 122.453125,
+          "text": "Set 3 · 14–13"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 289.5,
+          "height": 450.328125,
+          "top": 343.34375
+        },
+        "quote": {
+          "left": 18,
+          "right": 291.209228515625,
+          "width": 273.209228515625,
+          "scrollWidth": 258,
+          "clientWidth": 258,
+          "text": "On est en finale !"
+        },
+        "context": {
+          "left": 18,
+          "right": 183.09375,
+          "width": 165.09375,
+          "text": "Demi-finale gagnée"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      },
+      {
+        "card": {
+          "width": 289.5,
+          "height": 450.328125,
+          "top": 379.34375
+        },
+        "quote": {
+          "left": 18,
+          "right": 290.910400390625,
+          "width": 272.910400390625,
+          "scrollWidth": 258,
+          "clientWidth": 258,
+          "text": "Trop belle, celle-là !"
+        },
+        "context": {
+          "left": 18,
+          "right": 163.53125,
+          "width": 145.53125,
+          "text": "Story publiée ↗"
+        },
+        "photo": {
+          "transition": "1e-05s",
+          "transform": "none"
+        }
+      }
+    ],
+    "h2": 1,
+    "cta": {
+      "href": "download/",
+      "height": 53.59375
+    },
+    "storiesHidden": true,
+    "focus": {
+      "focused": true,
+      "outline": "rgb(215, 255, 0) solid 3px"
+    },
+    "keyboard": {
+      "before": 0,
+      "after": 0
+    },
+    "reducedHover": {
+      "transform": "none",
+      "transition": "1e-05s"
+    }
+  }
+]

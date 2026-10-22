@@ -39,6 +39,8 @@
         since 2026-05-12)
    10.6 Organiser cards (native scroll-snap, scoped ym-orga- rules)
    10.7 Public tournament rail (participant / organiser tickets)
+   10.8 Shouts (illustrative tournament moments)
+   10.9 Stories (hidden until approved media)
    11. FAQ accordion
    12. Footer
    13. Toast
@@ -167,6 +169,24 @@
     --hero-photo-ink: var(--color-text-white);
     --hero-photo-shade: linear-gradient(180deg, rgba(5,9,5,.46), rgba(5,9,5,.2) 42%, rgba(5,9,5,.04) 70%, rgba(5,9,5,.2));
     --hero-photo-button-border: rgba(255,255,255,.32);
+
+    /* Illustrative tournament moments; isolated from the existing stories rail. */
+    --shouts-bg: var(--hero-photo-surface);
+    --shouts-ink-muted: rgba(255,255,255,.7);
+    --shouts-eyebrow-bg: rgba(255,255,255,.1);
+    /* Dark glass keeps small white labels readable even over a white photo. */
+    --shouts-glass-bg: rgba(5,9,5,.62);
+    --shouts-glass-border: rgba(255,255,255,.16);
+    --shouts-scrim: linear-gradient(180deg, rgba(5,9,5,.1) 30%, rgba(5,9,5,.9) 100%);
+    --shouts-card-radius: 28px;
+    --shouts-stagger: 36px;
+    --shouts-quote-size: clamp(30px, 2.9vw, 42px);
+    --shouts-quote-shadow: 0 6px 24px rgba(0,0,0,.35);
+    --shouts-gutter: clamp(20px,5vw,40px);
+    --shouts-quote-fit: 5.25;
+    --shouts-quote-fit-finale: 5.7;
+    --shouts-quote-fit-story: 6.25;
+    --shouts-photo-transition: 500ms cubic-bezier(.2,.8,.2,1);
 
     /* Participant V2 tokens: never alter shared hero defaults. */
     --hero-photo-shade-side: linear-gradient(90deg, rgba(5,9,5,.88) 0%, rgba(5,9,5,.62) 38%, rgba(5,9,5,.12) 68%, rgba(5,9,5,.30) 100%);
@@ -1084,7 +1104,7 @@ p {
     margin-bottom: 0;
 }
 /* Keep participant navigation destinations below the persistent header pill. */
-body:has(.hero-header) :is(#faq, #how-it-works) {
+body:has(.hero-header) :is(#faq, #how-it-works, #moments) {
     scroll-margin-top: calc(var(--hero-header-space) + 16px);
 }
 .hero-header {
@@ -3121,7 +3141,53 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
     }
 }
 
-/* --- 10.8 Stories: native rail, awaiting real approved media (S1) --- */
+/* --- 10.8 Shouts: illustrative moments with native mobile browsing --- */
+.shouts { padding: clamp(64px,8vw,112px) var(--shouts-gutter) clamp(56px,7vw,96px); background: var(--shouts-bg); color: var(--color-text-white); overflow-x: clip; }
+.shouts-inner { max-width: var(--container-max); margin-inline: auto; }
+.shouts-header { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; }
+.shouts-copy { min-width: 0; }
+.shouts-eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: var(--radius-pill); background: var(--shouts-eyebrow-bg); font: 600 .8125rem/1.3 var(--font-body); }
+.shouts-eyebrow-dot { width: 8px; height: 8px; flex: none; border-radius: var(--radius-pill); background: var(--color-accent); }
+.shouts-title.section-title { margin-top: 16px; color: var(--color-text-white); }
+.shouts-lede { flex: 0 1 360px; max-width: 360px; margin: 0; color: var(--shouts-ink-muted); font-size: 1.0625rem; line-height: 1.5; }
+.shouts-rail { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; margin: 40px 0 0; padding: 0 0 var(--shouts-stagger); list-style: none; }
+.shout { position: relative; aspect-ratio: 9/14; min-width: 0; border-radius: var(--shouts-card-radius); overflow: hidden; isolation: isolate; container-type: inline-size; }
+.shout:nth-child(even) { translate: 0 var(--shouts-stagger); }
+/* Negative layers stay inside the isolated card, below its readable copy. */
+.shout-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+.shout-photo--action { object-position: 35% 50%; }
+.shout::after { content: ""; position: absolute; inset: 0; background: var(--shouts-scrim); z-index: -1; pointer-events: none; }
+.shout-context { position: absolute; left: 18px; top: 18px; max-width: calc(100% - 36px); display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border: 1px solid var(--shouts-glass-border); border-radius: var(--radius-pill); background: var(--shouts-glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font: 600 .75rem/1.3 var(--font-body); }
+.shout-context-avatar { flex: none; width: 24px; height: 24px; object-fit: cover; border-radius: var(--radius-pill); }
+/* Fit the fixed two-line phrases, including their slant, inside narrow cards. */
+.shout-quote { position: absolute; left: 18px; right: 14px; bottom: 22px; margin: 0; font: 400 min(var(--shouts-quote-size),calc((100cqw - 32px)/var(--shouts-quote-fit)))/.88 var(--hero-font-display); color: var(--color-accent); text-transform: uppercase; transform: skewX(-12deg); transform-origin: left bottom; text-shadow: var(--shouts-quote-shadow); }
+.shout:nth-child(3) .shout-quote { --shouts-quote-fit: var(--shouts-quote-fit-finale); }
+.shout:nth-child(4) .shout-quote { --shouts-quote-fit: var(--shouts-quote-fit-story); }
+.shouts-cta { display: flex; justify-content: center; margin-top: 36px; }
+.shouts-cta-link { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 48px; padding: 14px 22px; border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-text-black); font-weight: 700; text-decoration: none; }
+.shouts-cta-link:hover { background: var(--color-text-white); color: var(--color-text-black); }
+.shouts-cta-link:focus-visible, .shouts-rail:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 4px; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    .shout-photo { transition: scale var(--shouts-photo-transition); }
+    .shout:hover .shout-photo { scale: 1.04; }
+}
+@media (max-width: 1023px) {
+    :root { --shouts-quote-size: 40px; }
+    .shouts-rail { display: flex; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--shouts-gutter); gap: 12px; margin: 32px calc(-1 * var(--shouts-gutter)) 0; padding: 0 var(--shouts-gutter) 8px; scrollbar-width: none; }
+    .shouts-rail::-webkit-scrollbar { display: none; }
+    .shout { flex: 0 0 40%; scroll-snap-align: start; }
+    .shout:nth-child(even) { translate: none; }
+    .shouts-rail:focus-visible { outline-offset: -3px; }
+}
+@media (max-width: 767px) {
+    :root { --shouts-gutter: var(--mobile-hero-card-margin); --shouts-quote-size: 46px; }
+    .shouts-header { display: block; }
+    .shouts-lede { margin-top: 14px; }
+    .shout { flex-basis: 72%; }
+    .shouts-cta { margin-top: 20px; }
+}
+
+/* --- 10.9 Stories: native rail, awaiting real approved media (S1) --- */
 .stories { margin: 48px 24px; scroll-margin-top: calc(var(--hero-header-space) + 16px); color: var(--color-text-primary); }
 .stories[hidden] { display: none; }
 .stories .stories-band { position: relative; max-width: 1392px; margin-inline: auto; border-radius: var(--stories-band-radius); overflow: hidden; background: var(--stories-band-bg); padding: 64px var(--stories-content-pad) 40px; display: flex; flex-direction: column; gap: 32px; }

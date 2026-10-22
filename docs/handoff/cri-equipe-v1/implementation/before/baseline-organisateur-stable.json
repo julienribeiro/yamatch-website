@@ -1,0 +1,117 @@
+{
+  "baseCommit": "f2d100c0d5895b1b1448447366acf566d80ccc5a",
+  "date": "2026-10-22T12:00:00Z",
+  "timezone": "Europe/Paris",
+  "reducedMotion": "reduce",
+  "network": "external blocked; showcase demo explicit",
+  "hashes": {
+    "website/index.html": "309b05e2695fc0cecfdf2674a2f7e27424639faabe8a734150cca536d5ec4613",
+    "website/styles.css": "a48aac867541967a6bb519d4ed1d43e2f791b971294afc2f2af8a39003d6d9f2",
+    "website/script.js": "cb1831db4acb6727b534bdb266f3636391c8ae660bdbd62876c202b54a4c083b",
+    "website/organisateur/index.html": "354dabb7a66378a6be0ca223b627b3a436a1b98087c7d0ef4ee4c218347bea45"
+  },
+  "results": [
+    {
+      "route": "organisateur",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "height": 5151,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 1065.265625,
+          "hidden": false
+        },
+        {
+          "id": "organisateurs",
+          "height": 1042.921875,
+          "hidden": false
+        },
+        {
+          "id": "derniers-tournois",
+          "height": 633.578125,
+          "hidden": false
+        },
+        {
+          "id": "gestion-tournoi",
+          "height": 1133.609375,
+          "hidden": false
+        },
+        {
+          "id": "faq",
+          "height": 988.59375,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "route": "organisateur",
+      "width": 820,
+      "scrollWidth": 820,
+      "height": 4550,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 999.96875,
+          "hidden": false
+        },
+        {
+          "id": "organisateurs",
+          "height": 805.40625,
+          "hidden": false
+        },
+        {
+          "id": "derniers-tournois",
+          "height": 541.171875,
+          "hidden": false
+        },
+        {
+          "id": "gestion-tournoi",
+          "height": 1103.640625,
+          "hidden": false
+        },
+        {
+          "id": "faq",
+          "height": 787.375,
+          "hidden": false
+        }
+      ]
+    },
+    {
+      "route": "organisateur",
+      "width": 390,
+      "scrollWidth": 390,
+      "height": 4337,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 1000,
+          "hidden": false
+        },
+        {
+          "id": "organisateurs",
+          "height": 733.640625,
+          "hidden": false
+        },
+        {
+          "id": "derniers-tournois",
+          "height": 518.96875,
+          "hidden": false
+        },
+        {
+          "id": "gestion-tournoi",
+          "height": 1046.078125,
+          "hidden": false
+        },
+        {
+          "id": "faq",
+          "height": 732.859375,
+          "hidden": false
+        }
+      ]
+    }
+  ]
+}
