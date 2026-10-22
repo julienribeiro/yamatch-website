@@ -1,0 +1,87 @@
+[
+  {
+    "width": 320,
+    "before": {
+      "left": 0,
+      "right": 320,
+      "scrollLeft": 404,
+      "focused": true,
+      "progress": "--tp-scroll-size: 12.070916635231988%; --tp-scroll-offset: 15.239532251980387%;"
+    },
+    "after": {
+      "left": 0,
+      "right": 320,
+      "scrollLeft": 444,
+      "focused": true,
+      "progress": "--tp-scroll-size: 12.070916635231988%; --tp-scroll-offset: 16.748396831384383%;"
+    }
+  },
+  {
+    "width": 390,
+    "before": {
+      "left": 0,
+      "right": 390,
+      "scrollLeft": 404,
+      "focused": true,
+      "progress": "--tp-scroll-size: 13.379073756432247%; --tp-scroll-offset: 13.859348198970842%;"
+    },
+    "after": {
+      "left": 0,
+      "right": 390,
+      "scrollLeft": 444,
+      "focused": true,
+      "progress": "--tp-scroll-size: 13.379073756432247%; --tp-scroll-offset: 15.231560891938251%;"
+    }
+  },
+  {
+    "width": 820,
+    "before": {
+      "left": 0,
+      "right": 820,
+      "scrollLeft": 411,
+      "focused": true,
+      "progress": "--tp-scroll-size: 25.4816656308266%; --tp-scroll-offset: 12.771908017402112%;"
+    },
+    "after": {
+      "left": 0,
+      "right": 820,
+      "scrollLeft": 451,
+      "focused": true,
+      "progress": "--tp-scroll-size: 25.4816656308266%; --tp-scroll-offset: 14.01491609695463%;"
+    }
+  },
+  {
+    "width": 1440,
+    "before": {
+      "left": 0,
+      "right": 1440,
+      "scrollLeft": 610,
+      "focused": true,
+      "progress": "--tp-scroll-size: 39.34426229508197%; --tp-scroll-offset: 16.666666666666668%;"
+    },
+    "after": {
+      "left": 0,
+      "right": 1440,
+      "scrollLeft": 650,
+      "focused": true,
+      "progress": "--tp-scroll-size: 39.34426229508197%; --tp-scroll-offset: 17.759562841530055%;"
+    }
+  },
+  {
+    "width": 1920,
+    "before": {
+      "left": 0,
+      "right": 1920,
+      "scrollLeft": 610,
+      "focused": true,
+      "progress": "--tp-scroll-size: 52.23068552774755%; --tp-scroll-offset: 16.594124047878125%;"
+    },
+    "after": {
+      "left": 0,
+      "right": 1920,
+      "scrollLeft": 650,
+      "focused": true,
+      "progress": "--tp-scroll-size: 52.23068552774755%; --tp-scroll-offset: 17.682263329706203%;"
+    }
+  }
+]

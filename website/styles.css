@@ -330,6 +330,7 @@
     --tp-compact-size: .75rem;
     --tp-cta-compact-size: 1rem;
     --tp-content-pad: clamp(24px,4.5vw,72px);
+    --tp-narrow-title-size: clamp(1.75rem,9.65vw,2.25rem);
     --tp-calendar-container-max: 1392px;
     --tp-calendar-wide-gutter: calc(max(16px, (100% - var(--tp-calendar-container-max)) / 2) + var(--tp-content-pad));
     --tp-calendar-card-width: 340px;
@@ -357,7 +358,7 @@
     --hero-header-fallback: rgba(255,255,255,.96);
     --hero-header-motion: 300ms cubic-bezier(.2,.8,.2,1);
     --hero-gutter: 24px;
-    --home-section-gutter: var(--hero-gutter);
+    --home-section-gutter: calc(var(--hero-gutter) + var(--hero-copy-pad));
     --hero-header-height: 76px;
     --hero-header-radius: 0px;
     --hero-header-space: 84px;
@@ -3238,7 +3239,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
     .stories .stories-court--mobile { display: block; }
 }
 
-/* Homepage outer edges follow the photo hero. Prose limits stay local, and
+/* Homepage content follows the hero text inset. Prose limits stay local, and
    scrollports still reach the viewport edges. Other routes retain their grid. */
 body:not(.org-page):not(.error-page):has(.hero-header) :is(.how-quest, .shouts, .faq, .footer) { padding-inline: var(--home-section-gutter); }
 body:not(.org-page):not(.error-page):has(.hero-header) :is(.how-quest-inner, .shouts-inner) { max-width: none; }
@@ -3251,6 +3252,9 @@ body:not(.org-page):not(.error-page):has(.hero-header) .tp-header { padding-inli
 body:not(.org-page):not(.error-page):has(.hero-header) .tp-calendar { margin-inline: 0; padding-inline: var(--home-section-gutter); scroll-padding-inline: var(--home-section-gutter); }
 body:not(.org-page):not(.error-page):has(.hero-header) :is(.tp-scroll-progress, .showcase-demo-note) { margin-inline: var(--home-section-gutter); }
 body:not(.org-page):not(.error-page):has(.hero-header) .showcase-demo-note { max-width: calc(100% - 2 * var(--home-section-gutter)); }
+@media (max-width: 359px) {
+    body:not(.org-page):not(.error-page):has(.hero-header) [data-showcase-variant="participant"] .section-title { font-size: var(--tp-narrow-title-size); }
+}
 
 /* ==========================================================================
    11. FAQ ACCORDION
