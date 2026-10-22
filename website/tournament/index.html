@@ -301,8 +301,39 @@
             document.getElementById('tournamentOrganizerInitials').textContent = organizer.split(/\s+/).filter(Boolean).slice(0, 2).map(function (word) { return Array.from(word)[0]; }).join('').toUpperCase();
             infoEl.hidden = !facts.children.length && !description && !amenities.length && !organizer;
         }
+        // Exact opaque ARGB pairs from the app's 18 approved presets.
+        // Kept in sync with script.js by the palette contract test.
+        var TOURNAMENT_THEMES = [
+            ['teal', 0xFF000000, 0xFF36B7AA],
+            ['rose', 0xFF030303, 0xFFB73652],
+            ['violet', 0xFF000000, 0xFFA136B7],
+            ['foret', 0xFF000000, 0xFF1F7A3F],
+            ['ambre', 0xFF000000, 0xFFE8A63A],
+            ['ocean', 0xFF030303, 0xFF3B6BB7],
+            ['cuivre', 0xFF000000, 0xFFB7683A],
+            ['citron', 0xFF000000, 0xFF6CB73A],
+            ['corail', 0xFF000000, 0xFFF66A5A],
+            ['menthe', 0xFF000000, 0xFF3AB77B],
+            ['saphir', 0xFF000000, 0xFF3A55B7],
+            ['fuchsia', 0xFF000000, 0xFFE63FB7],
+            ['emeraude', 0xFF000000, 0xFF1FB763],
+            ['safran', 0xFF000000, 0xFFE8C53A],
+            ['lavande', 0xFF000000, 0xFF9E82D2],
+            ['cerise', 0xFF000000, 0xFFD12F5A],
+            ['prune', 0xFF000000, 0xFF8A3A8A],
+            ['lagon', 0xFF000000, 0xFF3ACFD5]
+        ];
+        function tournamentTheme(colors) {
+            if (!Array.isArray(colors) || colors.length !== 2 || !colors.every(function (value) {
+                return Number.isInteger(value) && value >= 0xFF000000 && value <= 0xFFFFFFFF;
+            })) return null;
+            var preset = TOURNAMENT_THEMES.find(function (entry) { return entry[1] === colors[0] && entry[2] === colors[1]; });
+            return preset ? preset[0] : null;
+        }
+
         function resetDetails() {
             heroEl.className = 'td-hero is-past';
+            heroEl.removeAttribute('data-tournament-theme');
             infoEl.hidden = true;
             statusEl.hidden = true;
             dateEl.hidden = true;
@@ -323,7 +354,7 @@
             var url = SUPABASE_URL
                 + '/rest/v1/tournaments'
                 + '?id=eq.' + encodeURIComponent(targetId)
-                + '&select=title,players_per_team,gender,location,price_per_team,status,date,start_time,address,levels,is_free,max_teams,description,terrain,has_buvette,has_accessible_parking,has_prizes,organizer_name,registrations_closed,is_closed';
+                + '&select=title,players_per_team,gender,location,price_per_team,status,date,start_time,address,levels,is_free,max_teams,description,terrain,has_buvette,has_accessible_parking,has_prizes,organizer_name,registrations_closed,is_closed,gradient_colors';
             var controller = new AbortController();
             var timeout = window.setTimeout(function () { controller.abort(); }, FETCH_TIMEOUT_MS);
             return fetch(url, {
@@ -379,6 +410,9 @@
             document.title = titleEl.textContent + ' · Yamatch';
             setBodyText(formatCriteria(tournament));
             heroEl.className = 'td-hero' + (isCancelled ? ' is-cancelled' : isPast ? ' is-past' : '');
+            var theme = tournamentTheme(tournament.gradient_colors);
+            if (theme && !isPast && !isCancelled) heroEl.setAttribute('data-tournament-theme', theme);
+            else heroEl.removeAttribute('data-tournament-theme');
             showCancelledNote(isCancelled);
             statusEl.hidden = isCancelled;
             statusEl.className = 'td-badge' + (!isPast && !open ? ' is-muted' : '');

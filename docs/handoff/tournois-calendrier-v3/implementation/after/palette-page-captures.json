@@ -1,0 +1,85 @@
+{
+  "fixtures": "Controlled public-field payload; actual Panthères palette pair verified anonymously, other content illustrative; clock 2026-10-22 Europe/Paris",
+  "results": [
+    {
+      "name": "pantheres",
+      "width": 1440,
+      "theme": "violet",
+      "background": "linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), radial-gradient(circle closest-side, rgb(0, 0, 0) 0%, rgb(161, 54, 183) 300%)",
+      "dateBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false
+    },
+    {
+      "name": "safran",
+      "width": 1440,
+      "theme": "safran",
+      "background": "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), radial-gradient(circle closest-side, rgb(0, 0, 0) 0%, rgb(232, 197, 58) 300%)",
+      "dateBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false
+    },
+    {
+      "name": "lagon",
+      "width": 1440,
+      "theme": "lagon",
+      "background": "linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), radial-gradient(circle closest-side, rgb(0, 0, 0) 0%, rgb(58, 207, 213) 300%)",
+      "dateBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false
+    },
+    {
+      "name": "ambre",
+      "width": 1440,
+      "theme": "ambre",
+      "background": "linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), radial-gradient(circle closest-side, rgb(0, 0, 0) 0%, rgb(232, 166, 58) 300%)",
+      "dateBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false
+    },
+    {
+      "name": "safran-clos",
+      "width": 1440,
+      "theme": "safran",
+      "background": "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), radial-gradient(circle closest-side, rgb(0, 0, 0) 0%, rgb(232, 197, 58) 300%)",
+      "dateBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false
+    },
+    {
+      "name": "pantheres",
+      "width": 390,
+      "theme": "violet",
+      "background": "linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), radial-gradient(circle closest-side, rgb(0, 0, 0) 0%, rgb(161, 54, 183) 300%)",
+      "dateBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false
+    },
+    {
+      "name": "safran",
+      "width": 390,
+      "theme": "safran",
+      "background": "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), radial-gradient(circle closest-side, rgb(0, 0, 0) 0%, rgb(232, 197, 58) 300%)",
+      "dateBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false
+    },
+    {
+      "name": "lagon",
+      "width": 390,
+      "theme": "lagon",
+      "background": "linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), radial-gradient(circle closest-side, rgb(0, 0, 0) 0%, rgb(58, 207, 213) 300%)",
+      "dateBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false
+    },
+    {
+      "name": "ambre",
+      "width": 390,
+      "theme": "ambre",
+      "background": "linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), radial-gradient(circle closest-side, rgb(0, 0, 0) 0%, rgb(232, 166, 58) 300%)",
+      "dateBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false
+    },
+    {
+      "name": "safran-clos",
+      "width": 390,
+      "theme": "safran",
+      "background": "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), radial-gradient(circle closest-side, rgb(0, 0, 0) 0%, rgb(232, 197, 58) 300%)",
+      "dateBackground": "rgba(0, 0, 0, 0)",
+      "overflow": false
+    }
+  ]
+}

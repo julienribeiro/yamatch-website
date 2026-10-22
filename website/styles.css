@@ -258,7 +258,30 @@
 
     --tp-intro-ink: #4A5565;
     --tp-ticket-head: radial-gradient(circle closest-side at 50% 50%,#000 0%,#36B7AA 300%);
+    /* App palette pairs; the website contrast shade remains a separate layer. */
+    --tournament-gradient-teal: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#36B7AA 300%);
+    --tournament-gradient-rose: radial-gradient(circle closest-side at 50% 50%,#030303 0%,#B73652 300%);
+    --tournament-gradient-violet: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#A136B7 300%);
+    --tournament-gradient-foret: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#1F7A3F 300%);
+    --tournament-gradient-ambre: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#E8A63A 300%);
+    --tournament-gradient-ocean: radial-gradient(circle closest-side at 50% 50%,#030303 0%,#3B6BB7 300%);
+    --tournament-gradient-cuivre: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#B7683A 300%);
+    --tournament-gradient-citron: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#6CB73A 300%);
+    --tournament-gradient-corail: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#F66A5A 300%);
+    --tournament-gradient-menthe: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#3AB77B 300%);
+    --tournament-gradient-saphir: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#3A55B7 300%);
+    --tournament-gradient-fuchsia: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#E63FB7 300%);
+    --tournament-gradient-emeraude: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#1FB763 300%);
+    --tournament-gradient-safran: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#E8C53A 300%);
+    --tournament-gradient-lavande: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#9E82D2 300%);
+    --tournament-gradient-cerise: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#D12F5A 300%);
+    --tournament-gradient-prune: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#8A3A8A 300%);
+    --tournament-gradient-lagon: radial-gradient(circle closest-side at 50% 50%,#000000 0%,#3ACFD5 300%);
     --tp-ticket-contrast-shade: linear-gradient(rgba(0,0,0,.35), rgba(0,0,0,.35));
+    --td-theme-shade-45: linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,.45));
+    --td-theme-shade-50: linear-gradient(rgba(0,0,0,.50), rgba(0,0,0,.50));
+    --td-theme-shade-55: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,.55));
+    --td-theme-shade-60: linear-gradient(rgba(0,0,0,.60), rgba(0,0,0,.60));
     --tp-ticket-head-closed: #000;
     --tp-ticket-foot: #1A1A1A;
     --tp-ticket-notch-y: calc(100% - 86px);
@@ -2880,6 +2903,32 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
 }
 
 
+/* Tournament themes are allowlisted in JS and isolated from organiser tickets. */
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="teal"] { --tournament-gradient: var(--tournament-gradient-teal); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="rose"] { --tournament-gradient: var(--tournament-gradient-rose); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="violet"] { --tournament-gradient: var(--tournament-gradient-violet); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="foret"] { --tournament-gradient: var(--tournament-gradient-foret); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="ambre"] { --tournament-gradient: var(--tournament-gradient-ambre); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="ocean"] { --tournament-gradient: var(--tournament-gradient-ocean); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="cuivre"] { --tournament-gradient: var(--tournament-gradient-cuivre); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="citron"] { --tournament-gradient: var(--tournament-gradient-citron); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="corail"] { --tournament-gradient: var(--tournament-gradient-corail); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="menthe"] { --tournament-gradient: var(--tournament-gradient-menthe); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="saphir"] { --tournament-gradient: var(--tournament-gradient-saphir); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="fuchsia"] { --tournament-gradient: var(--tournament-gradient-fuchsia); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="emeraude"] { --tournament-gradient: var(--tournament-gradient-emeraude); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="safran"] { --tournament-gradient: var(--tournament-gradient-safran); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="lavande"] { --tournament-gradient: var(--tournament-gradient-lavande); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="cerise"] { --tournament-gradient: var(--tournament-gradient-cerise); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="prune"] { --tournament-gradient: var(--tournament-gradient-prune); }
+:is([data-showcase-variant="participant"] .tp-ticket, .td-hero)[data-tournament-theme="lagon"] { --tournament-gradient: var(--tournament-gradient-lagon); }
+
+/* Page-only contrast tiers include the translucent closed badge; cards keep 35%. */
+.td-hero[data-tournament-theme="corail"], .td-hero[data-tournament-theme="lavande"] { --td-theme-shade: var(--td-theme-shade-45); }
+.td-hero[data-tournament-theme="emeraude"], .td-hero[data-tournament-theme="teal"], .td-hero[data-tournament-theme="citron"], .td-hero[data-tournament-theme="menthe"], .td-hero:not([data-tournament-theme]) { --td-theme-shade: var(--td-theme-shade-50); }
+.td-hero[data-tournament-theme="ambre"], .td-hero[data-tournament-theme="lagon"] { --td-theme-shade: var(--td-theme-shade-55); }
+.td-hero[data-tournament-theme="safran"] { --td-theme-shade: var(--td-theme-shade-60); }
+
 /* --- 10.7 Participant V3: unframed monthly calendar, isolated from organiser --- */
 /* External desktop gap keeps the existing FAQ decoration clear of the rail. */
 .showcase.tp-band[data-showcase-variant="participant"] { max-width: 1392px; width: calc(100% - 32px); margin: 0 auto var(--tp-calendar-next-section-gap); padding: 56px 0 24px; background: transparent; scroll-margin-top: calc(var(--hero-header-space) + 16px); }
@@ -2910,7 +2959,7 @@ body:has(.hero-header) :is(#faq, #how-it-works) {
 [data-showcase-variant="participant"] .tp-ticket { height: auto; align-self: start; border-radius: var(--tp-ticket-radius); overflow: hidden; background: var(--tp-ticket-foot); color: var(--color-text-white); display: flex; flex-direction: column;
 -webkit-mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-ticket-notch-radius),var(--color-text-black) var(--tp-ticket-notch-edge)) left/51% 100% no-repeat,radial-gradient(circle at 100% var(--tp-ticket-notch-y),transparent var(--tp-ticket-notch-radius),var(--color-text-black) var(--tp-ticket-notch-edge)) right/51% 100% no-repeat;
 mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-ticket-notch-radius),var(--color-text-black) var(--tp-ticket-notch-edge)) left/51% 100% no-repeat,radial-gradient(circle at 100% var(--tp-ticket-notch-y),transparent var(--tp-ticket-notch-radius),var(--color-text-black) var(--tp-ticket-notch-edge)) right/51% 100% no-repeat; }
-[data-showcase-variant="participant"] .tp-head { position: relative; flex: none; display: grid; grid-template-columns: minmax(72px, auto) minmax(0, 1fr); column-gap: 16px; padding: 20px 20px 24px; background: var(--tp-ticket-contrast-shade), var(--tp-ticket-head); }
+[data-showcase-variant="participant"] .tp-head { position: relative; flex: none; display: grid; grid-template-columns: minmax(72px, auto) minmax(0, 1fr); column-gap: 16px; padding: 20px 20px 24px; background: var(--tp-ticket-contrast-shade), var(--tournament-gradient, var(--tp-ticket-head)); }
 [data-showcase-variant="participant"] .tp-ticket.is-closed .tp-head { background: var(--tp-ticket-head-closed); }
 [data-showcase-variant="participant"] .tp-date { grid-column: 1; grid-row: 1; align-self: center; min-width: 72px; min-height: 72px; padding-inline: 8px; border: 1.87px solid var(--tp-white-30); border-radius: var(--tp-date-radius); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
 [data-showcase-variant="participant"] .tp-day { font: 700 var(--tp-day-size)/1 var(--font-heading); }
@@ -2980,7 +3029,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
 .td-page [hidden] { display: none !important; }
 .td-wrap { max-width: 1160px; margin-inline: auto; padding-block: 28px 24px; display: flex; flex-direction: column; gap: 32px; }
 .td-back { align-self: flex-start; display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 18px 0 12px; border-radius: var(--radius-pill); background: var(--color-light-gray); color: var(--color-text-primary); font: 600 .9375rem/1 var(--font-body); }
-.td-hero { border-radius: var(--td-hero-radius); padding: clamp(24px,4vw,48px); background: var(--tp-ticket-contrast-shade), var(--tp-ticket-head); color: var(--color-text-white); display: grid; grid-template-columns: auto minmax(0,1fr); gap: 20px 32px; align-items: center; position: relative; overflow: hidden; }
+.td-hero { border-radius: var(--td-hero-radius); padding: clamp(24px,4vw,48px); background: var(--td-theme-shade, var(--tp-ticket-contrast-shade)), var(--tournament-gradient, var(--tp-ticket-head)); color: var(--color-text-white); display: grid; grid-template-columns: auto minmax(0,1fr); gap: 20px 32px; align-items: center; position: relative; overflow: hidden; }
 .td-hero:is(.is-past,.is-cancelled) { background: var(--color-light-gray); color: var(--color-text-primary); }
 .td-date { width: 116px; height: 116px; border-radius: var(--td-date-radius); border: 2px solid var(--tp-white-30); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; }
 .td-hero:is(.is-past,.is-cancelled) .td-date { border-color: var(--tp-calendar-line); }

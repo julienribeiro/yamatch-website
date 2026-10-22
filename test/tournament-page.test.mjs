@@ -148,3 +148,37 @@ test('champs absents omis, gratuit explicite, date/heure invalides jamais affich
   const malformedPath = browser(() => { throw new Error('unexpected fetch'); }, '', '/tournament/%invalid');
   assert.equal(malformedPath.elements.tournamentBody.textContent, 'Lien de tournoi invalide ou expiré.');
 });
+
+test('palette Panthères publique violette, terminal neutre et aucune couleur arbitraire injectée', async () => {
+  let url;
+  const colors = [0xFF000000, 0xFFA136B7];
+  const b = browser(request => { url = new URL(request); return response([{ ...publicDetails, gradient_colors: colors }]); }); await flush();
+  assert.equal(b.elements.tournamentHero.getAttribute('data-tournament-theme'), 'violet');
+  assert.ok(url.searchParams.get('select').split(',').includes('gradient_colors'));
+  for (const gradient_colors of [null, [], [0xFF000000], [0xFF000000, 0xFFA136B7, 0], ['0xFF000000', '0xFFA136B7'], [0x7F000000, 0xFFA136B7], [0xFF000000, 0xFFFFFFFF + 1], [0xFF000000, NaN], [0xFF000000, 0xFFA136B7 + .5], [0xFF000000, 0xFF123456], ['url(javascript:alert(1))', 'red']]) {
+    const invalid = browser(() => response([{ ...publicDetails, gradient_colors }])); await flush();
+    assert.equal(invalid.elements.tournamentHero.getAttribute('data-tournament-theme'), undefined);
+    assert.equal(invalid.elements.tournamentTitle.textContent, publicDetails.title);
+  }
+  for (const terminal of [{ status: 'finished' }, { status: 'cancelled' }, { date: '2020-01-01' }]) {
+    const b = browser(() => response([{ ...publicDetails, ...terminal, gradient_colors: colors }])); await flush();
+    assert.equal(b.elements.tournamentHero.getAttribute('data-tournament-theme'), undefined);
+    assert.match(b.elements.tournamentHero.className, /is-(?:past|cancelled)/);
+  }
+});
+
+test('les 18 paires de couleurs sont identiques entre accueil et page tournoi, et toutes reconnues', async () => {
+  const homeSource = await readFile(new URL('../website/script.js', import.meta.url), 'utf8');
+  function presets(source) {
+    const declaration = source.match(/var TOURNAMENT_THEMES = (\[[\s\S]*?\n\s*\]);/);
+    assert.ok(declaration, 'table des thèmes présente');
+    return JSON.parse(JSON.stringify(vm.runInNewContext(declaration[1])));
+  }
+  const pagePresets = presets(script);
+  assert.equal(pagePresets.length, 18);
+  assert.deepEqual(presets(homeSource), pagePresets);
+  for (const [slug, first, second] of pagePresets) {
+    const b = browser(() => response([{ ...publicDetails, gradient_colors: [first, second] }])); await flush();
+    assert.equal(b.elements.tournamentHero.getAttribute('data-tournament-theme'), slug);
+  }
+});

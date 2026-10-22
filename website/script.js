@@ -1489,12 +1489,87 @@
         return svg;
     }
 
+    // Rendering-only palette enrichment: the showcase contract and its cache stay unchanged.
+    var TOURNAMENT_THEME_TIMEOUT_MS = 5000;
+    var TOURNAMENT_THEMES = [
+        ['teal', 0xFF000000, 0xFF36B7AA],
+        ['rose', 0xFF030303, 0xFFB73652],
+        ['violet', 0xFF000000, 0xFFA136B7],
+        ['foret', 0xFF000000, 0xFF1F7A3F],
+        ['ambre', 0xFF000000, 0xFFE8A63A],
+        ['ocean', 0xFF030303, 0xFF3B6BB7],
+        ['cuivre', 0xFF000000, 0xFFB7683A],
+        ['citron', 0xFF000000, 0xFF6CB73A],
+        ['corail', 0xFF000000, 0xFFF66A5A],
+        ['menthe', 0xFF000000, 0xFF3AB77B],
+        ['saphir', 0xFF000000, 0xFF3A55B7],
+        ['fuchsia', 0xFF000000, 0xFFE63FB7],
+        ['emeraude', 0xFF000000, 0xFF1FB763],
+        ['safran', 0xFF000000, 0xFFE8C53A],
+        ['lavande', 0xFF000000, 0xFF9E82D2],
+        ['cerise', 0xFF000000, 0xFFD12F5A],
+        ['prune', 0xFF000000, 0xFF8A3A8A],
+        ['lagon', 0xFF000000, 0xFF3ACFD5]
+    ];
+
+    function tournamentTheme(colors) {
+        if (!Array.isArray(colors) || colors.length !== 2 || !colors.every(function (color) {
+            return Number.isInteger(color) && color >= 0xFF000000 && color <= 0xFFFFFFFF;
+        })) return null;
+        var preset = TOURNAMENT_THEMES.find(function (theme) {
+            return colors[0] === theme[1] && colors[1] === theme[2];
+        });
+        return preset ? preset[0] : null;
+    }
+
+    function enrichTournamentThemes(rail, upcoming) {
+        var ids = Array.from(new Set(upcoming.map(function (t) { return t.id; })));
+        if (!ids.length) return Promise.resolve();
+        // Capture the current nodes so a late response cannot recolour a later render.
+        var cards = Array.from(rail.querySelectorAll('[data-tournament-id]'));
+        var controller = typeof AbortController === 'function' ? new AbortController() : null;
+        var expired = false;
+        var timeout = window.setTimeout(function () {
+            expired = true;
+            if (controller) controller.abort();
+        }, TOURNAMENT_THEME_TIMEOUT_MS);
+        var query = new URLSearchParams({ select: 'id,gradient_colors', id: 'in.(' + ids.join(',') + ')' });
+        return Promise.resolve().then(function () {
+            return fetch(SUPABASE_URL + '/rest/v1/tournaments?' + query.toString(), {
+                method: 'GET',
+                credentials: 'omit',
+                signal: controller ? controller.signal : undefined,
+                headers: { 'apikey': SUPABASE_ANON_KEY, 'Accept': 'application/json' }
+            });
+        }).then(function (response) {
+            if (!response.ok) throw new Error('tournament_themes_unavailable');
+            return response.json();
+        }).then(function (rows) {
+            if (expired || !Array.isArray(rows)) return;
+            var themes = new Map();
+            rows.forEach(function (row) {
+                if (!row || !ids.includes(row.id)) return;
+                var theme = tournamentTheme(row.gradient_colors);
+                if (theme) themes.set(row.id, theme);
+            });
+            cards.forEach(function (card) {
+                var theme = themes.get(card.getAttribute('data-tournament-id'));
+                if (theme) card.setAttribute('data-tournament-theme', theme);
+            });
+        }).catch(function () {
+            // Palette failures never hide tickets or affect their links and registration state.
+        }).finally(function () {
+            window.clearTimeout(timeout);
+        });
+    }
+
     function appTicket(t, demo, past) {
         var full = t.maxTeams !== null && t.teamsCount >= t.maxTeams;
         var closed = !t.registrationsOpen;
         var item = el('li');
         item.setAttribute('data-showcase-generated', '');
         var card = el('article', 'tp-ticket' + (past ? ' is-past' : (closed && !full ? ' is-closed' : '') + (full ? ' is-full' : '')));
+        if (!past) card.setAttribute('data-tournament-id', t.id);
         var head = el('div', 'tp-head');
         var date = participantDate(t.date);
         var time = el('time', 'tp-date');
@@ -1790,7 +1865,10 @@
         }
         section.hidden = false;
         if (variant === 'organizer') wireRailNav(block, rail);
-        else wireCalendarProgress(section, rail);
+        else {
+            wireCalendarProgress(section, rail);
+            if (!demo) enrichTournamentThemes(rail, model.upcoming);
+        }
         window.dispatchEvent(new Event('yamatch:showcase-layout'));
     }
 

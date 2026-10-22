@@ -1,0 +1,2270 @@
+[
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 0.65,
+    "ratio": 3.6022279182358,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 0.6,
+    "ratio": 3.936150641422791,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 0.55,
+    "ratio": 4.3103389067511015,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 0.5,
+    "ratio": 4.7300947359919014,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 0.45,
+    "ratio": 5.201248521905464,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "teal",
+    "shade": 0.4,
+    "ratio": 5.730081359005897,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 5.989430196153434,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 0.6,
+    "ratio": 6.3574328726012235,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 0.55,
+    "ratio": 6.7498037758294975,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 0.5,
+    "ratio": 7.167403077259555,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 0.45,
+    "ratio": 7.610860396355951,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "rose",
+    "shade": 0.4,
+    "ratio": 8.08049344449462,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 5.895061340261616,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 0.6,
+    "ratio": 6.262334650278041,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 0.55,
+    "ratio": 6.654670561836456,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 0.5,
+    "ratio": 7.073084367710482,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 0.45,
+    "ratio": 7.518378758970013,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "violet",
+    "shade": 0.4,
+    "ratio": 7.991060261440098,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 5.535636382138839,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 0.6,
+    "ratio": 5.895921799835965,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 0.55,
+    "ratio": 6.2836261004019285,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 0.5,
+    "ratio": 6.700448867235204,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 0.45,
+    "ratio": 7.147994344271712,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "foret",
+    "shade": 0.4,
+    "ratio": 7.627692396853846,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 0.65,
+    "ratio": 3.2498787643761364,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 0.6,
+    "ratio": 3.5680189133299196,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 0.55,
+    "ratio": 3.9275109721586556,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 0.5,
+    "ratio": 4.334471663026848,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 0.45,
+    "ratio": 4.7958223434147405,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ambre",
+    "shade": 0.4,
+    "ratio": 5.319277023541903,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 5.440327735727845,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 0.6,
+    "ratio": 5.7981940646811045,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 0.55,
+    "ratio": 6.184003556565953,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 0.5,
+    "ratio": 6.599639540969034,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 0.45,
+    "ratio": 7.046930253937744,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "ocean",
+    "shade": 0.4,
+    "ratio": 7.527575381776138,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 4.807338590636422,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 0.6,
+    "ratio": 5.16497882324811,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 0.55,
+    "ratio": 5.555235426222926,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 0.5,
+    "ratio": 5.980936705927511,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 0.45,
+    "ratio": 6.444952007253032,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cuivre",
+    "shade": 0.4,
+    "ratio": 6.950096902318511,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 0.65,
+    "ratio": 3.5788119313893163,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 0.6,
+    "ratio": 3.9098525950792027,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 0.55,
+    "ratio": 4.280927305259804,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 0.5,
+    "ratio": 4.697383592095656,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 0.45,
+    "ratio": 5.165138472376528,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "citron",
+    "shade": 0.4,
+    "ratio": 5.690620443421722,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 0.65,
+    "ratio": 4.072124913240903,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 0.6,
+    "ratio": 4.423886378069156,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 0.55,
+    "ratio": 4.813846390085556,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 0.5,
+    "ratio": 5.2462019080823605,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 0.45,
+    "ratio": 5.725363543729925,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "corail",
+    "shade": 0.4,
+    "ratio": 6.255824940130666,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 0.65,
+    "ratio": 3.6712739930725546,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 0.6,
+    "ratio": 4.007479588781418,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 0.55,
+    "ratio": 4.383600116403564,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 0.5,
+    "ratio": 4.804775003648982,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 0.45,
+    "ratio": 5.276629238812928,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "menthe",
+    "shade": 0.4,
+    "ratio": 5.805190117697324,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 6.155754099387749,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 0.6,
+    "ratio": 6.507792908315276,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 0.55,
+    "ratio": 6.882530433589853,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 0.5,
+    "ratio": 7.280998745634372,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 0.45,
+    "ratio": 7.704117879934892,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "saphir",
+    "shade": 0.4,
+    "ratio": 8.152644444336019,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 4.773414419518165,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 0.6,
+    "ratio": 5.147388631703526,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 0.55,
+    "ratio": 5.555790626477116,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 0.5,
+    "ratio": 6.001225255879659,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 0.45,
+    "ratio": 6.486132601086827,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "fuchsia",
+    "shade": 0.4,
+    "ratio": 7.012617426582024,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 0.65,
+    "ratio": 3.780577643401254,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 0.6,
+    "ratio": 4.123351907028977,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 0.55,
+    "ratio": 4.505963748514754,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 0.5,
+    "ratio": 4.933303882406155,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 0.45,
+    "ratio": 5.410643202906676,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "emeraude",
+    "shade": 0.4,
+    "ratio": 5.943516624562805,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 0.65,
+    "ratio": 2.8185474346492314,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 0.6,
+    "ratio": 3.1153854432543837,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 0.55,
+    "ratio": 3.454580961310189,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 0.5,
+    "ratio": 3.8432654250624743,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 0.45,
+    "ratio": 4.289756829816342,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "safran",
+    "shade": 0.4,
+    "ratio": 4.803651232892723,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 0.65,
+    "ratio": 4.094638692743524,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 0.6,
+    "ratio": 4.43788711833859,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 0.55,
+    "ratio": 4.818054139800936,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 0.5,
+    "ratio": 5.239364033972857,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 0.45,
+    "ratio": 5.706365289209098,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lavande",
+    "shade": 0.4,
+    "ratio": 6.22385677517377,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 5.703185730076542,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 0.6,
+    "ratio": 6.083173385997774,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 0.55,
+    "ratio": 6.490305318213724,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 0.5,
+    "ratio": 6.9255576361286915,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 0.45,
+    "ratio": 7.38958264926336,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "cerise",
+    "shade": 0.4,
+    "ratio": 7.882589721816705,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 6.353625029431863,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 0.6,
+    "ratio": 6.70606362769747,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 0.55,
+    "ratio": 7.079833832278352,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 0.5,
+    "ratio": 7.475692645231045,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 0.45,
+    "ratio": 7.894251793199764,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "prune",
+    "shade": 0.4,
+    "ratio": 8.33592722386433,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 0.65,
+    "ratio": 3.085589944157191,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 0.6,
+    "ratio": 3.399045438013819,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 0.55,
+    "ratio": 3.754907011924471,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 0.5,
+    "ratio": 4.15973021916202,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 0.45,
+    "ratio": 4.62098078473671,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 1440,
+    "name": "lagon",
+    "shade": 0.4,
+    "ratio": 5.147027199814053,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 0.65,
+    "ratio": 8.37021888213163,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 0.6,
+    "ratio": 8.648738110744796,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 0.55,
+    "ratio": 8.936100056334295,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 0.5,
+    "ratio": 9.232297545713733,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 0.45,
+    "ratio": 9.537274021874572,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "teal",
+    "shade": 0.4,
+    "ratio": 9.850917040669817,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 9.925941712952193,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 0.6,
+    "ratio": 10.122736148560065,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 0.55,
+    "ratio": 10.322028460215902,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 0.5,
+    "ratio": 10.523696711879015,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 0.45,
+    "ratio": 10.727606016417122,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "rose",
+    "shade": 0.4,
+    "ratio": 10.933608190680063,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 10.026286196405131,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 0.6,
+    "ratio": 10.216694838378084,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 0.55,
+    "ratio": 10.409342380978513,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 0.5,
+    "ratio": 10.604112810367013,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 0.45,
+    "ratio": 10.80087870780441,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "violet",
+    "shade": 0.4,
+    "ratio": 10.999500977181539,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 9.752192782877755,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 0.6,
+    "ratio": 9.956214273938572,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 0.55,
+    "ratio": 10.163607383135083,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 0.5,
+    "ratio": 10.374294437770027,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 0.45,
+    "ratio": 10.588184242348749,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "foret",
+    "shade": 0.4,
+    "ratio": 10.805171324532946,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 0.65,
+    "ratio": 8.017053806548336,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 0.6,
+    "ratio": 8.3094418151663,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 0.55,
+    "ratio": 8.612586751334854,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 0.5,
+    "ratio": 8.926592504749342,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 0.45,
+    "ratio": 9.25150803684675,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ambre",
+    "shade": 0.4,
+    "ratio": 9.587318109085379,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 9.514323906381128,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 0.6,
+    "ratio": 9.731073136085678,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 0.55,
+    "ratio": 9.952069959485208,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 0.5,
+    "ratio": 10.177258425105657,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 0.45,
+    "ratio": 10.40656679548762,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "ocean",
+    "shade": 0.4,
+    "ratio": 10.63990641724646,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 9.278230191243786,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 0.6,
+    "ratio": 9.509054637700578,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 0.55,
+    "ratio": 9.744888175056746,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 0.5,
+    "ratio": 9.985668837866342,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 0.45,
+    "ratio": 10.231313488820525,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cuivre",
+    "shade": 0.4,
+    "ratio": 10.48171613043944,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 0.65,
+    "ratio": 8.324294293231523,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 0.6,
+    "ratio": 8.60338318528836,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 0.55,
+    "ratio": 8.89162988840657,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 0.5,
+    "ratio": 9.189068639574119,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 0.45,
+    "ratio": 9.495687565243625,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "citron",
+    "shade": 0.4,
+    "ratio": 9.811422122840918,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 0.65,
+    "ratio": 8.80096732854489,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 0.6,
+    "ratio": 9.060571662109323,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 0.55,
+    "ratio": 9.32683796018002,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 0.5,
+    "ratio": 9.599666975409319,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 0.45,
+    "ratio": 9.878920255439876,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "corail",
+    "shade": 0.4,
+    "ratio": 10.164416591941418,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 0.65,
+    "ratio": 8.429628964726325,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 0.6,
+    "ratio": 8.705306368948115,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 0.55,
+    "ratio": 8.989536935534128,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 0.5,
+    "ratio": 9.282305847927349,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 0.45,
+    "ratio": 9.583551158861129,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "menthe",
+    "shade": 0.4,
+    "ratio": 9.893157781476715,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 10.088436585031575,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 0.6,
+    "ratio": 10.2708522532447,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 0.55,
+    "ratio": 10.455795774922494,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 0.5,
+    "ratio": 10.64320995209639,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 0.45,
+    "ratio": 10.833029760234531,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "saphir",
+    "shade": 0.4,
+    "ratio": 11.02518201089082,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 9.400471203754565,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 0.6,
+    "ratio": 9.632218936911753,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 0.55,
+    "ratio": 9.867815800640946,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 0.5,
+    "ratio": 10.107061068141954,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 0.45,
+    "ratio": 10.349725551642711,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "fuchsia",
+    "shade": 0.4,
+    "ratio": 10.595550502536888,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 0.65,
+    "ratio": 8.55908937491327,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 0.6,
+    "ratio": 8.830776514463459,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 0.55,
+    "ratio": 9.110260642502961,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 0.5,
+    "ratio": 9.397462652951813,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 0.45,
+    "ratio": 9.692254510264439,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "emeraude",
+    "shade": 0.4,
+    "ratio": 9.994453858711054,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 0.65,
+    "ratio": 7.565091867682804,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 0.6,
+    "ratio": 7.874756813386142,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 0.55,
+    "ratio": 8.197753339952527,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 0.5,
+    "ratio": 8.53433679633545,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 0.45,
+    "ratio": 8.884695882388407,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "safran",
+    "shade": 0.4,
+    "ratio": 9.248937980533627,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 0.65,
+    "ratio": 8.726760560638363,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 0.6,
+    "ratio": 8.984978714025269,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 0.55,
+    "ratio": 9.250571906292246,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 0.5,
+    "ratio": 9.523549807920114,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 0.45,
+    "ratio": 9.80389142490397,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lavande",
+    "shade": 0.4,
+    "ratio": 10.091541366285657,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 9.997932672694724,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 0.6,
+    "ratio": 10.194225920107638,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 0.55,
+    "ratio": 10.392383406510119,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 0.5,
+    "ratio": 10.592228533286644,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 0.45,
+    "ratio": 10.793570463503329,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "cerise",
+    "shade": 0.4,
+    "ratio": 10.99620409809304,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 10.218233287263473,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 0.6,
+    "ratio": 10.39360061209425,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 0.55,
+    "ratio": 10.571044240064026,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 0.5,
+    "ratio": 10.750494674075858,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 0.45,
+    "ratio": 10.931875184416429,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "prune",
+    "shade": 0.4,
+    "ratio": 11.115101578048014,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 0.65,
+    "ratio": 7.892402132983064,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 0.6,
+    "ratio": 8.192363527297875,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 0.55,
+    "ratio": 8.503663101781614,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 0.5,
+    "ratio": 8.82638167579366,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 0.45,
+    "ratio": 9.160531637550568,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 390,
+    "name": "lagon",
+    "shade": 0.4,
+    "ratio": 9.506045464986894,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 0.65,
+    "ratio": 9.188356257722898,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 0.6,
+    "ratio": 9.424642198515363,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 0.55,
+    "ratio": 9.66623808890265,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 0.5,
+    "ratio": 9.913075412085998,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 0.45,
+    "ratio": 10.165061323251253,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "teal",
+    "shade": 0.4,
+    "ratio": 10.422076606556487,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 0.65,
+    "ratio": 10.438599226953288,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 0.6,
+    "ratio": 10.60089054660963,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 0.55,
+    "ratio": 10.764616030314208,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 0.5,
+    "ratio": 10.929700222178067,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 0.45,
+    "ratio": 11.096062127234308,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "rose",
+    "shade": 0.4,
+    "ratio": 11.263615136606685,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 0.65,
+    "ratio": 10.57545260597313,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 0.6,
+    "ratio": 10.728640885912785,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 0.55,
+    "ratio": 10.882992110539524,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 0.5,
+    "ratio": 11.038437194964851,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 0.45,
+    "ratio": 11.194902611106366,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "violet",
+    "shade": 0.4,
+    "ratio": 11.352310348099982,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 0.65,
+    "ratio": 10.34322794184247,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 0.6,
+    "ratio": 10.509536942381786,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 0.55,
+    "ratio": 10.677757586113794,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 0.5,
+    "ratio": 10.847836042364225,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 0.45,
+    "ratio": 11.019712798375274,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "foret",
+    "shade": 0.4,
+    "ratio": 11.19332245728862,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 0.65,
+    "ratio": 8.879911685387098,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 0.6,
+    "ratio": 9.131325095773484,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 0.55,
+    "ratio": 9.389384940582165,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 0.5,
+    "ratio": 9.654066336462376,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 0.45,
+    "ratio": 9.925315285125256,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ambre",
+    "shade": 0.4,
+    "ratio": 10.203045556320308,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 0.65,
+    "ratio": 10.089971825165513,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 0.6,
+    "ratio": 10.271509995114046,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 0.55,
+    "ratio": 10.455662636520865,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 0.5,
+    "ratio": 10.642382570137558,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 0.45,
+    "ratio": 10.831615209740354,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "ocean",
+    "shade": 0.4,
+    "ratio": 11.02329819720435,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 0.65,
+    "ratio": 9.950090121196874,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 0.6,
+    "ratio": 10.14085125217004,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 0.55,
+    "ratio": 10.334536640986958,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 0.5,
+    "ratio": 10.531089908600352,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 0.45,
+    "ratio": 10.73044530359137,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cuivre",
+    "shade": 0.4,
+    "ratio": 10.932527217750081,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 0.65,
+    "ratio": 9.144921539785898,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 0.6,
+    "ratio": 9.382405112743276,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 0.55,
+    "ratio": 9.625461245409172,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 0.5,
+    "ratio": 9.874044979569362,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 0.45,
+    "ratio": 10.12808814307778,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "citron",
+    "shade": 0.4,
+    "ratio": 10.387497228835478,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 0.65,
+    "ratio": 9.55929436058745,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 0.6,
+    "ratio": 9.775980790468656,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 0.55,
+    "ratio": 9.996514813545202,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 0.5,
+    "ratio": 10.220799023677952,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 0.45,
+    "ratio": 10.44871830381135,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "corail",
+    "shade": 0.4,
+    "ratio": 10.680138844674618,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 0.65,
+    "ratio": 9.238885634365912,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 0.6,
+    "ratio": 9.472320252761236,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 0.55,
+    "ratio": 9.710879194177842,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 0.5,
+    "ratio": 9.954493457992712,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 0.45,
+    "ratio": 10.203071020145611,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "menthe",
+    "shade": 0.4,
+    "ratio": 10.456494958939865,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 0.65,
+    "ratio": 10.615603267037638,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 0.6,
+    "ratio": 10.763282477264468,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 0.55,
+    "ratio": 10.912399636657376,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 0.5,
+    "ratio": 11.062917857085235,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 0.45,
+    "ratio": 11.21479705211646,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "saphir",
+    "shade": 0.4,
+    "ratio": 11.367993849920962,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 0.65,
+    "ratio": 10.071794029020563,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 0.6,
+    "ratio": 10.260531174013035,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 0.55,
+    "ratio": 10.451254025484138,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 0.5,
+    "ratio": 10.643832028694082,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 0.45,
+    "ratio": 10.838123200604693,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "fuchsia",
+    "shade": 0.4,
+    "ratio": 11.033973956612275,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 0.65,
+    "ratio": 9.354911773633916,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 0.6,
+    "ratio": 9.583492611798173,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 0.55,
+    "ratio": 9.816631793689607,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 0.5,
+    "ratio": 10.054228161630041,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 0.45,
+    "ratio": 10.296157511847897,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "emeraude",
+    "shade": 0.4,
+    "ratio": 10.542271003444018,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 0.65,
+    "ratio": 8.484172542258525,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 0.6,
+    "ratio": 8.75486010724699,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 0.55,
+    "ratio": 9.033989136883646,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 0.5,
+    "ratio": 9.321587774794436,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 0.45,
+    "ratio": 9.61764533043389,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "safran",
+    "shade": 0.4,
+    "ratio": 9.922107011530072,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 0.65,
+    "ratio": 9.483099551828294,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 0.6,
+    "ratio": 9.700436867018544,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 0.55,
+    "ratio": 9.92224192200888,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 0.5,
+    "ratio": 10.148479161233587,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 0.45,
+    "ratio": 10.379098198802575,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lavande",
+    "shade": 0.4,
+    "ratio": 10.614032633061916,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 0.65,
+    "ratio": 10.562854556448357,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 0.6,
+    "ratio": 10.719719821925246,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 0.55,
+    "ratio": 10.87741898328253,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 0.5,
+    "ratio": 11.035850978220479,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 0.45,
+    "ratio": 11.194909509809857,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "cerise",
+    "shade": 0.4,
+    "ratio": 11.354483121119793,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 0.65,
+    "ratio": 10.72408406996073,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 0.6,
+    "ratio": 10.86527250717133,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 0.55,
+    "ratio": 11.007604876231854,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 0.5,
+    "ratio": 11.15103924982945,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 0.45,
+    "ratio": 11.29553082162109,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "prune",
+    "shade": 0.4,
+    "ratio": 11.441031853459144,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 0.65,
+    "ratio": 8.77839085324983,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 0.6,
+    "ratio": 9.036911385959773,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 0.55,
+    "ratio": 9.30237745211693,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 0.5,
+    "ratio": 9.574735011074354,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 0.45,
+    "ratio": 9.853893858037555,
+    "text": "Inscriptions closes"
+  },
+  {
+    "width": 320,
+    "name": "lagon",
+    "shade": 0.4,
+    "ratio": 10.139723823185424,
+    "text": "Inscriptions closes"
+  }
+]
