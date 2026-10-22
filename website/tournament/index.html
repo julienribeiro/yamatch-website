@@ -43,230 +43,49 @@
 
     <link rel="stylesheet" href="../styles.min.css">
 
-    <style>
-        /* Scoped overrides for the tournament fallback page.
-           Re-uses the .download-page / .download-hero recipe (centred column,
-           wordmark reset, editorial typography) and adds:
-           - a stacked two-CTA layout (lime primary + dark secondary)
-           - an optional monospace ID chip below the title
-           - a minimal in-flow footer.
-           No tokens introduced; only spacing + the lime/dark CTAs which mirror
-           the accent button + .download-back recipes already in styles.css. */
-        /* .tournament-id : kept as orphan class for backward compat after
-           the ID chip was removed (founder UX change — surface tournament
-           name + criteria instead of the raw ID). */
-        .tournament-id {
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-            font-size: 0.8125rem;
-            color: var(--color-medium-gray);
-            background: rgba(16, 24, 40, 0.04);
-            padding: 6px 12px;
-            border-radius: 8px;
-            word-break: break-all;
-            max-width: 100%;
-            margin: 0;
-        }
-
-        /* Skeleton bars used during fetch — shimmer-less, just a neutral
-           pulsing fill on the title + body slots. Avoids importing the
-           full shimmer animation framework for a single-use loading state. */
-        .tournament-skeleton {
-            display: inline-block;
-            background: linear-gradient(
-                90deg,
-                rgba(16, 24, 40, 0.06) 0%,
-                rgba(16, 24, 40, 0.12) 50%,
-                rgba(16, 24, 40, 0.06) 100%
-            );
-            background-size: 200% 100%;
-            border-radius: 6px;
-            color: transparent;
-            animation: tournamentSkeletonPulse 1.4s ease-in-out infinite;
-        }
-
-        .tournament-skeleton-title {
-            height: 1.2em;
-            width: min(280px, 70vw);
-        }
-
-        .tournament-skeleton-body {
-            height: 1em;
-            width: min(220px, 60vw);
-        }
-
-        @keyframes tournamentSkeletonPulse {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .tournament-skeleton {
-                animation: none;
-            }
-        }
-
-        /* Cancelled banner — slim red-tinted sub-line above the criteria
-           when the tournament was cancelled but the share link is still
-           live. Stays editorial (no badge / no icon). */
-        .tournament-cancelled-note {
-            font-family: var(--font-body);
-            font-size: 0.9375rem;
-            color: var(--color-error);
-            margin: 0;
-        }
-
-        /* Price pill — dark inline-block on its own centred row between
-           the criteria line and the primary CTA. Width hugs the content
-           (size-to-fit), uses the dark text token as background to
-           mirror the .tournament-cta-secondary recipe. Hidden by default
-           via the [hidden] HTML attribute on the wrap; JS shows it when
-           price_per_team > 0. */
-        .tournament-price-wrap {
-            text-align: center;
-            margin-top: clamp(12px, 1.6vh, 16px);
-            margin-bottom: clamp(24px, 3.2vh, 32px);
-        }
-
-        .tournament-price-pill {
-            display: inline-block;
-            background-color: var(--color-text-primary);
-            color: var(--color-text-white);
-            font-family: var(--font-body);
-            font-weight: 600;
-            font-size: 0.9375rem;
-            line-height: 1;
-            padding: 10px 18px;
-            border-radius: var(--radius-pill);
-        }
-
-        .tournament-ctas {
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            gap: 12px;
-            width: 100%;
-            max-width: 320px;
-            margin-top: clamp(12px, 2vh, 24px);
-        }
-
-        /* Lime primary CTA — uses the brand accent token, black text.
-           Mirrors the .download-back geometry but with the lime fill. */
-        .tournament-cta-primary,
-        .tournament-cta-secondary {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: clamp(12px, 1.4vh, 16px) clamp(20px, 2.5vw, 32px);
-            font-family: var(--font-body);
-            font-weight: 600;
-            font-size: clamp(0.9rem, 1vw, 1rem);
-            text-decoration: none;
-            border-radius: var(--radius-pill);
-            transition:
-                background-color 220ms cubic-bezier(0.4, 0, 0.2, 1),
-                color 220ms cubic-bezier(0.4, 0, 0.2, 1),
-                transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .tournament-ctas [hidden] { display: none; }
-
-        button.tournament-cta-secondary { border: 0; cursor: pointer; }
-
-        .tournament-cta-primary {
-            background-color: var(--color-accent);
-            color: var(--color-text-primary);
-        }
-
-        .tournament-cta-primary:hover {
-            transform: translateY(-1px);
-            background-color: #C8EE00;
-        }
-
-        .tournament-cta-primary:focus-visible {
-            outline: 2px solid var(--color-text-primary);
-            outline-offset: 3px;
-        }
-
-        .tournament-cta-secondary {
-            background-color: var(--color-text-primary);
-            color: var(--color-text-white);
-        }
-
-        .tournament-cta-secondary:hover {
-            background-color: var(--color-button-glass-hover);
-        }
-
-        .tournament-cta-secondary:focus-visible {
-            outline: 2px solid var(--color-accent);
-            outline-offset: 3px;
-        }
-
-        /* Minimal in-flow footer — small Inter line centred at the bottom of
-           the page. Re-uses .download-page's flex column layout so the footer
-           sits naturally below the hero. */
-        .tournament-footer {
-            font-family: var(--font-body);
-            font-size: 0.8125rem;
-            color: var(--color-medium-gray);
-            margin: 0;
-        }
-
-        .tournament-footer a {
-            color: var(--color-medium-gray);
-            text-decoration: underline;
-            text-underline-offset: 3px;
-        }
-
-        .tournament-footer a:hover {
-            color: var(--color-text-primary);
-        }
-    </style>
 </head>
-<body>
-
-<main class="download-page">
-    <a class="wordmark wordmark-link" href="../" aria-label="Retour à l'accueil Yamatch">
-        <svg viewBox="0 0 1067.73 206.13" aria-hidden="true" focusable="false">
-            <path d="M277.28,3.42h28.94l22.78,99.93h1.42L353.19,3.42h79.15v199.29h-49.25V71.17h-3.42l-26.76,131.54h-46.4l-26.76-131.54h-3.42l-19.3,131.54h-9.97S277.28,3.42,277.28,3.42Z"/>
-            <path d="M480.72,3.42h84.84l42.7,199.29h-64.91l-2.85-20.5h-34.73l-2.85,20.5h-64.91L480.72,3.42ZM539.37,139.5l-14.23-74.02h-3.98l-14.24,74.02h32.46Z"/>
-            <path d="M638.43,52.95h-49.54V3.42h155.45v49.54h-49.54v149.76h-56.37V52.95Z"/>
-            <path d="M746.32,116.16v-26.19c0-60.64,6.83-89.97,77.73-89.97s77.72,27.33,77.72,75.73v12.81h-56.94v-21.35c0-11.67-4.56-18.79-20.78-18.79s-20.78,7.12-20.78,18.79v71.74c0,11.67,4.56,18.79,20.78,18.79s20.78-7.12,20.78-18.79v-22.49h56.94v13.95c0,48.4-6.83,75.73-77.72,75.73s-77.73-29.33-77.73-89.97Z"/>
-            <path d="M1011.35,125.27h-40.43v77.44h-56.37V3.42h56.37v79.15h40.43V3.42h56.37v199.29h-56.37v-77.44Z"/>
-            <path d="M201.99,3.41h84.84l-29.83,199.27h-64.91l4.61-20.5h-34.73l-10.31,20.5h-64.91L201.99,3.41ZM211.1,139.48l12.71-74.02h-3.99l-41.17,74.02h32.45Z"/>
-            <path d="M31.91,115.55L4.49,3.96h62.06l12.66,57.5h3.42L137.15,3.96h62.06l-108.66,111.59-31.91,87.68H0l31.91-87.68Z"/>
-        </svg>
-    </a>
-
-    <section class="download-hero" aria-labelledby="tournamentTitle">
-        <p class="download-eyebrow">Tournoi Yamatch</p>
-        <h1 id="tournamentTitle" class="download-title" aria-live="polite">
-            <span class="tournament-skeleton tournament-skeleton-title" aria-hidden="true">&nbsp;</span>
-        </h1>
-
-        <p id="tournamentCancelledNote" class="tournament-cancelled-note" hidden>
-            Ce tournoi a été annulé.
-        </p>
-
-        <p id="tournamentBody" class="download-body" aria-live="polite">
-            <span class="tournament-skeleton tournament-skeleton-body" aria-hidden="true">&nbsp;</span>
-        </p>
-
-        <div id="tournamentPriceWrap" class="tournament-price-wrap" hidden>
-            <span id="tournamentPrice" class="tournament-price-pill"></span>
+<body class="td-page">
+<main class="td-wrap" aria-labelledby="tournamentTitle">
+    <a class="td-back" href="/#derniers-tournois"><span aria-hidden="true">←</span> Tous les tournois</a>
+    <header id="tournamentHero" class="td-hero" aria-busy="true">
+        <time id="tournamentDate" class="td-date" hidden><b id="tournamentDay"></b><span id="tournamentMonth"></span></time>
+        <div class="td-hero-text">
+            <span id="tournamentStatus" class="td-badge" hidden></span>
+            <p id="tournamentCancelledNote" class="td-badge" hidden>Tournoi annulé</p>
+            <h1 id="tournamentTitle" aria-live="polite"><span class="tournament-skeleton tournament-skeleton-title" aria-hidden="true">&nbsp;</span></h1>
+            <p id="tournamentBody" class="td-meta" aria-live="polite"><span class="tournament-skeleton tournament-skeleton-body" aria-hidden="true">&nbsp;</span></p>
         </div>
-
-        <div class="tournament-ctas">
-            <a id="openInApp" class="tournament-cta-primary" href="#" aria-disabled="true" tabindex="-1">Ouvrir dans Yamatch</a>
-            <button id="retryTournament" class="tournament-cta-secondary" type="button" hidden>Réessayer</button>
-            <a class="tournament-cta-secondary" href="/download/">Télécharger Yamatch</a>
+        <span id="tournamentMonthGhost" class="td-ghost" aria-hidden="true"></span>
+    </header>
+    <div id="tournamentLayout" class="td-layout">
+        <div id="tournamentInfo" class="td-infos" hidden>
+            <section id="tournamentFactsSection" aria-labelledby="tournamentFactsTitle" hidden>
+                <h2 id="tournamentFactsTitle">Infos pratiques</h2>
+                <dl id="tournamentFacts" class="td-facts"></dl>
+            </section>
+            <section id="tournamentAboutSection" aria-labelledby="tournamentAboutTitle" hidden>
+                <h2 id="tournamentAboutTitle">Le tournoi</h2>
+                <p id="tournamentDescription" class="td-about" hidden></p>
+                <div id="tournamentEquipment" class="td-chips" hidden></div>
+            </section>
+            <div id="tournamentOrganizer" class="td-organizer" hidden>
+                <span id="tournamentOrganizerInitials" class="td-avatar" aria-hidden="true"></span>
+                <div><small>Organisé par</small><b id="tournamentOrganizerName"></b></div>
+            </div>
         </div>
-        <p class="download-body">Après installation, rouvre le lien reçu pour retrouver ce tournoi.</p>
-    </section>
-
-    <p class="tournament-footer">
-        <a href="../">Retour au site</a>
-    </p>
+        <aside class="td-panel" aria-labelledby="tournamentPanelTitle">
+            <h2 id="tournamentPanelTitle">Retrouve le tournoi dans l’app</h2>
+            <div id="tournamentPriceWrap" class="td-price" hidden><b id="tournamentPrice"></b><span>par équipe</span></div>
+            <p id="tournamentCapacity" hidden></p>
+            <p id="tournamentFinishedNote" class="td-caption" hidden>Le classement final se consulte dans l’app Yamatch.</p>
+            <a id="openInApp" class="td-cta" href="#" aria-disabled="true" tabindex="-1">S’inscrire dans l’app</a>
+            <a id="nextTournaments" class="td-cta" href="/#derniers-tournois" hidden>Voir les prochains tournois</a>
+            <button id="retryTournament" class="td-cta is-secondary" type="button" hidden>Réessayer</button>
+            <p class="td-caption">L’inscription et le paiement se font dans l’app Yamatch, disponible sur iPhone et Android.</p>
+            <a class="td-download" href="/download/">Télécharger Yamatch</a>
+            <p class="td-caption">Après installation, rouvre le lien reçu pour retrouver ce tournoi.</p>
+        </aside>
+    </div>
 </main>
 
 <script>
@@ -295,7 +114,7 @@
             var path = window.location.pathname.replace(/\/+$/, '');
             var match = path.match(/\/tournament\/(.+)$/);
             if (match && match[1]) {
-                return decodeURIComponent(match[1]);
+                try { return decodeURIComponent(match[1]); } catch (_) { return null; }
             }
             return null;
         }
@@ -315,6 +134,14 @@
         var priceEl = document.getElementById('tournamentPrice');
         var openInAppLink = document.getElementById('openInApp');
         var retryButton = document.getElementById('retryTournament');
+        var heroEl = document.getElementById('tournamentHero');
+        var infoEl = document.getElementById('tournamentInfo');
+        var statusEl = document.getElementById('tournamentStatus');
+        var dateEl = document.getElementById('tournamentDate');
+        var panelTitleEl = document.getElementById('tournamentPanelTitle');
+        var capacityEl = document.getElementById('tournamentCapacity');
+        var finishedNoteEl = document.getElementById('tournamentFinishedNote');
+        var nextLink = document.getElementById('nextTournaments');
         var loading = false;
         var activeTargetId = null;
         openInAppLink.addEventListener('click', function (evt) {
@@ -383,19 +210,110 @@
             return rounded.toLocaleString('fr-FR') + ' €';
         }
 
-        // Build "4v4 · Mixte · Paris" — joins only the truthy segments
-        // with " · " (U+00B7 middle dot, spaces around). The team format
-        // (NvN) replaces the previous competition format (Pools / Bracket).
-        // Price now lives in its own centred pill below this line.
-        function formatCriteria(tournament) {
-            var segments = [];
+        function cleanText(value) {
+            return typeof value === 'string' ? value.trim() : '';
+        }
+        function teamFormat(tournament) {
             var n = tournament.players_per_team;
-            if (typeof n === 'number' && isFinite(n) && n > 0) {
-                segments.push(n + 'v' + n);
-            }
-            if (tournament.gender) segments.push(String(tournament.gender));
-            if (tournament.location) segments.push(String(tournament.location));
-            return segments.join(' · ');
+            return Number.isInteger(n) && n > 0 ? n + '×' + n : '';
+        }
+        function formatCriteria(tournament) {
+            return [cleanText(tournament.location), teamFormat(tournament), cleanText(tournament.gender)].filter(Boolean).join(' • ');
+        }
+        function tournamentDate(value) {
+            if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
+            var date = new Date(value + 'T12:00:00Z');
+            return !isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value ? date : null;
+        }
+        function parisToday() {
+            var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date());
+            var values = {};
+            parts.forEach(function (part) { values[part.type] = part.value; });
+            return values.year + '-' + values.month + '-' + values.day;
+        }
+        function icon(path, size) {
+            var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svg.setAttribute('width', String(size || 20));
+            svg.setAttribute('height', String(size || 20));
+            svg.setAttribute('viewBox', '0 0 24 24');
+            svg.setAttribute('fill', 'none');
+            svg.setAttribute('stroke', 'currentColor');
+            svg.setAttribute('stroke-width', '2');
+            svg.setAttribute('stroke-linecap', 'round');
+            svg.setAttribute('stroke-linejoin', 'round');
+            svg.setAttribute('aria-hidden', 'true');
+            svg.setAttribute('focusable', 'false');
+            var shape = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            shape.setAttribute('d', path);
+            svg.appendChild(shape);
+            return svg;
+        }
+        function addFact(label, value, path) {
+            if (!value) return;
+            var fact = document.createElement('div');
+            fact.className = 'td-fact';
+            var emblem = document.createElement('span');
+            emblem.className = 'td-icon';
+            emblem.setAttribute('aria-hidden', 'true');
+            emblem.appendChild(icon(path));
+            var term = document.createElement('dt');
+            term.textContent = label;
+            var detail = document.createElement('dd');
+            detail.textContent = value;
+            term.appendChild(emblem);
+            fact.appendChild(term);
+            fact.appendChild(detail);
+            document.getElementById('tournamentFacts').appendChild(fact);
+        }
+        function renderDetails(tournament, date, price) {
+            var facts = document.getElementById('tournamentFacts');
+            facts.textContent = '';
+            var fullDate = date ? new Intl.DateTimeFormat('fr-FR', { timeZone: 'UTC', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(date) : '';
+            addFact('Date', fullDate ? fullDate.charAt(0).toUpperCase() + fullDate.slice(1) : '', 'M8 2v4M16 2v4M3 10h18M5 4h14v18H3V4z');
+            var time = cleanText(tournament.start_time).match(/^([01]\d|2[0-3]):([0-5]\d)(?::[0-5]\d)?$/);
+            addFact('Coup d’envoi', time ? Number(time[1]) + ' h ' + time[2] : '', 'M12 7v5l3 2M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z');
+            addFact('Lieu', cleanText(tournament.address) || cleanText(tournament.location), 'M12 22s7-6 7-12a7 7 0 0 0-14 0c0 6 7 12 7 12zM12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6z');
+            addFact('Format', [teamFormat(tournament), cleanText(tournament.gender)].filter(Boolean).join(' · '), 'M17 20v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2M10 10a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM21 20v-2a4 4 0 0 0-3-4');
+            var levelLabels = { loisir: 'Loisir', departemental: 'Départemental', regional: 'Régional', preNational: 'Pré-National', national: 'National' };
+            var levels = Array.isArray(tournament.levels) ? Object.keys(levelLabels).filter(function (key) { return tournament.levels.indexOf(key) !== -1; }).map(function (key) { return levelLabels[key]; }).join(' · ') : '';
+            addFact('Niveau', levels, 'M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z');
+            addFact('Prix par équipe', price, 'M3 7h18v10H3zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z');
+            document.getElementById('tournamentFactsSection').hidden = !facts.children.length;
+            var description = cleanText(tournament.description);
+            var descriptionEl = document.getElementById('tournamentDescription');
+            descriptionEl.textContent = description;
+            descriptionEl.hidden = !description;
+            var equipment = document.getElementById('tournamentEquipment');
+            equipment.textContent = '';
+            var amenities = [];
+            var surfaces = { indoor: 'Indoor', outdoor: 'Outdoor', beach: 'Beach' };
+            var terrain = surfaces[cleanText(tournament.terrain).toLowerCase()];
+            if (terrain) amenities.push(terrain);
+            if (tournament.has_buvette === true) amenities.push('Buvette');
+            if (tournament.has_accessible_parking === true) amenities.push('Parking accessible');
+            if (tournament.has_prizes === true) amenities.push('Lots à gagner');
+            amenities.forEach(function (label) { var chip = document.createElement('span'); chip.textContent = label; equipment.appendChild(chip); });
+            equipment.hidden = !amenities.length;
+            document.getElementById('tournamentAboutSection').hidden = !description && !amenities.length;
+            var organizer = cleanText(tournament.organizer_name);
+            document.getElementById('tournamentOrganizer').hidden = !organizer;
+            document.getElementById('tournamentOrganizerName').textContent = organizer;
+            document.getElementById('tournamentOrganizerInitials').textContent = organizer.split(/\s+/).filter(Boolean).slice(0, 2).map(function (word) { return Array.from(word)[0]; }).join('').toUpperCase();
+            infoEl.hidden = !facts.children.length && !description && !amenities.length && !organizer;
+        }
+        function resetDetails() {
+            heroEl.className = 'td-hero is-past';
+            infoEl.hidden = true;
+            statusEl.hidden = true;
+            dateEl.hidden = true;
+            document.getElementById('tournamentMonthGhost').textContent = '';
+            capacityEl.hidden = true;
+            finishedNoteEl.hidden = true;
+            nextLink.hidden = true;
+            openInAppLink.hidden = false;
+            openInAppLink.className = 'td-cta';
+            openInAppLink.textContent = 'Ouvrir dans Yamatch';
+            panelTitleEl.textContent = 'Retrouve le tournoi dans l’app';
         }
 
         // GET /rest/v1/tournaments?id=eq.<id>&select=... — returns the
@@ -405,7 +323,7 @@
             var url = SUPABASE_URL
                 + '/rest/v1/tournaments'
                 + '?id=eq.' + encodeURIComponent(targetId)
-                + '&select=title,players_per_team,gender,location,price_per_team,status';
+                + '&select=title,players_per_team,gender,location,price_per_team,status,date,start_time,address,levels,is_free,max_teams,description,terrain,has_buvette,has_accessible_parking,has_prizes,organizer_name,registrations_closed,is_closed';
             var controller = new AbortController();
             var timeout = window.setTimeout(function () { controller.abort(); }, FETCH_TIMEOUT_MS);
             return fetch(url, {
@@ -430,6 +348,7 @@
 
         // ---------- Render states ----------
         function renderNotFound() {
+            resetDetails();
             setTitleText('Tournoi introuvable');
             setBodyText("Ce tournoi n'existe plus ou a été retiré.");
             showCancelledNote(false);
@@ -438,6 +357,8 @@
         }
 
         function renderInvalidLink() {
+            resetDetails();
+            heroEl.setAttribute('aria-busy', 'false');
             setTitleText('Tournoi Yamatch');
             setBodyText('Lien de tournoi invalide ou expiré.');
             showCancelledNote(false);
@@ -446,20 +367,43 @@
         }
 
         function renderSuccess(tournament, targetId) {
-            setTitleText(tournament.title || 'Tournoi Yamatch');
-            setBodyText(formatCriteria(tournament));
-            // Price pill stays visible for cancelled tournaments (legit
-            // info even when registration is closed). Hidden only when
-            // price_per_team is null / 0 / unparseable.
-            setPricePill(formatPrice(tournament.price_per_team));
+            var date = tournamentDate(tournament.date);
             var isCancelled = tournament.status === 'cancelled';
+            // D3: capacity is public, occupancy is not. Never infer "Complet"
+            // from is_closed (whole-tournament closure) or from max_teams.
+            var isPast = !isCancelled && (tournament.status === 'finished' || tournament.is_closed === true || (date && tournament.date < parisToday()));
+            var isClosed = tournament.registrations_closed === true;
+            var open = tournament.registrations_closed === false && tournament.is_closed === false;
+            var price = tournament.is_free === true ? 'Gratuit' : formatPrice(tournament.price_per_team);
+            setTitleText(cleanText(tournament.title) || 'Tournoi Yamatch');
+            document.title = titleEl.textContent + ' · Yamatch';
+            setBodyText(formatCriteria(tournament));
+            heroEl.className = 'td-hero' + (isCancelled ? ' is-cancelled' : isPast ? ' is-past' : '');
             showCancelledNote(isCancelled);
-            if (isCancelled) {
-                // Cancelled tournament — user can no longer register.
-                disableCta();
-            } else {
-                enableCta(targetId);
+            statusEl.hidden = isCancelled;
+            statusEl.className = 'td-badge' + (!isPast && !open ? ' is-muted' : '');
+            statusEl.textContent = isPast ? 'Terminé' : isClosed ? 'Inscriptions closes' : open ? 'Inscriptions ouvertes' : 'À venir';
+            if (isPast) statusEl.insertBefore(icon('M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3', 14), statusEl.firstChild);
+            dateEl.hidden = !date;
+            if (date) {
+                dateEl.setAttribute('datetime', tournament.date);
+                document.getElementById('tournamentDay').textContent = String(date.getUTCDate());
+                document.getElementById('tournamentMonth').textContent = new Intl.DateTimeFormat('fr-FR', { timeZone: 'UTC', month: 'short' }).format(date).replace(/\./g, '').toUpperCase();
+                document.getElementById('tournamentMonthGhost').textContent = new Intl.DateTimeFormat('fr-FR', { timeZone: 'UTC', month: 'long' }).format(date);
             }
+            renderDetails(tournament, date, price);
+            panelTitleEl.textContent = isCancelled ? 'Tournoi annulé' : isPast ? 'Tournoi terminé' : isClosed ? 'Inscriptions closes' : 'Réserve ta place';
+            setPricePill(isPast ? null : price);
+            var capacity = tournament.max_teams;
+            capacityEl.hidden = isPast || isCancelled || !Number.isInteger(capacity) || capacity <= 0;
+            capacityEl.textContent = capacityEl.hidden ? '' : 'Jusqu’à ' + capacity + ' équipes';
+            finishedNoteEl.hidden = !isPast;
+            nextLink.hidden = !isPast && !isCancelled;
+            openInAppLink.hidden = isPast || isCancelled;
+            openInAppLink.textContent = isClosed ? 'Voir dans l’app' : 'S’inscrire dans l’app';
+            openInAppLink.className = 'td-cta' + (isClosed ? ' is-secondary' : '');
+            if (isCancelled || isPast) disableCta();
+            else enableCta(targetId);
         }
 
         // ---------- Smart deep link ----------
@@ -527,12 +471,21 @@
         function loadTournament() {
             if (loading) return;
             loading = true;
+            resetDetails();
+            heroEl.setAttribute('aria-busy', 'true');
             retryButton.hidden = true;
             disableCta();
             showCancelledNote(false);
             setPricePill(null);
-            setTitleText('Chargement du tournoi…');
-            setBodyText('Un instant, nous récupérons les informations.');
+            setTitleText('');
+            setBodyText('');
+            [[titleEl, 'title'], [bodyEl, 'body']].forEach(function (slot) {
+                var skeleton = document.createElement('span');
+                skeleton.className = 'tournament-skeleton tournament-skeleton-' + slot[1];
+                skeleton.setAttribute('aria-hidden', 'true');
+                slot[0].appendChild(skeleton);
+            });
+            titleEl.setAttribute('aria-label', 'Chargement du tournoi…');
             fetchTournament(id).then(function (tournament) {
                 if (!tournament) renderNotFound();
                 else renderSuccess(tournament, id);
@@ -540,7 +493,7 @@
                 setTitleText('Chargement impossible');
                 setBodyText('Les informations sont temporairement indisponibles. Vérifie ta connexion et réessaie.');
                 retryButton.hidden = false;
-            }).finally(function () { loading = false; });
+            }).finally(function () { loading = false; heroEl.setAttribute('aria-busy', 'false'); titleEl.removeAttribute('aria-label'); });
         }
         retryButton.addEventListener('click', loadTournament);
         loadTournament();

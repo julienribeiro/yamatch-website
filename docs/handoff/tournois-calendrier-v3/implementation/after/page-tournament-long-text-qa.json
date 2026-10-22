@@ -1,0 +1,179 @@
+{
+  "date": "2026-10-22T12:00:00Z",
+  "timezone": "Europe/Paris",
+  "fixture": "Long title/address/description/organizer; description includes 360-character unbroken token; future tournament",
+  "results": [
+    {
+      "width": 320,
+      "scrollWidth": 320,
+      "overflow": false,
+      "elements": [
+        {
+          "id": "tournamentTitle",
+          "width": 240,
+          "left": 40,
+          "right": 280,
+          "scrollWidth": 240,
+          "clientWidth": 240,
+          "textLength": 359
+        },
+        {
+          "id": "tournamentDescription",
+          "width": 288,
+          "left": 16,
+          "right": 304,
+          "scrollWidth": 288,
+          "clientWidth": 288,
+          "textLength": 2522
+        },
+        {
+          "id": "tournamentOrganizerName",
+          "width": 190,
+          "left": 98,
+          "right": 288,
+          "scrollWidth": 190,
+          "clientWidth": 190,
+          "textLength": 491
+        },
+        {
+          "id": "tournamentBody",
+          "width": 240,
+          "left": 40,
+          "right": 280,
+          "scrollWidth": 240,
+          "clientWidth": 240,
+          "textLength": 142
+        }
+      ]
+    },
+    {
+      "width": 820,
+      "scrollWidth": 820,
+      "overflow": false,
+      "elements": [
+        {
+          "id": "tournamentTitle",
+          "width": 574.40625,
+          "left": 196.796875,
+          "right": 771.203125,
+          "scrollWidth": 574,
+          "clientWidth": 574,
+          "textLength": 359
+        },
+        {
+          "id": "tournamentDescription",
+          "width": 624.84375,
+          "left": 16,
+          "right": 640.84375,
+          "scrollWidth": 625,
+          "clientWidth": 625,
+          "textLength": 2522
+        },
+        {
+          "id": "tournamentOrganizerName",
+          "width": 690,
+          "left": 98,
+          "right": 788,
+          "scrollWidth": 690,
+          "clientWidth": 690,
+          "textLength": 491
+        },
+        {
+          "id": "tournamentBody",
+          "width": 574.40625,
+          "left": 196.796875,
+          "right": 771.203125,
+          "scrollWidth": 574,
+          "clientWidth": 574,
+          "textLength": 142
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "scrollWidth": 1024,
+      "overflow": false,
+      "elements": [
+        {
+          "id": "tournamentTitle",
+          "width": 762.09375,
+          "left": 204.953125,
+          "right": 967.046875,
+          "scrollWidth": 762,
+          "clientWidth": 762,
+          "textLength": 359
+        },
+        {
+          "id": "tournamentDescription",
+          "width": 600,
+          "left": 16,
+          "right": 616,
+          "scrollWidth": 600,
+          "clientWidth": 600,
+          "textLength": 2522
+        },
+        {
+          "id": "tournamentOrganizerName",
+          "width": 502,
+          "left": 98,
+          "right": 600,
+          "scrollWidth": 502,
+          "clientWidth": 502,
+          "textLength": 491
+        },
+        {
+          "id": "tournamentBody",
+          "width": 762.09375,
+          "left": 204.953125,
+          "right": 967.046875,
+          "scrollWidth": 762,
+          "clientWidth": 762,
+          "textLength": 142
+        }
+      ]
+    },
+    {
+      "width": 1920,
+      "scrollWidth": 1920,
+      "overflow": false,
+      "elements": [
+        {
+          "id": "tournamentTitle",
+          "width": 916,
+          "left": 576,
+          "right": 1492,
+          "scrollWidth": 916,
+          "clientWidth": 916,
+          "textLength": 359
+        },
+        {
+          "id": "tournamentDescription",
+          "width": 625.8125,
+          "left": 380,
+          "right": 1005.8125,
+          "scrollWidth": 626,
+          "clientWidth": 626,
+          "textLength": 2522
+        },
+        {
+          "id": "tournamentOrganizerName",
+          "width": 670,
+          "left": 462,
+          "right": 1132,
+          "scrollWidth": 670,
+          "clientWidth": 670,
+          "textLength": 491
+        },
+        {
+          "id": "tournamentBody",
+          "width": 916,
+          "left": 576,
+          "right": 1492,
+          "scrollWidth": 916,
+          "clientWidth": 916,
+          "textLength": 142
+        }
+      ]
+    }
+  ]
+}

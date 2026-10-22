@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-22T12:00:00Z",
+  "timezone": "Europe/Paris",
+  "reducedMotion": "reduce",
+  "results": [
+    {
+      "width": 1440,
+      "scroll": 610,
+      "currentLeft": 88.5625,
+      "railLeft": 24,
+      "overflow": false,
+      "months": 4,
+      "sectionBottom": 928.328125,
+      "badgeTop": 941.94677734375,
+      "thumbWidth": "479.734px"
+    },
+    {
+      "width": 820,
+      "scroll": 411,
+      "currentLeft": 52.625,
+      "railLeft": 16,
+      "overflow": false,
+      "months": 4,
+      "sectionBottom": 853.875,
+      "badgeTop": 890.25927734375,
+      "thumbWidth": "165.078px"
+    },
+    {
+      "width": 390,
+      "scroll": 404,
+      "currentLeft": 15.890625,
+      "railLeft": 0,
+      "overflow": false,
+      "months": 4,
+      "sectionBottom": 844.125,
+      "badgeTop": 0,
+      "thumbWidth": "45.9219px"
+    }
+  ]
+}

@@ -1096,7 +1096,6 @@
 
     var MAX_RECENT = 9;
     var MAX_UPCOMING = 6;
-    var MAX_UPCOMING_V2 = 5;
     var MAX_ORGANIZER_RAIL = 6;
     var MAX_STAT_VALUE = 10000000;
     var MAX_TEXT_LENGTH = 120;
@@ -1463,7 +1462,9 @@
     // Participant tickets share only normalized data with the organiser rail.
     var ticketDayFormatter = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', timeZone: 'UTC' });
     var ticketMonthFormatter = new Intl.DateTimeFormat('fr-FR', { month: 'short', timeZone: 'UTC' });
-    var tickerDateFormatter = new Intl.DateTimeFormat('fr-FR', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+    var calendarMonthFormatter = new Intl.DateTimeFormat('fr-FR', { month: 'long', timeZone: 'UTC' });
+    var calendarTodayFormatter = new Intl.DateTimeFormat('fr-FR', { year: 'numeric', month: 'numeric', day: 'numeric', timeZone: 'Europe/Paris' });
+    var calendarCleanups = new WeakMap();
 
     function participantDate(value) {
         var parts = DATE_PATTERN.exec(value);
@@ -1488,12 +1489,12 @@
         return svg;
     }
 
-    function appTicket(t, demo) {
+    function appTicket(t, demo, past) {
         var full = t.maxTeams !== null && t.teamsCount >= t.maxTeams;
         var closed = !t.registrationsOpen;
         var item = el('li');
         item.setAttribute('data-showcase-generated', '');
-        var card = el('article', 'tp-ticket' + (closed && !full ? ' is-closed' : '') + (full ? ' is-full' : ''));
+        var card = el('article', 'tp-ticket' + (past ? ' is-past' : (closed && !full ? ' is-closed' : '') + (full ? ' is-full' : '')));
         var head = el('div', 'tp-head');
         var date = participantDate(t.date);
         var time = el('time', 'tp-date');
@@ -1503,7 +1504,7 @@
         time.appendChild(el('span', 'tp-month', ticketMonthFormatter.format(date).replace(/\./g, '').toLocaleUpperCase('fr-FR')));
         head.appendChild(time);
         var info = el('div', 'tp-info');
-        info.appendChild(el('h3', 'tp-name', t.title));
+        info.appendChild(el('h4', 'tp-name', t.title));
         var meta = [];
         if (t.city) meta.push(t.city);
         if (t.playersPerTeam) meta.push(t.playersPerTeam + '×' + t.playersPerTeam);
@@ -1514,12 +1515,19 @@
         chevron.appendChild(participantIcon('M9 6l6 6-6 6', 20));
         head.appendChild(chevron);
         var counts = el('div', 'tp-counts');
-        counts.appendChild(el('span', 'tp-count', formatNumber(t.teamsCount) +
-            (t.maxTeams !== null ? '/' + formatNumber(t.maxTeams) : '') + ' inscrits'));
-        if (t.maxTeams !== null) {
-            var status = el('span', 'tp-status' + (full || closed ? ' is-muted' : ''));
+        if (past) {
+            if (t.teamsCount > 0) counts.appendChild(el('span', 'tp-count', countLabel(t.teamsCount, 'équipe', 'équipes')));
+        } else {
+            counts.appendChild(el('span', 'tp-count', formatNumber(t.teamsCount) +
+                (t.maxTeams !== null ? '/' + formatNumber(t.maxTeams) : '') + ' inscrits'));
+        }
+        if (past || t.maxTeams !== null) {
+            var status = el('span', 'tp-status' + (!past && (full || closed) ? ' is-muted' : ''));
             // Full takes precedence in both the label and the gradient head palette.
-            if (full || closed) {
+            if (past) {
+                status.appendChild(participantIcon('M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3', 14));
+                status.appendChild(document.createTextNode('Terminé'));
+            } else if (full || closed) {
                 status.textContent = full ? 'Complet' : 'Inscriptions closes';
             } else {
                 var dot = el('span', 'tp-status-dot');
@@ -1531,7 +1539,7 @@
             var progress = el('span', 'tp-progress');
             progress.setAttribute('aria-hidden', 'true');
             var fill = el('span', 'tp-progress-fill');
-            fill.style.setProperty('--tp-fill', String(Math.min(1, t.teamsCount / t.maxTeams)));
+            fill.style.setProperty('--tp-fill', String(past ? 1 : Math.min(1, t.teamsCount / t.maxTeams)));
             progress.appendChild(fill);
             head.appendChild(progress);
         }
@@ -1541,12 +1549,8 @@
         tear.setAttribute('aria-hidden', 'true');
         card.appendChild(tear);
         var foot = el('div', 'tp-foot');
-        var expand = el('span', 'tp-expand');
-        expand.setAttribute('aria-hidden', 'true');
-        expand.appendChild(participantIcon('M6 9l6 6 6-6', 24));
-        foot.appendChild(expand);
         // Demo preserves the visual CTA without navigating to a fictitious id.
-        var link = el(demo ? 'span' : 'a', 'tp-cta' + (full || closed ? ' is-secondary' : ''), full || closed ? 'Voir le tournoi' : 'S’inscrire');
+        var link = el(demo ? 'span' : 'a', 'tp-cta' + (past || full || closed ? ' is-secondary' : ''), 'Voir le tournoi');
         if (demo) link.setAttribute('aria-disabled', 'true');
         else link.href = '/tournament/?id=' + encodeURIComponent(t.id);
         link.appendChild(srText(NBSP + ': ' + t.title));
@@ -1556,33 +1560,138 @@
         return item;
     }
 
-    function renderTicker(section, recent) {
-        var track = section.querySelector('[data-showcase-ticker]');
-        var ticker = track && track.closest('.tp-ticker');
-        if (!track || !ticker) throw new Error('showcase_ticker_missing');
-        clear(track);
-        ticker.hidden = !recent.length;
-        for (var copy = 0; copy < 2; copy++) {
-            recent.slice(0, MAX_RECENT).forEach(function (t) {
-                var item = el('li', 'tp-ticker-item' + (copy ? ' tp-ticker-copy' : ''));
-                if (copy) item.setAttribute('aria-hidden', 'true');
-                item.appendChild(el('span', 'tp-ticker-title', t.title));
-                var parts = [];
-                if (t.city) parts.push(t.city);
-                parts.push(tickerDateFormatter.format(participantDate(t.date)));
-                if (t.teamsCount > 0) parts.push(countLabel(t.teamsCount, 'équipe', 'équipes'));
-                item.appendChild(el('span', 'tp-ticker-meta', parts.join(' · ')));
-                item.appendChild(participantIcon('M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4zM17 6h3v2a3 3 0 0 1-3 3M7 6H4v2a3 3 0 0 0 3 3', 16));
-                track.appendChild(item);
-            });
-        }
-    }
-
     function clearParticipant(rail) {
         if (!rail) return;
-        Array.from(rail.children).forEach(function (child) {
-            if (!child.hasAttribute('data-showcase-create')) rail.removeChild(child);
+        var cleanup = calendarCleanups.get(rail);
+        if (cleanup) cleanup();
+        var create = rail.querySelector('[data-showcase-create]');
+        if (create) create.remove();
+        clear(rail);
+        if (create) rail.appendChild(create);
+    }
+
+    function renderCalendar(rail, model, demo) {
+        clearParticipant(rail);
+        var create = rail.querySelector('[data-showcase-create]');
+        if (!create) throw new Error('showcase_creation_missing');
+        var today = {};
+        calendarTodayFormatter.formatToParts(new Date()).forEach(function (part) {
+            if (part.type !== 'literal') today[part.type] = Number(part.value);
         });
+        var current = today.year * 12 + today.month - 1;
+        var months = new Map();
+        function ensure(key) {
+            if (!months.has(key)) months.set(key, []);
+            return months.get(key);
+        }
+        function add(t, past) {
+            var date = participantDate(t.date);
+            ensure(date.getUTCFullYear() * 12 + date.getUTCMonth()).push({ tournament: t, past: past });
+        }
+        model.recent.forEach(function (t) { add(t, true); });
+        model.upcoming.forEach(function (t) { add(t, false); });
+        if (months.has(current) || model.upcoming.length) ensure(current);
+        var last = Math.max(current + 2, ...Array.from(months.keys()));
+        for (var month = current + 1; month <= last; month++) ensure(month);
+        var keys = Array.from(months.keys()).sort(function (a, b) { return a - b; });
+        keys.forEach(function (key, index) {
+            var entries = months.get(key).sort(function (a, b) {
+                if (key === current && a.past !== b.past) return a.past ? -1 : 1;
+                return a.tournament.date.localeCompare(b.tournament.date);
+            });
+            var date = new Date(Date.UTC(Math.floor(key / 12), key % 12, 1));
+            var name = calendarMonthFormatter.format(date);
+            var group = el('div', 'tp-month ' + (key < current ? 'is-past' : key === current ? 'is-current' : 'is-future'));
+            group.setAttribute('role', 'group');
+            var headingId = rail.id + '-month-' + key;
+            group.setAttribute('aria-labelledby', headingId);
+            var head = el('div', 'tp-month-head');
+            var heading = el('h3', 'tp-month-name', name);
+            heading.id = headingId;
+            heading.appendChild(srText(' ' + date.getUTCFullYear()));
+            head.appendChild(heading);
+            var count = countLabel(entries.length, 'tournoi', 'tournois');
+            head.appendChild(el('span', 'tp-month-count', key === current ? 'Ce mois-ci · ' + count : entries.length ? count : 'Rien encore'));
+            group.appendChild(head);
+            var cards = el('ol', 'tp-month-cards');
+            var markerAdded = false;
+            function todayMarker() {
+                var marker = el('li', 'tp-today');
+                marker.appendChild(el('span', null, 'Aujourd’hui · ' + today.day));
+                cards.appendChild(marker);
+                markerAdded = true;
+            }
+            entries.forEach(function (entry) {
+                if (key === current && !entry.past && !markerAdded) todayMarker();
+                cards.appendChild(appTicket(entry.tournament, demo, entry.past));
+            });
+            if (key === current && !markerAdded) todayMarker();
+            if (key > current && !entries.length) {
+                var empty = el('li', 'tp-empty');
+                empty.appendChild(el('p', null, 'Aucun tournoi en ' + name + ' pour l’instant.'));
+                var link = el('a', null, 'Créer le premier →');
+                link.href = '/organisateur/';
+                empty.appendChild(link);
+                cards.appendChild(empty);
+            }
+            if (index === keys.length - 1) {
+                var creationItem = el('li');
+                creationItem.appendChild(create);
+                cards.appendChild(creationItem);
+            }
+            group.appendChild(cards);
+            rail.appendChild(group);
+        });
+    }
+
+    function wireCalendarProgress(section, rail) {
+        var thumb = section.querySelector('[data-showcase-progress]');
+        var target = rail.querySelector('.tp-month.is-current') || rail.querySelector('.tp-month.is-future');
+        var pending = 0;
+        var interacted = false;
+        var disposed = false;
+        function update() {
+            pending = 0;
+            if (!thumb) return;
+            var width = rail.scrollWidth;
+            var visible = width ? Math.min(1, rail.clientWidth / width) : 1;
+            var max = Math.max(0, width - rail.clientWidth);
+            var fraction = max ? Math.max(0, Math.min(1, rail.scrollLeft / max)) : 0;
+            thumb.style.setProperty('--tp-scroll-size', (visible * 100) + '%');
+            thumb.style.setProperty('--tp-scroll-offset', (fraction * (1 - visible) * 100) + '%');
+        }
+        function schedule() {
+            if (!pending) pending = window.requestAnimationFrame(update);
+        }
+        function align() {
+            if (disposed) return;
+            if (target && !interacted) {
+                var padding = parseFloat(window.getComputedStyle(rail).paddingLeft) || 0;
+                rail.scrollLeft += target.getBoundingClientRect().left - rail.getBoundingClientRect().left - padding;
+            }
+            schedule();
+        }
+        function markInteraction() { interacted = true; }
+        rail.addEventListener('scroll', schedule, { passive: true });
+        ['pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(function (name) {
+            rail.addEventListener(name, markInteraction, { passive: true });
+        });
+        window.addEventListener('resize', schedule);
+        var observer = typeof ResizeObserver === 'function' ? new ResizeObserver(schedule) : null;
+        if (observer) observer.observe(rail);
+        calendarCleanups.set(rail, function () {
+            disposed = true;
+            if (pending) window.cancelAnimationFrame(pending);
+            rail.removeEventListener('scroll', schedule);
+            ['pointerdown', 'touchstart', 'wheel', 'keydown'].forEach(function (name) {
+                rail.removeEventListener(name, markInteraction);
+            });
+            window.removeEventListener('resize', schedule);
+            if (observer) observer.disconnect();
+            calendarCleanups.delete(rail);
+        });
+        align();
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(align);
     }
 
     function gauge(t) {
@@ -1656,12 +1765,6 @@
             clear(rail);
         } else {
             clearParticipant(rail);
-            var track = section.querySelector('[data-showcase-ticker]');
-            if (track) {
-                clear(track);
-                var ticker = track.closest('.tp-ticker');
-                if (ticker) ticker.hidden = true;
-            }
         }
         if (wasVisible) window.dispatchEvent(new Event('yamatch:showcase-layout'));
     }
@@ -1674,7 +1777,7 @@
 
         var items = variant === 'organizer'
             ? model.recent.slice(0, MAX_ORGANIZER_RAIL).map(function (t) { return ticket(t, 'played', demo); })
-            : model.upcoming.slice(0, MAX_UPCOMING_V2).map(function (t) { return appTicket(t, demo); });
+            : [];
 
         // A creation card alone never makes an empty participant section visible.
         if (variant === 'organizer' ? !items.length : !hasTickets(model)) {
@@ -1691,14 +1794,11 @@
             clear(rail);
             items.forEach(function (node) { rail.appendChild(node); });
         } else {
-            var create = rail.querySelector('[data-showcase-create]');
-            if (!create) throw new Error('showcase_creation_missing');
-            clearParticipant(rail);
-            items.forEach(function (node) { rail.insertBefore(node, create); });
-            renderTicker(section, model.recent);
+            renderCalendar(rail, model, demo);
         }
         section.hidden = false;
         if (variant === 'organizer') wireRailNav(block, rail);
+        else wireCalendarProgress(section, rail);
         window.dispatchEvent(new Event('yamatch:showcase-layout'));
     }
 

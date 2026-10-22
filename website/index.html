@@ -745,33 +745,23 @@
 
     <!-- Tournois alimentés par script.js, masqués jusqu’à réception de données valides. -->
     <section class="showcase tp-band" id="derniers-tournois" data-showcase data-showcase-variant="participant" aria-labelledby="showcaseRailTitle" hidden>
-        <svg class="tp-court tp-court--desktop" viewBox="0 0 1392 900" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true" focusable="false">
-            <rect x="120" y="90" width="1152" height="620" rx="4"/>
-            <line class="tp-court-net" x1="696" y1="60" x2="696" y2="740"/>
-            <line x1="504" y1="90" x2="504" y2="710"/>
-            <line x1="888" y1="90" x2="888" y2="710"/>
-        </svg>
-        <svg class="tp-court tp-court--mobile" viewBox="0 0 390 1200" preserveAspectRatio="xMidYMid slice" fill="none" aria-hidden="true" focusable="false">
-            <rect x="30" y="60" width="330" height="1080" rx="4"/>
-            <line class="tp-court-net" x1="10" y1="600" x2="380" y2="600"/>
-            <line x1="30" y1="420" x2="360" y2="420"/>
-            <line x1="30" y1="780" x2="360" y2="780"/>
-        </svg>
         <div class="tp-content" data-showcase-rail-block>
             <header class="tp-header">
-                <p class="tp-eyebrow"><span class="tp-eyebrow-dot" aria-hidden="true"></span>Les tournois sur Yamatch</p>
-                <h2 class="tp-title section-title" id="showcaseRailTitle">Ça smash <span class="title-pill">près de chez toi</span></h2>
+                <div class="tp-heading">
+                    <p class="tp-eyebrow"><span class="tp-eyebrow-dot" aria-hidden="true"></span>Les tournois sur Yamatch</p>
+                    <h2 class="tp-title section-title" id="showcaseRailTitle">Ça smash <span class="title-pill">près de chez toi</span></h2>
+                </div>
                 <p class="tp-intro">Des tournois qui se remplissent, des équipes qui se chambrent et des smashs qui claquent. Choisis ton terrain, ramène ta team.</p>
             </header>
-            <ol class="tp-cards" id="showcaseRail" role="list" aria-labelledby="showcaseRailTitle" data-showcase-rail>
-                <li data-showcase-create>
+            <div class="tp-calendar" id="showcaseRail" role="region" tabindex="0" aria-label="Tournois par mois" data-showcase-rail>
+                <div data-showcase-create>
                     <article class="tp-ticket tp-ticket--create" aria-labelledby="tpCreateTitle">
                         <div class="tp-head">
                             <span class="tp-date" aria-hidden="true">
                                 <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14"/></svg>
                             </span>
                             <div class="tp-info">
-                                <h3 class="tp-name" id="tpCreateTitle">Ton prochain tournoi</h3>
+                                <h4 class="tp-name" id="tpCreateTitle">Ton prochain tournoi</h4>
                                 <p class="tp-meta">Organisé par toi</p>
                             </div>
                             <span class="tp-chevron" aria-hidden="true">
@@ -791,12 +781,9 @@
                             <a class="tp-cta is-secondary" href="organisateur/">Créer mon tournoi <span aria-hidden="true">→</span></a>
                         </div>
                     </article>
-                </li>
-            </ol>
-        </div>
-        <div class="tp-ticker" role="region" aria-label="Tournois déjà joués" tabindex="0" hidden>
-            <span class="tp-ticker-label"><span>Ça s’est joué</span></span>
-            <ul class="tp-track" data-showcase-ticker></ul>
+                </div>
+            </div>
+            <div class="tp-scroll-progress" aria-hidden="true"><span class="tp-scroll-thumb" data-showcase-progress></span></div>
         </div>
     </section>
 

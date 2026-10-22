@@ -1,0 +1,426 @@
+[
+  {
+    "state": "a-venir",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "h1": 1,
+    "title": "Beach Night de la Toussaint",
+    "status": "Inscriptions ouvertes",
+    "panel": "Réserve ta place",
+    "ctaHidden": false,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "S’inscrire dans l’app",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "complet-capacite-inconnue",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "h1": 1,
+    "title": "Tournoi Des Panthères 2026",
+    "status": "Inscriptions ouvertes",
+    "panel": "Réserve ta place",
+    "ctaHidden": false,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "S’inscrire dans l’app",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "termine",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "h1": 1,
+    "title": "Tournoi de la rentrée",
+    "status": "Terminé",
+    "panel": "Tournoi terminé",
+    "ctaHidden": true,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Voir les prochains tournois",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "annule",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "h1": 1,
+    "title": "Beach Night de la Toussaint",
+    "status": "Tournoi annulé",
+    "panel": "Tournoi annulé",
+    "ctaHidden": true,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Voir les prochains tournois",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "introuvable",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "h1": 1,
+    "title": "Tournoi introuvable",
+    "status": "",
+    "panel": "Retrouve le tournoi dans l’app",
+    "ctaHidden": false,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Ouvrir dans Yamatch",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "inscriptions-closes",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "h1": 1,
+    "title": "Beach Night de la Toussaint",
+    "status": "Inscriptions closes",
+    "panel": "Inscriptions closes",
+    "ctaHidden": false,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Voir dans l’app",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "invalide",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "h1": 1,
+    "title": "Tournoi Yamatch",
+    "status": "",
+    "panel": "Retrouve le tournoi dans l’app",
+    "ctaHidden": false,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Ouvrir dans Yamatch",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "erreur",
+    "width": 1440,
+    "scrollWidth": 1440,
+    "h1": 1,
+    "title": "Chargement impossible",
+    "status": "",
+    "panel": "Retrouve le tournoi dans l’app",
+    "ctaHidden": false,
+    "retry": true,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Ouvrir dans Yamatch",
+        "height": 60
+      },
+      {
+        "text": "Réessayer",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "a-venir",
+    "width": 390,
+    "scrollWidth": 390,
+    "h1": 1,
+    "title": "Beach Night de la Toussaint",
+    "status": "Inscriptions ouvertes",
+    "panel": "Réserve ta place",
+    "ctaHidden": false,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "S’inscrire dans l’app",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "complet-capacite-inconnue",
+    "width": 390,
+    "scrollWidth": 390,
+    "h1": 1,
+    "title": "Tournoi Des Panthères 2026",
+    "status": "Inscriptions ouvertes",
+    "panel": "Réserve ta place",
+    "ctaHidden": false,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "S’inscrire dans l’app",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "termine",
+    "width": 390,
+    "scrollWidth": 390,
+    "h1": 1,
+    "title": "Tournoi de la rentrée",
+    "status": "Terminé",
+    "panel": "Tournoi terminé",
+    "ctaHidden": true,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Voir les prochains tournois",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "annule",
+    "width": 390,
+    "scrollWidth": 390,
+    "h1": 1,
+    "title": "Beach Night de la Toussaint",
+    "status": "Tournoi annulé",
+    "panel": "Tournoi annulé",
+    "ctaHidden": true,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Voir les prochains tournois",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "introuvable",
+    "width": 390,
+    "scrollWidth": 390,
+    "h1": 1,
+    "title": "Tournoi introuvable",
+    "status": "",
+    "panel": "Retrouve le tournoi dans l’app",
+    "ctaHidden": false,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Ouvrir dans Yamatch",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "inscriptions-closes",
+    "width": 390,
+    "scrollWidth": 390,
+    "h1": 1,
+    "title": "Beach Night de la Toussaint",
+    "status": "Inscriptions closes",
+    "panel": "Inscriptions closes",
+    "ctaHidden": false,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Voir dans l’app",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "invalide",
+    "width": 390,
+    "scrollWidth": 390,
+    "h1": 1,
+    "title": "Tournoi Yamatch",
+    "status": "",
+    "panel": "Retrouve le tournoi dans l’app",
+    "ctaHidden": false,
+    "retry": false,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Ouvrir dans Yamatch",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  },
+  {
+    "state": "erreur",
+    "width": 390,
+    "scrollWidth": 390,
+    "h1": 1,
+    "title": "Chargement impossible",
+    "status": "",
+    "panel": "Retrouve le tournoi dans l’app",
+    "ctaHidden": false,
+    "retry": true,
+    "targets": [
+      {
+        "text": "← Tous les tournois",
+        "height": 44
+      },
+      {
+        "text": "Ouvrir dans Yamatch",
+        "height": 60
+      },
+      {
+        "text": "Réessayer",
+        "height": 60
+      },
+      {
+        "text": "Télécharger Yamatch",
+        "height": 44
+      }
+    ],
+    "errors": []
+  }
+]

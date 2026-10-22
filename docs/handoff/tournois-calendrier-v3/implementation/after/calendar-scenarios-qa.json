@@ -1,0 +1,181 @@
+{
+  "fixtureMethod": "Ephemeral HTTP response replacing demoPayload only; original file untouched, restored response afterward",
+  "sourceShaBefore": "e33af79bde295641a5443bb9036f3b3055e7d8c01d780e97115c9684ac73a82f",
+  "sourceShaAfter": "e33af79bde295641a5443bb9036f3b3055e7d8c01d780e97115c9684ac73a82f",
+  "results": [
+    {
+      "name": "sans_joues",
+      "width": 1440,
+      "months": [
+        "octobre 2026",
+        "novembre 2026",
+        "décembre 2026"
+      ],
+      "tickets": 1,
+      "past": 0,
+      "empty": 2,
+      "marker": "Aujourd’hui · 22",
+      "scroll": 0,
+      "creationLast": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "name": "sans_joues",
+      "width": 390,
+      "months": [
+        "octobre 2026",
+        "novembre 2026",
+        "décembre 2026"
+      ],
+      "tickets": 1,
+      "past": 0,
+      "empty": 2,
+      "marker": "Aujourd’hui · 22",
+      "scroll": 0,
+      "creationLast": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "name": "sans_a_venir",
+      "width": 1440,
+      "months": [
+        "septembre 2026",
+        "novembre 2026",
+        "décembre 2026"
+      ],
+      "tickets": 1,
+      "past": 1,
+      "empty": 2,
+      "marker": null,
+      "scroll": 564,
+      "creationLast": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "name": "sans_a_venir",
+      "width": 390,
+      "months": [
+        "septembre 2026",
+        "novembre 2026",
+        "décembre 2026"
+      ],
+      "tickets": 1,
+      "past": 1,
+      "empty": 2,
+      "marker": null,
+      "scroll": 404,
+      "creationLast": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "name": "mois_vides",
+      "width": 1440,
+      "months": [
+        "octobre 2026",
+        "novembre 2026",
+        "décembre 2026",
+        "janvier 2027"
+      ],
+      "tickets": 2,
+      "past": 1,
+      "empty": 2,
+      "marker": "Aujourd’hui · 22",
+      "scroll": 0,
+      "creationLast": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "name": "mois_vides",
+      "width": 390,
+      "months": [
+        "octobre 2026",
+        "novembre 2026",
+        "décembre 2026",
+        "janvier 2027"
+      ],
+      "tickets": 2,
+      "past": 1,
+      "empty": 2,
+      "marker": "Aujourd’hui · 22",
+      "scroll": 0,
+      "creationLast": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "name": "passage_annee",
+      "width": 1440,
+      "months": [
+        "décembre 2026",
+        "janvier 2027",
+        "février 2027",
+        "mars 2027"
+      ],
+      "tickets": 2,
+      "past": 1,
+      "empty": 2,
+      "marker": "Aujourd’hui · 1",
+      "scroll": 566,
+      "creationLast": true,
+      "overflow": false,
+      "errors": []
+    },
+    {
+      "name": "passage_annee",
+      "width": 390,
+      "months": [
+        "décembre 2026",
+        "janvier 2027",
+        "février 2027",
+        "mars 2027"
+      ],
+      "tickets": 2,
+      "past": 1,
+      "empty": 2,
+      "marker": "Aujourd’hui · 1",
+      "scroll": 379,
+      "creationLast": true,
+      "overflow": false,
+      "errors": []
+    }
+  ],
+  "overflow": [
+    {
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "width": 360,
+      "scrollWidth": 360
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768
+    },
+    {
+      "width": 820,
+      "scrollWidth": 820
+    },
+    {
+      "width": 1024,
+      "scrollWidth": 1024
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440
+    },
+    {
+      "width": 1920,
+      "scrollWidth": 1920
+    }
+  ]
+}
