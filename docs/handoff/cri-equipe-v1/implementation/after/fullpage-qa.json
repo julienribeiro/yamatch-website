@@ -1,0 +1,379 @@
+{
+  "date": "2026-10-22T12:00:00Z",
+  "timezone": "Europe/Paris",
+  "reducedMotion": "reduce",
+  "results": [
+    {
+      "route": "home",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "height": 5898,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 1000,
+          "hidden": false
+        },
+        {
+          "id": "how-it-works",
+          "height": 1105.765625,
+          "hidden": false
+        },
+        {
+          "id": "moments",
+          "height": 931.5,
+          "hidden": false
+        },
+        {
+          "id": "temoignages",
+          "height": 0,
+          "hidden": true
+        },
+        {
+          "id": "derniers-tournois",
+          "height": 1014.03125,
+          "hidden": false
+        },
+        {
+          "id": "faq",
+          "height": 1463.484375,
+          "hidden": false
+        }
+      ],
+      "before": {
+        "route": "home",
+        "width": 1440,
+        "scrollWidth": 1440,
+        "height": 4966,
+        "missingImages": [],
+        "sections": [
+          {
+            "id": "",
+            "height": 1000,
+            "hidden": false
+          },
+          {
+            "id": "how-it-works",
+            "height": 1105.765625,
+            "hidden": false
+          },
+          {
+            "id": "temoignages",
+            "height": 0,
+            "hidden": true
+          },
+          {
+            "id": "derniers-tournois",
+            "height": 1014.03125,
+            "hidden": false
+          },
+          {
+            "id": "faq",
+            "height": 1463.484375,
+            "hidden": false
+          }
+        ]
+      },
+      "unchangedSectionHeights": true
+    },
+    {
+      "route": "organisateur",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "height": 5151,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 1065.265625,
+          "hidden": false
+        },
+        {
+          "id": "organisateurs",
+          "height": 1042.921875,
+          "hidden": false
+        },
+        {
+          "id": "derniers-tournois",
+          "height": 633.578125,
+          "hidden": false
+        },
+        {
+          "id": "gestion-tournoi",
+          "height": 1133.609375,
+          "hidden": false
+        },
+        {
+          "id": "faq",
+          "height": 988.59375,
+          "hidden": false
+        }
+      ],
+      "identicalPng": false
+    },
+    {
+      "route": "404",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "height": 1000,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 167.875,
+          "hidden": false
+        }
+      ],
+      "identicalPng": true
+    },
+    {
+      "route": "home",
+      "width": 820,
+      "scrollWidth": 820,
+      "height": 6898,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 1129.90625,
+          "hidden": false
+        },
+        {
+          "id": "how-it-works",
+          "height": 2348.203125,
+          "hidden": false
+        },
+        {
+          "id": "moments",
+          "height": 838.609375,
+          "hidden": false
+        },
+        {
+          "id": "temoignages",
+          "height": 0,
+          "hidden": true
+        },
+        {
+          "id": "derniers-tournois",
+          "height": 993.578125,
+          "hidden": false
+        },
+        {
+          "id": "faq",
+          "height": 1179.015625,
+          "hidden": false
+        }
+      ],
+      "before": {
+        "route": "home",
+        "width": 820,
+        "scrollWidth": 820,
+        "height": 6059,
+        "missingImages": [],
+        "sections": [
+          {
+            "id": "",
+            "height": 1129.90625,
+            "hidden": false
+          },
+          {
+            "id": "how-it-works",
+            "height": 2348.203125,
+            "hidden": false
+          },
+          {
+            "id": "temoignages",
+            "height": 0,
+            "hidden": true
+          },
+          {
+            "id": "derniers-tournois",
+            "height": 993.578125,
+            "hidden": false
+          },
+          {
+            "id": "faq",
+            "height": 1179.015625,
+            "hidden": false
+          }
+        ]
+      },
+      "unchangedSectionHeights": true
+    },
+    {
+      "route": "organisateur",
+      "width": 820,
+      "scrollWidth": 820,
+      "height": 4550,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 999.96875,
+          "hidden": false
+        },
+        {
+          "id": "organisateurs",
+          "height": 805.40625,
+          "hidden": false
+        },
+        {
+          "id": "derniers-tournois",
+          "height": 541.171875,
+          "hidden": false
+        },
+        {
+          "id": "gestion-tournoi",
+          "height": 1103.640625,
+          "hidden": false
+        },
+        {
+          "id": "faq",
+          "height": 787.375,
+          "hidden": false
+        }
+      ],
+      "identicalPng": false
+    },
+    {
+      "route": "404",
+      "width": 820,
+      "scrollWidth": 820,
+      "height": 1000,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 167.875,
+          "hidden": false
+        }
+      ],
+      "identicalPng": true
+    },
+    {
+      "route": "home",
+      "width": 390,
+      "scrollWidth": 390,
+      "height": 6990,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 1000,
+          "hidden": false
+        },
+        {
+          "id": "how-it-works",
+          "height": 2047.015625,
+          "hidden": false
+        },
+        {
+          "id": "moments",
+          "height": 801.296875,
+          "hidden": false
+        },
+        {
+          "id": "temoignages",
+          "height": 0,
+          "hidden": true
+        },
+        {
+          "id": "derniers-tournois",
+          "height": 1599.4375,
+          "hidden": false
+        },
+        {
+          "id": "faq",
+          "height": 1188.859375,
+          "hidden": false
+        }
+      ],
+      "before": {
+        "route": "home",
+        "width": 390,
+        "scrollWidth": 390,
+        "height": 6189,
+        "missingImages": [],
+        "sections": [
+          {
+            "id": "",
+            "height": 1000,
+            "hidden": false
+          },
+          {
+            "id": "how-it-works",
+            "height": 2047.015625,
+            "hidden": false
+          },
+          {
+            "id": "temoignages",
+            "height": 0,
+            "hidden": true
+          },
+          {
+            "id": "derniers-tournois",
+            "height": 1599.4375,
+            "hidden": false
+          },
+          {
+            "id": "faq",
+            "height": 1188.859375,
+            "hidden": false
+          }
+        ]
+      },
+      "unchangedSectionHeights": true
+    },
+    {
+      "route": "organisateur",
+      "width": 390,
+      "scrollWidth": 390,
+      "height": 4337,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 1000,
+          "hidden": false
+        },
+        {
+          "id": "organisateurs",
+          "height": 733.640625,
+          "hidden": false
+        },
+        {
+          "id": "derniers-tournois",
+          "height": 518.96875,
+          "hidden": false
+        },
+        {
+          "id": "gestion-tournoi",
+          "height": 1046.078125,
+          "hidden": false
+        },
+        {
+          "id": "faq",
+          "height": 732.859375,
+          "hidden": false
+        }
+      ],
+      "identicalPng": true
+    },
+    {
+      "route": "404",
+      "width": 390,
+      "scrollWidth": 390,
+      "height": 1000,
+      "missingImages": [],
+      "sections": [
+        {
+          "id": "",
+          "height": 167.875,
+          "hidden": false
+        }
+      ],
+      "identicalPng": true
+    }
+  ]
+}

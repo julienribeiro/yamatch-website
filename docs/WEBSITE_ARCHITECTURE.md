@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-10-22 (desktop participant hero viewport sizing and matching bottom/side gutters, mobile title and Volleyball badge centring; Stories S1 hidden shell and asset requirements; participant public tournament grid and recent ticker; HOW V2 coded three-card journey, progressive reveal and FAQ-only parallax; participant V2 split hero, shared fixed full-width navigation bar, decorative app cards and screenshot-carousel removal; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
+Last sync: 2026-10-22 (Shouts illustrative photo section after HOW, provisional media and native responsive rail; desktop participant hero viewport sizing and matching bottom/side gutters, mobile title and Volleyball badge centring; Stories S1 hidden shell and asset requirements; participant public tournament grid and recent ticker; HOW V2 coded three-card journey, progressive reveal and FAQ-only parallax; participant V2 split hero, shared fixed full-width navigation bar, decorative app cards and screenshot-carousel removal; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -251,10 +251,11 @@ Homepage sections under `<main id="top">`, in order:
 
 1. **`.hero`** — fixed header with wordmark and navigation; dark action photograph with split text/app visual and App Store + Google Play buttons. No subtitle or reassurance copy.
 2. **`section.how-quest#how-it-works`** — three-card participant journey with coded app illustrations and progressive reveal; deep-link anchor `id="how-it-works"`
-3. **`section.stories#temoignages`** — prepared stories shell, `hidden` with an empty rail until at least three real stories are validated
-4. **`section.showcase#derniers-tournois`** — public upcoming and recent tournament tickets; hidden until valid data is rendered
-5. **`section.faq#faq`** — accordion of 12 questions; deep-link anchor `id="faq"`
-6. **`<footer>`** — outside `<main>`, light-gray background (matches `.faq`), dark text, content centered
+3. **`section.shouts#moments`** — four illustrative photo cards and a download CTA; native horizontal rail on tablet/mobile
+4. **`section.stories#temoignages`** — prepared stories shell, `hidden` with an empty rail until at least three real stories are validated
+5. **`section.showcase#derniers-tournois`** — public upcoming and recent tournament tickets; hidden until valid data is rendered
+6. **`section.faq#faq`** — accordion of 12 questions; deep-link anchor `id="faq"`
+7. **`<footer>`** — outside `<main>`, light-gray background (matches `.faq`), dark text, content centered
 
 **Top announcement banners (removed 2026-10-15).** Neither route renders the former lime `.launch-ticker`. Its shared styles and homepage offset-measurement IIFE were removed. Since participant V2, the homepage logo belongs to a fixed `.hero-header` with navigation on its right; the header is now a full-width glass bar flush with the viewport top, both before and after scrolling. The organiser retains its independent wordmark controller. Earlier centred-wordmark positioning is historical.
 
@@ -492,7 +493,7 @@ section.how-quest#how-it-works (aria-labelledby="howQuestTitle")
 
 Fine-pointer hover straightens the sticker, lifts it 2 px, expands the shadow to 4/5 px and moves the arrow 2 px right. Pressing shifts the link 2 px right/down with a 1 px shadow; keyboard focus straightens it and adds a 2 px outline with 6 px offset. Rotation, translation and shadow use shared `--transition` (200 ms, `cubic-bezier(.4,0,.2,1)`). Reduced motion explicitly resets rotation and translation for the link, its interaction states and arrow; the global reduced-motion rule also shortens transition durations. This styling adds no JavaScript or explicit z-index.
 
-**Heading hierarchy:** homepage `<h1>` (hero) → `<h2>` (`how-quest-title`, `faq-title`) → `<h3>` (quest-step titles). The organiser route separately uses its hero `<h1>` → `<h2 id="ym-orga-t">` → card `<h3>` headings, followed in the DOM by the interactive management section `<h2 id="ym-gest-title">` and FAQ `<h2 id="orgFaqTitle">`.
+**Heading hierarchy:** homepage `<h1>` (hero), section `<h2>` headings including `howQuestTitle`, `shoutsTitle`, hidden `storiesTitle`, conditional `showcaseRailTitle` and `faqTitle`, then `<h3>` quest-step/ticket titles under their respective sections. Shouts card phrases remain paragraphs, not additional headings. The organiser route separately uses its hero `<h1>` → `<h2 id="ym-orga-t">` → card `<h3>` headings, followed in the DOM by the interactive management section `<h2 id="ym-gest-title">` and FAQ `<h2 id="orgFaqTitle">`.
 
 **Static participant content:** all three tags, titles and body paragraphs are authored directly in `index.html`, so the full journey is available before JavaScript and to crawlers. The previous persona buttons, panel state, sliding indicator and JavaScript content-switching controller have been removed. No script writes this section's text or handles selection/keyboard navigation for it.
 
@@ -599,9 +600,47 @@ Closed panels use the shared grid collapse, not `hidden`, preserving the CSS 300
 
 ---
 
+### Shouts — « Ça crie sur le terrain » (`section.shouts#moments`, 2026-10-22)
+
+Implemented on `codex/cri-equipe-v1`, based on `main`; this section does not include the separate tournament-calendar V3 branch. Local implementation does not establish deployment. The visible section follows `#how-it-works` and precedes the still-hidden Stories shell. Defaults M1–M4 are applied: provisional existing photos, CTA to `download/`, no new header link, placement immediately after HOW. The source handoff is [cri-equipe-v1/SPEC.md](handoff/cri-equipe-v1/SPEC.md); final acceptance evidence belongs in its `implementation/` report.
+
+```text
+section.shouts#moments[aria-labelledby="shoutsTitle"]
+└── .shouts-inner
+    ├── .shouts-header
+    │   ├── .shouts-copy → eyebrow “Le jour J” + h2#shoutsTitle.section-title
+    │   └── p.shouts-lede
+    ├── ul.shouts-rail[tabindex="0"][aria-label="Moments forts d’un tournoi"]
+    │   └── li.shout × 4 → img.shout-photo + span.shout-context + p.shout-quote
+    └── .shouts-cta → a.shouts-cta-link[href="download/"]
+```
+
+**Illustrative content, provisional media.** The H2 is “Ça crie” plus the lime “sur le terrain” pill. Phrases are “On est inscrits !”, “Balle de match !”, “On est en finale !” and “Trop belle, celle-là !”, with explicit line breaks and nonbreaking spaces before exclamation marks. Contexts are “Inscription validée”, “Set 3 · 14–13”, “Demi-finale gagnée” and “Story publiée ↗”. They are illustrative, unattributed scenes, not real testimonials or evidence of actual registrations/results. The HTML comment records this distinction. Dedicated photos have not been supplied: the section reuses organiser `02-partage-paiement-v2.webp`, hero `hero-volley-mixed-mobile.webp`, organiser `04-poules-v2.webp` and `07-classement-v2.webp`. These existing promotional assets must not be described as newly supplied documentary photos. Their explicit dimensions are 1086 × 1448 except the action photo (1122 × 1402); all use lazy loading and async decoding, with descriptive French alt text. Avatars reuse `avatar-team-1/2/3.jpg` (104 × 104), with empty alt; the two arrow glyphs are hidden from assistive technology. Future real media and replacement alt text must follow SPEC §3/§5.
+
+**Interaction boundary.** No JavaScript, scroll animation or new carousel controller is added. The labelled list is keyboard-focusable and uses browser-native touch/trackpad/keyboard scrolling at narrower breakpoints. The CTA remains a normal link to the existing download-routing page. CSS lives in §10.8; Stories moves to §10.9 without changing its hidden state or behavior. `#moments` reserves `--hero-header-space + 16px` below the fixed header despite having no navigation link.
+
+**Responsive geometry.** The full-width dark band clips horizontal overflow and uses `clamp(64px,8vw,112px)` top / `clamp(56px,7vw,96px)` bottom padding around a `--container-max` (1200 px) inner wrapper. Desktop has a bottom-aligned flex header, four equal card columns with 14 px gaps and 40 px top spacing; even cards translate down 36 px, matched by rail bottom padding. Cards are 9:14 with 28 px corners. Below 1024 px the rail becomes native flex scrolling, mandatory start snap, 12 px gaps, negative gutter margins and matching padding; cards occupy 40%, with no stagger. Below 768 px cards occupy 72%, the header stacks with a 14 px intro gap, and CTA spacing drops from 36 to 20 px. The action image alone uses `object-position:35% 50%`.
+
+**Focus and motion.** The CTA has a 48 px minimum height. Rail and CTA use 3 px lime focus outlines; the scrollable rail uses an inset −3 px offset below 1024 px to stay visible inside clipping. Photo hover zoom to 1.04 over 500 ms is enabled only when `(hover:hover)` and `(prefers-reduced-motion:no-preference)` both match. Reduced motion therefore has no zoom/transition; no autonomous motion exists. Each card isolates its image (z-index −2) and gradient (−1) beneath readable copy.
+
+| Shouts tokens (`:root`) | Contract |
+|---|---|
+| `--shouts-bg` | Existing `--hero-photo-surface` |
+| `--shouts-ink-muted`, `--shouts-eyebrow-bg` | White at .7 / .1 |
+| `--shouts-glass-bg`, `--shouts-glass-border` | Dark `rgba(5,9,5,.62)` / white at .16 |
+| `--shouts-scrim` | 180° dark gradient, .1 at 30% → .9 at 100% |
+| `--shouts-card-radius`, `--shouts-stagger` | 28 / 36 px |
+| `--shouts-gutter` | `clamp(20px,5vw,40px)`; `--mobile-hero-card-margin` below 768 px |
+| `--shouts-quote-size` | Cap `clamp(30px,2.9vw,42px)` desktop, 40 px tablet, 46 px mobile |
+| `--shouts-quote-fit`, `--shouts-quote-fit-finale`, `--shouts-quote-fit-story` | 5.25 / 5.7 / 6.25 fit factors |
+| `--shouts-quote-shadow` | 0 6px 24px black .35 |
+| `--shouts-photo-transition` | 500 ms `cubic-bezier(.2,.8,.2,1)` |
+
+**Measured accessibility adjustments to the mockup.** Context glass deliberately uses dark .62 rather than the proposed white .14, guaranteeing white text at 5.761:1 even over a white photograph, before the card scrim contributes. Quote size is the smaller of its breakpoint cap and `(100cqw - 32px) / fit`; the card establishes an inline-size container. The longer third/fourth phrases use their own fit factors to keep the requested two lines and −12° slant inside the card. At 390 px the four sizes are approximately 41.90/41.90/38.60/35.20 px; at 320 px they are 32.30/32.30/29.75/27.14 px. These are intentional reductions from the nominal 46 px mobile target, not missing responsive rules. The CSS specialist measured a worst-case lime/scrim contrast of 4.544:1 at 320 px using white photo content beneath the actual text rectangles, exceeding the 3:1 large-text requirement. These measurements concern this provisional-media layout; replacement photos should receive renewed visual and contrast checks.
+
 ### Stories V2 (`section.stories#temoignages`) — prepared, hidden (2026-10-18)
 
-**S1 is the release condition.** No real story media or testimonials were supplied. The section sits between HOW and public tournaments with `hidden`, an empty rail and no story nodes, media URLs, author identities or quotations. It makes no story-media request. Fewer than three validated real stories must keep this state; adding CSS or the section shell does not activate it. There is no Instagram feed/API integration or new header navigation link.
+**S1 is the release condition.** No real story media or testimonials were supplied. The section sits after Shouts and before public tournaments with `hidden`, an empty rail and no story nodes, media URLs, author identities or quotations. It makes no story-media request. Fewer than three validated real stories must keep this state; adding CSS or the section shell does not activate it. There is no Instagram feed/API integration or new header navigation link.
 
 ```text
 section.stories#temoignages[aria-labelledby="storiesTitle"][hidden]
@@ -989,9 +1028,9 @@ Historical `.screens-rail` CSS retains `overflow: visible`, but no homepage elem
 
 ### Shared participant section titles — founder decision 2026-10-18
 
-Four homepage H2s opt into `.section-title` with an inline `.title-pill`: “Comment ça marche **en 3 étapes**”, “Ça smash **près de chez toi**”, “Vu dans **les stories**” and “Questions **fréquentes**” (bold here identifies the pill). Existing IDs remain; Stories stays hidden under S1. H1, eyebrows and step numerals are unchanged; organiser and 404 headings do not opt in.
+Five homepage H2s opt into `.section-title` with an inline `.title-pill`: “Comment ça marche **en 3 étapes**”, “Ça crie **sur le terrain**”, “Ça smash **près de chez toi**”, “Vu dans **les stories**” and “Questions **fréquentes**” (bold here identifies the pill). Existing IDs remain; Stories stays hidden under S1. H1, eyebrows and step numerals are unchanged; organiser and 404 headings do not opt in.
 
-Headings use Inter 700, normal case, primary text color and no skew. Root tokens are `--section-title-size:clamp(2.25rem,4.6vw,3.5rem)`, `--section-title-line-height:1.02`, `--section-title-tracking:-.045em` and `--section-title-weight:700`. The inline-block pill keeps its text on one line, with lime `--title-pill-bg`, black text, `--title-pill-padding:.02em .28em .08em`, `--title-pill-radius:.4em`, `--title-pill-rotate:-3deg` and `--title-pill-margin:.08em` on its inline start. The old HOW/Stories/tournament H2 size tokens are removed; other typography remains independent. At widths ≤359 px, the tournament H2 borrows the section’s inline padding via an expanded width and negative inline-start margin, keeping its non-wrapping pill inside the band at 320 px. Historical handoff images retain the previous headings.
+Headings use Inter 700, normal case, primary text color and no skew; Shouts overrides the heading color to white on its dark band while preserving black pill text. Root tokens are `--section-title-size:clamp(2.25rem,4.6vw,3.5rem)`, `--section-title-line-height:1.02`, `--section-title-tracking:-.045em` and `--section-title-weight:700`. The inline-block pill keeps its text on one line, with lime `--title-pill-bg`, black text, `--title-pill-padding:.02em .28em .08em`, `--title-pill-radius:.4em`, `--title-pill-rotate:-3deg` and `--title-pill-margin:.08em` on its inline start. The old HOW/Stories/tournament H2 size tokens are removed; other typography remains independent. At widths ≤359 px, the tournament H2 borrows the section’s inline padding via an expanded width and negative inline-start margin, keeping its non-wrapping pill inside the band at 320 px. Historical handoff images retain the previous headings.
 
 ### Participant badge LED (CSS only)
 

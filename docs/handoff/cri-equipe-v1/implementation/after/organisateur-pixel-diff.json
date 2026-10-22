@@ -1,0 +1,36 @@
+[
+  {
+    "width": 1440,
+    "heightBefore": 5151,
+    "heightAfter": 5151,
+    "changedPixels": 255920,
+    "maxChannelDelta": 62,
+    "differenceBounds": [
+      0,
+      96,
+      1439,
+      4692
+    ]
+  },
+  {
+    "width": 820,
+    "heightBefore": 4550,
+    "heightAfter": 4550,
+    "changedPixels": 86194,
+    "maxChannelDelta": 8,
+    "differenceBounds": [
+      37,
+      1186,
+      732,
+      1680
+    ]
+  },
+  {
+    "width": 390,
+    "heightBefore": 4337,
+    "heightAfter": 4337,
+    "changedPixels": 0,
+    "maxChannelDelta": 0,
+    "differenceBounds": null
+  }
+]

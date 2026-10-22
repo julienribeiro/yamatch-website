@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maquette — « Ça crie sur le terrain »</title>
+<!--
+  MAQUETTE DE RÉFÉRENCE — ne pas copier telle quelle dans le site.
+  Les valeurs sont reprises dans SPEC.md ; l'implémentation passe par les
+  tokens :root et une sous-section dédiée de website/styles.css.
+  Ouvrir depuis un serveur lancé à la racine du dépôt
+  (ex. `npx --yes http-server . -p 8000` puis /docs/handoff/cri-equipe-v1/mockup/section.html).
+-->
+<style>
+@font-face{font-family:'Inter';src:url(../../../../website/fonts/Inter-Variable.woff2) format('woff2');font-weight:100 900}
+@font-face{font-family:'Frick 0.3';src:url(../../../../website/fonts/Frick0.3-Regular.woff2) format('woff2')}
+:root{
+  --accent:#D7FF00;--surface:#0c100b;--ink:#fff;--ink-muted:rgba(255,255,255,.7);
+  --glass:rgba(255,255,255,.14);--glass-border:rgba(255,255,255,.16);
+  --scrim:linear-gradient(180deg,rgba(5,9,5,.1) 30%,rgba(5,9,5,.9) 100%);
+  --gutter:clamp(20px,5vw,40px);
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:Inter,system-ui,sans-serif;background:#fff}
+.shouts{background:var(--surface);color:var(--ink);padding:clamp(64px,8vw,112px) var(--gutter) clamp(56px,7vw,96px);overflow-x:clip}
+.shouts-inner{max-width:1200px;margin:0 auto}
+.shouts-header{display:flex;justify-content:space-between;align-items:flex-end;gap:32px}
+.shouts-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.1);border-radius:100px;padding:6px 12px;font-size:13px;font-weight:600}
+.shouts-eyebrow-dot{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.shouts-title{margin-top:16px;font-size:clamp(2.25rem,4.6vw,3.5rem);font-weight:700;letter-spacing:-.045em;line-height:1.02}
+.title-pill{display:inline-block;white-space:nowrap;background:var(--accent);color:#000;rotate:-3deg;border-radius:.4em;padding:.02em .28em .08em;margin-left:.08em}
+.shouts-lede{color:var(--ink-muted);max-width:360px;font-size:1.0625rem;line-height:1.5}
+.shouts-rail{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:40px;padding:0 0 36px;list-style:none}
+.shout{position:relative;aspect-ratio:9/14;border-radius:28px;overflow:hidden;isolation:isolate}
+.shout:nth-child(even){translate:0 36px}
+.shout-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:scale .5s cubic-bezier(.2,.8,.2,1)}
+.shout::after{content:"";position:absolute;inset:0;background:var(--scrim);z-index:-1}
+@media (hover:hover){.shout:hover .shout-photo{scale:1.04}}
+.shout-context{position:absolute;left:18px;top:18px;display:flex;align-items:center;gap:8px;background:var(--glass);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-border);border-radius:100px;padding:5px 12px 5px 5px;font-size:12px;font-weight:600;white-space:nowrap}
+.shout-context-avatar{width:24px;height:24px;border-radius:50%}
+.shout-quote{position:absolute;left:18px;right:14px;bottom:22px;font-family:'Frick 0.3',Inter,sans-serif;font-size:clamp(30px,2.9vw,42px);line-height:.88;color:var(--accent);text-transform:uppercase;transform:skewX(-12deg);transform-origin:left bottom;text-shadow:0 6px 24px rgba(0,0,0,.35)}
+.shouts-cta{display:flex;justify-content:center;margin-top:36px}
+.shouts-cta-link{background:var(--accent);color:#000;text-decoration:none;font-weight:700;border-radius:100px;padding:14px 22px}
+.shouts-cta-link:focus-visible,.shouts-rail:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+@media (max-width:1023px){
+  .shouts-rail{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:var(--gutter);gap:12px;margin:32px calc(var(--gutter)*-1) 0;padding:0 var(--gutter) 8px;scrollbar-width:none}
+  .shouts-rail::-webkit-scrollbar{display:none}
+  .shout{flex:0 0 40%;scroll-snap-align:start}
+  .shout:nth-child(even){translate:none}
+  .shout-quote{font-size:40px}
+}
+@media (max-width:767px){
+  .shouts-header{display:block}
+  .shouts-lede{margin-top:14px}
+  .shout{flex-basis:72%}
+  .shout-quote{font-size:46px}
+  .shouts-cta{margin-top:20px}
+}
+@media (prefers-reduced-motion:reduce){.shout-photo{transition:none}}
+</style>
+</head>
+<body>
+<section class="shouts" id="moments" aria-labelledby="shoutsTitle">
+  <div class="shouts-inner">
+    <div class="shouts-header">
+      <div class="shouts-copy">
+        <span class="shouts-eyebrow"><span class="shouts-eyebrow-dot" aria-hidden="true"></span>Le jour J</span>
+        <h2 id="shoutsTitle" class="shouts-title">Ça crie <span class="title-pill">sur le terrain</span></h2>
+      </div>
+      <p class="shouts-lede">Les vrais moments d’un tournoi amateur. Yamatch gère l’orga, toi tu gardes ta voix pour ça.</p>
+    </div>
+    <ul class="shouts-rail" tabindex="0" aria-label="Moments forts d’un tournoi">
+      <li class="shout">
+        <img class="shout-photo" src="../../../../website/assets/organisateurs/02-partage-paiement-v2.webp" alt="Un groupe d’amis assis sur le sable regarde ensemble un téléphone" width="1086" height="1448">
+        <span class="shout-context"><img class="shout-context-avatar" src="../../../../website/assets/avatar-team-1.jpg" alt="" width="104" height="104">Inscription validée</span>
+        <p class="shout-quote">On est<br> inscrits&nbsp;!</p>
+      </li>
+      <li class="shout">
+        <img class="shout-photo" src="../../../../website/assets/hero-volley/hero-volley-mixed-mobile.webp" alt="Une joueuse attaque au-dessus du filet face à deux contreurs" width="1122" height="1402" style="object-position:35% 50%">
+        <span class="shout-context"><img class="shout-context-avatar" src="../../../../website/assets/avatar-team-2.jpg" alt="" width="104" height="104">Set 3 · 14–13</span>
+        <p class="shout-quote">Balle de<br> match&nbsp;!</p>
+      </li>
+      <li class="shout">
+        <img class="shout-photo" src="../../../../website/assets/organisateurs/04-poules-v2.webp" alt="Une joueuse en sweat gris consulte une tablette au bord des terrains de beach-volley" width="1086" height="1448">
+        <span class="shout-context"><img class="shout-context-avatar" src="../../../../website/assets/avatar-team-3.jpg" alt="" width="104" height="104">Demi-finale gagnée</span>
+        <p class="shout-quote">On est<br> en finale&nbsp;!</p>
+      </li>
+      <li class="shout">
+        <img class="shout-photo" src="../../../../website/assets/organisateurs/07-classement-v2.webp" alt="Une équipe mixte éclate de rire dans un gymnase, l’un d’eux brandit un trophée" width="1086" height="1448">
+        <span class="shout-context"><img class="shout-context-avatar" src="../../../../website/assets/avatar-team-1.jpg" alt="" width="104" height="104">Story publiée <span aria-hidden="true">↗</span></span>
+        <p class="shout-quote">Trop belle,<br> celle-là&nbsp;!</p>
+      </li>
+    </ul>
+    <div class="shouts-cta"><a class="shouts-cta-link" href="#">Trouver mon tournoi <span aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+</body>
+</html>
