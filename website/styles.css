@@ -181,12 +181,13 @@
     --shouts-card-radius: 28px;
     --shouts-card-aspect: 9 / 15.7;
     --shouts-stagger: 36px;
-    --shouts-quote-size: clamp(30px, 2.9vw, 42px);
+    --shouts-quote-size: clamp(28px, 2.6vw, 40px);
+    --shouts-quote-weight: 800;
+    --shouts-quote-leading: 1.04;
+    --shouts-quote-skew: -6deg;
     --shouts-quote-shadow: 0 6px 24px rgba(0,0,0,.35);
     --shouts-gutter: clamp(20px,5vw,40px);
-    --shouts-quote-fit: 5.25;
-    --shouts-quote-fit-finale: 5.7;
-    --shouts-quote-fit-story: 6.25;
+    --shouts-quote-fit: 7.4;
     --shouts-photo-transition: 500ms cubic-bezier(.2,.8,.2,1);
 
     /* Participant V2 tokens: never alter shared hero defaults. */
@@ -3172,9 +3173,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
 .shout-context { position: absolute; left: 18px; top: 18px; max-width: calc(100% - 36px); display: flex; align-items: center; gap: 8px; padding: 5px 12px 5px 5px; border: 1px solid var(--shouts-glass-border); border-radius: var(--radius-pill); background: var(--shouts-glass-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); font: 600 .75rem/1.3 var(--font-body); }
 .shout-context-avatar { flex: none; width: 24px; height: 24px; object-fit: cover; border-radius: var(--radius-pill); }
 /* Fit the fixed two-line phrases, including their slant, inside narrow cards. */
-.shout-quote { position: absolute; left: 18px; right: 14px; bottom: 22px; margin: 0; font: 400 min(var(--shouts-quote-size),calc((100cqw - 32px)/var(--shouts-quote-fit)))/.88 var(--hero-font-display); color: var(--color-accent); text-transform: uppercase; transform: skewX(-12deg); transform-origin: left bottom; text-shadow: var(--shouts-quote-shadow); }
-.shout:nth-child(3) .shout-quote { --shouts-quote-fit: var(--shouts-quote-fit-finale); }
-.shout:nth-child(4) .shout-quote { --shouts-quote-fit: var(--shouts-quote-fit-story); }
+.shout-quote { position: absolute; left: 18px; right: 14px; bottom: 22px; margin: 0; font: var(--shouts-quote-weight) min(var(--shouts-quote-size),calc((100cqw - 32px)/var(--shouts-quote-fit)))/var(--shouts-quote-leading) var(--font-body); color: var(--color-accent); text-transform: none; transform: skewX(var(--shouts-quote-skew)); transform-origin: left bottom; text-shadow: var(--shouts-quote-shadow); }
 .shouts-cta { display: flex; justify-content: center; margin-top: 36px; }
 .shouts-cta-link { display: inline-flex; align-items: center; justify-content: center; gap: 5px; min-height: 48px; padding: 14px 22px; border-radius: var(--radius-pill); background: var(--color-accent); color: var(--color-text-black); font-weight: 700; text-decoration: none; }
 .shouts-cta-link:hover { background: var(--color-text-white); color: var(--color-text-black); }
@@ -3184,7 +3183,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
     .shout:hover .shout-photo { scale: 1.04; }
 }
 @media (max-width: 1023px) {
-    :root { --shouts-quote-size: 40px; }
+    :root { --shouts-quote-size: 38px; }
     .shouts-rail { display: flex; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: var(--shouts-gutter); gap: 12px; margin: 32px calc(-1 * var(--shouts-gutter)) 0; padding: 0 var(--shouts-gutter) 8px; scrollbar-width: none; }
     .shouts-rail::-webkit-scrollbar { display: none; }
     .shout { flex: 0 0 40%; scroll-snap-align: start; }
@@ -3192,7 +3191,7 @@ mask: radial-gradient(circle at 0 var(--tp-ticket-notch-y),transparent var(--tp-
     .shouts-rail:focus-visible { outline-offset: -3px; }
 }
 @media (max-width: 767px) {
-    :root { --shouts-gutter: var(--mobile-hero-card-margin); --shouts-quote-size: 46px; }
+    :root { --shouts-gutter: var(--mobile-hero-card-margin); --shouts-quote-size: 40px; }
     .shouts-header { display: block; }
     .shouts-lede { margin-top: 14px; }
     .shout { flex-basis: 72%; }

@@ -1,0 +1,80 @@
+{
+  "summary": [
+    {
+      "width": 320,
+      "overflow": false,
+      "allGlyphsContained": true,
+      "allImagesLoaded": true,
+      "dimensionsMatch": true,
+      "ctaGap": 28
+    },
+    {
+      "width": 390,
+      "overflow": false,
+      "allGlyphsContained": true,
+      "allImagesLoaded": true,
+      "dimensionsMatch": true,
+      "ctaGap": 28
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "allGlyphsContained": true,
+      "allImagesLoaded": true,
+      "dimensionsMatch": true,
+      "ctaGap": 44
+    },
+    {
+      "width": 820,
+      "overflow": false,
+      "allGlyphsContained": true,
+      "allImagesLoaded": true,
+      "dimensionsMatch": true,
+      "ctaGap": 44
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "allGlyphsContained": true,
+      "allImagesLoaded": true,
+      "dimensionsMatch": true,
+      "ctaGap": 36
+    },
+    {
+      "width": 1440,
+      "overflow": false,
+      "allGlyphsContained": true,
+      "allImagesLoaded": true,
+      "dimensionsMatch": true,
+      "ctaGap": 36
+    },
+    {
+      "width": 1920,
+      "overflow": false,
+      "allGlyphsContained": true,
+      "allImagesLoaded": true,
+      "dimensionsMatch": true,
+      "ctaGap": 36
+    }
+  ],
+  "files": [
+    {
+      "name": "moment-01.webp",
+      "bytes": 125454
+    },
+    {
+      "name": "moment-02.webp",
+      "bytes": 86542
+    },
+    {
+      "name": "moment-03.webp",
+      "bytes": 123880
+    },
+    {
+      "name": "moment-04.webp",
+      "bytes": 84358
+    }
+  ],
+  "tests": "30/30 PASS",
+  "build": "PASS"
+}
