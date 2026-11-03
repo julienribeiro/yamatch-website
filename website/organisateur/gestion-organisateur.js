@@ -141,7 +141,215 @@
     const bounds = strip.getBoundingClientRect();
     strip.scrollTo({ left: strip.scrollLeft + item.left - bounds.left - (bounds.width - item.width) / 2, behavior: motion.matches ? 'auto' : 'smooth' });
   };
+  // Card → score block opening, mirroring the app's MatchCardOpenRoute: 540 ms flight, 150 ms fade fallback.
+  const FLIGHT_DURATION = 540;
+  const FADE_DURATION = 150;
+  const openCard = screens[3].querySelector('[data-demo-open-match]');
+  const closeButton = screens[4].querySelector('[data-demo-close-match]');
+  const scoreBlock = screens[4].querySelector('.ym-demo-score-dark');
+  const sourceScroll = screens[3].querySelector('.ym-demo-scroll');
+  const detailScroll = screens[4].querySelector('.ym-demo-scroll');
+  // Section order of the app detail body: header 0, score 2, format 3, sets 4, referee 5, bottom bar 8.
+  const staggered = [['.ym-demo-header', 0], ['.ym-demo-score-banner', 2], ['.ym-demo-format', 3], ['.ym-demo-set', 4], ['.ym-demo-referee', 5], ['.ym-demo-bottom', 8]]
+    .map(([selector, index]) => [screens[4].querySelector(selector), index]).filter(([node]) => node);
+  const flightReady = Boolean(openCard && closeButton && scoreBlock && sourceScroll && detailScroll);
+  let flight = null;
+  let openedFromCard = false;
+  let sourceScrollTop = 0;
+  const interval = (t, start, end) => Math.min(Math.max((t - start) / (end - start), 0), 1);
+  const easeOutCubic = (x) => 1 - (1 - x) ** 3;
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const intersect = (a, b) => {
+    const left = Math.max(a.left, b.left);
+    const top = Math.max(a.top, b.top);
+    const right = Math.min(a.right, b.right);
+    const bottom = Math.min(a.bottom, b.bottom);
+    return right > left && bottom > top ? { left, top, right, bottom, width: right - left, height: bottom - top } : null;
+  };
+  const relative = (rect, base) => ({ left: rect.left - base.left, top: rect.top - base.top, width: rect.width, height: rect.height });
+  const measureSource = (base) => {
+    const card = openCard.getBoundingClientRect();
+    let rect = intersect(card, sourceScroll.getBoundingClientRect());
+    rect = rect && intersect(rect, screens[3].querySelector('.ym-demo-app').getBoundingClientRect());
+    rect = rect && intersect(rect, base);
+    if (!rect || !card.width || !card.height) return null;
+    const crop = { x: (rect.left - card.left) / card.width, y: (rect.top - card.top) / card.height, w: rect.width / card.width, h: rect.height / card.height };
+    return { rect: relative(rect, base), crop };
+  };
+  // Radius of the nearest rounded clip around the score block, only on the edges it touches (app _scoreSurfaceRadius).
+  const measureTargetRadii = (box, scale) => {
+    for (let node = scoreBlock.parentElement; node && node !== screens[4]; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      if (style.overflowX === 'visible' && style.overflowY === 'visible') continue;
+      const radii = [style.borderTopLeftRadius, style.borderTopRightRadius, style.borderBottomRightRadius, style.borderBottomLeftRadius].map((value) => (parseFloat(value) || 0) * scale);
+      if (!radii.some(Boolean)) continue;
+      const clip = node.getBoundingClientRect();
+      const top = Math.abs(box.top - clip.top) < 1;
+      const bottom = Math.abs(box.bottom - clip.bottom) < 1;
+      return [top ? radii[0] : 0, top ? radii[1] : 0, bottom ? radii[2] : 0, bottom ? radii[3] : 0];
+    }
+    const own = getComputedStyle(scoreBlock);
+    return [own.borderTopLeftRadius, own.borderTopRightRadius, own.borderBottomRightRadius, own.borderBottomLeftRadius].map((value) => (parseFloat(value) || 0) * scale);
+  };
+  // The app's status bar and home indicator are system chrome: they stay put while the pages scale and fade.
+  const chromeParts = [screens[3], screens[4]].flatMap((screen) => [...screen.querySelectorAll('.ym-demo-status, .ym-demo-home')]);
+  const clearFlightStyles = () => {
+    [screens[3], screens[4]].forEach((screen) => {
+      ['transition', 'transform', 'filter', 'visibility', 'opacity', 'scale', 'transformOrigin'].forEach((property) => { screen.style[property] = ''; });
+    });
+    chromeParts.forEach((part) => { part.style.visibility = ''; });
+    staggered.forEach(([node]) => { node.style.opacity = ''; node.style.translate = ''; });
+    if (openCard) openCard.style.opacity = '';
+  };
+  const cancelFlight = () => {
+    if (!flight) return;
+    cancelAnimationFrame(flight.frame);
+    if (flight.surface) flight.surface.remove();
+    if (flight.chrome) flight.chrome.remove();
+    flight = null;
+    clearFlightStyles();
+  };
+  const renderFlight = (state, t) => {
+    const fade = state.fade;
+    const lead = fade ? t : interval(t, 0, .45);
+    screens[3].style.opacity = String(1 - lead);
+    screens[3].style.scale = fade ? '' : String(1 - .04 * lead);
+    screens[4].style.opacity = String(lead);
+    if (fade) return;
+    staggered.forEach(([node, index]) => {
+      const start = index === 2 ? .74 : Math.min(Math.max(.45 + index * .035, .45), .72);
+      const progress = easeOutCubic(interval(t, start, 1));
+      node.style.opacity = String(progress);
+      node.style.translate = index === 2 ? '' : `0 ${(1 - progress) * 14}px`;
+    });
+    const surface = state.surface.style;
+    if (t >= 1) {
+      surface.display = 'none';
+      return;
+    }
+    const eased = easeOutCubic(t);
+    const { source, target } = state;
+    const width = lerp(source.width, target.width, eased);
+    const height = lerp(source.height, target.height, eased);
+    surface.display = '';
+    surface.transform = `translate(${lerp(source.left, target.left, eased)}px, ${lerp(source.top, target.top, eased)}px)`;
+    surface.width = width + 'px';
+    surface.height = height + 'px';
+    surface.borderRadius = state.targetRadii.map((radius) => lerp(state.sourceRadius, radius, eased) + 'px').join(' ');
+    surface.opacity = String(1 - interval(t, .84, 1));
+    state.court.style.opacity = String(interval(t, .05, .45));
+    if (!state.shot) return;
+    if (t >= .18) {
+      // The opening never needs the card snapshot again; the closing still shows it near t = 0.
+      if (state.opening) {
+        state.shot.remove();
+        state.shot = null;
+      } else state.shot.style.display = 'none';
+      return;
+    }
+    const { crop, cardWidth, cardHeight } = state;
+    state.shot.style.display = '';
+    state.shot.style.opacity = String(1 - interval(t, 0, .18));
+    state.shot.style.transform = `scale(${width / (crop.w * cardWidth)}, ${height / (crop.h * cardHeight)}) translate(${-crop.x * cardWidth}px, ${-crop.y * cardHeight}px)`;
+  };
+  const buildSurface = (state) => {
+    const surface = document.createElement('div');
+    surface.className = 'ym-demo-flight';
+    surface.setAttribute('aria-hidden', 'true');
+    surface.inert = true;
+    const base = document.createElement('div');
+    base.className = 'ym-demo-flight-base';
+    const court = document.createElement('div');
+    court.className = 'ym-demo-flight-court';
+    const shot = document.createElement('div');
+    shot.className = 'ym-demo-app ym-demo-flight-shot';
+    shot.style.width = state.cardWidth + 'px';
+    shot.style.height = state.cardHeight + 'px';
+    const clone = openCard.cloneNode(true);
+    ['style', 'aria-label', 'data-demo-open-match'].forEach((name) => clone.removeAttribute(name));
+    clone.tabIndex = -1;
+    shot.append(clone);
+    surface.append(base, court, shot);
+    const chrome = document.createElement('div');
+    chrome.className = 'ym-demo-app ym-demo-flight-chrome';
+    chrome.setAttribute('aria-hidden', 'true');
+    chrome.inert = true;
+    chrome.append(...[...screens[3].querySelectorAll('.ym-demo-status, .ym-demo-home')].map((part) => part.cloneNode(true)));
+    viewport.append(surface, chrome);
+    chromeParts.forEach((part) => { part.style.visibility = 'hidden'; });
+    Object.assign(state, { surface, court, shot, chrome });
+  };
+  const finishFlight = () => {
+    const state = flight;
+    cancelFlight();
+    activate(state.opening ? 4 : 3, true);
+    if (state.opening) {
+      openedFromCard = true;
+      if (state.restoreFocus) closeButton.focus({ preventScroll: true });
+    } else {
+      sourceScroll.scrollTop = sourceScrollTop;
+      if (state.restoreFocus) openCard.focus({ preventScroll: true });
+    }
+  };
+  const stepFlight = (time) => {
+    const state = flight;
+    if (!state) return;
+    if (state.start === null) state.start = time;
+    const progress = Math.min((time - state.start) / state.duration, 1);
+    renderFlight(state, state.opening ? progress : 1 - progress);
+    if (progress < 1) state.frame = requestAnimationFrame(stepFlight);
+    else finishFlight();
+  };
+  const startFlight = (opening, restoreFocus) => {
+    const fromCard = opening || openedFromCard;
+    userPaused = true;
+    manuallyChanged = true;
+    sync();
+    if (opening) sourceScrollTop = sourceScroll.scrollTop;
+    // Both screens become measurable and visible; their class transitions are suspended for the flight.
+    [screens[3], screens[4]].forEach((screen) => {
+      screen.style.transition = 'none';
+      screen.style.transform = 'none';
+      screen.style.filter = 'none';
+      screen.style.visibility = 'visible';
+      screen.style.scale = '';
+    });
+    screens[3].style.opacity = opening ? '1' : '0';
+    screens[4].style.opacity = opening ? '0' : '1';
+    if (opening) detailScroll.scrollTop = 0;
+    else sourceScroll.scrollTop = sourceScrollTop;
+    const state = { opening, restoreFocus, fade: true, start: null, frame: null, duration: FADE_DURATION };
+    if (!motion.matches && fromCard) {
+      const scale = viewport.clientWidth / 402;
+      const base = viewport.getBoundingClientRect();
+      const source = measureSource(base);
+      const box = scoreBlock.getBoundingClientRect();
+      if (source && box.width && box.height) {
+        Object.assign(state, {
+          fade: false,
+          duration: FLIGHT_DURATION,
+          source: source.rect,
+          crop: source.crop,
+          target: relative(box, base),
+          targetRadii: measureTargetRadii(box, scale),
+          sourceRadius: (parseFloat(getComputedStyle(openCard).borderTopLeftRadius) || 0) * scale,
+          cardWidth: openCard.offsetWidth,
+          cardHeight: openCard.offsetHeight,
+        });
+      } else if (!opening) state.duration = FLIGHT_DURATION;
+    }
+    flight = state;
+    if (!state.fade) {
+      screens[3].style.transformOrigin = `${state.source.left + state.source.width / 2}px ${state.source.top + state.source.height / 2}px`;
+      buildSurface(state);
+      openCard.style.opacity = '0';
+    }
+    renderFlight(state, opening ? 0 : 1);
+    state.frame = requestAnimationFrame(stepFlight);
+  };
   const activate = (index, announce = false) => {
+    cancelFlight();
+    openedFromCard = false;
     current = index;
     elapsed = 0;
     last = null;
@@ -287,6 +495,14 @@
     window.addEventListener('resize', scheduleVisibility, { passive: true });
   }
   screens[2].querySelector('.ym-demo-scroll').addEventListener('scroll', schedulePoolTrigger, { passive: true });
+  if (flightReady) {
+    openCard.addEventListener('click', () => {
+      if (!flight && current === 3) startFlight(true, document.activeElement === openCard);
+    });
+    closeButton.addEventListener('click', () => {
+      if (!flight && current === 4) startFlight(false, document.activeElement === closeButton);
+    });
+  }
   root.addEventListener('pointerdown', (event) => {
     if (!event.target.closest('.ym-demo-scroll, .ym-demo-bracket-scroll, .ym-demo-table-scroll')) return;
     userPaused = true;

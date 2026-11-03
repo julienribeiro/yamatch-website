@@ -103,6 +103,10 @@
   --ym-demo-icon-radius: 10px;
   --ym-demo-bar-radius: 3px;
   --ym-demo-phone-inset: 20px;
+  /* Terrain 1 palette (#00E5FF, #008CFF, #0047FF) after the app's currentMatchGradient darkening for white text. */
+  --ym-demo-court-1-gradient: linear-gradient(to bottom right, #004a53, #00447d, #0034bc);
+  --ym-demo-court-vignette: radial-gradient(circle at 50% 0, transparent 45%, rgba(0,8,40,.45));
+  --ym-demo-court-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 1 0 0 0 0'/%3E%3CfeComponentTransfer%3E%3CfeFuncA type='discrete' tableValues='0 0 0 0 0 0 .1'/%3E%3C/feComponentTransfer%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
 }
 .ym-gest-viewport { container-type: inline-size; }
 .ym-demo-app { position: absolute; inset: 0 auto auto 0; width: 402px; height: 874px; scale: var(--ym-demo-scale); transform-origin: top left; display: flex; flex-direction: column; overflow: clip; background: var(--ym-demo-background); color: var(--color-text-primary); font: 400 14px/1.4 var(--font-body); }
@@ -120,6 +124,7 @@
 .ym-demo-header strong { display: block; font: 700 22px/1.2 var(--font-heading); overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 .ym-demo-header small { margin-top: 4px; }
 .ym-demo-back { display: grid; place-items: center; flex: 0 0 44px; width: 44px; height: 44px; border-radius: var(--ym-gest-radius-circle); background: var(--color-light-gray); }
+button.ym-demo-back { position: relative; padding: 0; border: 0; color: inherit; font: inherit; cursor: pointer; }
 .ym-demo-tabs { display: flex; padding: 4px; margin: 0 20px 16px; border-radius: var(--ym-gest-radius-pill); background: var(--ym-demo-glass); box-shadow: var(--ym-demo-glass-shadow); backdrop-filter: blur(10px); flex-shrink: 0; }
 .ym-demo-tabs > span { flex: 1 0 auto; padding: 10px 8px; border-radius: var(--ym-gest-radius-pill); text-align: center; color: var(--ym-demo-gray); font-size: 14px; font-weight: 500; white-space: nowrap; }
 .ym-demo-tabs > .is-selected { background: var(--color-accent); color: var(--ym-demo-dark); font-weight: 700; }
@@ -212,8 +217,9 @@ button.ym-demo-task { cursor: pointer; }
 .ym-demo-task-icon .ym-demo-icon { width: 15px; height: 15px; }
 .is-complete .ym-demo-task-resolved { opacity: .5; }
 .ym-demo-match { display: grid; gap: 10px; padding: 12px 14px; background: var(--color-light-gray); border-radius: var(--ym-demo-small-radius); }
-.ym-demo-match > div { display: flex; align-items: center; gap: 8px; }
-.ym-demo-match > div > b { flex: 1; }
+.ym-demo-match > div, .ym-demo-match > span { display: flex; align-items: center; gap: 8px; }
+.ym-demo-match > div > b, .ym-demo-match > span > b { flex: 1; }
+button.ym-demo-match { position: relative; width: 100%; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer; }
 .ym-demo-match strong { font: 700 18px/1 var(--font-heading); }
 .ym-demo-match .ym-demo-avatar { width: 32px; height: 32px; flex-basis: 32px; font-size: 13px; }
 .ym-demo-match-top { margin-bottom: 4px; font-size: 12px; }
@@ -224,7 +230,7 @@ button.ym-demo-task { cursor: pointer; }
 .ym-demo-score-banner { padding: 3px; border-radius: var(--ym-demo-small-radius); background: var(--color-accent); }
 .ym-demo-banner-label { display: flex; justify-content: space-between; padding: 9px 12px; font-size: 12px; font-weight: 600; }
 .ym-demo-score { border-radius: 0 0 var(--ym-demo-small-radius) var(--ym-demo-small-radius); overflow: clip; color: var(--color-text-white); }
-.ym-demo-score-dark { padding: 22px 20px; background: var(--ym-demo-dark-gradient); }
+.ym-demo-score-dark { padding: 22px 20px; background: var(--ym-demo-court-vignette), var(--ym-demo-court-grain), var(--ym-demo-court-1-gradient); }
 .ym-demo-score-top { text-align: center; margin-bottom: 14px; }
 .ym-demo-score-top .ym-demo-live { display: inline-flex; align-items: center; gap: 6px; background: var(--ym-demo-white-soft); }
 .ym-demo-score-top .ym-demo-live::before { content: ''; width: 6px; height: 6px; border-radius: var(--ym-gest-radius-circle); background: var(--color-accent); }
@@ -315,6 +321,14 @@ button.ym-demo-task { cursor: pointer; }
 .ym-demo-app button:focus-visible, .ym-demo-table-scroll:focus-visible, .ym-demo-create-scroll:focus-visible, .ym-demo-bracket-scroll:focus-visible { outline: 2px solid var(--color-text-black); outline-offset: 3px; }
 .ym-demo-score-controls button:focus-visible, .ym-demo-task:focus-visible { outline-color: var(--color-accent); }
 .ym-gest-screen:not(.is-on) * { animation-play-state: paused; }
+/* Match card opening flight (app MatchCardOpenRoute); geometry is written per frame by the controller. */
+.ym-demo-flight { position: absolute; z-index: 1; top: 0; left: 0; overflow: clip; pointer-events: none; transform-origin: 0 0; }
+.ym-demo-flight-base, .ym-demo-flight-court { position: absolute; inset: 0; }
+.ym-demo-flight-base { background: var(--color-light-bg); }
+.ym-demo-flight-court { background: var(--ym-demo-court-vignette), var(--ym-demo-court-grain), var(--ym-demo-court-1-gradient); }
+.ym-demo-flight .ym-demo-flight-shot { position: absolute; inset: 0 auto auto 0; display: block; height: auto; scale: none; overflow: visible; background: none; transform-origin: 0 0; }
+.ym-demo-flight-shot > .ym-demo-match { width: 100%; height: 100%; margin: 0; }
+.ym-demo-app.ym-demo-flight-chrome { z-index: 1; background: none; pointer-events: none; }
 @media (max-width: 1080px) { :root { --ym-demo-scale: .671642; } }
 @media (max-width: 880px) { :root { --ym-demo-scale: .626866; } .ym-gest-sticker { right: calc(50% - 155px); bottom: 0; font-size: 13px; } }
 @media (max-width: 420px) { :root { --ym-demo-scale: .567164; } }
