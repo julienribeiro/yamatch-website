@@ -678,3 +678,51 @@ h1.display .hl{margin-top:.22em}
 .hero-ctas{margin-top:clamp(4px,.8vw,12px)}
 /* Hero : espace sous la scène photo avant le bandeau défilant */
 .hero{padding-bottom:clamp(48px,6vw,88px)}
+
+/* =========================================================================
+   Sections Trouver / Jour J : photo + blocs façon app empilés (2026-11-08)
+   Remplace la mise en avant par iPhone en perspective.
+   ========================================================================= */
+.photo-stage{position:relative;width:min(100%,440px);margin-inline:auto;padding-block:12px}
+.photo-stage__img{display:block;width:100%;aspect-ratio:3/4;object-fit:cover;object-position:50% 30%;border-radius:20px;border:2px solid var(--ink);box-shadow:6px 6px 0 var(--lime),6px 6px 0 2px var(--ink)}
+.app-stack{position:absolute;bottom:12%;width:82%;max-width:340px;display:grid;z-index:2}
+.photo-stage--right .app-stack{left:-14%}
+.photo-stage--left .app-stack{right:-14%}
+.app-card{grid-area:1/1;transform-origin:50% 0;transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .7s;border-radius:18px;box-shadow:0 24px 40px -18px rgba(14,14,12,.55);will-change:transform}
+.app-card[data-pos="0"]{z-index:3;transform:none;opacity:1}
+.app-card[data-pos="1"]{z-index:2;transform:translateY(22px) scale(.93);opacity:.85}
+.app-card[data-pos="2"]{z-index:1;transform:translateY(42px) scale(.86);opacity:.55}
+/* Bloc tournoi (repris de la carte « ticket » de l'app) */
+.t-card{background:linear-gradient(140deg,#2C8C7B 0%,#145247 48%,#0F1A17 100%);color:#fff;padding:16px 16px 14px;font-family:var(--body)}
+.t-top{display:flex;gap:12px;align-items:center}
+.t-date{flex:none;display:grid;place-items:center;width:52px;height:56px;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;font-size:11px;letter-spacing:.06em;line-height:1.1}
+.t-date b{font-size:22px;letter-spacing:0}
+.t-info{display:grid;gap:2px;min-width:0}
+.t-info b{font-size:16px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t-info small{font-size:12.5px;color:rgba(255,255,255,.75)}
+.t-row{display:flex;justify-content:space-between;gap:8px;margin-top:12px;font-size:12px;color:rgba(255,255,255,.85)}
+.t-left{color:var(--lime);display:inline-flex;align-items:center;gap:6px;font-weight:600}
+.t-left i{width:7px;height:7px;border-radius:50%;background:var(--lime)}
+.t-bar{height:5px;border-radius:5px;background:rgba(255,255,255,.18);margin-top:7px;overflow:hidden}
+.t-bar i{display:block;height:100%;background:#fff;border-radius:5px}
+.t-pay{margin-top:12px;display:grid;place-items:center;height:40px;border-radius:999px;background:var(--lime);color:var(--ink);font-weight:700;font-size:14px}
+/* Bloc match (repris des cartes de match de l'app) */
+.m-card{background:#121310;color:#fff;padding:14px 16px;font-family:var(--body);border:1.5px solid #2A2B25}
+.m-card[data-pos="0"]{border-color:var(--lime)}
+.m-head{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:#A6A894;margin-bottom:8px}
+.m-status{display:inline-flex;align-items:center;gap:6px}
+.m-status i{width:7px;height:7px;border-radius:50%;background:#6B6D5E}
+.m-status--live{color:var(--lime);font-weight:600}
+.m-status--live i{background:var(--lime);animation:livePulse 1.4s ease-in-out infinite}
+.m-sets{font-family:var(--mono);letter-spacing:.06em;word-spacing:6px}
+.m-team{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding:6px 0}
+.m-team + .m-team{border-top:1px solid #2A2B25}
+.m-team i{width:30px;height:30px;border-radius:50%;background:var(--lime);color:var(--ink);display:grid;place-items:center;font-style:normal;font-size:9.5px;font-weight:700}
+.m-team b{font-size:14.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-team span{font-family:var(--mono);font-size:14px;word-spacing:6px;color:#A6A894}
+.m-team:not(.m-win) i{background:#3A3B33;color:#D9DACB}
+.m-win b{color:var(--lime)}
+.m-win span{color:#fff}
+@media (max-width:860px){.photo-stage{width:min(100%,400px)}.photo-stage--right .app-stack{left:-4%}.photo-stage--left .app-stack{right:-4%}}
+@media (max-width:560px){.app-stack{width:90%;bottom:8%}.photo-stage--right .app-stack{left:5%}.photo-stage--left .app-stack{right:5%}}
+@media (prefers-reduced-motion:reduce){.app-card{transition:none}.m-status--live i{animation:none}}
