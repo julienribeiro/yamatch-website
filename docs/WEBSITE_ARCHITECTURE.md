@@ -53,13 +53,13 @@ Cette copie est préparée dans la PR brouillon #32 et doit être publiée avec 
 
 ### Sections, in order
 1. Sticky header: logo (18.4px, 12.88px on mobile), nav, black « Télécharger » button.
-2. Hero: eyebrow « Tournois de volleyball », H1 on two lines « Ton prochain tournoi / t’attend », CTAs, trust row. Stage: CSS-drawn iPhone showing cropped screenshots `assets/app-ui/ui_1..5.webp` over the match photo `assets/hero-volley/hero-volley-mixed.webp`; auto-advancing tap-through demo with prev/next buttons and a fixed-size caption pill; floating cards; rotating sticker. Floralens-style scroll tilt: `--lay = clamp((top - 0.1vh) / (0.5vh))` — phone laid back, then upright; upright on mouse hover.
-3. Jump chips, then marquee ticker.
-4. « Trois étapes, zéro prise de tête » (`#comment`, 3 steps).
-5. Dark rail « Tout le tournoi, dans ta poche »: 7 cards, horizontal-only scroll, prev/next buttons, mouse drag, keyboard arrows.
-6. « Le bon tournoi, au bon niveau » (`#trouver`) and « Fini de courir au tableau » (`#jourj`): perspective iPhone with popping chips.
-7. « Moins de messages, plus de matchs » (`#une-app`): comparison table.
-8. « Ça crie, ça smashe, ça gagne »: photo bento from `assets/moments`.
+2. Hero: eyebrow « Tournois de volleyball », H1 « Ton prochain tournoi » on one line in sentence case (Roboto 900, `clamp(30px, 9.4vw, 92px)`), lede and CTAs (trust row, rotating sticker and jump chips removed on 2026-11-08). Stage: CSS-drawn iPhone showing cropped screenshots `assets/app-ui/ui_1..5.webp` over the match photo `assets/hero-volley/hero-volley-mixed.webp`; auto-advancing tap-through demo with prev/next buttons and a fixed-size caption pill (explicit z-index per transition direction so the incoming screen always slides over the outgoing one); floating cards. Floralens-style scroll tilt: `--lay = clamp((top - 0.1vh) / (0.5vh))` — phone laid back, then upright; upright on mouse hover.
+3. Marquee ticker.
+4. « Trois étapes, zéro prise de tête » (`#comment`, `.bigsteps`): three `.bs-card` cards black / lime / black, giant outlined numbers 01–03 (`-webkit-text-stroke`), title and text, then a CSS iPhone that overflows the card bottom, tilted, and straightens on hover.
+5. « Le bon tournoi, au bon niveau » (`#trouver`) and « Fini de courir au tableau » (`#jourj`): bordered photo (`.photo-stage`) with a stack of app-like blocks (`[data-app-stack]`: tournament tickets / match cards) rotating every 3.2 s.
+6. « Moins de messages, plus de matchs » (`#une-app`): comparison table.
+7. « Ça crie, ça smashe, ça gagne »: photo bento from `assets/moments`.
+8. Dark rail « Tout le tournoi, dans ta poche » (moved below the bento on 2026-11-08 so it no longer sits next to the steps cards): 7 cards, horizontal-only scroll, prev/next buttons, mouse drag, keyboard arrows.
 9. Organiser block (`#organisateurs`, `assets/organisateurs/04-poules-v2.webp`).
 10. Pricing « Zéro abonnement, zéro surprise » (`.band--lime`; default commission wording 8 %).
 11. FAQ (`#faq`): all 12 questions, identical to the `FAQPage` JSON-LD.

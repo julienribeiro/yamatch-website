@@ -101,7 +101,7 @@
   var groups=[
     [".app-stack, .card .chip, .facts li, .score, .orga-list small, .ticket, .poster","pop",110],
     [".section-head .display .hl, .feature-copy .display .hl, .rail-head .hl, .final .hl","stamp",0],
-    [".step, .shot, .price, .faq-list details, .swap-row, .orga-list li, .card, .orga-photo, .final, .photo-stage__img","rise",90]
+    [".bs-card, .shot, .price, .faq-list details, .swap-row, .orga-list li, .card, .orga-photo, .final, .photo-stage__img","rise",90]
   ];
   var io=new IntersectionObserver(function(entries){
     entries.forEach(function(e){
