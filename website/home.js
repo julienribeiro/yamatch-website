@@ -99,9 +99,9 @@
 (function(){
   if(matchMedia("(prefers-reduced-motion: reduce)").matches||!("IntersectionObserver" in window)) return;
   var groups=[
-    [".showcase .chip, .card .chip, .facts li, .score, .orga-list small, .ticket, .poster","pop",110],
+    [".app-stack, .card .chip, .facts li, .score, .orga-list small, .ticket, .poster","pop",110],
     [".section-head .display .hl, .feature-copy .display .hl, .rail-head .hl, .final .hl","stamp",0],
-    [".step, .shot, .price, .faq-list details, .swap-row, .orga-list li, .card, .orga-photo, .final, .showcase .iphone, .jump a","rise",90]
+    [".step, .shot, .price, .faq-list details, .swap-row, .orga-list li, .card, .orga-photo, .final, .photo-stage__img","rise",90]
   ];
   var io=new IntersectionObserver(function(entries){
     entries.forEach(function(e){
@@ -147,4 +147,19 @@
   svg.appendChild(el("rect",{x:lx-pp,y:ly-pp,width:lw+2*pp,height:lh+2*pp,rx:m*2,ry:m*2,fill:QR_BG}));
   svg.appendChild(el("image",{href:LOGO_HREF,x:lx,y:ly,width:lw,height:lh,preserveAspectRatio:"xMidYMid meet"}));
   container.innerHTML="";container.appendChild(svg);
+})();
+
+/* Blocs façon app empilés sur les photos : le bloc de devant passe derrière toutes les 3,2 s */
+(function(){
+  var stacks=[].slice.call(document.querySelectorAll("[data-app-stack]")); if(!stacks.length) return;
+  var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  stacks.forEach(function(stack){
+    var cards=[].slice.call(stack.children), order=cards.map(function(_,k){return k;}), timer=null, visible=false;
+    function paint(){order.forEach(function(idx,pos){cards[idx].setAttribute("data-pos",String(pos));});}
+    function tick(){order.push(order.shift());paint();}
+    function run(){clearInterval(timer);timer=null;if(!reduce&&visible&&!document.hidden) timer=setInterval(tick,3200);}
+    paint();
+    if("IntersectionObserver" in window){new IntersectionObserver(function(e){visible=e[0].isIntersecting;run();},{threshold:.3}).observe(stack);}
+    document.addEventListener("visibilitychange",run);
+  });
 })();
