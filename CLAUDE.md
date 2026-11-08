@@ -63,9 +63,10 @@ Before any action, always state:
 ```
 .
 ├── website/                          ← all source files served by live-server
-│   ├── index.html                    ← markup (html-expert)
+│   ├── index.html                    ← homepage markup (html-expert); loads home.css + home.js only
+│   ├── home.css / home.js            ← homepage styles/behaviour (css-expert / js-expert; home.css not in lightningcss build)
 │   ├── styles.css                    ← styling (css-expert)
-│   ├── script.js                     ← page-scroll, wordmark, FAQ, waves (js-expert)
+│   ├── script.js                     ← other pages (not the homepage since 2026-11-08): page-scroll, wordmark, FAQ, waves (js-expert)
 │   ├── carousel.js                   ← carousel state machine (js-expert)
 │   ├── favicon.png
 │   ├── wordmark.svg
