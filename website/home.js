@@ -55,6 +55,9 @@
       else if(k===prev){ im.classList.remove("is-on"); if(dir>0) im.classList.add("is-past"); else im.classList.remove("is-past"); }
       else { im.classList.add("is-reset"); im.classList.remove("is-on","is-past"); }
     });
+    // Empilement : l'écran qui glisse par-dessus doit toujours être au premier plan
+    // (sinon, en revenant du dernier au premier écran, l'entrant passait sous le sortant).
+    imgs.forEach(function(im,k){im.style.zIndex=k===i?(dir<0?"2":"3"):k===prev?(dir<0?"3":"2"):"1";});
     hint.textContent=steps[i].hint;
     dots.forEach(function(d,k){d.classList.toggle("on",k===i);});
     setFloat(fL,steps[i].L); setFloat(fR,steps[i].R);
