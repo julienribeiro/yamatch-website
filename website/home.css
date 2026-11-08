@@ -758,3 +758,8 @@ h1.display{font-size:clamp(30px,9.4vw,92px)}
 /* Menu : verre dépoli (transparent + flou) */
 .top{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);border-bottom:1px solid rgba(14,14,12,.08)}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.top{background:rgba(255,255,255,.94)}}
+
+/* Bouton « Télécharger » du menu : même style que les boutons secondaires (contour noir, pastille lime) */
+.nav .nav-dl{color:var(--ink);background:#fff;border:2px solid var(--ink);box-shadow:none;min-height:44px;padding:0 5px 0 16px;gap:10px}
+.nav .nav-dl .more-ico{width:32px;height:32px}
+.nav .nav-dl:hover{box-shadow:4px 4px 0 var(--ink);transform:translate(-2px,-2px)}
