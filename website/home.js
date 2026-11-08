@@ -24,16 +24,16 @@
 
 (function(){
   var steps=[
-    {hint:"Démo · Équipes",
-     L:["Tournoi en simulation","8 équipes inscrites"],R:["Pointage des équipes","8 équipes à pointer"]},
-    {hint:"Démo · Réglages",
-     L:["Configuration du tournoi","8 équipes · 2 poules"],R:["Tableau principal","Demies · 4 équipes"]},
-    {hint:"Démo · Matchs",
-     L:["Terrain 1 · Poule A","6 matchs restants"],R:["Matchs à venir","Arbitrage affiché"]},
-    {hint:"Démo · Classement",
-     L:["Tableau général","Ordonné par victoires"],R:["Classement par poule","Vue disponible"]},
-    {hint:"Démo · Finales",
-     L:["Demi-finales","4 équipes dans le tableau"],R:["Finale","Adversaires à venir"]}
+    {hint:"Démo · Découvrir",
+     L:["Trouve ton tournoi","Coupe des Dunes"],R:["Places disponibles","4 équipes restantes"]},
+    {hint:"Démo · Tournoi",
+     L:["4×4 mixte","Niveau loisir"],R:["Coupe des Dunes","21,60 € par équipe"]},
+    {hint:"Démo · Inscription",
+     L:["Choisis ton équipe","Les Smashers"],R:["Inscription au tournoi","Coupe des Dunes"]},
+    {hint:"Démo · Confirmé",
+     L:["Inscription confirmée","Les Smashers"],R:["Rendez-vous sur le terrain","22 novembre · Paris"]},
+    {hint:"Démo · Mon match",
+     L:["Ton premier match","Terrain 1 · Poule A"],R:["Ton adversaire","Volley Club des Dunes"]}
   ];
   var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
   var imgs=[].slice.call(document.querySelectorAll("#screen img"));

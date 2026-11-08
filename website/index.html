@@ -44,7 +44,7 @@
     <link rel="manifest" href="/site.webmanifest">
     <link rel="preload" as="font" type="font/woff2" href="fonts/Roboto-Variable.woff2" crossorigin>
     <link rel="preload" as="font" type="font/woff2" href="fonts/Inter-Variable.woff2" crossorigin>
-    <link rel="preload" as="image" type="image/webp" href="assets/hero-current-app/01-equipes.webp" fetchpriority="high">
+    <link rel="preload" as="image" type="image/webp" href="assets/hero-participant-app/01-decouverte.webp" fetchpriority="high">
 
     <link rel="stylesheet" href="home.css">
     <!-- qrcode-generator@1.4.4 (Kazuhiko Arase, MIT) — auto-hébergé (website/vendor/qrcode.min.js).
@@ -265,22 +265,22 @@
 
         <div class="float float--left" id="floatL" aria-hidden="true">
           <span class="float-ico"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg></span>
-          <div><b>Tournoi en simulation</b><span>8 équipes inscrites</span></div>
+          <div><b>Trouve ton tournoi</b><span>Coupe des Dunes</span></div>
         </div>
         <div class="float float--right" id="floatR" aria-hidden="true">
           <span class="float-ico"><svg viewBox="0 0 24 24"><path d="M4 12h16M12 4v16"/></svg></span>
-          <div><b>Pointage des équipes</b><span>8 équipes à pointer</span></div>
+          <div><b>Places disponibles</b><span>4 équipes restantes</span></div>
         </div>
 
         <div class="stage-phone">
           <div class="stage-tilt" id="tilt">
-            <div class="iphone" role="img" aria-label="L’app Yamatch côté organisateur, en simulation : équipes, configuration, matchs, classement et arbre du tournoi">
+            <div class="iphone" role="img" aria-label="L’app Yamatch côté participant en démonstration : découverte, détails du tournoi, inscription d’une équipe, confirmation et premier match">
               <div class="screen" id="screen">
-                <img class="is-on" src="assets/hero-current-app/01-equipes.webp" alt="" width="1206" height="2622">
-                <img src="assets/hero-current-app/02-configuration.webp" alt="" width="1206" height="2622" loading="lazy">
-                <img src="assets/hero-current-app/03-matchs.webp" alt="" width="1206" height="2622" loading="lazy">
-                <img src="assets/hero-current-app/04-classement.webp" alt="" width="1206" height="2622" loading="lazy">
-                <img src="assets/hero-current-app/05-arbre.webp" alt="" width="1206" height="2622" loading="lazy">
+                <img class="is-on" src="assets/hero-participant-app/01-decouverte.webp" alt="" width="1206" height="2622">
+                <img src="assets/hero-participant-app/02-tournoi.webp" alt="" width="1206" height="2622" loading="lazy">
+                <img src="assets/hero-participant-app/03-inscription.webp" alt="" width="1206" height="2622" loading="lazy">
+                <img src="assets/hero-participant-app/04-confirmation.webp" alt="" width="1206" height="2622" loading="lazy">
+                <img src="assets/hero-participant-app/05-mon-match.webp" alt="" width="1206" height="2622" loading="lazy">
               </div>
             </div>
           </div>
@@ -288,7 +288,7 @@
 
         <div class="stage-switch">
           <button class="round" type="button" id="prev" aria-label="Écran précédent">‹</button>
-          <p class="stage-hint" aria-live="polite"><span id="hint">Démo · Équipes</span><span class="dots" id="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></span></p>
+          <p class="stage-hint" aria-live="polite"><span id="hint">Démo · Découvrir</span><span class="dots" id="dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i></span></p>
           <button class="round" type="button" id="next" aria-label="Écran suivant">›</button>
         </div>
       </div>
