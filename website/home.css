@@ -754,3 +754,7 @@ h1.display{font-size:clamp(30px,9.4vw,92px)}
 .bs-card:hover .iphone{transform:rotate(0) translateY(-14px)}
 @media (max-width:900px){.bigsteps{grid-template-columns:1fr;max-width:460px;margin:0 auto}.bs-card{min-height:440px}}
 @media (prefers-reduced-motion:reduce){.bs-card .iphone{transition:none}}
+
+/* Menu : verre dépoli (transparent + flou) */
+.top{background:rgba(255,255,255,.62);-webkit-backdrop-filter:blur(18px) saturate(180%);backdrop-filter:blur(18px) saturate(180%);border-bottom:1px solid rgba(14,14,12,.08)}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.top{background:rgba(255,255,255,.94)}}
