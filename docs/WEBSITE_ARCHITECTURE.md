@@ -58,8 +58,8 @@ Cette copie est préparée dans la PR brouillon #32 et doit être publiée avec 
 4. « Trois étapes, zéro prise de tête » (`#comment`, `.bigsteps`): three `.bs-card` cards black / lime / black, giant outlined numbers 01–03 (`-webkit-text-stroke`), title and text, then a CSS iPhone that overflows the card bottom, tilted, and straightens on hover.
 5. « Le bon tournoi, au bon niveau » (`#trouver`) and « Fini de courir au tableau » (`#jourj`): bordered photo (`.photo-stage`) with a stack of app-like blocks (`[data-app-stack]`: tournament tickets / match cards) rotating every 3.2 s.
 6. « Moins de messages, plus de matchs » (`#une-app`): comparison table.
-7. « Ça crie, ça smashe, ça gagne »: photo bento from `assets/moments`.
-8. Dark rail « Tout le tournoi, dans ta poche » (moved below the bento on 2026-11-08 so it no longer sits next to the steps cards): 7 cards, horizontal-only scroll, prev/next buttons, mouse drag, keyboard arrows.
+7. *(Removed on 2026-11-08 at the founder’s request: « Ça crie, ça smashe, ça gagne » photo bento.)*
+8. Dark rail « Tout le tournoi, dans ta poche » (moved after « Moins de messages, plus de matchs » on 2026-11-08 so it no longer sits next to the steps cards): 7 cards, horizontal-only scroll, prev/next buttons, mouse drag, keyboard arrows.
 9. Organiser block (`#organisateurs`, `assets/organisateurs/04-poules-v2.webp`).
 10. Pricing « Zéro abonnement, zéro surprise » (`.band--lime`; default commission wording 8 %).
 11. FAQ (`#faq`): all 12 questions, identical to the `FAQPage` JSON-LD.
