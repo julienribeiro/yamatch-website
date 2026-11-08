@@ -18,6 +18,7 @@
   var down=false,sx=0,sl=0,moved=false;
   rail.addEventListener("pointerdown",function(e){if(e.pointerType!=="mouse")return;down=true;moved=false;sx=e.clientX;sl=rail.scrollLeft;});
   addEventListener("pointermove",function(e){if(!down)return;var dx=e.clientX-sx;if(Math.abs(dx)>4){moved=true;rail.classList.add("dragging");}rail.scrollLeft=sl-dx;});
+  addEventListener("pointercancel",function(){if(!down)return;down=false;rail.classList.remove("dragging");});
   addEventListener("pointerup",function(){if(!down)return;down=false;if(moved){var w=step(),pad=parseFloat(getComputedStyle(rail).scrollPaddingLeft)||0;rail.classList.remove("dragging");rail.scrollTo({left:Math.round(rail.scrollLeft/w)*w,behavior:"smooth"});}});
 })();
 
@@ -26,7 +27,7 @@
     {hint:"Trouve ton tournoi",tap:[.55,.33],
      L:["Tournoi à 5 km","Samedi, coup d’envoi 9 h 30"],R:["Plus que 9 places","Ça part vite"]},
     {hint:"Check les infos",tap:[.5,.9],
-     L:["4×4 mixte","Niveau départemental"],R:["Annulation gratuite","Jusqu’à 48 h avant"]},
+     L:["4×4 mixte","Niveau départemental"],R:["Coup d’envoi 13 h 38","Indoor, gymnase couvert"]},
     {hint:"Place réservée !",tap:[.5,.94],
      L:["Paiement validé","Apple Pay, deux tapes"],R:["Invite ta team","Un lien et c’est réglé"]},
     {hint:"Classement en direct",tap:[.83,.2],
