@@ -730,3 +730,8 @@ h1.display .hl{margin-top:.22em}
 /* Titre du hero : « Ton prochain tournoi » seul, en casse normale */
 h1.display{text-transform:none;letter-spacing:-.04em;line-height:1}
 h1.display{font-size:clamp(30px,9.4vw,92px)}
+
+/* Hero : espacement resserré entre titre, texte et boutons */
+.hero-copy{gap:clamp(16px,1.8vw,24px)}
+.hero-copy .lede{margin-top:0}
+.hero-ctas{margin-top:clamp(4px,.6vw,8px)}
