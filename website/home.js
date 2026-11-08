@@ -24,20 +24,20 @@
 
 (function(){
   var steps=[
-    {hint:"Trouve ton tournoi",tap:[.55,.33],
-     L:["Tournoi à 5 km","Samedi, coup d’envoi 9 h 30"],R:["Plus que 9 places","Ça part vite"]},
-    {hint:"Check les infos",tap:[.5,.9],
-     L:["4×4 mixte","Niveau départemental"],R:["Coup d’envoi 13 h 38","Indoor, gymnase couvert"]},
-    {hint:"Place réservée !",tap:[.5,.94],
-     L:["Paiement validé","Apple Pay, deux tapes"],R:["Invite ta team","Un lien et c’est réglé"]},
-    {hint:"Classement en direct",tap:[.83,.2],
-     L:["Terrain 2 · En cours","Beach Boys 21–17"],R:["+1 place","Tu remontes 4ᵉ"]},
-    {hint:"Le tableau se remplit",tap:null,
-     L:["Quarts de finale","Beach Boys qualifiés"],R:["Finale à 17 h 30","Terrain central"]}
+    {hint:"Démo · Équipes",
+     L:["Tournoi en simulation","8 équipes inscrites"],R:["Pointage des équipes","8 équipes à pointer"]},
+    {hint:"Démo · Réglages",
+     L:["Configuration du tournoi","8 équipes · 2 poules"],R:["Tableau principal","Demies · 4 équipes"]},
+    {hint:"Démo · Matchs",
+     L:["Terrain 1 · Poule A","6 matchs restants"],R:["Matchs à venir","Arbitrage affiché"]},
+    {hint:"Démo · Classement",
+     L:["Tableau général","Ordonné par victoires"],R:["Classement par poule","Vue disponible"]},
+    {hint:"Démo · Finales",
+     L:["Demi-finales","4 équipes dans le tableau"],R:["Finale","Adversaires à venir"]}
   ];
   var reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
   var imgs=[].slice.call(document.querySelectorAll("#screen img"));
-  var tap=document.getElementById("tap"), hint=document.getElementById("hint");
+  var hint=document.getElementById("hint");
   var dots=[].slice.call(document.querySelectorAll("#dots i"));
   var fL=document.getElementById("floatL"), fR=document.getElementById("floatR");
   var i=0, timers=[], visible=true, auto=!reduce;
@@ -65,11 +65,7 @@
   function clear(){timers.forEach(clearTimeout);timers=[];}
   function cycle(){
     clear(); if(!auto||!visible||document.hidden) return;
-    var s=steps[i];
-    timers.push(setTimeout(function(){
-      if(s.tap){tap.style.left=(s.tap[0]*100)+"%";tap.style.top=(s.tap[1]*100)+"%";tap.classList.remove("go");void tap.offsetWidth;tap.classList.add("go");}
-      timers.push(setTimeout(function(){show(i+1,1);cycle();}, s.tap?650:0));
-    }, 2600));
+    timers.push(setTimeout(function(){show(i+1,1);cycle();},3250));
   }
   document.getElementById("next").addEventListener("click",function(){show(i+1,1);cycle();});
   document.getElementById("prev").addEventListener("click",function(){show(i-1,-1);cycle();});

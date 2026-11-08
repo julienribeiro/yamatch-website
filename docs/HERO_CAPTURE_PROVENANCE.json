@@ -1,0 +1,65 @@
+{
+  "source_commit": "7d571137b5534ac2a0716de60cbf121e214bf1de",
+  "source_version": "1.0.23+72",
+  "capture_date": "2026-11-08",
+  "method": "Flutter widget-test rasterization of unchanged production widgets with AppTheme.lightTheme and bundled Roboto/Inter/Material fonts; NOT a native simulator binary screenshot.",
+  "viewport": {
+    "width": 402,
+    "height": 874,
+    "scale": 3,
+    "safe_area_top": 62,
+    "safe_area_bottom": 34
+  },
+  "data": "Local native SimulationService, 8 built-in demo teams, 2 courts, actual WizardStructureGenerator and local publishStructure. Results submitted through startMatch/submitScore, bracket resolved by BracketResolutionService. No backend connection, real account, or production tournament.",
+  "screens": [
+    "01: organizer teams before check-in",
+    "02: actual configuration wizard step 4",
+    "03: actual court/match panel before games",
+    "04: actual overall standings after 12 local demo pool results, normal route at top with complete organizer header and actions",
+    "05: actual resolved semifinal bracket"
+  ],
+  "limitations": "No fabricated iOS status bar, home indicator or device chrome. Demo teams/scores, not live production user data. No image generation, UI reimplementation, or pixel retouching.",
+  "validation": "flutter test test/hero_capture/current_app_test.dart PASS; all five PNGs visually reviewed; git diff --name-only -- lib empty.",
+  "files": [
+    {
+      "file": "01-equipes.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "6c238d27a1b94687a5a651f03772566eae0cfd1321b655ce8dd1cadc4aaad69d",
+      "deployed_file": "website/assets/hero-current-app/01-equipes.webp",
+      "deployed_sha256": "0b39b952131129402abdfb8fbf9b9bc5554a3432ec837c168c99e40351d14f27"
+    },
+    {
+      "file": "02-configuration.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "fca64cbfca8dba8b9cb0013aec7114ad45fd64a4649c3720c14af1475411bffe",
+      "deployed_file": "website/assets/hero-current-app/02-configuration.webp",
+      "deployed_sha256": "55289a3feaa3f3549134974d49c4757922b34c174c6d2205e1ed262d93a44978"
+    },
+    {
+      "file": "03-matchs.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "2c63deded60b8baaadeb8e7d05d314a33de53a82e79ef5c15ba8304677dcf591",
+      "deployed_file": "website/assets/hero-current-app/03-matchs.webp",
+      "deployed_sha256": "e264db005bb783cbe861ad8a01e3b2f91bf665e5af3f38f8e5e4b125ae2133d6"
+    },
+    {
+      "file": "04-classement.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "d278bfe853065074629dc51dbf01eb8e8e09554146a8fa8a9c132247209c441f",
+      "deployed_file": "website/assets/hero-current-app/04-classement.webp",
+      "deployed_sha256": "4b00055e50b65c6da4687841983bc9063fee7e448d8b6dc3ca78858cb5a4ace3"
+    },
+    {
+      "file": "05-arbre.png",
+      "width": 1206,
+      "height": 2622,
+      "sha256": "7c2d2c06d09dc3cfa76c890bb78986d8457cb8b52ebacd3a10e0f57abea8e7ab",
+      "deployed_file": "website/assets/hero-current-app/05-arbre.webp",
+      "deployed_sha256": "242e956474c52536fe787432db5139a8307aad4bce5a909ec7f1a7ff4146b9a6"
+    }
+  ]
+}
