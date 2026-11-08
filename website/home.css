@@ -670,3 +670,9 @@ html,body{overflow-x:clip}
 
 /* Très petits écrans (320 px) : la première ligne du titre tient sans être coupée */
 @media (max-width:359px){h1.display{font-size:24px}}
+
+/* Hero : plus d’air vertical entre titre, mot surligné, texte et boutons */
+.hero-copy{gap:clamp(26px,3vw,40px)}
+h1.display .hl{margin-top:.22em}
+.hero-copy .lede{margin-top:clamp(2px,.6vw,8px)}
+.hero-ctas{margin-top:clamp(4px,.8vw,12px)}
