@@ -4,7 +4,7 @@
 
 This doc is mandatory pre-flight reading for `html-expert`, `css-expert`, `js-expert`, and `website-reviewer` before any modification. If this doc disagrees with the actual code, the **code wins** — flag the drift in the report and update this doc via `doc-keeper`.
 
-Last sync: 2026-10-22 (shared homepage gutters aligned to the hero text inset with full-width native rails; Shouts illustrative photo section after HOW, dedicated generated media, sentence-case Inter copy and native responsive rail; monthly tournament calendar V3 and public detail page with D3 occupancy limitation; desktop participant hero viewport sizing and matching bottom/side gutters, mobile title and Volleyball badge centring; Stories S1 hidden shell and asset requirements; HOW V2 coded three-card journey, progressive reveal and FAQ-only parallax; participant V2 split hero, shared fixed full-width navigation bar, decorative app cards and screenshot-carousel removal; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
+Last sync: 2026-11-08 (homepage replaced by the self-contained neo-brutalist `home.css` + `home.js` rewrite, commit 105622d — see "Homepage v2026-11" below; earlier entries are historical for the homepage: shared homepage gutters aligned to the hero text inset with full-width native rails; Shouts illustrative photo section after HOW, dedicated generated media, sentence-case Inter copy and native responsive rail; monthly tournament calendar V3 and public detail page with D3 occupancy limitation; desktop participant hero viewport sizing and matching bottom/side gutters, mobile title and Volleyball badge centring; Stories S1 hidden shell and asset requirements; HOW V2 coded three-card journey, progressive reveal and FAQ-only parallax; participant V2 split hero, shared fixed full-width navigation bar, decorative app cards and screenshot-carousel removal; public tournament rails and shared organiser loading; coded interactive management demo restyled from Flutter components with local illustrative data; organiser layout and FAQ, announcement-banner and phone-pointer-motion removal, native cursor without decorative trail; homepage tournament-notification decoration removed; homepage lime/grid replaced by a responsive action photograph; phone privacy preserved; configurable commission and order privacy prepared for coordinated rollout).
 
 ---
 
@@ -36,6 +36,44 @@ Cette copie est préparée dans la PR brouillon #32 et doit être publiée avec 
 
 ---
 
+## Homepage v2026-11 (commit 105622d, founder-approved 2026-11-08)
+
+> **This section supersedes every homepage description below** (hero, HOW quest, Shouts, Stories, public tournament rail, shared homepage gutters, participant V2 tokens, `app-screens.css`, homepage QR/parallax in `script.js`). Those sections are kept as **historical**: their code still lives in `script.js` / `styles.css` for other pages and history, but `index.html` no longer uses it.
+
+### Files
+- `website/index.html` loads **`home.css`** (not `styles.min.css`, not `app-screens.css`) and **`home.js`** (not `script.js`). `vendor/qrcode.min.js` is still deferred **before** `home.js`.
+- All other pages are unchanged: `styles.min.css` + `script.js` (organiser and tournament pages still use `script.js`).
+- `home.css` is **not** part of the lightningcss build (`build:css` minifies only `styles.css`); it is served as written.
+
+### Visual direction — premium neo-brutalism, light only (no dark theme)
+- Palette: white `#FFFFFF`, very pale lime bands `#F4FADD`, lime `#D7FF00`, ink `#0E0E0C`.
+- 2px black borders, hard offset shadows (often lime under black). No separator lines between sections.
+- Roboto 900 uppercase display titles with a lime highlight block (`.hl`); Inter body; JetBrains Mono 500 labels. All self-hosted in `website/fonts/` (`JetBrainsMono-500.woff2` added with `OFL-JetBrainsMono.txt`).
+- Layout: side gutter `--gut: clamp(24px, 6.5vw, 104px)`, max content width 1180px.
+
+### Sections, in order
+1. Sticky header: logo (18.4px, 12.88px on mobile), nav, black « Télécharger » button.
+2. Hero: eyebrow « Tournois de volleyball », H1 on two lines « Ton prochain tournoi / t’attend », CTAs, trust row. Stage: CSS-drawn iPhone showing cropped screenshots `assets/app-ui/ui_1..5.webp` over the match photo `assets/hero-volley/hero-volley-mixed.webp`; auto-advancing tap-through demo with prev/next buttons and a fixed-size caption pill; floating cards; rotating sticker. Floralens-style scroll tilt: `--lay = clamp((top - 0.1vh) / (0.5vh))` — phone laid back, then upright; upright on mouse hover.
+3. Jump chips, then marquee ticker.
+4. « Trois étapes, zéro prise de tête » (`#comment`, 3 steps).
+5. Dark rail « Tout le tournoi, dans ta poche »: 7 cards, horizontal-only scroll, prev/next buttons, mouse drag, keyboard arrows.
+6. « Le bon tournoi, au bon niveau » (`#trouver`) and « Fini de courir au tableau » (`#jourj`): perspective iPhone with popping chips.
+7. « Moins de messages, plus de matchs » (`#une-app`): comparison table.
+8. « Ça crie, ça smashe, ça gagne »: photo bento from `assets/moments`.
+9. Organiser block (`#organisateurs`, `assets/organisateurs/04-poules-v2.webp`).
+10. Pricing « Zéro abonnement, zéro surprise » (`.band--lime`; default commission wording 8 %).
+11. FAQ (`#faq`): all 12 questions, identical to the `FAQPage` JSON-LD.
+12. Final black CTA with store buttons (`#telecharger`), then dark footer with the real legal links.
+13. Floating QR widget, identical to the previous site: glass panel, dotted QR to `https://appyamatch.fr/download/` with wordmark, hidden at ≤767px.
+
+### Scroll reveal
+`home.js` only hides elements **below the fold at load** (classes `reveal-pre` + `pop` / `rise` / `stamp`, driven by `IntersectionObserver`). With `prefers-reduced-motion` or without `IntersectionObserver`, everything is visible.
+
+### Removed from the homepage
+Previous hero card and coded discovery phone, HOW quest section, Shouts, hidden Stories, public tournament showcase rail. Their code remains in `script.js` / `styles.css` (other pages / history).
+
+---
+
 ## Tech stack
 
 Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production build validates the public tournament PROD configuration, generates Android Digital Asset Links from a configured fingerprint, minifies CSS, then validates both native association contracts. Homepage source files and retained historical carousel (the organiser route has its own local CSS and JS, documented below):
@@ -49,7 +87,7 @@ Vanilla **HTML5 + CSS3 + ES2020+ JavaScript**. No framework. The production buil
 
 The homepage no longer loads `carousel.js`: the five-screenshot `.screens-rail` and its initialization block in `script.js` have been removed at the founder’s request. The hero directly precedes HOW. `script.js` and the QR vendor remain deferred; the public tournament rail remains independent and active when data is available.
 
-HTML pages reference **`styles.min.css`** (the generated shared output), not `styles.css`. The homepage additionally loads `app-screens.css` directly after that shared stylesheet for its coded discovery and three journey illustrations; it is outside the CSS minification build. `/organisateur/` additionally loads its local `hero-organisateur.css`, then `gestion-organisateur.css`, after the shared stylesheet.
+**Homepage exception (2026-11-08): `index.html` uses `home.css` + `home.js` only; the paragraph and table above describing `script.js`/`app-screens.css` on the homepage are historical.** Other HTML pages reference **`styles.min.css`** (the generated shared output), not `styles.css`. The homepage additionally loads `app-screens.css` directly after that shared stylesheet for its coded discovery and three journey illustrations; it is outside the CSS minification build. `/organisateur/` additionally loads its local `hero-organisateur.css`, then `gestion-organisateur.css`, after the shared stylesheet.
 
 `website/vendor/qrcode.min.js` (20,768 bytes) is a vendored third-party library — **not** one of the four source files above and not authored in-repo. It ships `qrcode-generator@1.4.4` (Kazuhiko Arase, MIT license), byte-identical to the former jsdelivr CDN build. Loaded via `<script src="vendor/qrcode.min.js" defer>` in `index.html`, **before** `script.js`, which calls the global `window.qrcode` factory to render the homepage QR widget. See SEO → Third-party scripts below for the CDN → self-host migration history.
 
@@ -87,7 +125,8 @@ All fonts are **self-hosted** (no Google Fonts CDN). Migrated 2026-05-12 — eli
 | `Inter-Italic-Variable.woff2` | 26 KB | wght 100–900, italic |
 | `Roboto-Variable.woff2` | 37 KB | wght 100–900, upright |
 | `Roboto-Italic-Variable.woff2` | 41 KB | wght 100–900, italic |
-| `Frick0.3-Regular.woff2` + `.woff` | — | weight 400, hero title only |
+| `Frick0.3-Regular.woff2` + `.woff` | — | weight 400, hero title only (historical; not used by the new homepage) |
+| `JetBrainsMono-500.woff2` (+ `OFL-JetBrainsMono.txt`) | — | weight 500, mono labels on the homepage (`home.css`) |
 
 Total Inter + Roboto VF: ~152 KB. Latin subset only (covers U+0000–00FF + U+2000–206F — sufficient for all French copy).
 
@@ -246,6 +285,8 @@ The 512×512 icon's `purpose` was changed from `"any"` to `"any maskable"` as pa
 ---
 
 ## DOM structure
+
+> **Historical** — superseded for the homepage by "Homepage v2026-11" above.
 
 Homepage sections under `<main id="top">`, in order:
 

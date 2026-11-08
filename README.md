@@ -31,9 +31,11 @@ Opens a live-reloading server at **<http://localhost:8000>**. Edit any file in `
 
 ```
 website/
-├── index.html          # Single-page hero + footer
+├── index.html          # Homepage (self-contained: loads home.css + home.js)
+├── home.css            # Homepage styles (neo-brutalist; not in the lightningcss build)
+├── home.js             # Homepage behaviour (demo phone, rail, reveal, QR widget)
 ├── styles.css          # All styles (no preprocessor)
-├── script.js           # Vanilla IIFE — toast scaffolding, wordmark/wave behaviour, scroll-driven phone animation, how-quest editorial, QR widget, floating-card parallax
+├── script.js           # (other pages; no longer the homepage) Vanilla IIFE — toast scaffolding, wordmark/wave behaviour, scroll-driven phone animation, how-quest editorial, QR widget, floating-card parallax
 ├── wordmark.svg        # Yamatch wordmark (also inlined in index.html for currentColor support)
 ├── fonts/              # Frick 0.3 (display title) — OFL-licensed, see fonts/OFL.txt
 ├── balls/              # Sport ball PNGs (currently unused; were used by the prior bouncing animation)
