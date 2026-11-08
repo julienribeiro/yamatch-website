@@ -80,7 +80,7 @@
   cycle();
 
   if(reduce) return;
-  var stage=document.getElementById("stage"), tilt=document.getElementById("tilt"), bg=document.getElementById("stageBg"), ticking=false, hover=false;
+  var stage=document.getElementById("stage"), tilt=document.getElementById("tilt"), bg=document.getElementById("stageBg"), ticking=false, frame=document.querySelector(".stage-frame"), fl=document.getElementById("floatL"), fr=document.getElementById("floatR"), hover=false;
   tilt.addEventListener("pointerenter",function(e){if(e.pointerType==="mouse"){hover=true;onScroll();}});
   tilt.addEventListener("pointerleave",function(){hover=false;onScroll();});
   addEventListener("resize",function(){requestAnimationFrame(onScroll);});
@@ -89,8 +89,14 @@
     var r=stage.getBoundingClientRect(), vh=innerHeight;
     var lay=hover?0:Math.min(1,Math.max(0,(r.top-.1*vh)/(.5*vh)));
     tilt.style.setProperty("--lay",lay.toFixed(3));
-    var p=Math.min(1,Math.max(-1,(vh/2-(r.top+r.height/2))/vh));
-    bg.style.transform="translateY("+(p*6).toFixed(2)+"%) scale(1.04)";
+    // Profondeur 3D : le cadre photo se redresse (rotateX) pendant les premiers défilements,
+    // la photo glisse plus lentement que la page et les cartes flottent à des vitesses différentes.
+    var e=1-Math.pow(1-Math.min(1,Math.max(0,1-(r.top-vh*.12)/(vh*.5))),3);
+    var q=Math.min(1,Math.max(0,(vh*.5-(r.top+r.height/2))/vh+.5));
+    if(frame){frame.style.transform="perspective(1400px) rotateX("+(14*(1-e)).toFixed(2)+"deg) scale("+(.94+.06*e).toFixed(4)+")";}
+    bg.style.transform="translateY("+((q-.5)*-14).toFixed(2)+"%) scale(1.08)";
+    if(fl) fl.style.translate="0 "+((q-.5)*-140).toFixed(1)+"px";
+    if(fr) fr.style.translate="0 "+((q-.5)*80).toFixed(1)+"px";
   }
   addEventListener("scroll",function(){if(!ticking){ticking=true;requestAnimationFrame(onScroll);}},{passive:true});
   onScroll();

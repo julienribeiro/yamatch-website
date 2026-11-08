@@ -763,3 +763,7 @@ h1.display{font-size:clamp(30px,9.4vw,92px)}
 .nav .nav-dl{color:var(--ink);background:#fff;border:2px solid var(--ink);box-shadow:none;min-height:44px;padding:0 5px 0 16px;gap:10px}
 .nav .nav-dl .more-ico{width:32px;height:32px}
 .nav .nav-dl:hover{box-shadow:4px 4px 0 var(--ink);transform:translate(-2px,-2px)}
+
+/* Scène : profondeur 3D au défilement (piloté par home.js) */
+.stage-frame{transform-origin:50% 100%;will-change:transform}
+@media (prefers-reduced-motion:reduce){.stage-frame,#stageBg,.float{transform:none!important;translate:none!important}}
