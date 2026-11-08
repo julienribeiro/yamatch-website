@@ -676,3 +676,5 @@ html,body{overflow-x:clip}
 h1.display .hl{margin-top:.22em}
 .hero-copy .lede{margin-top:clamp(2px,.6vw,8px)}
 .hero-ctas{margin-top:clamp(4px,.8vw,12px)}
+/* Hero : espace sous la scène photo avant le bandeau défilant */
+.hero{padding-bottom:clamp(48px,6vw,88px)}
